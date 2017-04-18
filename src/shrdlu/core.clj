@@ -199,119 +199,84 @@
     a)
 
 (defn- thadd* [& a]
-    (doseq [% a] (thadd % nil)))
+    (doseq [% a] (thadd %)))
 
-(dynamic- *thtt*)
-(dynamic- *thnf*)
-(dynamic- *thlas*)
-(dynamic- *thfst*)
-(dynamic- *thfstp*)
-
-(defn- thip [thi t b]
+(defn- thip [x t i n f p b b']
+    ;; THIP IS THE WORKHORSE FOR THADD.
     ;; THI IS AN ITEM FROM THE ASSERTION OR PATTERN OF THE THEOREM BEING ENTERED.
-    ;; THNF IS A FREE VARIABLE FROM THADD (WHO CALLS THIS BUGGER).
-    ;; IT SAYS WE ARE LOOKING AT THE N'TH PLACE IN THE PATTERN.
-    (set! *thnf* (inc *thnf*))
-    ;; THI1 IS THE NAME OF THE ATOM TO LOOK UNDER WHEN THI IS A USUAL ATOM.
-    ;; THI1 = THI NUMBERS DON'T HAVE PROPERTY LISTS, SO THEY DON'T COUNT AS
-    ;; NORMAL ATOMS, NOR DOES "?" SINCE IT IS A SORT OF VARIABLE IN PLANNER.
-    (let-when [[thi _]
-            (cond (and (term? thi) (not (= thi '?)) (not (number? thi))) [thi nil]
+    (let-when [[x _]
+            (cond (and (term? x) (not (= x '?)) (not (number? x))) [x nil]
                 ;; SEE IF THI IS A VARIABLE.
                 ;; IF WE ARE DOING THIS FOR THE FIRST TIME, DON'T CONSIDER VARIABLES.
                 ;; FOR EXPLANATION WHY, SEE THADD.
-                (or (= thi '?) (thvar? thi)) (if *thfst* [nil 'THVRB] ['THVRB nil])
+                (or (= x '?) (thvar? x)) (if f [nil 'THVRB] ['THVRB nil])
+                ;; OTHERWISE THI IS SOMETHING WITH NO PROPERTY LIST LIKE A NUMBER, OR LIST.
+                ;; RETURNING THVRB TO THADD TELLS IT THAT EVERYTHING IS OK SO FAR,
+                ;; BUT NOTHING WAS DONE ON THIS ITEM.
                 :else [nil 'THVRB])
     ] (nil? _) => _
-        ;; OTHERWISE THI IS SOMETHING WITH NO PROPERTY LIST LIKE A NUMBER, OR LIST.
-        ;; RETURNING THVRB TO THADD TELLS IT THAT EVERYTHING IS OK SO FAR,
-        ;; BUT NOTHING WAS DONE ON THIS ITEM.
-        (let [x (getprop thi t)]
-            ;; THWH IS THE NAME OF THE PROPERTY TO LOOK UNDER ON THE ATOM.
-            ;; IF THIS PROPERTY IS NOT THERE, THEN WE MUST PUT IT THERE.
-            ;; IN PARTICULAR, NO PROPERTY MEANS THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
-            (cond (not x) (do (putprop! thi t (list nil (list *thnf* (list *thlas* 1 b)))) 'thok)
-                ;; IF THE PROPERTY IS "THNOHASH", IT MEANS THAT WE SHOULD NOT BOTHER TO INDEX UNDER THIS ATOM,
-                ;; SO JUST RETURN TO THADD.
-                (= x 'thnohash) 'THBQF
+        ;; THWH IS THE NAME OF THE PROPERTY TO LOOK UNDER ON THE ATOM.
+        ;; IF THIS PROPERTY IS NOT THERE, THEN WE MUST PUT IT THERE.
+        ;; IN PARTICULAR, NO PROPERTY MEANS THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
+        (let-when [a1 (getprop x t)] a1 => (do (putprop! x t [nil [i [n 1 b']]]) 'thok)
+            ;; IF THE PROPERTY IS "THNOHASH", WE SHOULD NOT BOTHER TO INDEX UNDER THIS ATOM,
+            ;; SO JUST RETURN TO THADD.
+            (if (= a1 'thnohash) 'THBQF
                 ;; LOOK ON THE PROPERTY LIST ENTRY TO SEE IF THERE IS A SUB-ENTRY FOR PATTERNS WITH THIS ATOM IN THE THNF'TH POSITION.
                 ;; IF NOT, HACK THE ENTRY SO THERE IS.
                 ;; AGAIN THIS IMPLIES THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
-                :else (let [y (assq *thnf* (cdr x))] (cond
-                (not y) (do (concat x (list (list *thnf* (list *thlas* 1 b)))) 'thok)
-                ;; NOW LOOK WITHIN THE SUB-ENTRY FOR A SUB-SUB-ENTRY.
-                ;; I.E. THOSE PATTERNS WHICH ARE ALSO OF THE CORRECT TOTAL LENGTH.
-                ;; THLAS IS A VARIABLE FROM THADD WHICH GIVES THE LENGTH OF THE ASSERTEE.
-                ;; AGAIN, IF NOT THERE, HACK IT IN.
-                :else (let [z (assq *thlas* (cdr y))] (cond
-                (not z) (do (concat y (list (list *thlas* 1 b))) 'thok)
-                ;; THIS BRANCH SAYS THAT WE STILL NEED TO CHECK THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
-                ;; THIS MEANS THAT WE MUST LOOK DOWN THE REMAINING SUB-SUB-BUCKET LOOKING FOR THE ASSERTEE.
-                (and (or *thfst* *thfstp*)
+                (let-when [a2 (assq i (cdr a1))] a2 => (do (concat a1 [[i [n 1 b']]]) 'thok)
+                    ;; NOW LOOK WITHIN THE SUB-ENTRY FOR A SUB-SUB-ENTRY.
+                    ;; I.E. THOSE PATTERNS WHICH ARE ALSO OF THE CORRECT TOTAL LENGTH.
+                    ;; THLAS IS A VARIABLE FROM THADD WHICH GIVES THE LENGTH OF THE ASSERTEE.
+                    ;; AGAIN, IF NOT THERE, HACK IT IN.
+                    (let-when [a3 (assq n (cdr a2))] a3 => (do (concat a2 [[n 1 b']]) 'thok)
+                        ;; THIS BRANCH SAYS THAT WE STILL NEED TO CHECK THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
+                        ;; THIS MEANS THAT WE MUST LOOK DOWN THE REMAINING SUB-SUB-BUCKET LOOKING FOR THE ASSERTEE.
                         ;; RANDOMNESS DUE TO THE FACT THAT ASSERTIONS HAVE PROPERTY LIST ON THEM,
                         ;; WHILE THEOREM NAMES ARE ATOMS WHOES PROPERTY LISTS ARE OF THE USUAL "INVISIBLE" VARIETY.
-                        (if (= t :thassertion) (assq *thtt* (cddr z)) (memq *thtt* (cddr z))))
-                    ;; IF THE ASSERTEE IS FOUND, RETURN NIL INDICATING FAILURE.
-                    nil
-                :else (let [sv (cddr z)] (cond
-                ;; HACK IN THE LATEST ENTRY INTO THE SUB-SUB-BUCKET.
-                sv (do (RPLAC (cadr z) (inc (cadr z)))
-                        (RPLAC (cddr z) (concat (list b) sv))
-                        'thok)
-                ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO.
-                :else 'thok))))))))))
+                        ;; IF THE ASSERTEE IS FOUND, RETURN NIL INDICATING FAILURE.
+                        (when-not (and (or f p) (if (= t :thassertion) (assq b (cddr a3)) (memq b (cddr a3))))
+                            ;; HACK IN THE LATEST ENTRY INTO THE SUB-SUB-BUCKET.
+                            (let-when [a4 (cddr a3)] a4 => 'thok
+                                (RPLAC (cadr a3) (inc (cadr a3)))
+                                (RPLAC (cddr a3) (concat [b'] a4))
+                                'thok))))))))
 
-(defn- thadd [thtt' thpl]
-    ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
-    ;; THTT - NAME OF THM OR ACTUAL ASSERTION
-    ;; THPL - PROPERTY LIST TO BE PLACED ON ASSERTION DATABASE INPUTS
-    ;; RETURNS NIL IF ALREADY THERE, ELSE RETURNS THTT
-    (binding [*thtt* thtt' *thnf* nil *thlas* nil *thfst* nil *thfstp* nil]
-        ;; IF THTT IS ATOMIC, WE ARE ASSERTING A THEOREM
-        (let [[t a b]
-                (if (term? *thtt*)
-                    (let [x (getprop *thtt* :theorem)]
-                        (when-not x
-                            (bug! 'thadd "CAN'T THASSERT, NO THEOREM" *thtt*))
-                        (loop-when-recur thpl thpl (cddr thpl)
-                            (thputprop *thtt* (car thpl) (cadr thpl)))
-                        [(car x) (caddr x) *thtt*])
-                    [:thassertion *thtt* (cons *thtt* thpl)])]
-            (set! *thnf* 0) ;; THNF IS COUNTER SAYING WHICH ATOM WE ARE FILING UNDER
-            (set! *thlas* (count a)) ;; THLAS IS THE NUMBER OF TOP LEVEL ITEMS
-            (set! *thfst* true)
-            ;; THFST SAYS WE ARE TRYING TO PUT THE ITEM IN FOR THE FIRST TIME.
-            ;; WE NEED TO KNOW THIS SINCE THE FIRST TIME THROUGH
-            ;; WE MUST TEST THAT THE ASSERTEE IS NOT ALREADY THERE.
-            ;; THCK IS INITIALLY THE ASSERTION OR THEOREM PATTERN.
-            ;; THE FIRST TIME WE GO INTO THE DATABASE WE CHECK TO SEE IF THE ITEM IS THERE.
-            ;; THAT MEANS DOING AN EQUAL TEST ON EVERY ITEM IN THE BUCKET.
-            ;; AFTER THE FIRST TIME THIS IS NOT NECESSARY.
-            ;; SINCE VARIABLES WILL IN GENERAL HAVE MANY MORE ITEMS IN THEIR BUCKET,
-            ;; WE WILL WANT TO DO OUR CHECK ON A NON VARIABLE ITEM IN THE PATTERN.
-            (loop [a' nil a a]
-                (if (nil? a)
-                    ;; THCK NIL MEANS THAT ALL THE ITEMS IN THE PATTERN ARE VARIABLES,
-                    ;; SO WE TRY AGAIN ONLY THIS TIME DOING EQUAL CHECK ON
-                    ;; THE FIRST VARIABLE.  THFOO NOW IS SIMPLY THE PATTERN.
-                    (do (set! *thnf* 0)
-                        (set! *thfst* nil)
-                        ;; THFSTP SAYS WE AGAIN NEED TO CHECK FOR ASSERTEE
-                        ;; BEING IN DATABASE, BUT NOW USE VARIABLES FOR EQ CHECK.
-                        (set! *thfstp* true)
-                        (recur nil a'))
-                    ;; THIP IS THE WORKHORSE FOR THADD.
-                    ;; IF IT RETURNS NIL, THE ASSERTEE IS ALREADY IN, SO FAIL.
-                    (let [x (thip (car a) t b)]
-                        ;; IF IT RETURNS THOK, THE ASSERTEE IS NOT IN ALREADY.
-                        (cond (= x 'thok)
-                            (do (set! *thfst* nil)
-                                (doseq [% (cdr a)] (thip % t b))
-                                (set! *thnf* 0)
-                                (doseq [% a'] (thip % t b))
-                                b)
-                        ;; OTHERWISE WE GO AROUND AGAIN, STILL LOOKING FOR A NON VARIABLE ITEM TO DO THE EQ CHECK.
-                        x (recur (concat a' (list (when (= x 'THVRB) (car a)))) (cdr a)))))))))
+(defn- thadd [b]
+    ;; THADD ADDS THEOREMS OR ASSERTION TO THE DATABASE.
+    ;; THTT = NAME OF THM OR ACTUAL ASSERTION.
+    ;; RETURNS NIL IF ALREADY THERE, ELSE RETURNS THTT.
+    ;; IF THTT IS ATOMIC, WE ARE ASSERTING A THEOREM.
+    (let [[t a b']
+            (if (term? b)
+                (let-when [a (getprop b :theorem)] a => (bug! 'thadd "CAN'T THASSERT, NO THEOREM" b)
+                    [(car a) (caddr a) b])
+                [:thassertion b (list b)])
+          ;; THLAS IS THE NUMBER OF TOP LEVEL ITEMS.
+          n (count a)]
+        ;; THNF IS COUNTER SAYING WHICH ATOM WE ARE FILING UNDER.
+        ;; THFST SAYS WE ARE TRYING TO PUT THE ITEM IN FOR THE FIRST TIME.
+        ;; WE NEED TO KNOW THIS SINCE THE FIRST TIME THROUGH WE MUST TEST THAT THE ASSERTEE IS NOT ALREADY THERE.
+        ;; THCK IS INITIALLY THE ASSERTION OR THEOREM PATTERN.
+        ;; THE FIRST TIME WE GO INTO THE DATABASE WE CHECK TO SEE IF THE ITEM IS THERE.
+        ;; THAT MEANS DOING AN EQUAL TEST ON EVERY ITEM IN THE BUCKET.
+        ;; AFTER THE FIRST TIME THIS IS NOT NECESSARY.
+        ;; SINCE VARIABLES WILL IN GENERAL HAVE MANY MORE ITEMS IN THEIR BUCKET,
+        ;; WE WILL WANT TO DO OUR CHECK ON A NON VARIABLE ITEM IN THE PATTERN.
+        ;; THCK NIL MEANS THAT ALL THE ITEMS IN THE PATTERN ARE VARIABLES, SO WE TRY AGAIN ONLY
+        ;; THIS TIME DOING EQUAL CHECK ON THE FIRST VARIABLE.  THFOO NOW IS SIMPLY THE PATTERN.
+        (loop-when [a' nil a a i 1 f true p nil] a => (recur nil a' 1 nil true)
+            ;; THIP IS THE WORKHORSE FOR THADD.
+            ;; IF IT RETURNS NIL, THE ASSERTEE IS ALREADY IN, SO FAIL.
+            (let [o (thip (car a) t i n f p b b')]
+                ;; IF IT RETURNS THOK, THE ASSERTEE IS NOT IN ALREADY.
+                (cond (= o 'thok)
+                    (do (loop-when-recur [a (cdr a) i (inc i)] a [(cdr a) (inc i)] (thip (car a) t i n nil p b b'))
+                        (loop-when-recur [a a'      i 1]       a [(cdr a) (inc i)] (thip (car a) t i n nil p b b'))
+                        b')
+                ;; OTHERWISE WE GO AROUND AGAIN, STILL LOOKING FOR A NON VARIABLE ITEM TO DO THE EQ CHECK.
+                o (recur (concat a' (list (when (= o 'THVRB) (car a)))) (cdr a) (inc i) f p))))))
 
 (defq- thamong [& a]
     ;; EXAMPLE - (THAMONG ($? X) (THFIND ... ))
@@ -366,57 +331,39 @@
         ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING.
         (do (set! *vars* *o'vars*) (thpop! *tree*) nil)))
 
-(defn- thtae [a x1 type m]
+(defn- thtae [a x1 t m]
     (cond (term? a) nil
         (= (car a) :thuse)
-            (map #(let-when [w (getprop % :theorem)] (and w (= (car w) type)) => (bug! 'thtae "BAD THEOREM" %)
+            (map #(let-when [w (getprop % :theorem)] (and w (= (car w) t)) => (bug! 'thtae "BAD THEOREM" %)
                     (list 'thapply % x1))
                 (cdr a))
         (= (car a) :thtbf)
-            (do (when-not (contains? @m :l) (swap! m assoc :l (thmatchlist x1 type)))
+            (do (when-not (contains? @m :l) (swap! m assoc :l (thmatchlist x1 t)))
                 (mapcat #(when (apply (cadr a) %) (list (list 'thapply % x1)))
                     (:l @m)))
         :else (bug! 'thtae "UNCLEAR RECOMMENDATION" a)))
 
 (defn- thass1 [a assert?]
-    ;; IF YOU SEE "THPSEUDO", SET FLAG "PSEUDO" TO T.
-    (let [pseudo? (and (cdr a) (= (caadr a) :thpseudo))
-          ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
-          ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES.
-          ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED.
-          thx (car a) [? thx] (if (term? thx) [true thx] (let [thx (thvarsubst thx nil)] [(thpure thx) thx]))]
-        ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
-        (when-not (or ? pseudo?)
-            (bug! 'thass1 "IMPURE ASSERTION OR ERASURE" thx))
-        (let [a (if pseudo? (cddr a) (cdr a))
-              ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
-              ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
-              ;; IF THPSEUDO, DON'T ALTER THE DATABASE.
-              [thx thy a]
-                (cond pseudo? [(list thx) nil a]
-                    ;; IF P IS "T", WE ARE ASSERTING, SO USE THADD.
-                    ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST,
-                    ;; AND REMOVE THPROP FROM THE RECOMMENDATION LIST.
-                    assert? (let [[thy a] (if (and a (= (caar a) 'thprop)) [(eval (cadar a)) (cdr a)] [nil a])]
-                        ;; THADD TAKES TWO ARGS: THE FIRST IS ITEM TO BE ADDED,
-                        ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM.
-                        [(thadd thx thy) thy a])
-                    ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE.
-                    :else [(thremove thx) nil a])]
-            ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
-            ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED WASN'T.
-            (when thx
-                ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR.
-                (let [type (if assert? :thante :therasing)]
-                    ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
-                    (when-not pseudo?
-                        (thpush! *tree* [(if assert? 'thassert 'therase) thx thy]))
-                    ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
-                    (let [m (atom {}) thy (doall (mapcat #(thtae % (car thx) type m) a))]
-                        ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
-                        ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>).
-                        (when thy (set! *expr* (cons 'thdo thy)))
-                        thx))))))
+    ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
+    ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES.
+    ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED.
+    ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
+    (let-when [x (car a) [? x] (if (term? x) [true x] (let [x (thvarsubst x nil)] [(thpure x) x]))] ? => (bug! 'thass1 "IMPURE ASSERTION OR ERASURE" x)
+        ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
+        ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
+        ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
+        ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED WASN'T.
+        (let-when [a (cdr a) x (if assert? (thadd x) (thremove x))] x
+            ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR.
+            (let [t (if assert? :thante :therasing)]
+                ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
+                (thpush! *tree* [(if assert? 'thassert 'therase) x nil])
+                ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
+                (let [m (atom {}) a (doall (mapcat #(thtae % (car x) t m) a))]
+                    ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
+                    ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>).
+                    (when a (set! *expr* (cons 'thdo a)))
+                    x)))))
 
 ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
 
@@ -436,7 +383,7 @@
 
 (defn- therase'f []
     (let [a (cadar *tree*)]
-        (thadd (if (term? a) a (car a)) (if (term? a) nil (cdr a)))
+        (thadd (if (term? a) a (car a)))
         (thpop! *tree*)
         nil))
 
@@ -772,6 +719,7 @@
                 ;; JUST EVAL EVERYTHING ON THML, THAT IS A LIST OF EXPRESSIONS, TO UNASSIGN THE VARIABLES.
                 (do (dorun (map eval @a'undo)) false)))))
 
+(dynamic- *thnf*)
 (dynamic- *thal*)
 
 (defn- thmatchlist [thtb thwh]
@@ -945,7 +893,6 @@
 
 (defn- thremove [b]
     ;; THREMOVE IS ANALOGOUS TO THADD EXCEPT IT REMOVES RATHER THAN ADDS.
-    ;; IT TAKES ONLY ONE ARG SINCE THE PROPERTY LIST FOR THE ASSERTION PLAYS NO ROLE IN REMOVING THE ASSERTION.
     (let [[t a] (if (term? b) (let [a (getprop b :theorem)] [(car a) (caddr a)]) [:thassertion b]) n (count a)]
         (loop-when [a' nil a a i 1 f true p nil o nil] a => (recur nil a' 1 nil true o)
             (let-when [o (threm1 (car a) t i n f p b o)] o => nil
@@ -6618,7 +6565,7 @@
         :else (ansbuild rss (§ ANS)
                 (plausibility? rss)
                 ;; ANSTHM GENERATES THE APPROPRIATE ASSERTION OR THEOREM.
-                (cons '(say "I UNDERSTAND") (doall (map #(list 'thadd (quotify (ansthm % (negative? rss))) nil) (relations? rss))))
+                (cons '(say "I UNDERSTAND") (doall (map #(list 'thadd (quotify (ansthm % (negative? rss)))) (relations? rss))))
                 nil)))
 
 (defn- anseliminate [anslist]
