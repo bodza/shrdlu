@@ -8,7 +8,8 @@
 (defmacro lambda [& _] `(fn ~@_))
 
 (def- ascii char)
-(def- terpri println)
+(def- terpri newline)
+(def- say print)
 
 (def- car first)
 (def- cdr next)
@@ -156,12 +157,14 @@
     (THCONSE (x y z)
         (!CALL ($? x) ($? y))
         (THCOND ((THGOAL (!CALL ($_ z) ($? y)))
-            (PRINT ($? y))
-            (not (PRINT 'NAME-ALREADY-USED)))
+                (terpri)
+                (pr ($? y))
+                (PRINT "NAME-ALREADY-USED")
+                nil)
             ((THASSERT (!CALL ($? x) ($? y)))
-            (THASSERT (!IS ($? y) !NAME))
-            (!PROPDEFINE ($? y))
-            (or DOIT (set! *plan* (cons true *plan*))))))
+                (THASSERT (!IS ($? y) !NAME))
+                (!PROPDEFINE ($? y))
+                (or doit? (set! *plan* (cons true *plan*))))))
     THEOREM)
 
 (§ DEFPROP TC-CHOOSE
@@ -243,7 +246,7 @@
         (MEMOREND (!GRASP ($? EV) ($? x)))
         (or nomem?
             (THSETQ GRASPLIST (cons (list *thtime* ($? x)) GRASPLIST)))
-        (THCOND (DOIT (THOR (GRASP ($? x)) (and (UNGRASP) nil)))
+        (THCOND (doit? (THOR (GRASP ($? x)) (and (UNGRASP) nil)))
             ((THSETQ *plan* (cons (list 'GRASP (list 'quote ($? x))) *plan*)))))
     THEOREM)
 
@@ -306,11 +309,11 @@
     (THCONSE (y loc)
         (!MOVEHAND2 ($? y))
         (COND ((= ($? y) HANDAT) (THSUCCEED THEOREM))
-            ((and (< 31 (car ($? y)) 609) (< -1 (cadr ($? y)) 609) (< -1 (caddr ($? y)) 513))))
+            ((and (<= 32 (car ($? y)) 608) (<= 0 (cadr ($? y)) 608) (<= 0 (caddr ($? y)) 512))))
         (THVSETQ ($_ loc) HANDAT)
         (THSETQ HANDAT ($? y))
         (THSETQ *thtime* (inc *thtime*))
-        (THCOND (DOIT (THOR (eval (cons 'MOVETO HANDAT))
+        (THCOND (doit? (THOR (eval (cons 'MOVETO HANDAT))
                     (let [ADJUST nil] (eval (cons 'MOVETO ($? loc))) nil)))
             ((THSETQ *plan* (cons (cons 'MOVETO ($? y)) *plan*)))))
     THEOREM)
@@ -326,7 +329,7 @@
 (§ DEFPROP TC-NOTICE
     (THCONSE (x)
         (!NOTICE ($? x))
-        (COND (DOIT (BLINK ($? x)) (THSUCCEED))
+        (COND (doit? (BLINK ($? x)) (THSUCCEED))
             ((THSETQ *plan* (cons (list 'BLINK (list 'quote ($? x))) *plan*)))))
     THEOREM)
 
@@ -540,7 +543,7 @@
                 (THERASE (!GRASPING ($? x)))
                 (MEMOREND (!UNGRASP ($? EV) ($? x)))
                 (THSETQ *thtime* (inc *thtime*))
-                (THCOND (DOIT (THOR (UNGRASP) (and (GRASP ($? x)) nil)))
+                (THCOND (doit? (THOR (UNGRASP) (and (GRASP ($? x)) nil)))
                     ((THSETQ *plan* (cons '(UNGRASP) *plan*)))))
             ((THSUCCEED))))
     THEOREM)
@@ -1040,13 +1043,13 @@ nil
 
 #_(ns shrdlu.data)
 
-;; ####################################################################
+;; ###################################################################
 ;;
-;;      DATA > INITIAL MICROPLANNER DATA BASE FOR THE BLOCKS WORLD
+;;      DATA > INITIAL MICROPLANNER DATABASE FOR THE BLOCKS WORLD
 ;;
-;; ####################################################################
+;; ###################################################################
 
-(§ SETQ DOIT true)
+(def- doit? true)
 
 (§ SETQ HANDAT '(32 0 0))
 
@@ -1199,7 +1202,7 @@ nil
             (COND ((term? THTT)
                     ;; IF NO THEOREM PROPERTY, THE GUY MADE A MISTAKE
                     (or (SETQ THT1 (get THTT 'THEOREM))
-                        (do (PRINT THTT) (ert "CAN'T THASSERT, NO THEOREM - THADD")))
+                        (do (terpri) (pr THTT) (ert "CAN'T THASSERT, NO THEOREM - THADD")))
                     ;; THWH NOW SET TO KIND OF THEOREM, LIKE THERASING
                     (SETQ THWH (car THT1))
                     ;; MAKE AN EXTRA POINTER TO THTT
@@ -1237,7 +1240,7 @@ nil
                 (SETQ THNF 0)
                 (SETQ THFOO (SETQ THFST nil))
                 ;; THFIRSTP SAYS WE AGAIN NEED TO CHECK FOR ASSERTEE
-                ;; BEING IN DATA BASE, BUT NOW USE VARIABLES FOR EQ CHECK
+                ;; BEING IN DATABASE, BUT NOW USE VARIABLES FOR EQ CHECK
                 (SETQ THFSTP true)
                 (GO THP1))
             ((nil? (SETQ THT1 (THIP (car THCK)))) (RETURN nil))
@@ -1319,44 +1322,44 @@ nil
 
 (§ defn- THASS1 [tha p]
     (let [THX nil THY1 nil THY nil TYPE nil PSEUDO nil]
-        (and (cdr tha) (= (caadr tha) 'THPSEUDO) (SETQ PSEUDO true))
-        ;; IF YOU SEE "THPSEUDO" SET FLAG "PSEUDO" TO T
-        (or (term? (SETQ THX (car tha)))
-            ;; IF (CAR THA) IS AN ATOM WE ARE ASSERTING (ERRASING) A THEOREM
-            (THPURE (SETQ THX (THVARSUBST THX nil)))
-            ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES
-            ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED
-            PSEUDO
-            ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED
-            (do (PRINT THX)
-                (ert "IMPURE ASSERTION OR ERASURE - THASS1")))
-        (and *thtrace* (not PSEUDO) (THTRACES (COND (p 'THASSERT) ('THERASE)) THX))
-        (SETQ tha (COND (PSEUDO (cddr tha)) ((cdr tha))))
-        ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST
-        (or
-            ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM
-            (SETQ THX
-                (COND (PSEUDO (list THX))
-                    ;; IF THPSEUDO, DON'T ALTER THE DATA BASE
-                    ;; IF P IS "T" WE ARE ASSERTING SO USE THADD
-                    (p (THADD THX
-                        ;; THADD TAKES TWO ARGS THE FIRST IS ITEM TO BE ADDED
-                        ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM
-                        (SETQ THY
-                            ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST
-                            (COND ((and tha (= (caar tha) 'THPROP))
-                                (PROG1 (eval (cadar tha))
-                                    ;; AND REMOVE THPROP FROM THE RECOMENDATION LIST
-                                    (SETQ tha (cdr tha))))))))
-                    ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE
-                    (:else (THREMOVE THX))))
-            ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
-            ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED, WASN'T.
+        ;; IF YOU SEE "THPSEUDO", SET FLAG "PSEUDO" TO T.
+        (and (cdr tha) (= (caadr tha) 'THPSEUDO)
+            (SETQ PSEUDO true))
+        ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
+        (when-not (or (term? (SETQ THX (car tha)))
+                ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES.
+                ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED.
+                (THPURE (SETQ THX (THVARSUBST THX nil)))
+                ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
+                PSEUDO)
+            (terpri) (pr THX) (ert "IMPURE ASSERTION OR ERASURE - THASS1"))
+        (and *thtrace* (not PSEUDO)
+            (THTRACES (if p 'THASSERT 'THERASE) THX))
+        (SETQ tha (if PSEUDO (cddr tha) (cdr tha)))
+        ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
+        ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
+        (SETQ THX
+            ;; IF THPSEUDO, DON'T ALTER THE DATABASE.
+            (COND (PSEUDO (list THX))
+                ;; IF P IS "T", WE ARE ASSERTING, SO USE THADD.
+                (p (SETQ THY
+                        ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST,
+                        (when (and tha (= (caar tha) 'THPROP))
+                            (PROG1 (eval (cadar tha))
+                                ;; AND REMOVE THPROP FROM THE RECOMENDATION LIST.
+                                (SETQ tha (cdr tha)))))
+                    ;; THADD TAKES TWO ARGS: THE FIRST IS ITEM TO BE ADDED,
+                    ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM.
+                    (THADD THX THY))
+                ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE.
+                (:else (THREMOVE THX))))
+        ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
+        ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED, WASN'T.
+        (or THX
             (RETURN nil))
-        ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR
-        (COND (p (SETQ TYPE 'THANTE))
-            ((SETQ TYPE 'THERASING)))
-        ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE
+        ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR.
+        (SETQ TYPE (if p 'THANTE 'THERASING))
+        ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
         (or PSEUDO
             (THPUSH *thtree* (list (COND (p 'THASSERT) ('THERASE)) THX THY)))
         ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
@@ -1372,7 +1375,7 @@ nil
     (THASS1 tha true))
 
 (§ defn- THASSERTF []
-    (THREMOVE (COND ((term? (cadar *thtree*)) (cadar *thtree*)) (:else (caadar *thtree*))))
+    (THREMOVE (if (term? (cadar *thtree*)) (cadar *thtree*) (caadar *thtree*)))
     (THPOPT)
     nil)
 
@@ -1385,18 +1388,12 @@ nil
 (§ defn- THBA [th1 th2]
     ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR.
     ;; USED ONLY BY THAD AND THREMOVE.
-    (let [THP th2]
-    =>  (and (= (COND (THPC (cadr THP)) (:else (caadr THP))) th1)
-            (RETURN THP))
-        (or (cdr (SETQ THP (cdr THP))) (RETURN nil))
-        (GO =>)))
-
-(§ defn- THBAP [th1 th2]
-    ;; LIKE THBA, ONLY USED EQUAL RATHER THAN EQ
-    (let [THP th2]
-    =>  (and (= (COND (THPC (cadr THP)) (:else (caadr THP))) th1)
-            (RETURN THP))
-        (or (cdr (SETQ THP (cdr THP))) (RETURN nil))
+    (let [thp th2]
+    =>  (and (= (if THPC (cadr thp) (caadr thp)) th1)
+            (RETURN thp))
+        (SETQ thp (cdr thp))
+        (or (cdr thp)
+            (RETURN nil))
         (GO =>)))
 
 (§ defn- THBIND [a]
@@ -1491,9 +1488,9 @@ nil
 
 (§ defn- THDATA []
     (let [x nil]
-    =>  (terpri)
-        (COND ((nil? (SETQ x (READ nil))) (RETURN true))
-            ((PRINT (THADD (car x) (cdr x)))))
+    =>  (SETQ x (READ nil))
+        (COND ((nil? x) (RETURN true))
+            ((THADD (car x) (cdr x))))
         (GO =>)))
 
 ;; THDEF DEFINES AND OPTIONALLY ASSERTS THEOREMS
@@ -1512,9 +1509,9 @@ nil
             (SETQ THMBODY (cdr THMBODY))))
         (THPUTPROP THMNAME (cons thmtype THMBODY) 'THEOREM)
         (COND
-            (THNOASSERT?  (PRINT (list THMNAME 'DEFINED 'BUT 'NOT 'ASSERTED)))
-            ((THASS1 (list THMNAME) true) (PRINT (list THMNAME 'DEFINED 'AND 'ASSERTED)))
-            (:else (PRINT (list THMNAME 'REDEFINED))))
+            (THNOASSERT? (PRINT (list THMNAME "DEFINED, BUT NOT ASSERTED")))
+            ((THASS1 (list THMNAME) true) (PRINT (list THMNAME "DEFINED AND ASSERTED")))
+            (:else (PRINT (list THMNAME "REDEFINED"))))
         true))
 
 (§ defq- THDO [a]
@@ -1559,8 +1556,10 @@ nil
                 (:else (car tha))))
             (SETQ THTREE1 *thtree*)
         LP1 (COND ((nil? THTREE1)
-                    (PRINT tha)
-                    (COND ((term? (SETQ tha (ert "NOT FOUND - THFAIL"))) (RETURN tha))
+                    (terpri)
+                    (pr tha)
+                    (SETQ tha (ert "NOT FOUND - THFAIL"))
+                    (COND ((term? tha) (RETURN tha))
                         (:else (GO F))))
                 ((= (caar THTREE1) THA1) (GO ELP1)))
         ALP1 (SETQ THTREE1 (cdr THTREE1))
@@ -1597,7 +1596,7 @@ nil
             ((= (car tha) 'THEOREM) (SETQ tha (list 'THPROG))))
         (set! *thtree* (SETQ THTREE1 (cons nil *thtree*)))
     PLUP (SETQ THX (cadr THTREE1))
-        (COND ((nil? (cdr THTREE1)) (PRINT tha) (ert "OVERPOP - THFINALIZE"))
+        (COND ((nil? (cdr THTREE1)) (terpri) (pr tha) (ert "OVERPOP - THFINALIZE"))
             ((and THT (= (car THX) 'THPROG) (memq THT (cadddr THX)))
                 (GO RTLEV))
             ((or (= (car THX) 'THPROG) (= (car THX) 'THAND))
@@ -1667,18 +1666,18 @@ nil
     ;; EFFECT = FLUSHES THE PROPERTIES OF THESE
     ;; (THASSERTION THCONSE THANTE THERASING)
     ;; INDICATORS FROM ALL ATOMS
-    (dorun (map #'(lambda [B]
-        (dorun (map #'(lambda [C]
-            (dorun (map #'(lambda [D]
-                (REMPROP D B))
-            C)))
+    (dorun (map #'(lambda [b]
+        (dorun (map #'(lambda [c]
+            (dorun (map #'(lambda [d]
+                (REMPROP d b))
+            c)))
         (MAKOBLIST nil))))
-    (COND (a) (' (THASSERTION THCONSE THANTE THERASING))))))
+    (or a '(THASSERTION THCONSE THANTE THERASING)))))
 
 (§ defn- THGAL [x y]
     ;; (THGAL ($? X) THALIST) RETURNS THE BINDING CELL (X -) OF X ON THALIST
     (set! *thxx* x)
-    (sassq (cadr x) y #'(lambda [] (PRINT *thxx*) (ert "THUNBOUND - THGAL"))))
+    (sassq (cadr x) y #'(lambda [] (terpri) (pr *thxx*) (ert "THUNBOUND - THGAL"))))
 
 (§ SETQ THGENAME 0)
 
@@ -1697,7 +1696,7 @@ nil
     (let [THY nil THY1 nil THZ nil THZ1 nil THA1 nil THA2 nil]
         (SETQ THA2 (THVARSUBST (car tha) true))
         (SETQ THA1 (cdr tha))
-        (COND ((or (nil? THA1)                                      ;; SHOULD DATA BASE BE SEARCHED?  TRIED IF NO RECS
+        (COND ((or (nil? THA1)                                      ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
                 (and (not (and (= (caar THA1) 'THANUM)
                         (SETQ THA1 (cons (list 'THNUM (cadar THA1)) (cons (list 'THDBF 'THTRUE) (cdr THA1))))))
                     (not (and (= (caar THA1) 'THNODB)              ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
@@ -1920,7 +1919,7 @@ nil
 (§ defn- THMATCHLIST [thtb thwh]
     ;; THTB IS A PATTERN WHICH EVENTUALLY IS TO BE MATCHED.
     ;; THWH SAYS IF IT IS AN ASSERTION, CONSEQUENT THEOREM, ETC.
-    ;; THMATCHLIST GOES THROUGH THE DATA BASE, LOOKING ON ALL THE BUCKETS OF THE ATOMS IN THE PATTERN.
+    ;; THMATCHLIST GOES THROUGH THE DATABASE, LOOKING ON ALL THE BUCKETS OF THE ATOMS IN THE PATTERN.
     ;; IT RETURNS THE SHORTEST BUCKET TO THGOAL.
     (let [THB1 nil THB2 nil THL nil THNF nil THAL nil THA1 nil THA2 nil THRN nil THL1 nil THL2 nil THRVC nil]
         ;; THL IS THE LENGTH OF THE SHORTEST BUCKET FOUND SO FAR.
@@ -2138,7 +2137,7 @@ nil
         (SETQ THA4 (cadr THA3))
         (SETQ THPC (not (= THWH 'THASSERTION)))
         (SETQ THA5
-            (COND ((or THFST THFSTP) (THBAP THBS (cdr THA4)))
+            (COND ((or THFST THFSTP) (THBA THBS (cdr THA4)))
                 ((THBA (COND (THPC THON) (:else (car THON))) (cdr THA4)))))
         (or THA5 (RETURN nil))
         (SETQ THONE (cadr THA5))
@@ -2253,7 +2252,8 @@ nil
                 (THPUSH *thtree* (list 'THMUNG THML))
                 (RETURN THVALUE))
             ((nil? (cdr thl))
-                (PRINT thl1)
+                (terpri)
+                (pr thl1)
                 (ert "ODD NUMBER OF GOODIES - THSETQ"))
             ((term? (car thl))
                 (THPUSH THML (list 'SETQ (car thl) (list 'quote (eval (car thl)))))
@@ -2272,21 +2272,23 @@ nil
 (§ defq- THSTATE [thindicators]
     ;; PRINTS THAT PART OF THE STATE OF THE MICRO-PLANNER WORLD SPECIFIED BY THE INDICATORS IN REREADABLE FORM.
     ;; NOTE THAT IT IS BLIND TO ASSERTIONS THAT BEGIN WITH EITHER NUMBERS, LIST STRUCTURE, NOHASHED ATOMS OR NON-INTERNED ATOMS.
-    (let [THP nil]
-        (PRINT '(THDATA))
+    (let [thp nil]
+        (terpri)
+        (pr '(THDATA))
         (dorun (map #'(lambda [BUCKET]
             (dorun (map #'(lambda [THATOM]
                 (dorun (map #'(lambda [THWH]
-                    (and (SETQ THP (get THATOM THWH)) (SETQ THP (assq 1 (cdr THP)))
+                    (and (SETQ thp (get THATOM THWH)) (SETQ thp (assq 1 (cdr thp)))
                         (dorun (map #'(lambda [LENGTH-BUCKET]
-                            (dorun (map #'(lambda [ASRT]
-                                (COND ((= THWH 'THASSERTION) (PRINT ASRT)) ((PRINT (list ASRT)))))
-                            (cddr LENGTH-BUCKET))))
-                        (cdr THP)))))
-                (COND (thindicators) (' (THASSERTION THANTE THCONSE THERASING))))))
-            BUCKET)))
-        (MAKOBLIST nil)))
-        (PRINT nil)
+                            (dorun (map #'(lambda [asrt]
+                                    (terpri)
+                                    (if (= THWH 'THASSERTION) (pr asrt) (pr (list asrt))))
+                                (cddr LENGTH-BUCKET))))
+                            (cdr thp)))))
+                    (or thindicators '(THASSERTION THANTE THCONSE THERASING)))))
+                BUCKET)))
+            (MAKOBLIST nil)))
+        (terpri)
         nil))
 
 (§ defq- THSUCCEED [tha]
@@ -2298,7 +2300,8 @@ nil
             (SETQ THABRANCH *thalist*)
         =>  (COND
                 ((nil? *thtree*)
-                    (PRINT tha)
+                    (terpri)
+                    (pr tha)
                     (ert "OVERPOP - THSUCCEED"))
                 ((= (caar *thtree*) 'THREMBIND)
                     (set! *thalist* (cadar *thtree*))
@@ -2319,7 +2322,8 @@ nil
         ((= (car xx) 'THUSE)
             (doall (map #'(lambda [x]
                     (COND ((not (and (set! *thxx* (get x 'THEOREM)) (= (car *thxx*) TYPE)))
-                            (PRINT x)
+                            (terpri)
+                            (pr x)
                             (list 'THAPPLY (ert "BAD THEOREM - THTAE") (car THX)))
                         (:else (list 'THAPPLY x (car THX)))))
                 (cdr xx))))
@@ -2330,10 +2334,10 @@ nil
                 (COND (THY1 THY)
                     ((SETQ THY1 true)
                         (SETQ THY (THMATCHLIST (car THX) TYPE)))))))
-    (:else (PRINT xx) (THTAE (ert "UNCLEAR RECOMMENDATION - THTAE")))))
+    (:else (terpri) (pr xx) (THTAE (ert "UNCLEAR RECOMMENDATION - THTAE")))))
 
 (§ defq- THTAG [l]
-    (and (car l)
+    (when (car l)
         (THPUSH *thtree* (list 'THTAG (car l)))))
 
 (§ defn- THTAGF [] (THPOPT) nil)
@@ -2368,9 +2372,10 @@ nil
                 (GO NXTREC)))                                       ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
         (SETQ THEOREM (caaddr THX))
     THTBF1 (COND ((not (and (SETQ THW (get THEOREM 'THEOREM)) (= (car THW) 'THCONSE)))
-                (PRINT THEOREM)
-                (COND ((= (SETQ THEOREM (ert "BAD THEOREM - THTRY1")) 'true)
-                        (GO NXTREC))
+                (terpri)
+                (pr THEOREM)
+                (SETQ THEOREM (ert "BAD THEOREM - THTRY1"))
+                (COND ((= THEOREM 'true) (GO NXTREC))
                     (:else (GO THTBF1)))))
         (COND ((PROG1 (and ((cadr THX) (caaddr THX)) (THAPPLY1 THEOREM THW (cadr THZ)))
                     (RPLACA (cddr THX) (cdaddr THX)))
@@ -2391,7 +2396,7 @@ nil
             ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
             (COND ((not THZ1) (SETQ THZ1 true) (SETQ THZ (THMATCHLIST THA2 'THCONSE))))
             (COND (THZ (list (list 'THTBF (cadr x) THZ))) (:else nil)))
-        ;; DO THE SAME THING, ONLY FOR DATA BASE FILTERS.
+        ;; DO THE SAME THING, ONLY FOR DATABASE FILTERS.
         ((= (car x) 'THDBF)
             (COND ((not THY1) (SETQ THY1 true) (SETQ THY (THMATCHLIST THA2 'THASSERTION))))
             (COND (THY (list (list 'THDBF (cadr x) THY))) (:else nil)))
@@ -2401,7 +2406,7 @@ nil
             (list (list 'THTBF 'THTRUE (cdr x))))
         ((= (car x) 'THNUM)
             (list x))
-        (:else (PRINT x) (THTRY (ert "UNCLEAR RECOMMENDATION - THTRY")))))
+        (:else (terpri) (pr x) (THTRY (ert "UNCLEAR RECOMMENDATION - THTRY")))))
 
 (§ defn- THUNDOF []
     (COND ((nil? (caddar *thtree*)) (THPOPT))
@@ -2427,9 +2432,8 @@ nil
     ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
     ;; ($? X) RETURNS ERROR MESSAGE IF X UNBOUND OR UNASSIGNED.
     (set! *thxx* x)
-    (SETQ x (cadr (sassq x *thalist* #'(lambda [] (PRINT *thxx*) (ert "THUNBOUND - THV1")))))
-    (COND ((= x 'THUNASSIGNED) (PRINT *thxx*) (ert "THUNASSIGNED - THV1"))
-        (:else x)))
+    (SETQ x (cadr (sassq x *thalist* #'(lambda [] (terpri) (pr *thxx*) (ert "THUNBOUND - THV1")))))
+    (COND ((= x 'THUNASSIGNED) (terpri) (pr *thxx*) (ert "THUNASSIGNED - THV1")) (:else x)))
 
 (§ defq- THV [x]
     ;; (THV X) IS THE VALUE OF THE PLANNER VARIABLE ($? X)
@@ -2453,8 +2457,7 @@ nil
         ;; ONE TO HANDLE SUCCESS AND ONE FOR FAILURE.
         (COND ((ERRSET (SETQ THVALUE (eval THE))))
             ;; IF THERE WAS A LISP ERROR, REPORT IT TO THE USER.
-            (:else (PRINT THE)
-                (SETQ THVALUE (ert "LISP ERROR - THVAL"))))
+            (:else (terpri) (pr THE) (SETQ THVALUE (ert "LISP ERROR - THVAL"))))
         ;; USUALLY THEMESSAGE WILL BE NIL.
         ;; EXCEPTION IS WHEN USER HAS USED THE THMESSAGE FUNCTION.
     GO1 (COND (THMESSAGE (GO MFAIL))
@@ -2556,7 +2559,8 @@ nil
     (let [a tha]
     =>  (COND ((nil? a) (RETURN THVALUE))
             ((nil? (cdr a))
-                (PRINT tha)
+                (terpri)
+                (pr tha)
                 (ert "ODD NUMBER OF GOODIES - THVSETQ"))
             (:else (SETQ THVALUE
                 (car (RPLACA (cdr (THSGAL (car a))) (THVAL (cadr a) *thalist*))))))
@@ -2664,8 +2668,9 @@ nil
 
 (§ DEFPROP THTRACES
     (lambda []
-        (PRINT (cadar *thtree*))
-        (print "FAILED ")
+        (terpri)
+        (pr (cadar *thtree*))
+        (print " FAILED ")
         (evlis (cddar *thtree*))
         (THPOPT)
         nil)
@@ -2673,8 +2678,9 @@ nil
 
 (§ DEFPROP THTRACES
     (lambda []
-        (PRINT (cadar *thtree*))
-        (print "SUCCEEDED ")
+        (terpri)
+        (pr (cadar *thtree*))
+        (print " SUCCEEDED ")
         (evlis (cddar *thtree*))
         (THPOPT)
         THVALUE)
@@ -2685,11 +2691,10 @@ nil
 ;; X = THL = INSTANTIATED GOAL, ASSERTION OR ERASURE, NAME OF THE THM, OR MESSAGE OF THE BREAKPOINT
 
 (§ DEFPROP THBKPT
-    (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES (THGENS B) (and B '(ert nil))))
+    (lambda [x b]
+        (THPUSH *thtree* (list 'THTRACES (THGENS B) (and b '(ert nil))))
         (terpri)
-        (print "PASSING BKPT")
-        (print \space)
+        (print "PASSING BKPT ")
         (pr (cadar *thtree*))
         (print \space)
         ;; BY SETTING THBRANCH AND THABRANCH, A TRIPLE IS CREATED BY THVAL FOR BACKTRACKING.
@@ -2702,38 +2707,38 @@ nil
     THTRACE)
 
 (§ DEFPROP THGOAL
-    (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES (THGENS G) '(and THVALUE (pr THVALUE)) (and B '(ert nil))))
+    (lambda [x b]
+        (THPUSH *thtree* (list 'THTRACES (THGENS G) '(and THVALUE (pr THVALUE)) (and b '(ert nil))))
         (terpri)
-        (print "TRYING GOAL")
-        (print \space)
+        (print "TRYING GOAL ")
         (pr (cadar *thtree*))
         (print \space)
         (pr x))
     THTRACE)
 
 (§ DEFPROP THEOREM
-    (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES x '(and THVALUE (pr THVALUE)) (and B '(ert nil))))
+    (lambda [x b]
+        (THPUSH *thtree* (list 'THTRACES x '(and THVALUE (pr THVALUE)) (and b '(ert nil))))
         (terpri)
-        (print "ENTERING THEOREM")
-        (print \space)
+        (print "ENTERING THEOREM ")
         (pr x))
     THTRACE)
 
 (§ DEFPROP THASSERT
-    (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES (THGENS A) (and B '(ert nil))))
-        (PRINT 'ASSERTING)
+    (lambda [x b]
+        (THPUSH *thtree* (list 'THTRACES (THGENS A) (and b '(ert nil))))
+        (terpri)
+        (print "ASSERTING ")
         (pr (cadar *thtree*))
         (print \space)
         (pr x))
     THTRACE)
 
 (§ DEFPROP THERASE
-    (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES (THGENS E) (and B '(ert nil))))
-        (PRINT 'ERASING)
+    (lambda [x b]
+        (THPUSH *thtree* (list 'THTRACES (THGENS E) (and b '(ert nil))))
+        (terpri)
+        (print "ERASING ")
         (pr (cadar *thtree*))
         (print \space)
         (pr x))
@@ -2863,10 +2868,10 @@ nil
 
 (def- nostop? true)
 
-(§ defn- ERTEX [message cause-abortion ignore-nostop-switch?]
+(§ defn- ERTEX [message cause-abortion ignore-nostop?]
     (let [GLOP nil EXP nil ST-BUFFER nil BUILDING-ST-FORM nil FIRSTWORD nil]
         (and nostop?
-            (not IGNORE-NOSTOP-SWITCH?)
+            (not ignore-nostop?)
             (and cause-abortion
                 (*THROW 'ABORT-PARSER cause-abortion))
             (RETURN true))
@@ -2874,7 +2879,8 @@ nil
         (dorun (map #'PRINT3 message))
     PRINT
         (SETQ FIRSTWORD true ST-BUFFER nil BUILDING-ST-FORM nil)   ;; "ST" REFERS TO SHOW, TELL
-        (PRINT '>>>)
+        (terpri)
+        (print ">>> ")
     LISTEN
         (COND                                                   ;; SHELP UP SPURIOUS CHARACTERS
             ((memq (TYIPEEK) '(32 10))                        ;; SP, LF
@@ -2976,20 +2982,15 @@ nil
                     (SETQ ALIST (cons (list b (get b 'SM) (get b 'REFER)) ALIST)))))
             a))))
 
-(def- CHRCT 76)
-
-(§ defn- PRINT2 [x]
-    (COND ((> CHRCT (FLATSIZE x)) (print \space))
-        (:else (terpri)))
-    (print x))
+(defn- _print [x] (print \space) (print x))
 
 (§ defn- PRINT3 [x]
-    (PROG2 (or (> CHRCT (FLATSIZE x)) (terpri)) (print x) (print \space)))
+    (PROG1 (print x) (print \space)))
 
 (§ defn- PRINTEXT [text]
-    (COND (text
+    (when text
         (terpri)
-        (eval (cons 'SAY (listify text))))))
+        (eval (cons 'SAY (listify text)))))
 
 (§ defq- PRINTC [l]
     (terpri)
@@ -3036,6 +3037,8 @@ nil
         (SPRINT (list (PR1 a) (reverse ALIST)) LINEL 0)
         nil))
 
+(def- CHRCT 76)
+
 (§ defn- TAB [n]
     (let [P nil]
         (COND ((> n LINEL) (RETURN '<TAB>)))
@@ -3069,7 +3072,8 @@ nil
 (§ defn- ETAOIN []
     (let [WORD nil NEWWORD nil c nil ALTN nil ALREADY-BLGING-NEWWRD nil WRD nil LAST nil NEXT nil Y nil WORD1 nil x nil RD nil POSS nil]
     THRU (set! *sent* (SETQ WORD (set! *punct* (SETQ POSS nil))))
-        (PRINT 'READY)
+        (terpri)
+        (print "READY")
         (terpri)
     CHAR (COND ((== (TYIPEEK) 24) (READCH) (ert nil) (GO THRU)) ;; "CTRL-X" BREAK LEFT OVER FROM CMU
             ((== (TYIPEEK) 3) (bug "ETAOIN: ABOUT TO READ EOF")))
@@ -3111,9 +3115,10 @@ nil
             (SETQ WORD (cons c WORD)))
         (GO CHAR)
 
-    DO  (PRINT 'READY)
+    DO  (terpri)
+        (print "READY")
         (terpri)
-        (dorun (map #'(lambda [x] (PRINT2 x)) (reverse *sent*)))
+        (dorun (map _print (reverse *sent*)))
         (print \space)
         (dorun (map print (reverse WORD)))
         (GO CHAR)
@@ -3138,9 +3143,9 @@ nil
         ;; --------------------------------------------
 
     CUT (COND
-            ((STA WORD '(T \" N)) (SETQ RD (cdddr WORD)) (SETQ WORD (cons '* WORD)) (GO TRY)) ;; "sic!
-            ((STA WORD '(S \")) (SETQ WORD (cddr WORD)) (SETQ POSS WRD) (GO WORD)) ;; "sic!
-            ((STA WORD '(\")) (SETQ WORD (cdr WORD)) (SETQ POSS WRD) (GO WORD)) ;; "sic!
+            ((STA WORD '(T \' N)) (SETQ RD (cdddr WORD)) (SETQ WORD (cons '* WORD)) (GO TRY))
+            ((STA WORD '(S \')) (SETQ WORD (cddr WORD)) (SETQ POSS WRD) (GO WORD))
+            ((STA WORD '(\')) (SETQ WORD (cdr WORD)) (SETQ POSS WRD) (GO WORD))
             ((STA WORD '(Y L)) (SETQ RD (cddr WORD)) (GO LY))
             ((STA WORD '(G N I)) (SETQ RD (cdddr WORD)))
             ((STA WORD '(D E)) (SETQ RD (cddr WORD)))
@@ -3262,8 +3267,8 @@ nil
 (§ defn- PASSING [a]
     (SETQ LASTLABEL a)
     (and (COND
-            ((term? LABELTRACE) (and LABELTRACE (PRINT 'PASSING) (print a)))
-            ((memq a LABELTRACE) (PRINT 'PASSING) (print a)))
+            ((term? LABELTRACE) (and LABELTRACE (PRINT "PASSING") (print a)))
+            ((memq a LABELTRACE) (PRINT "PASSING") (print a)))
         (COND
             ((term? LABELBREAK) (and LABELBREAK (ert "LABELBREAK")))
             ((memq a LABELBREAK) (ert "LABELBREAK")))))
@@ -3301,8 +3306,7 @@ nil
 (§ DEFS TELLABLE
     TELL #'(lambda [x] (APPLY #'TELLABLE
             (list (CHARG x "CONCEPT:"
-                '(ANY PLANNER GOAL PATTERN BEGINNING WITH THIS CONCEPT NAME CAN BE ACCEPTED BY THE SYSTEM AS NEW INFORMATION
-                -- BEWARE OF INTERACTIONS WITH SPECIAL HACKS FOR LOCATION\, ETC\.))))))
+                "ANY PLANNER GOAL PATTERN BEGINNING WITH THIS CONCEPT NAME CAN BE ACCEPTED BY THE SYSTEM AS NEW INFORMATION -- BEWARE OF INTERACTIONS WITH SPECIAL HACKS FOR LOCATION, ETC.")))))
 
 (§ defn- PEV [ev col top]
     (terpri)
@@ -3322,7 +3326,7 @@ nil
 
 (§ DEFS EVENT
     SHOW (lambda [x]
-            (SETQ x (CHARG x "EVENT:" '(EVENT TO BE DISPLAYED --<LF> FOR ENTIRE EVENT LIST)))
+            (SETQ x (CHARG x "EVENT:" "EVENT TO BE DISPLAYED -- <LF> FOR ENTIRE EVENT LIST"))
             (COND (x (PEV x 0 true))
                 (:else (dorun (map #'(lambda [y] (and (= 'COMMAND (get y 'WHY)) (PEV y 0 true)))
                     (reverse EVENTLIST)))))))
@@ -3339,27 +3343,24 @@ nil
 (§ defn- SHOWSCENE [x]
     (let [PLANNERSEE nil]
         (terpri)
-        (TAB 16)
-        (print "CURRENT SCENE")
-        (terpri)
+        (print "CURRENT SCENE:")
         (terpri)
         (dorun (map #'(lambda [OBJ]
-            (PRINT OBJ)
-            (print "-->  ")
-            (evlis (car (NAMEOBJ OBJ 'DESCRIBE)))
-            (print " AT ")
-            (print (cadr (assq OBJ ATABLE)))
-            (and (SETQ OBJ (THVAL '(THFIND ALL ($? x) (x) (THGOAL (!SUPPORT ($? OBJ) ($? x)))) (list (list 'OBJ OBJ))))
-                    (TAB 13)
-                    (print "SUPPORTS ")
+                (terpri)
+                (pr OBJ)
+                (print " --> ")
+                (evlis (car (NAMEOBJ OBJ 'DESCRIBE)))
+                (print " AT ")
+                (print (cadr (assq OBJ ATABLE)))
+                (SETQ OBJ (THVAL '(THFIND ALL ($? x) (x) (THGOAL (!SUPPORT ($? OBJ) ($? x)))) (list (list 'OBJ OBJ))))
+                (when OBJ
+                    (print " SUPPORTS ")
                     (print OBJ)))
-                '(ßB1 ßB2 ßB3 ßB4 ßB5 ßB6 ßB7 ßB10 ßBOX)))
+            '(ßB1 ßB2 ßB3 ßB4 ßB5 ßB6 ßB7 ßB10 ßBOX)))
         (terpri)
-        (SAY "THE HAND IS GRASPING")
-        (print \space)
-        (print (COND
-            ((SETQ OBJ (THVAL '(THGOAL (!GRASPING ($_ x))) '((x THUNBOUND)))) (cadar OBJ))
-            (:else 'NOTHING)))
+        (SAY "THE HAND IS GRASPING ")
+        (SETQ OBJ (THVAL '(THGOAL (!GRASPING ($_ x))) '((x THUNBOUND))))
+        (print (if OBJ (cadar OBJ) "NOTHING"))
         nil))
 
 (§ defn- TELLCHOICE [NODE] (SETQ NODE (car NODE)) (SHOWTELLCHOICE))
@@ -3370,13 +3371,15 @@ nil
     (COND ((nil? a) (SHOWTELLCHOICE))
         ((get (car a) ACTION)
             (APPLY (get (car a) ACTION) (list a)))
-        ((PRINTEXT '(I DON'T KNOW HOW TO))
-            (PRINT2 ACTION)
-            (PRINT2 (car a))))
+        ((PRINTEXT "I DON'T KNOW HOW TO ")
+            (print ACTION)
+            (print \space)
+            (print (car a))))
     '*)
 
 (§ defn- SHOWTELLCHOICE []
-    (APPLY (get (SETQ NODE (QUERY '(WHICH OPTION?) (PRINT (get NODE SYSTEMS)) (get NODE INFO))) ACTION) (list (list NODE))))
+    (SETQ NODE (QUERY "WHICH OPTION?" (PRINT (get NODE SYSTEMS)) (get NODE INFO)))
+    (APPLY (get NODE ACTION) (list (list NODE))))
 
 (def- breakchars (list (ascii 32) (ascii 13) (ascii 46)))
 
@@ -3393,7 +3396,7 @@ nil
                     (ERR nil))
                     (RETURN (car CH2)))))
             ((= CHAR (ascii 10)) (GO READ))
-            ((= CHAR '?) (PRINTEXT help) (GO choices)))
+            ((= CHAR '?) (PRINTEXT help) (GO CHOICES)))
         (SETQ CH3 nil EX3 nil)
         (dorun (map #'(lambda [x y]
                 (and (= CHAR (car x))
@@ -3405,8 +3408,8 @@ nil
             (SETQ NOTINIT true)
             (GO READ))
     GO  (or (memq (READCH) breakchars) (GO GO))
-    choices
-        (PRINTEXT '(THE choices "ARE:"))
+    CHOICES
+        (PRINTEXT "THE CHOICES ARE:")
         (PRINT choices)
         (GO TOP)))
 
@@ -3416,7 +3419,7 @@ nil
     READ (COND
             ((memq (ascii (TYIPEEK)) breakchars) (READCH) (GO READ))
             ((== (TYIPEEK) 10) (READCH) (RETURN nil))
-            ((= (ascii (TYIPEEK)) '?) (READCH) (PRINTEXT (or help '(NO INFORMATION AVAILABLE))) (GO TOP))
+            ((= (ascii (TYIPEEK)) '?) (READCH) (PRINTEXT (or help "NO INFORMATION AVAILABLE")) (GO TOP))
             ((= (SETQ x (READ)) 'QUIT) (ERR nil))
             (:else (RETURN x)))
     nil))
@@ -3425,9 +3428,9 @@ nil
     (COND ((nil? x)
             (SHOWPROP (cons
                 (REQUEST "ATOM:"
-                    '(THE NAME OF THE ATOM WHOSE PROPERTY (IES) YOU WANT TO EXAMINE))
+                    "THE NAME OF THE ATOM WHOSE PROPERTY (IES) YOU WANT TO EXAMINE")
                 (listify (REQUEST "PROPERTY:"
-                    '(THE PROPERTY (IES) YOU WANT TO SEE\.  A LINE FEED MEANS ALL PROPERTIES OF THE ATOM))))))
+                    "THE PROPERTY (IES) YOU WANT TO SEE.  <LF> MEANS ALL PROPERTIES OF THE ATOM")))))
         ((cdr x) (APPLY #'DISP x))
         (:else (DP (car x)) nil)))
 
@@ -3471,10 +3474,10 @@ nil
     SHOW SHOWCHOICE)
 
 (§ DEFS DO
-    TELL #'(lambda [x] (PRINTEXT '(NOT YET DEFINED))))
+    TELL #'(lambda [x] (PRINTEXT "NOT YET DEFINED")))
 
 (§ DEFS STOP
-    TELL (lambda [x] (SETQ PLANNERSEE (and PLANNERSEE (COND ((ONOFF x '(STOP AFTER SHOWING PLANNER INPUT?)) true) ('NOSTOP))))))
+    TELL (lambda [x] (SETQ PLANNERSEE (and PLANNERSEE (COND ((ONOFF x "STOP AFTER SHOWING PLANNER INPUT?") true) ('NOSTOP))))))
 
 (§ DEFS PLANNER
     SHOWTREE (ASSERTIONS THEOREM SCENE EVENT)
@@ -3515,39 +3518,37 @@ nil
     TELLTREE (WORD MARKER))
 
 (§ DEFS INPUT
-    TELL (lambda [x] (SETQ PLANNERSEE (ONOFF x '(TO SEE INPUT TO PLANNER))))
+    TELL (lambda [x] (SETQ PLANNERSEE (ONOFF x "TO SEE INPUT TO PLANNER")))
     SHOW SHOWCHOICE
     SHOWTREE (ALL REST CURRENT))
 
 (§ DEFS RUN
     TELLTREE (STOP DO)
     TELL TELLCHOICE
-    TELLINFO '(PARAMETERS TO CONTROL WHAT SHRDLU DOES AS IT RUNS))
+    TELLINFO "PARAMETERS TO CONTROL WHAT SHRDLU DOES AS IT RUNS")
 
 (§ DEFS PROPERTY
     SHOW (lambda [x] (SHOWPROP (cdr x))))
 
 (§ DEFS VALUE
-    SHOW (lambda [x] (DISP (eval (CHARG x "EXPRESSION:" '(EXPRESSION TO BE EVALUATED BY THE LISP INTERPRETER))))))
+    SHOW (lambda [x] (DISP (eval (CHARG x "EXPRESSION:" "EXPRESSION TO BE EVALUATED BY THE LISP INTERPRETER")))))
 
 (§ DEFS FUNCTION
-    TELL (lambda [x] (SETQ x (list (CHARG x "FUNCTION:" '(LISP FUNCTION WHOSE ACTION IS TO BE TRACED))
+    TELL (lambda [x] (SETQ x (list (CHARG x "FUNCTION:" "LISP FUNCTION WHOSE ACTION IS TO BE TRACED")
                 (COND ((and (cdr x) (cddr x) (memq (caddr x) '(TRACE BREAK UNTRACE UNBREAK))) (caddr x))
-                    (:else (QUERY '(TRACE BREAK UNTRACE OR UNBREAK?)
+                    (:else (QUERY "TRACE, BREAK, UNTRACE OR UNBREAK?"
                         '(TRACE BREAK UNTRACE UNBREAK)
-                        '(TRACE CAUSES PRINTOUT ON ENTRY AND EXIT OF FUNCTION\.
-                            BREAK CAUSES LISP TO STOP ON ENTRY AND EXIT\,
-                            ACCEPTING USER COMMANDS AND CONTINUING WHEN <CONTROL X> IS TYPED\.))))))
+                        "TRACE CAUSES PRINTOUT ON ENTRY AND EXIT OF FUNCTION.  BREAK CAUSES LISP TO STOP ON ENTRY AND EXIT, ACCEPTING USER COMMANDS AND CONTINUING WHEN <CTRL-X> IS TYPED.")))))
             (APPLY (SUBST 'WBREAK 'BREAK (cadr x)) (list (car x))))
-    SHOW (lambda [x] (APPLY #'GB (list (CHARG x "FUNCTION:" '(LISP FUNCTION WHOSE LISP DEFINITION IS TO BE SHOWN))))))
+    SHOW (lambda [x] (APPLY #'GB (list (CHARG x "FUNCTION:" "LISP FUNCTION WHOSE DEFINITION IS TO BE SHOWN")))))
 
 (§ DEFS ASSERTIONS
-    TELL (lambda [x] (THVAL (list 'THASSERT (CHARG x "ASSERTION:" '(PLANNER ASSERTION TO BE ADDED TO DATA BASE)) '(THTBF THTRUE)) nil))
-    SHOW (lambda [x] (DA (CHARG x "ATOM:" '(SHOW ALL ASSERTIONS WHICH CONTAIN THE GIVEN ATOM)))))
+    TELL (lambda [x] (THVAL (list 'THASSERT (CHARG x "ASSERTION:" "PLANNER ASSERTION TO BE ADDED TO DATABASE") '(THTBF THTRUE)) nil))
+    SHOW (lambda [x] (DA (CHARG x "ATOM:" "SHOW ALL ASSERTIONS WHICH CONTAIN THE GIVEN ATOM"))))
 
 (§ DEFS THEOREM
     TELL DEFINETHEOREM
-    SHOW (lambda [x] (DISP (get (CHARG x "THEOREM-NAME:" '(PLANNER THEOREM WHOSE DEFINITION IS TO BE SHOWN)) 'THEOREM))))
+    SHOW (lambda [x] (DISP (get (CHARG x "THEOREM-NAME:" "PLANNER THEOREM WHOSE DEFINITION IS TO BE SHOWN") 'THEOREM))))
 
 (§ DEFS NODE
     SHOW (lambda [x]
@@ -3562,18 +3563,18 @@ nil
                 (:else (SAY "NO SUCH TREE")))))
 
 (§ DEFS UNIT
-    SHOW (lambda [x] (APPLY #'DG (or (cdr x) (list (REQUEST "UNIT:" '(GRAMMAR UNIT WHOSE PROGRAM IS TO BE EXAMINED -- "E.G."  CLAUSE NG PREPG VG ADJG)))))))
+    SHOW (lambda [x] (APPLY #'DG (or (cdr x) (list (REQUEST "UNIT:" "GRAMMAR UNIT WHOSE PROGRAM IS TO BE EXAMINED -- E.G. CLAUSE, NG, PREPG, VG, ADJG"))))))
 
 (§ DEFS WORD
-    SHOW (lambda [x] (DP (CHARG x "WORD:" '(ENGLISH WORD IN THE VOCABULARY))))
-    TELL (lambda [x] (APPLY #'DEFINE (list (CHARG x "WORD:" '(ENGLISH WORD TO BE DEFINED -- MUST BE NOUN OR VERB))))))
+    SHOW (lambda [x] (DP (CHARG x "WORD:" "ENGLISH WORD IN THE VOCABULARY")))
+    TELL (lambda [x] (APPLY #'DEFINE (list (CHARG x "WORD:" "ENGLISH WORD TO BE DEFINED -- MUST BE NOUN OR VERB")))))
 
 (§ DEFS ACTION
     TELL (lambda [x]
             (COND ((cdr x)
                     (COND ((= (cadr x) 'ON) (SETQ x nil))
                         ((= x 'OFF) (SETQ x '(THUNTRACE)))))
-                ((ONOFF x '(WATCH PLANNER PROGRAMS STEP BY STEP?))
+                ((ONOFF x "WATCH PLANNER PROGRAMS STEP BY STEP?")
                     (SETQ x nil))
                 (:else (SETQ x '(THUNTRACE))))
             (COND (x (THUNTRACE))
@@ -3582,12 +3583,12 @@ nil
 (§ DEFS LABEL
     TELL (lambda [x]
             (or (cdr x)
-                (SETQ x (list (REQUEST '(TYPE LIST OF LABELS\, OR ON OR "OFF:") '(WATCHES PARSER GO PAST PROGRAM LABELS IN THE GRAMMAR)))))
+                (SETQ x (list (REQUEST "TYPE LIST OF LABELS, OR ON OR OFF:" "WATCHES PARSER GO PAST PROGRAM LABELS IN THE GRAMMAR"))))
             (SETQ LABELTRACE (COND ((= (car x) 'OFF) nil) (:else (car x))))))
 
 (§ DEFS ATTEMPT
     TELL (lambda [x] (COND
-            ((ONOFF x '(TO SEE ALL ATTEMPTS TO PARSE SYNTACTIC UNITS\, INCLUDING FAILURES))
+            ((ONOFF x "TO SEE ALL ATTEMPTS TO PARSE SYNTACTIC UNITS, INCLUDING FAILURES")
                 (TRACE PARSE)
                 (TRACE CALLSM))
             (:else (UNTRACE PARSE)))))
@@ -3597,20 +3598,20 @@ nil
     (APPLY #'MOVE-PT
         (listify (or x
             (REQUEST "NODE-SPECIFICATION:"
-                '(C MEANS CURRENT NODE -- H IS MOST RECENTLY PARSED FOR OTHER POSSIBILITIES\, SEE THESIS SECTION ON POINTER-MOVING COMMANDS))))))
+                "C MEANS CURRENT NODE, H IS MOST RECENTLY PARSED FOR OTHER POSSIBILITIES.  SEE THESIS SECTION ON POINTER-MOVING COMMANDS")))))
 
 (§ defn- ONOFF [arg help]
     (COND
         ((= (cadr arg) 'ON) true)
         ((= (cadr arg) 'OFF) nil)
-        ((= 'ON (QUERY '(ON OR OFF?) '(ON OFF) help)))))
+        ((= 'ON (QUERY "ON OR OFF?" '(ON OFF) help)))))
 
 (§ defn- DEFINETHEOREM [x]
     (PUTPROP (COND ((cdr x) (SETQ x (cadr x))) (:else (SETQ x (MAKESYM 'THEOREM))))
-        (concat (list (QUERY '(WHICH THEOREM TYPE?) '(THANTE THERASING THCONSE) '(ANTECEDENT\, ERASING\, OR CONSEQUENT THEOREM))
+        (concat (list (QUERY "WHICH THEOREM TYPE?" '(THANTE THERASING THCONSE) "ANTECEDENT, ERASING, OR CONSEQUENT THEOREM")
                     (listify (REQUEST "VARIABLE-LIST:" nil))
-                    (REQUEST "PATTERN:" '(A LIST ENCLOSED IN PARENS\, LIKE (!IS ($? x) !ZOG)))
-                    (REQUEST "BODY:" '(LIST OF MICROPLANNER STATEMENTS))))
+                    (REQUEST "PATTERN:" "A LIST ENCLOSED IN PARENS, LIKE (!IS ($? x) !ZOG)")
+                    (REQUEST "BODY:" "LIST OF MICROPLANNER STATEMENTS")))
         'THEOREM)
     (THADD x nil)
     (PRINT x))
@@ -3618,15 +3619,15 @@ nil
 (§ DEFS MARKER
     TELL (lambda [x]
             (let [y nil]
-                (PUTPROP (SETQ x (CHARG x "MARKER:" '(MARKER TO BE ADDED)))
-                    (list (SETQ y (REQUEST "PARENT:" '(NODE TO WHICH IT IS ATTACHED IN THE TREE))))
+                (PUTPROP (SETQ x (CHARG x "MARKER:" "MARKER TO BE ADDED"))
+                    (list (SETQ y (REQUEST "PARENT:" "NODE TO WHICH IT IS ATTACHED IN THE TREE")))
                     'SYS)
                 (PUTPROP y
                     (cons x (get y 'SYSTEM))
                     'SYSTEM)
                 nil))
     SHOW (lambda [x]
-            (TREEPRINT (or (CHARG x "MARKER:" '(SEMANTIC MARKER WHOSE SUBSETS ARE TO BE EXAMINED\. TYPE <LF> FOR ENTIRE TREE\.)) '!SYSTEMS)
+            (TREEPRINT (or (CHARG x "MARKER:" "SEMANTIC MARKER WHOSE SUBSETS ARE TO BE EXAMINED.  TYPE <LF> FOR ENTIRE TREE") '!SYSTEMS)
                 'SYSTEM
                 0)))
 
@@ -3640,9 +3641,9 @@ nil
 
 (§ defq- DEFINE [a]
     (let [FE nil TYPE nil MARK nil REST nil TR nil]
-        (SETQ a (COND (a (car a)) (:else (REQUEST "WORD:" '(ENGLISH WORD TO BE DEFINED)))))
-        (SETQ TYPE (QUERY '(NOUN OR VERB?) '(NOUN VERB) '(OTHER TYPES MUST BE DEFINED IN LISP)))
-    =>  (or (SETQ MARK (REQUEST 'MARKERSß '(LIST OF SEMANTIC MARKERS FOR WORD BEING DEFINED - TO SEE MARKER TREE TYPE <LF>)))
+        (SETQ a (COND (a (car a)) (:else (REQUEST "WORD:" "ENGLISH WORD TO BE DEFINED"))))
+        (SETQ TYPE (QUERY "NOUN OR VERB?" '(NOUN VERB) "OTHER TYPES MUST BE DEFINED IN LISP"))
+    =>  (or (SETQ MARK (REQUEST 'MARKERSß "LIST OF SEMANTIC MARKERS FOR WORD BEING DEFINED -- TO SEE MARKER TREE, TYPE <LF>"))
             (and (SHOW MARKER !SYSTEMS) (GO =>)))
         (SETQ MARK (listify MARK))
         (COND
@@ -3652,29 +3653,27 @@ nil
                     (list (list 'NOUN (list 'OBJECT (list 'MARKERSß MARK
                         'PROCEDUREß
                         (lis2fy (REQUEST 'PROCEDUREß
-                                    '(EXPRESSION OR LIST OF EXPRESSIONS TO BE PUT IN PLANNER GOALS TO DESCRIBE OBJECT - USE *** TO REPRESENT OBJECT BEING DESCRIBED BY WORD
-                                        -- "E.G."  (!IS *** !ZOG) OR ((!IS *** !ZOG) (!LOVE ßEVERYONE ***)))))))))
+                                    "EXPRESSION OR LIST OF EXPRESSIONS TO BE PUT IN PLANNER GOALS TO DESCRIBE OBJECT -- USE *** TO REPRESENT OBJECT BEING DESCRIBED BY WORD -- E.G. (!IS *** !ZOG) OR ((!IS *** !ZOG) (!LOVE ßEVERYONE ***))"))))))
                     'SEMANTICS)
                 (RETURN true))
-            ((SETQ TR (= (QUERY '(TRANSITIVE OR INTRANSITIVE?) '(TRANSITIVE INTRANSITIVE) nil) 'TRANSITIVE))
+            ((SETQ TR (= (QUERY "TRANSITIVE OR INTRANSITIVE?" '(TRANSITIVE INTRANSITIVE) nil) 'TRANSITIVE))
                 (PUTPROP a '(VB TRANS INF) 'FEATURES))
             (:else (PUTPROP a '(VB ITRNS INF) 'FEATURES)))
-        (SETQ REST (list (list (listify (REQUEST '(RESTRICTIONS ON "SUBJECT:") '(LIST OF SEMANTIC MARKERS))))))
+        (SETQ REST (list (list (listify (REQUEST "RESTRICTIONS ON SUBJECT:" "LIST OF SEMANTIC MARKERS")))))
         (and TR
-            (SETQ REST (concat REST (list (listify (REQUEST '(RESTRICTIONS ON "OBJECT:") '(LIST OF SEMANTIC MARKERS)))))))
+            (SETQ REST (concat REST (list (listify (REQUEST "RESTRICTIONS ON OBJECT:" "LIST OF SEMANTIC MARKERS"))))))
         (PUTPROP a
             (list (list 'VB (list 'RELATION (list
                 'MARKERSß MARK
                 'RESTRICTIONSß REST
                 'PROCEDUREß
                     (lis2fy (REQUEST 'PROCEDUREß
-                                '(LIST OF EXPRESSIONS TO BE PUT INTO PLANNER GOALS TO DESCRIBE ACTION OR RELATION -- USE !1 FOR SUBJECT\, !2 FOR OBJECT\.
-                                    "E.G."  (!SUPPORT !1 !2) OR ((!HAPPY !1) (!SMILING !1)))))))))
+                                "LIST OF EXPRESSIONS TO BE PUT INTO PLANNER GOALS TO DESCRIBE ACTION OR RELATION -- USE !1 FOR SUBJECT, !2 FOR OBJECT.  E.G. (!SUPPORT !1 !2) OR ((!HAPPY !1) (!SMILING !1))"))))))
             'SEMANTICS)
         true))
 
 (§ defn- HELP []
-    (COND ((= 'S (QUERY '(TYPE L FOR LONG FORM (85 LINES) S FOR SHORT (16 LINES)) '(S L) nil))
+    (COND ((= 'S (QUERY "TYPE L FOR LONG FORM (85 LINES) S FOR SHORT (16 LINES)" '(S L) nil))
             (UREAD MINIH DOC DSK LANG))
         (:else (UREAD HELP DOC DSK LANG)))
     (THRUTEXT)
@@ -3810,7 +3809,7 @@ nil
             ((= XX 'FR) (COND ((MOVE-PT PV) (GO LOOK))))
             ((= XX 'NX) (or (SETQ PT (PREVIOUS (H (PARENT PT)) (car PT))) (GO FAIL)))
             ((= XX 'PV) (SETQ PT (or (and (= PT C) (H (PARENT C))) (FOLLOWING (H (PARENT PT)) (car PT)) (GO FAIL))))
-            (:else (PRINT XX) (ert "MOVE-PT: ILLEGAL INSTRUCTION")))
+            (:else (terpri) (pr XX) (ert "MOVE-PT: ILLEGAL INSTRUCTION")))
     EX  (COND ((or (nil? L2) (nil? (SETQ L2 (cdr L2))))
             (GO TEST)))
         (SETQ XX (car L2))
@@ -8072,7 +8071,8 @@ nil
             (CQ DECLAR)
             (MAP #'(lambda [BACKNODE]
                 (COND ((cdr (SM BACKNODE)) ;; TRUE IF NODE HAD MULTIPLE INTERPRETATIONS
-                    (PRINT (SM BACKNODE))
+                    (terpri)
+                    (pr (SM BACKNODE))
                     (SETR 'SEMANTICS (ert "DOBACKREF: RETURN AN OSS FOR BACKNODE") BACKNODE)))
             (COND
                 ((refer? (car (SM BACKNODE)))) ;; IF NODE HAS REFERENT, FINE
@@ -8555,7 +8555,8 @@ nil
             ;; IF YOU RETURN ANY OTHER VALUE, IT ASSUMES THIS IS THE VARIABLE NAME INTENDED,
             ;; OTHERWISE IT JUST CAUSES AN ERROR.
             ((= %X '?)
-                (PRINT %CHECKLIST)
+                (terpri)
+                (pr %CHECKLIST)
                 (SETQ %X (ert "FOO: SETQQCHECK ????"))
                 (GO UP))
             ((SETQ %LIST (cons %X (cdr %LIST))) (GO GO)))))
@@ -8695,7 +8696,7 @@ nil
 
 (defn- plnrcode? [x] (get x 'PLNRCODE=))
 
-;; THE PLANNERCODE GENERATED WHEN AN OBJECT IS ACTUALLY LOOKED FOR IN THE DATA BASE.
+;; THE PLANNERCODE GENERATED WHEN AN OBJECT IS ACTUALLY LOOKED FOR IN THE DATABASE.
 ;; IT IS NOT USED AGAIN, BUT IS LEFT SITTING AROUND FOR PEOPLE TO LOOK AT.
 
 (defn- qtype? [x] (caddr (get x 'DETERMINER=)))
@@ -8826,7 +8827,7 @@ nil
         (THVAL2 nil (COND (AMBIG (concat exp '((THFAIL)))) (:else exp)))
         (RETURN
             ;; THE THIRD ARGUMENT TO ANSBUILD CAUSES THE SYSTEM TO GO BACK THROUGH THE DEDUCTION
-            ;; TO GET THE DATA BASE STRAIGHT IF THIS ANSWER IS PICKED.  IT ALSO TAKES CARE OF THE BACKREF STUFF.
+            ;; TO GET THE DATABASE STRAIGHT IF THIS ANSWER IS PICKED.  IT ALSO TAKES CARE OF THE BACKREF STUFF.
             (ANSBUILD
                 (COND (SUCCESS (plausibility? RSS)) (:else (- (plausibility? RSS) 512)))
                 (COND (SUCCESS (concat (reverse *plan2*) '((SAY "OK")))) (:else '((SAY "I CAN'T"))))
@@ -8872,16 +8873,16 @@ nil
             (:else (bug "ANSELIMINATE -- NO CONFLICT")))
         (terpri)
         (SAY "I'M NOT SURE WHAT YOU MEAN BY \"")
-        (dorun (map #'PRINT2 (FROM (NB (caddar AMB)) (N (caddar AMB)))))
+        (dorun (map _print (FROM (NB (caddar AMB)) (N (caddar AMB)))))
         (SAY "\" IN THE PHRASE \"")
-        (dorun (map #'PRINT2 (FROM (NB (SETQ XX (PARENT? (caddar AMB)))) (N XX))))
+        (dorun (map _print (FROM (NB (SETQ XX (PARENT? (caddar AMB)))) (N XX))))
         (print "\".")
         (terpri)
         (SAY "DO YOU MEAN:")
         (SETQ XX 0)
         (dorun (map #'(lambda [POSS]
                 (PRINT (SETQ XX (inc XX)))
-                (dorun (map #'PRINT2 (cadr POSS)))) ;; THE PARAPHRASE
+                (dorun (map _print (cadr POSS)))) ;; THE PARAPHRASE
             POSSIBILITIES))
         (print \?)
         (terpri)
@@ -9451,7 +9452,7 @@ GO  (let [x l]
     ;; 'HE (EVERYTHING HE KNOWS), AND THE PREVIOUS SENTENCE) USED TO TELL IF AN
     ;; ANSWER COULD HAVE BEEN GENERATED WITH HIS KNOWLEDGE TO SEE WHETHER HE REALLY
     ;; MEANT THIS INTERPRETATION.  RETURNS A LIST OF A PLAUSIBILITY AND THE RESULT
-    ;; OF THE THVAL USING ALL THE KNOWLEDGE IN THE DATA BASE.
+    ;; OF THE THVAL USING ALL THE KNOWLEDGE IN THE DATABASE.
     (let [ANS (THVAL2 nil code)]
         ;; THIS FEATURE IS ONLY RELEVANT IN DISCOURSE AND WHEN THERE ARE AMBIGUITIES.
         (or (and AMBIG discourse?) (RETURN (list 0 ANS)))
