@@ -2418,7 +2418,7 @@
             (let [unit (car *rest*) nbb *n*
                   ? (when (nq 'B-SPECIAL)
                         (binding [*special* nil]
-                            (eval (getr *n* :b-special))
+                            (let [f (getr *n* :b-special)] (if (fn? f) (f) f))
                             (condp = *special* 'SKIP :skip 'DONE :done 'LOSE (do (set! *n* nbb) :lose) nil)))
                   ;; THIS IS WHERE ALL THE WORK HAPPENS.
                   ;; IF THE PARSE SUCCEEDS, IT WILL RETURN THE NODE THAT HAS BEEN BUILT UP.
@@ -2427,7 +2427,7 @@
                             :lose))
                   ? (or (when (not= ? :skip) ?)
                         (when (and (not= *n* *cut*) (nq 'SPECIAL))
-                            (eval (getr *n* :special))
+                            (let [f (getr *n* :special)] (if (fn? f) (f) f))
                             nil))
                   ? (or (when (not= ? :done) ?)
                         (when-not p
@@ -2447,7 +2447,7 @@
             (let-when [nbb *n*
                   ? (when (nq 'B-SPECIAL)
                         (binding [*special* nil]
-                            (eval (getr *n* :b-special))
+                            (let [f (getr *n* :b-special)] (if (fn? f) (f) f))
                             (condp = *special* 'SKIP :skip 'DONE :done 'LOSE (do (set! *n* nbb) :lose) nil)))
             ] (not= ? :lose) => nil
                 ;; IF CALL IS (PARSE NIL FOO), THEN LOOK FOR EXACT WORD "FOO".
@@ -2473,7 +2473,7 @@
                 ] (not= ? :lose) => nil
                     (let [? (or (when (not= ? :skip) ?)
                                 (when (and (set! *nn* (not= *n* *cut*)) (nq 'SPECIAL))
-                                    (eval (getr *n* :special))
+                                    (let [f (getr *n* :special)] (if (fn? f) (f) f))
                                     nil))]
                         (setr *re* :parent *c*)
                         (when-not p
@@ -4292,7 +4292,7 @@
 ;; ###########################################################
 
 (putprop! '\, :features ['SPECIAL])
-(putprop! '\, :special '(comma))
+(putprop! '\, :special comma)
 
 (putprop! 'A :features ['DET 'NS 'INDEF])
 (putprop! 'A :semantics [['DET true]])
@@ -4310,7 +4310,7 @@
 
 (putprop! 'AND :features ['SPECIAL])
 (putprop! 'AND :semantics true)
-(putprop! 'AND :special '(conjo))
+(putprop! 'AND :special conjo)
 
 (putprop! 'ANY :features ['DET 'ANY 'NS 'NPL 'QNTFR])
 (putprop! 'ANY :semantics [['DET 'INDEF]])
@@ -4390,7 +4390,7 @@
 
 (putprop! 'BOTH :features ['B-SPECIAL 'QNTFR 'DET 'DEF 'NPL 'BOTH])
 (putprop! 'BOTH :semantics [['DET 'DEF]])
-(putprop! 'BOTH :b-special '(both 'AND))
+(putprop! 'BOTH :b-special #(both 'AND))
 
 (defn- both [& a]
     ;; HANDLES (BOTH AND) (EITHER OR) (NEITHER NOR) COMBINATIONS.
@@ -4417,7 +4417,7 @@
 
 (putprop! 'BUT :features ['SPECIAL])
 (putprop! 'BUT :semantics true)
-(putprop! 'BUT :special '(conjo))
+(putprop! 'BUT :special conjo)
 
 (putprop! 'BY :features ['PREP])
 (putprop! 'BY :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure '((!NEXTO *!1* *!2* *TIME))])]])
@@ -4497,7 +4497,7 @@
 
 (putprop! 'EITHER :features ['B-SPECIAL])
 (putprop! 'EITHER :semantics true)
-(putprop! 'EITHER :b-special '(both 'OR))
+(putprop! 'EITHER :b-special #(both 'OR))
 
 (putprop! 'EVERY :features ['DET 'NS 'QNTFR])
 (putprop! 'EVERY :semantics [['DET 'ALL]])
@@ -4682,7 +4682,7 @@
 
 (putprop! 'NEITHER :features ['B-SPECIAL])
 (putprop! 'NEITHER :semantics true)
-(putprop! 'NEITHER :b-special '(both 'NOR))
+(putprop! 'NEITHER :b-special #(both 'NOR))
 
 (putprop! 'NICE :features ['ADJ])
 (putprop! 'NICE :semantics [['ADJ '(object [:markers ['!THING] :procedure '((!LIKE ßFRIEND ***))])]])
@@ -4695,7 +4695,7 @@
 
 (putprop! 'NOR :features ['SPECIAL])
 (putprop! 'NOR :semantics true)
-(putprop! 'NOR :special '(conjo))
+(putprop! 'NOR :special conjo)
 
 (putprop! 'NOT :features ['ADV 'NEG])
 (putprop! 'NOT :semantics [['ADV true]])
@@ -4733,7 +4733,7 @@
 
 (putprop! 'OR :features ['SPECIAL])
 (putprop! 'OR :semantics true)
-(putprop! 'OR :special '(conjo))
+(putprop! 'OR :special conjo)
 
 (putprop! 'OUT :features ['PRT])
 (putprop! 'OUT :semantics [['PRT true]])
@@ -4758,7 +4758,7 @@
 
 (putprop! 'PLEASE :features ['B-SPECIAL])
 (putprop! 'PLEASE :semantics true)
-(putprop! 'PLEASE :b-special '(flushme))
+(putprop! 'PLEASE :b-special flushme)
 
 (putprop! 'POINTED :features ['ADJ])
 (putprop! 'POINTED :semantics [['ADJ '(object [:markers ['!PHYSOB '!POINTED] :procedure '((!SHAPE *** !POINTED))])]])
@@ -4885,7 +4885,7 @@
 
 (putprop! 'THANK :features ['B-SPECIAL])
 (putprop! 'THANK :semantics '(thank))
-(putprop! 'THANK :b-special '(thank))
+(putprop! 'THANK :b-special thank)
 
 (defn- thank []
     (when (= (cadr *n*) 'YOU)
@@ -5041,16 +5041,16 @@
 ;;
 ;; ############################################################
 
-(putprop! '!ANIMATE :system '(!ROBOT !PERSON))
-(putprop! '!ANIMATE :sys '(!THING))
+(putprop! '!ANIMATE :system ['!ROBOT '!PERSON])
+(putprop! '!ANIMATE :sys ['!THING])
 
 (putprop! '!ASMUCH :thmlist [[4 '((THUSE TC-ASMUCH))]])
 
 (putprop! '!BELONG :thmlist [[3 '((THUSE TC-BELONG))]])
 
-(putprop! '!BLACK :sys '(!SPECTRUM))
+(putprop! '!BLACK :sys ['!SPECTRUM])
 
-(putprop! '!BLUE :sys '(!SPECTRUM))
+(putprop! '!BLUE :sys ['!SPECTRUM])
 
 (defn- !blueprint [x]
     (if (getprop x :refer) '*!2*
@@ -5067,7 +5067,7 @@
                             :else (getprop (car a) :sm)))
                     'BLUEPRINT)))))
 
-(putprop! '!BOX :sys '(!PHYSOB))
+(putprop! '!BOX :sys ['!PHYSOB])
 
 (defn- !build []
     (relation [:restrictions [['(!ANIMATE)] ['(!STACK)]] :markers ['!EVENT] :procedure '((!EVAL (list '!STACKUP (!blueprint *smob1*) '*TIME)))]))
@@ -5075,13 +5075,13 @@
 (putprop! '!CALL :thmlist [[3 '((THUSE TC-3))]])
 
 (putprop! '!COLOR :priority 192)
-(putprop! '!COLOR :sys '(!PROPERTY))
+(putprop! '!COLOR :sys ['!PROPERTY])
 
 (defn- !color [x]
     (object [:markers (list '!PHYSOB x) :procedure (list (list '!color '*** x))]))
 
-(putprop! '!CONSTRUCT :system '(!STACK !ROW))
-(putprop! '!CONSTRUCT :sys '(!PHYSOB))
+(putprop! '!CONSTRUCT :system ['!STACK '!ROW])
+(putprop! '!CONSTRUCT :sys ['!PHYSOB])
 
 (putprop! '!CONTAIN :priority -1)
 
@@ -5102,7 +5102,7 @@
 
 (putprop! '!EQUIV :priority 512)
 
-(putprop! '!EVENT :sys '(!SYSTEMS))
+(putprop! '!EVENT :sys ['!SYSTEMS])
 
 (putprop! '!EXISTS :thmlist [[2 '((THUSE TC-EXISTS))] [3 '((THUSE TCT-EXISTS))]])
 
@@ -5118,9 +5118,9 @@
 
 (putprop! '!GRASPING :thmlist [[3 '((THUSE TCT-GRASPING))]])
 
-(putprop! '!GREEN :sys '(!SPECTRUM))
+(putprop! '!GREEN :sys ['!SPECTRUM])
 
-(putprop! '!HAND :sys '(!PHYSOB))
+(putprop! '!HAND :sys ['!PHYSOB])
 
 (defn- !have []
     (relation
@@ -5159,12 +5159,12 @@
             (relation [:restrictions [['(!THING)] ['LOBJ '(!PHYSOB)]] :markers ['!PLACE] :procedure '((!EVAL (list '!LOC *loctype* *locneg* *!2*)))])
             (relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure '((!EVAL (list '!LOC *loctype* (if *locneg* '*!1* '*!2*) (if *locneg* '*!2* '*!1*) '*TIME)))]))))
 
-(putprop! '!MANIP :sys '(!PHYSOB))
+(putprop! '!MANIP :sys ['!PHYSOB])
 
 (putprop! '!MORE :thmlist [[4 '((THUSE TC-MORE))]])
 
 (putprop! '!NAME :thmlist [[2 '((THUSE TC-2))]])
-(putprop! '!NAME :sys '(!SYSTEMS))
+(putprop! '!NAME :sys ['!SYSTEMS])
 
 (defn- !name []
     (relation [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :markers ['!EVENT] :procedure '((!NAME *!2*))]))
@@ -5189,11 +5189,11 @@
 
 (putprop! '!PART :thmlist [[3 '((THUSE TC-PART))]])            ;; PERFORMED ON GRADUATION DAY, JUNE 2, 1972 BY JMH
 
-(putprop! '!PERSON :sys '(!ANIMATE))
+(putprop! '!PERSON :sys ['!ANIMATE])
 
 (putprop! '!PICKUP :thmlist [[2 '((THUSE TC-2))] [3 '((THUSE TCT-PICKUP))] [4 '((THUSE TCTE-PICKUP))]])
 
-(putprop! '!PLACE :sys '(!SYSTEMS))
+(putprop! '!PLACE :sys ['!SYSTEMS])
 
 (putprop! '!PUT :thmlist [[3 '((THUSE TCT-3))] [4 '((THUSE TCT-PUT))] [5 '((THUSE TCTE-PUT))]])
 
@@ -5203,44 +5203,44 @@
 
 (putprop! '!RAISE :thmlist [[1 '((THUSE TC-RAISE))]])
 
-(putprop! '!RECTANGULAR :sys '(!SHAPES))
+(putprop! '!RECTANGULAR :sys ['!SHAPES])
 
 (putprop! '!REFERS :thmlist [[2 '((THUSE TC-REFERS))]])
 
-(putprop! '!PHYSOB :system '(!BOX !CONSTRUCT !HAND !MANIP !TABLE))
-(putprop! '!PHYSOB :sys '(!THING))
+(putprop! '!PHYSOB :system ['!BOX '!CONSTRUCT '!HAND '!MANIP '!TABLE])
+(putprop! '!PHYSOB :sys ['!THING])
 (putprop! '!PHYSOB :thmlist [[2 '((THUSE TC-PHYSOB))]])
 
 (defn- !propdefine [x]
     (putprop! x :features ['PROPN 'NS])               ;; CHANGED TO FEATURES FROM 'WORD' IN THE OLD DICTIONARY
     (putprop! x :semantics [['PROPN true]]))
 
-(putprop! '!PROPERTY :system '(!COLOR !SIZE !SHAPE))
-(putprop! '!PROPERTY :sys '(!THING))
+(putprop! '!PROPERTY :system ['!COLOR '!SIZE '!SHAPE])
+(putprop! '!PROPERTY :sys ['!THING])
 
-(putprop! '!POINTED :sys '(!SHAPES))
+(putprop! '!POINTED :sys ['!SHAPES])
 
-(putprop! '!RED :sys '(!SPECTRUM))
+(putprop! '!RED :sys ['!SPECTRUM])
 
-(putprop! '!RELATION :sys '(!SYSTEMS))
+(putprop! '!RELATION :sys ['!SYSTEMS])
 
 (putprop! '!ROLE :nogoal true)
 
 (defq- !role [& _] true)
 
-(putprop! '!ROUND :sys '(!SHAPES))
+(putprop! '!ROUND :sys ['!SHAPES])
 
-(putprop! '!ROW :sys '(!CONSTRUCT))
+(putprop! '!ROW :sys ['!CONSTRUCT])
 
-(putprop! '!ROBOT :sys '(!ANIMATE))
+(putprop! '!ROBOT :sys ['!ANIMATE])
 
 (putprop! '!SIZE :measfn #(reduce + (size %)))
-(putprop! '!SIZE :sys '(!PROPERTY))
+(putprop! '!SIZE :sys ['!PROPERTY])
 
 (putprop! '!SHAPE :priority 128)
-(putprop! '!SHAPE :sys '(!PROPERTY))
+(putprop! '!SHAPE :sys ['!PROPERTY])
 
-(putprop! '!STACK :sys '(!CONSTRUCT))
+(putprop! '!STACK :sys ['!CONSTRUCT])
 
 (putprop! '!STACKUP :thmlist [[2 '((THUSE TC-2))]])
 
@@ -5254,20 +5254,20 @@
 (putprop! '!SUPPORT :priority 256)
 (putprop! '!SUPPORT :thmlist [[3 nil] [4 '((THUSE TCT-SUPPORT))]])
 
-(putprop! '!SYSTEMS :system '(!THING !EVENT !NAME !RELATION !PLACE))
+(putprop! '!SYSTEMS :system ['!THING '!EVENT '!NAME '!RELATION '!PLACE])
 
-(putprop! '!TABLE :sys '(!PHYSOB))
+(putprop! '!TABLE :sys ['!PHYSOB])
 
 (putprop! '!THICKNESS :measfn #(cadr (size %)))
 
-(putprop! '!THING :sys '(!SYSTEMS))
-(putprop! '!THING :system '(!ANIMATE !NAME !PHYSOB !PROPERTY))
+(putprop! '!THING :sys ['!SYSTEMS])
+(putprop! '!THING :system ['!ANIMATE '!NAME '!PHYSOB '!PROPERTY])
 
 (putprop! '!UNGRASP :thmlist [[1 '((THUSE TC-UNGRASP))]])
 
 (putprop! '!WANT :thmlist [[4 '((THUSE TC-WANT4))] [5 '((THUSE TC-WANT5))]])
 
-(putprop! '!WHITE :sys '(!SPECTRUM))
+(putprop! '!WHITE :sys ['!SPECTRUM])
 
 (putprop! '!WIDTH :measfn #(car (size %)))
 
