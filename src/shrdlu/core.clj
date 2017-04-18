@@ -140,7 +140,7 @@
 (defn- bug! [message] (throw (Error. message)))
 (defn- oops! [message] (set! *oops* message) (throw (RuntimeException. message)))
 
-(declare topcenter abs atab clear diff half endtime ev findspace goal grow locgreater memorend memory occupier order packo packon packord size starthistory startime support tcent tfind timechk evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert thassertf thassertt thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therase therasef theraset therasing thfail thfinalize thfind thfindf thfindt thflush thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thnv thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thstate thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thval thvar? thvars2 thvarsubst thvsetq %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 grammar! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse parse2 parse3 parserel pop* popto previous rebuild root rq semantics trnsf word conjo comma cantake canparse !bethere !beint both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !loc2 !name !notice !on !propdefine !role !stackup smtime smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref evalcheck iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime plnr-var compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare topcenter abs atab clear diff half endtime ev findspace goal grow locgreater memorend memory occupier order packo packon packord size starthistory startime support tcent tfind timechk evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert thassertf thassertt thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therase therasef theraset therasing thfail thfinalize thfind thfindf thfindt thflush thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thnv thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thstate thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thval thvar? thvars2 thvarsubst thvsetq %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 grammar! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse parse2 parse3 parserel pop* popto previous rebuild root rq semantics trnsf word conjo comma cantake canparse !bethere !beint both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !loc2 !name !notice !on !propdefine !role !stackup smtime smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref evalcheck iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime plnr-var compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -161,7 +161,7 @@
 
 (defn- evlis [l]
     ;; EVLIS EVALS ELEMENTS OF ARG, THEN RETURNS ARG.
-    (dorun (map eval l))
+    (dorun (map eval l))
     l)
 
 (dynamic- *thtt*)
@@ -318,7 +318,7 @@
                         ;; IF P IS "T", WE ARE ASSERTING, SO USE THADD.
                         ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST,
                         ;; AND REMOVE THPROP FROM THE RECOMMENDATION LIST.
-                        p (let [[y a] (if (and a (= (caar a) 'THPROP)) [(eval (cadar a)) (cdr a)] [nil a])]
+                        p (let [[y a] (if (and a (= (caar a) 'THPROP)) [(eval (cadar a)) (cdr a)] [nil a])]
                             ;; THADD TAKES TWO ARGS: THE FIRST IS ITEM TO BE ADDED,
                             ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM.
                             [(thadd thx (set! *thy* y)) a])
@@ -375,12 +375,12 @@
                     ;; OTHERWISE WE ARE GIVEN BOTH THE VARIABLE AND ITS
                     ;; INITIAL ASSIGNMENT, SO MAKE THE SECOND ELEMENT OF THE
                     ;; BINDING CELL A POINTER TO THE INITIAL ASSIGNMENT.
-                    :else (list (caar a) (eval (cadar a)))))
+                    :else (list (caar a) (eval (cadar a)))))
             ;; REPEAT FOR THE NEXT VARIABLE IN THE LIST.
             (recur (cdr a)))))
 
 (defn- thbi1 [x]
-    (if (term? x) (list x 'THUNASSIGNED) (list (car x) (eval (cadr x)))))
+    (if (term? x) (list x 'THUNASSIGNED) (list (car x) (eval (cadr x)))))
 
 (defn- thbranch []
     ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS.
@@ -1017,8 +1017,8 @@
                         (pr a')
                         (bug! "ODD NUMBER OF GOODIES - THSETQ"))
                 (term? (car a))
-                    (do (thpush *thml* (list 'SETQ (car a) (list 'quote (eval (car a)))))
-                        (SET (car a) (set! *thvalue* (eval (cadr a))))
+                    (do (thpush *thml* (list 'SETQ (car a) (list 'quote (eval (car a)))))
+                        (SET (car a) (set! *thvalue* (eval (cadr a))))
                         (recur (cddr a)))
                 :else
                     (do (thrplacas (cdr (thsgal (car a)))
@@ -1059,7 +1059,7 @@
                     'THREMBIND
                         (do (set! *thalist* (cadar *thtree*)) (thpopt) (recur))
                     (car a)
-                        (do (thpopt) (if (cdr a) (eval (cadr a)) 'THNOVAL))
+                        (do (thpopt) (if (cdr a) (eval (cadr a)) 'THNOVAL))
                     (when' (and (= (car a) 'thtag) (= (caar *thtree*) 'thprog)) => (do (thpopt) (recur))
                         (let-when [x (memq (cadr a) (cadddr (car *thtree*)))] x => (do (thpopt) (recur))
                             (RPLACA (cdar *thtree*) (cons nil x))
@@ -1179,7 +1179,7 @@
             ;; EVAL THE CURRENT EXPRESSION TO BE THVALED.
             ;; NOTE THAT EACH PLANNER FUNCTION CORRESPONDS TO THREE LISP FUNCTIONS:
             ;; ONE TO SET THINGS UP (THIS IS WHAT IS GETTING EVALED AT THIS POINT), ONE TO HANDLE SUCCESS AND ONE FOR FAILURE.
-            (let [e *thexp*] (set! *thexp* nil) (set! *thvalue* (eval e))
+            (let [e *thexp*] (set! *thexp* nil) (set! *thvalue* (eval e))
                 (let [? (loop []
                             (let-when [? (cond
                                         ;; IF THEXP IS NON NIL, PLANNER HAS MORE TO WORK ON BEFORE GOING TO NEXT LINE OF USER CODE.
@@ -1247,7 +1247,7 @@
     ;; IF THE CAR IS THEV, IT MEANS THAT THERE WAS A $E BEFORE THE PATTERN,
     ;; IN WHICH CASE WE ARE TO GET THE REAL PATTERN BY THVALUATING WHAT IS THERE.
     ;; IF THE PATTERN IS A SINGLE VARIABLE, THE PROGRAM ASSUMES THERE SHOULD BE AN IMPLICIT THVAL.
-    (let [x (cond (= (car x) 'THEV) (thval (cadr x) *thalist*) (thvar? x) (eval x) :else x)]
+    (let [x (cond (= (car x) 'THEV) (thval (cadr x) *thalist*) (thvar? x) (eval x) :else x)]
         ;; UNLESS THE ASSERTEE IS A THEOREM NAME, GO THROUGH IT PLACE BY PLACE WITH THVARS2.
         (if (term? x) x (doall (map #(thvars2 % y) x)))))
 
@@ -1393,12 +1393,12 @@
     '(thconse (x) (!CHOOSEPLACE ($? x)) (bug! "CHOOSEPLACE UNDEFINED")))
 
 (putprop! 'TC-CLEARTOP 'THEOREM
-    '(thconse (x y (WHY (ev)) EV)
+    '(thconse (x y (why (ev)) EV)
         (!CLEARTOP ($? x))
         (term? ($? x))
         (thor (thgoal (!SUPPORT ($? x) ?))
         (thand (thassert (!CLEARTOP ($? x))) (thsucceed THEOREM)))
-        (memory)
+        (memory ($? why))
     =>  (thcond ((thgoal (!SUPPORT ($? x) ($_ y)))
             (thgoal (!GET-RID-OF ($? y))
                 (THNODB)
@@ -1421,12 +1421,12 @@
         (thsetq ($_ space) (findspace 'RANDOM ($? surf) ($? size) ($? obj))))))
 
 (putprop! 'TC-GET-RID-OF 'THEOREM
-    '(thconse (x y (WHY (ev)) EV)
+    '(thconse (x y (why (ev)) EV)
         (!GET-RID-OF ($? x))
-        (or nomem? (thvsetq ($_ EV) ($? WHY)))
+        (or nomem? (thvsetq ($_ EV) ($? why)))
     =>  (thcond ((nil? ($? x)))
             ((term? ($? x))
-                (memory)
+                (memory ($? why))
                 (thgoal (!FINDSPACE ßTABLE ($E (size ($? x))) ($? x) ($_ y)) (THUSE TC-FINDSPACE))
                 (thgoal (!PUT ($? x) ($? y)) (THNODB) (THUSE TC-PUT))
                 (memorend (!GET-RID-OF ($? EV) ($? x))))
@@ -1435,11 +1435,11 @@
                 (thgo =>)))))
 
 (putprop! 'TC-GRASP 'THEOREM
-    '(thconse (x y (WHY (ev)) EV)
+    '(thconse (x y (why (ev)) EV)
         (!GRASP ($? x))
         (thcond ((thgoal (!GRASPING ($? x))) (thsucceed THEOREM))
             ((term? ($? x))))
-        (memory)
+        (memory ($? why))
         (thgoal (!CLEARTOP ($? x)) (THUSE TC-CLEARTOP))
         (thcond ((thgoal (!GRASPING ($_ y)))
             (thor (thgoal (!UNGRASP) (THNODB) (THUSE TC-UNGRASP))
@@ -1464,10 +1464,10 @@
             ((lambda [x] (cond (= x '!RIGHT) #'car (= x '!BEHIND) #'cadr (= x '!ABOVE) #'caddr :else (bug! "TC-LOC"))) ($? x)))))
 
 (putprop! 'TC-MAKESPACE 'THEOREM
-    '(thconse (surf size obj space x (WHY (ev)) EV)
+    '(thconse (surf size obj space x (why (ev)) EV)
         (!FINDSPACE ($? surf) ($? size) ($? obj) ($? space))
         (thnot (thgoal (!IS ($? surf) !BOX)))
-        (memory)
+        (memory ($? why))
     => (thand (thgoal (!SUPPORT ($? surf) ($_ x)))
             (thgoal (!GET-RID-OF ($? x)) (THUSE TC-GET-RID-OF)))
         (thor (thgoal (!FINDSPACE ($? surf) ($? size) ($? obj) ($? space)) (THUSE TC-FINDSPACE))
@@ -1512,8 +1512,8 @@
         (thvsetq ($_ loc) *handat*)
         (thsetq *handat* ($? y))
         (thsetq *thtime* (inc *thtime*))
-        (thcond (doit? (thor (eval (cons 'MOVETO *handat*))
-                    (let [ADJUST nil] (eval (cons 'MOVETO ($? loc))) nil)))
+        (thcond (doit? (thor (eval (cons 'MOVETO *handat*))
+                    (let [ADJUST nil] (eval (cons 'MOVETO ($? loc))) nil)))
             ((thsetq *plan* (cons (cons 'MOVETO ($? y)) *plan*))))))
 
 (putprop! 'TC-NAME 'THEOREM
@@ -1574,9 +1574,9 @@
         (thor (thgoal (!MANIP ($? x))) (thamong ($? x) '(ßBOX ßTABLE ßHAND)))))
 
 (putprop! 'TC-PICKUP 'THEOREM
-    '(thconse (x (WHY (ev)) EV)
+    '(thconse (x (why (ev)) EV)
         (!PICKUP ($? x))
-        (memory)
+        (memory ($? why))
         (thgoal (!GRASP ($? x)) (THUSE TC-GRASP))
         (thgoal (!RAISEHAND) (THNODB) (THUSE TC-RAISEHAND))
         (memorend (!PICKUP ($? EV) ($? x)))))
@@ -1584,7 +1584,7 @@
 (putprop! 'TC-REFERS 'THEOREM
     '(thconse (x)
         (!REFERS ($? x))
-        (eval (list 'thsetq (list 'thv ($? x)) (list 'quote (atomify (getprop ($? x) 'BIND)))))))
+        (eval (list 'thsetq (list 'thv ($? x)) (list 'quote (atomify (getprop ($? x) 'BIND)))))))
 
 (putprop! 'TC-PUT 'THEOREM
     '(thconse (x y z)
@@ -1602,9 +1602,9 @@
         (thgoal (!UNGRASP) (THNODB) (THUSE TC-UNGRASP))))
 
 (putprop! 'TC-PUTIN 'THEOREM
-    '(thconse (x y z (WHY (ev)) EV)
+    '(thconse (x y z (why (ev)) EV)
         (!PUTIN ($? x) ($? y))
-        (memory)
+        (memory ($? why))
         (thcond ((thgoal (!PUTON ($? x) ($? y)) (THUSE TC-PUTON))
                 (memorend (!PUTIN ($? EV) ($? x) ($? y)))
                 (thsucceed THEOREM))
@@ -1618,12 +1618,12 @@
         (memorend (!PUTIN ($? EV) ($? x) ($? y)))))
 
 (putprop! 'TC-PUTON 'THEOREM
-    '(thconse (x y z (WHY (ev)) EV)
+    '(thconse (x y z (why (ev)) EV)
         (!PUTON ($? x) ($? y))
         (term? ($? y))
         (or (cdr ($? x)) (thsetq ($_ x) (car ($? x))))
         (not (if (term? ($? x)) (= ($? x) ($? y)) (memq ($? y) ($? x))))
-        (memory)
+        (memory ($? why))
         (thcond ((term? ($? x))
                 (thgoal (!CLEARTOP ($? x)) (THUSE TC-CLEARTOP))
                 (thor (thgoal (!FINDSPACE ($? y) ($E (size ($? x))) ($? x) ($_ z)) (THUSE TC-FINDSPACE))
@@ -1643,9 +1643,9 @@
         (memorend (!PUTON ($? EV) ($? x) ($? y)))))
 
 (putprop! 'TC-RAISEHAND 'THEOREM
-    '(thconse ((WHY (ev)) EV)
+    '(thconse ((why (ev)) EV)
         (!RAISEHAND)
-        (memory)
+        (memory ($? why))
         (thgoal (!MOVEHAND ($E (list (car *handat*) (cadr *handat*) 512))) (THNODB) (THUSE TC-MOVEHAND))
         (memorend (!RAISEHAND ($? EV)))))
 
@@ -1670,7 +1670,7 @@
             (thand (thassert (!PART ($? z) ($? x))) (thfinalize thand)))))
 
 (putprop! 'TC-STACKUP 'THEOREM
-    '(thconse (x y BLOCKS PYR (WHY (ev)) EV)
+    '(thconse (x y BLOCKS PYR (why (ev)) EV)
         (!STACKUP ($? x))
         (or (< (reduce + (map #(caddr (size %)) ($? x))) 641)
             (not (DPRINT2 "TOO HIGH,")))
@@ -1687,7 +1687,7 @@
                         *thalist*)))))
         (not (and (thvsetq ($_ PYR) (packo ($? x) '!PYRAMID)) (cdr ($? PYR))))
         (thvsetq ($_ BLOCKS) (cons 'ßTABLE (packo ($? x) '!BLOCK)))
-        (memory)
+        (memory ($? why))
     =>  (thcond
             ((cdr ($? BLOCKS))
                 (thgoal (!PUTON ($E (cadr ($? BLOCKS))) ($E (car ($? BLOCKS)))) (THUSE TC-PUTON))
@@ -1697,29 +1697,29 @@
             ((memorend (!STACKUP ($? EV) ($? x)))))))
 
 (putprop! 'TC-STARTEND3 'THEOREM
-    '(thconse (x y EV TIME)
-        (($? x) ($? EV) ($? TIME))
-        (thgoal (($? x) ($? y) ($? EV) ($? TIME)) (THUSE TC-STARTEND4))))
+    '(thconse (x y EV time)
+        (($? x) ($? EV) ($? time))
+        (thgoal (($? x) ($? y) ($? EV) ($? time)) (THUSE TC-STARTEND4))))
 
 (putprop! 'TC-STARTEND4 'THEOREM
-    '(thconse (x newev z EV TIME)
-        (($? x) ($? newev) ($? EV) ($? TIME))
-        (or (and (thasval ($? x)) (thasval ($? EV)) (thasval ($? TIME)) (not (thasval ($? newev)))) (bug! "TC-STARTEND4"))
+    '(thconse (x newev z EV time)
+        (($? x) ($? newev) ($? EV) ($? time))
+        (or (and (thasval ($? x)) (thasval ($? EV)) (thasval ($? time)) (not (thasval ($? newev)))) (bug! "TC-STARTEND4"))
         (thgoal (!CHOOSE ($? EV) ($_ z) nil) (THUSE TC-CHOOSE))
         (or (term? ($? z)) (bug! "TC-STARTEND4 ATOM"))
         (thsetq ($_ newev) (gensym 'EV))
         (putprop! ($? newev) 'END
             (putprop! ($? newev) 'START
                 (getprop ($? z) (cond (= ($? x) '!START) 'START (= ($? x) '!END) 'END :else (bug! "TC-STARTEND (THV x)")))))
-        (timechk ($? newev) ($? TIME))
+        (timechk ($? newev) ($? time))
         (putprop! ($? newev) 'WHY ($? z))
         (putprop! ($? newev) 'TYPE '!START)))
 
 (putprop! 'TC-UNGRASP 'THEOREM
-    '(thconse (x OBJ (who (ev)) EV)
+    '(thconse (x OBJ (why (ev)) EV)
         (!UNGRASP)
         (thcond ((thgoal (!GRASPING ($? x)))
-                (memory)
+                (memory ($? why))
                 (thgoal (!SUPPORT ? ($? x)))
                 (therase (!GRASPING ($? x)))
                 (memorend (!UNGRASP ($? EV) ($? x)))
@@ -1729,21 +1729,21 @@
             ((thsucceed)))))
 
 (putprop! 'TC-WANT4 'THEOREM
-    '(thconse (x EV TIME y)
-        (!WANT ($? x) ($? EV) ($? TIME))
-        (thgoal (!WANT ($? y) ($? x) ($? EV) ($? TIME)) (THUSE TC-WANT5))))
+    '(thconse (x EV time y)
+        (!WANT ($? x) ($? EV) ($? time))
+        (thgoal (!WANT ($? y) ($? x) ($? EV) ($? time)) (THUSE TC-WANT5))))
 
 (putprop! 'TC-WANT5 'THEOREM
-    '(thconse (x newev EV TIME z)
-        (!WANT ($? newev) ($? x) ($? EV) ($? TIME))
-        (or (and (thasval ($? x)) (thasval ($? EV)) (thasval ($? TIME))) (bug! "TC-WANT5 THASVAL"))
+    '(thconse (x newev EV time z)
+        (!WANT ($? newev) ($? x) ($? EV) ($? time))
+        (or (and (thasval ($? x)) (thasval ($? EV)) (thasval ($? time))) (bug! "TC-WANT5 THASVAL"))
         (= ($? x) 'ßFRIEND)
         (= (getprop ($? EV) 'WHY) 'COMMAND)
         (thsetq ($_ newev) (gensym 'EV))
         (putprop! ($? newev) 'END
             (putprop! ($? newev) 'START
                 (getprop ($? EV) 'START)))
-        (timechk ($? newev) ($? TIME))
+        (timechk ($? newev) ($? time))
         (putprop! ($? newev) 'TYPE '!TELL)
         (putprop! ($? newev) 'WHY 'ESP)))
 
@@ -1751,58 +1751,58 @@
     '(thconse nil (!EXISTS ? ?) (thsucceed)))
 
 (putprop! 'TCT-PICKUP 'THEOREM
-    '(thconse (x EV TIME)
-        (!PICKUP ($? x) ($? TIME))
-        (thor (thand (thgoal (!PICKUP ($? EV) ($? x))) (timechk ($? EV) ($? TIME)))
-            (thgoal (!PICKUP ($? EV) ($? x) ($? TIME)) (THUSE TCTE-PICKUP)))))
+    '(thconse (x EV time)
+        (!PICKUP ($? x) ($? time))
+        (thor (thand (thgoal (!PICKUP ($? EV) ($? x))) (timechk ($? EV) ($? time)))
+            (thgoal (!PICKUP ($? EV) ($? x) ($? time)) (THUSE TCTE-PICKUP)))))
 
 (putprop! 'TCT-PUT 'THEOREM
-    '(thconse (x EV TIME y)
-        (!PUT ($? x) ($? y) ($? TIME))
-        (thgoal (!PUT ($? EV) ($? x) ($? y) ($? TIME)) (THUSE TCTE-PUT))))
+    '(thconse (x EV time y)
+        (!PUT ($? x) ($? y) ($? time))
+        (thgoal (!PUT ($? EV) ($? x) ($? y) ($? time)) (THUSE TCTE-PUT))))
 
 (putprop! 'TCT-AT 'THEOREM
-    '(thconse (x y z TIME w)
-        (!AT ($? y) ($? z) ($? TIME))
+    '(thconse (x y z time w)
+        (!AT ($? y) ($? z) ($? time))
         (thor (thgoal (!MANIP ($? y)))
             (thand (thgoal (!IS ($? y) !BOX)) (thgoal (!AT ($? y) ($? z))) (thsucceed THEOREM)))
-        (thsetq ($_ x) (tfind ($? y) ($? TIME)))
+        (thsetq ($_ x) (tfind ($? y) ($? time)))
         (thor (thsetq ($_ w) (car ($? x)))
-            (thand (thamong ($? w) (cdr ($? x))) (or (not (< (car ($? w)) (or (start? ($? TIME)) -1))) (thfail))))
+            (thand (thamong ($? w) (cdr ($? x))) (or (not (< (car ($? w)) (or (start? ($? time)) -1))) (thfail))))
         (thsetq ($? z) (cadr ($? w)))))
 
 (putprop! 'TCT-LOC 'THEOREM
-    '(thconse (yy zz x y z TIME)
-        (!LOC ($? x) ($? y) ($? z) ($? TIME))
-        (thgoal (!AT ($? y) ($? yy) ($? TIME)) (THUSE TCT-AT))
-        (thgoal (!AT ($? z) ($? zz) ($? TIME)) (THUSE TCT-AT))
+    '(thconse (yy zz x y z time)
+        (!LOC ($? x) ($? y) ($? z) ($? time))
+        (thgoal (!AT ($? y) ($? yy) ($? time)) (THUSE TCT-AT))
+        (thgoal (!AT ($? z) ($? zz) ($? time)) (THUSE TCT-AT))
         (thgoal (!TLOC ($? x) ($? y) ($? z)) (THUSE TC-LOC))))
 
 (putprop! 'TCT-SUPPORT 'THEOREM
-    '(thconse (x y z TIME)
-        (!SUPPORT ($? x) ($? y) ($? TIME))
+    '(thconse (x y z time)
+        (!SUPPORT ($? x) ($? y) ($? time))
         (thor (thgoal (!MANIP ($? y))) (thgoal (!IS ($? y) !BOX)))
-        (thamong ($? z) (tfind ($? y) ($? TIME)))
-        (not (< (car ($? z)) (or (start? ($? TIME)) -1)))
+        (thamong ($? z) (tfind ($? y) ($? time)))
+        (not (< (car ($? z)) (or (start? ($? time)) -1)))
         (thamong ($? x) (list (caddr ($? z))))))
 
 (putprop! 'TCT-2 'THEOREM
-    '(thconse (x EV TIME) (($? x) ($? TIME)) (thgoal (($? x) ($? EV) ($? TIME)) (THUSE TCTE-3))))
+    '(thconse (x EV time) (($? x) ($? time)) (thgoal (($? x) ($? EV) ($? time)) (THUSE TCTE-3))))
 
 (putprop! 'TCT-3 'THEOREM
-    '(thconse (x y EV TIME) (($? x) ($? y) ($? TIME)) (thgoal (($? x) ($? EV) ($? y) ($? TIME)) (THUSE TCTE-4))))
+    '(thconse (x y EV time) (($? x) ($? y) ($? time)) (thgoal (($? x) ($? EV) ($? y) ($? time)) (THUSE TCTE-4))))
 
 (putprop! 'TCT-4 'THEOREM
-    '(thconse (x y z EV TIME) (($? x) ($? y) ($? z) ($? TIME)) (thgoal (($? x) ($? EV) ($? y) ($? z) ($? TIME)) (THUSE TCTE-5))))
+    '(thconse (x y z EV time) (($? x) ($? y) ($? z) ($? time)) (thgoal (($? x) ($? EV) ($? y) ($? z) ($? time)) (THUSE TCTE-5))))
 
 (putprop! 'TCTE-PICKUP 'THEOREM
-    '(thconse (x EV event TIME)
-        (!PICKUP ($? EV) ($? x) ($? TIME))
-        (thor (thand (thgoal (!PICKUP ($? EV) ($? x))) (timechk ($? EV) ($? TIME)) (thsucceed THEOREM))
+    '(thconse (x EV event time)
+        (!PICKUP ($? EV) ($? x) ($? time))
+        (thor (thand (thgoal (!PICKUP ($? EV) ($? x))) (timechk ($? EV) ($? time)) (thsucceed THEOREM))
             (thsucceed))
         (thamong ($? event) *eventlist*)
         (memq (getprop ($? event) 'TYPE) '(!PUTON !GET-RID-OF))
-        (timechk ($? event) ($? TIME))
+        (timechk ($? event) ($? time))
         (thor (thgoal (!PUTON ($? event) ($? x) ?))
             (thgoal (!GET-RID-OF ($? event) ($? x))))
         (thvsetq ($_ EV) (gensym 'E))
@@ -1813,11 +1813,11 @@
             (thassert (!PICKUP ($? EV) ($? x))))))
 
 (putprop! 'TCTE-PUT 'THEOREM
-    '(thconse (x y EV event TIME z)
-        (!PUT ($? EV) ($? x) ($? y) ($? TIME))
+    '(thconse (x y EV event time z)
+        (!PUT ($? EV) ($? x) ($? y) ($? time))
         (thamong ($? event) *eventlist*)
         (memq (getprop ($? event) 'TYPE) '(!PICKUP !PUTON))
-        (timechk ($? event) ($? TIME))
+        (timechk ($? event) ($? time))
         (thor (thgoal (!PUTON ($? event) ($? x) ?))
             (thgoal (!PICKUP ($? event) ($? x))))
         (or (thvsetq ($_ z) (dec (assq (getprop ($? event) 'END) (getprop ($? x) 'HISTORY))))
@@ -1831,31 +1831,31 @@
             (thassert (!PUT ($? EV) ($? x) ($? y))))))
 
 (putprop! 'TCTE-3 'THEOREM
-    '(thconse (x EV TIME)
-        (($? x) ($? EV) ($? TIME))
-        (or (thasval TIME) (bug! "TCTE-3"))
+    '(thconse (x EV time)
+        (($? x) ($? EV) ($? time))
+        (or (thasval time) (bug! "TCTE-3"))
         (thgoal (($? x) ($? EV)))
-        (timechk ($? EV) ($? TIME))))
+        (timechk ($? EV) ($? time))))
 
 (putprop! 'TCTE-4 'THEOREM
-    '(thconse (x y EV TIME)
-        (($? x) ($? EV) ($? y) ($? TIME))
-        (or (thasval ($? TIME)) (bug! "TCTE-4"))
+    '(thconse (x y EV time)
+        (($? x) ($? EV) ($? y) ($? time))
+        (or (thasval ($? time)) (bug! "TCTE-4"))
         (thgoal (($? x) ($? EV) ($? y)))
-        (timechk ($? EV) ($? TIME))))
+        (timechk ($? EV) ($? time))))
 
 (putprop! 'TCTE-5 'THEOREM
-    '(thconse (x y z EV TIME)
-        (($? x) ($? EV) ($? y) ($? z) ($? TIME))
-        (or (thasval ($? TIME)) (bug! "TCT-5"))
+    '(thconse (x y z EV time)
+        (($? x) ($? EV) ($? y) ($? z) ($? time))
+        (or (thasval ($? time)) (bug! "TCT-5"))
         (thgoal (($? x) ($? EV) ($? y) ($? z)))
-        (timechk ($? EV) ($? TIME))))
+        (timechk ($? EV) ($? time))))
 
 (putprop! 'TCT-GRASP 'THEOREM
-    '(thconse (x z TIME)
-        (!GRASP ($? x) ($? TIME))
-        (thvsetq ($_ z) (endtime *grasplist* ($? TIME)))
-    =>  (thcond ((or (nil? ($? z)) (startime ($? z) ($? TIME))) (thfail))
+    '(thconse (x z time)
+        (!GRASP ($? x) ($? time))
+        (thvsetq ($_ z) (endtime *grasplist* ($? time)))
+    =>  (thcond ((or (nil? ($? z)) (startime ($? z) ($? time))) (thfail))
             ((or (and (not (thasval ($? x))) (thsetq ($_ x) (cadar ($? z)))) (= ($? x) (cadar ($? z)))))
             ((thsetq ($_ z) (cdr ($? z))) (thgo =>))
             ((thfail)))))
@@ -2185,12 +2185,12 @@
             (apply thassert (list (thvarsubst (car a) nil)))
             (putprop! ($? EV) 'TYPE (caar a)))))
 
-(defn- memory []
+(defn- memory [why]
     (or nomem?
         (thand (thvsetq ($_ EV) (gensym 'E))
             (thsetq *eventlist* (cons ($? EV) *eventlist*))
             (putprop! ($? EV) 'START *thtime*)
-            (putprop! ($? EV) 'WHY ($? WHY)))))
+            (putprop! ($? EV) 'WHY why))))
 
 (defn- occupier [x y z]
     (if (neg? z) 'ßTABLE
@@ -2509,7 +2509,7 @@
                     (loop-when a (and (cdr a) (not (term? (cadr a)))) => [nil a]
                         (cond (nil? (cdr a)) [:break nil]
                             (term? (cadr a)) (if (cdr a) (recur (cdr a)) [:break nil])
-                            (if (cdadr a) (eval (cadr a)) (isq *pt* (caadr a))) (if (cddr a) (recur (cddr a)) [:break nil])
+                            (if (cdadr a) (eval (cadr a)) (isq *pt* (caadr a))) (if (cddr a) (recur (cddr a)) [:break nil])
                             :else [nil a]))
             ] (not ?) => *pt*
                 (let-when [?
@@ -2539,7 +2539,7 @@
                     (loop-when a (and (cdr a) (not (term? (cadr a)))) => [nil a]
                         (cond
                             (term? (cadr a)) (if (cdr a) (recur (cdr a)) [:break nil])
-                            (if (cdadr a) (eval (cadr a)) (isq *ptw* (caadr a))) (if (cddr a) (recur (cddr a)) [:break nil])
+                            (if (cdadr a) (eval (cadr a)) (isq *ptw* (caadr a))) (if (cddr a) (recur (cddr a)) [:break nil])
                             :else [nil a]))
             ] (not ?) => *ptw*
                 (let-when [?
@@ -2557,7 +2557,7 @@
                 ] (not ?) => (do (set! *ptw* save) nil)
                     (recur-if (cdr a) [a] => *ptw*))))))
 
-(defn- apply-grammar [unit] (eval (list unit)))
+(defn- apply-grammar [unit] (eval (list unit)))
 
 (defn- buildnode [features firstword wordafter daughters semantics]
     (let [node (list (gensym 'NODE))]
@@ -2628,12 +2628,8 @@
             (let [unit (car *rest*) nbb *n*
                   ? (when (nq 'B-SPECIAL)
                         (binding [*special* nil]
-                            (eval (getr *n* 'B-SPECIAL))
-                            (condp = *special*
-                                'SKIP :skip
-                                'DONE :done
-                                'LOSE (do (set! *n* nbb) :lose)
-                                nil)))
+                            (eval (getr *n* 'B-SPECIAL))
+                            (condp = *special* 'SKIP :skip 'DONE :done 'LOSE (do (set! *n* nbb) :lose) nil)))
                   ;; THIS IS WHERE ALL THE WORK HAPPENS.
                   ;; IF THE PARSE SUCCEEDS, IT WILL RETURN THE NODE THAT HAS BEEN BUILT UP.
                   ? (or ? (when-not (set! *re* (apply-grammar unit))
@@ -2641,7 +2637,7 @@
                             :lose))
                   ? (or (when (not= ? :skip) ?)
                         (when (and (not= *n* *cut*) (nq 'SPECIAL))
-                            (eval (getr *n* 'SPECIAL))
+                            (eval (getr *n* 'SPECIAL))
                             nil))
                   ? (or (when (not= ? :done) ?)
                         (when-not p
@@ -2661,12 +2657,8 @@
             (let-when [nbb *n*
                   ? (when (nq 'B-SPECIAL)
                         (binding [*special* nil]
-                            (eval (getr *n* 'B-SPECIAL))
-                            (condp = *special*
-                                'SKIP :skip
-                                'DONE :done
-                                'LOSE (do (set! *n* nbb) :lose)
-                                nil)))
+                            (eval (getr *n* 'B-SPECIAL))
+                            (condp = *special* 'SKIP :skip 'DONE :done 'LOSE (do (set! *n* nbb) :lose) nil)))
             ] (not= ? :lose) => nil
                 ;; IF CALL IS (PARSE NIL FOO), THEN LOOK FOR EXACT WORD "FOO".
                 ;; IF NOT THERE, FAIL.
@@ -2691,7 +2683,7 @@
                 ] (not= ? :lose) => nil
                     (let [? (or (when (not= ? :skip) ?)
                                 (when (and (set! *nn* (not= *n* *cut*)) (nq 'SPECIAL))
-                                    (eval (getr *n* 'SPECIAL))
+                                    (eval (getr *n* 'SPECIAL))
                                     nil))]
                         (setr *re* 'PARENT *c*)
                         (when-not p
@@ -3173,7 +3165,7 @@
     ONT
         (| (cq 'PASV) PONT nil)
     ONT1
-        (| (SMCL1) nil (SMCL1))
+        (| (smcl1) nil (SMCL1))
 
         (| (not (cq 'REL-NOT-FOUND)) TONT nil RETSM)                 ;; IF THE FEATURE "REL-NOT-FOUND" IS PRESENT AT
                                                                     ;; THIS POINT, IT INDICATES THAT WE ARE IN A
@@ -4555,7 +4547,7 @@
 (putprop! 'AS 'SEMANTICS '((nil? true)))
 (putprop! 'AS 'FEATURES '(AS))
 
-(putprop! 'ASK 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT !1 !2 *TIME)))))))))
+(putprop! 'ASK 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
 (putprop! 'ASK 'FEATURES '(VB TRANS INF SUBTOB))
 
 (putprop! 'AT 'SEMANTICS '((NUMD true)))
@@ -4574,22 +4566,22 @@
 (putprop! 'BE 'SEMANTICS '((VB ((THERE (!bethere)) (INT (!beint))))))
 
 (defn- !bethere []
-    (relation (RESTRICTIONSß (((!THING) (= (quantifier? SMSUB) 'INDEF))) PROCEDUREß nil)))
+    (relation (RESTRICTIONSß (((!THING) (= (quantifier? *smsub*) 'INDEF))) PROCEDUREß nil)))
 
 (defn- !beint []
     (or (relation
-            (RESTRICTIONSß (((!PHYSOB)) (SMCOMP (!PROPERTY)))
-                PROCEDUREß (!EVAL (let [prop (meet (getprop '!PROPERTY 'SYSTEM) (markers? SMCOMP))] (if prop (list (list (car prop) '!1 '!2)) (list '(!2 !1))))))
-            (RESTRICTIONSß (((!THING)) (SMCOMP (!SYSTEMS) (and (not (refer? SMCOMP)) (= (rel? SMCOMP) SMSUB))))
-                PROCEDUREß (!EVAL (relations? SMCOMP)))
-            (RESTRICTIONSß (((!THING)) (SMCOMP (!THING) (refer? SMCOMP)))
-                PROCEDUREß ((!EVAL (list 'thamong '!1 (list 'quote (refer? !2)))))))
+            (RESTRICTIONSß (((!PHYSOB)) (*smcomp* (!PROPERTY)))
+                PROCEDUREß (!EVAL (let [prop (meet (getprop '!PROPERTY 'SYSTEM) (markers? *smcomp*))] (if prop (list (list (car prop) '*!1* '*!2*)) (list '(*!2* *!1*))))))
+            (RESTRICTIONSß (((!THING)) (*smcomp* (!SYSTEMS) (and (not (refer? *smcomp*)) (= (rel? *smcomp*) *smsub*))))
+                PROCEDUREß (!EVAL (relations? *smcomp*)))
+            (RESTRICTIONSß (((!THING)) (*smcomp* (!THING) (refer? *smcomp*)))
+                PROCEDUREß ((!EVAL (list 'thamong '*!1* (list 'quote (refer? *!2*)))))))
         (oops! "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT.")))
 
 (putprop! 'BEFORE 'SEMANTICS '((BINDER (smbinder *tss* nil *start*))))
 (putprop! 'BEFORE 'FEATURES '(BINDER TIME))
 
-(putprop! 'BEGIN 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START !2 *TIME)))))
+(putprop! 'BEGIN 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START *!2* *TIME)))))
                                    (ITRNS (relation (RESTRICTIONSß (((!ANIMATE))) MARKERSß (!EVENT) PROCEDUREß ((!START EE *TIME)))))))))
 (putprop! 'BEGIN 'FEATURES '(VB TRANS INF TOOB INGOB ITRNS))
 
@@ -4604,7 +4596,7 @@
 (putprop! 'BENEATH 'SEMANTICS '((PREP (!loc '!ABOVE false))))
 (putprop! 'BENEATH 'FEATURES '(PREP PLACE))
 
-(putprop! 'BESIDE 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO !1 !2 *TIME)))))))
+(putprop! 'BESIDE 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO *!1* *!2* *TIME)))))))
 (putprop! 'BESIDE 'FEATURES '(PREP PLACE))
 
 (putprop! 'BIG 'SEMANTICS '((MEASURE (measure DIMENSIONß !SIZE RESTRICTIONSß (!PHYSOB) DIRECTIONß true))
@@ -4651,10 +4643,10 @@
 (putprop! 'BUT 'SEMANTICS true)
 (putprop! 'BUT 'SPECIAL '(conjo))
 
-(putprop! 'BY 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO !1 !2 *TIME)))))))
+(putprop! 'BY 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO *!1* *!2* *TIME)))))))
 (putprop! 'BY 'FEATURES '(PREP))
 
-(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (relation (RESTRICTIONSß (((!ANIMATE)) ((!THING)) ((!name))) PROCEDUREß ((!CALL !2 !3 *TIME)))))))))
+(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (relation (RESTRICTIONSß (((!ANIMATE)) ((!THING)) ((!name))) PROCEDUREß ((!CALL *!2* *!3* *TIME)))))))))
 (putprop! 'CALL 'FEATURES '(VB INF TRANS2))
 
 (putprop! 'CAN 'SEMANTICS '((VB true)))
@@ -4697,8 +4689,8 @@
 
 (putprop! 'CONTAIN 'SEMANTICS '((VB ((TRANS
     (relation
-        (RESTRICTIONSß (((!BOX)) ((!PHYSOB))) PROCEDUREß ((!CONTAIN !1 !2 *TIME)))
-        (RESTRICTIONSß (((!CONSTRUCT)) ((!THING))) PROCEDUREß ((!PART !2 !1 *TIME)))))))))
+        (RESTRICTIONSß (((!BOX)) ((!PHYSOB))) PROCEDUREß ((!CONTAIN *!1* *!2* *TIME)))
+        (RESTRICTIONSß (((!CONSTRUCT)) ((!THING))) PROCEDUREß ((!PART *!2* *!1* *TIME)))))))))
 (putprop! 'CONTAIN 'FEATURES '(VB INF TRANS))
 
 (putprop! 'CONTAINER 'SEMANTICS '((NOUN (object (MARKERSß (!BOX) PROCEDUREß ((!IS *** !BOX)))))))
@@ -4725,8 +4717,8 @@
 (putprop! 'DOWN 'FEATURES '(PRT))
 
 (putprop! 'DROP 'SEMANTICS '((VB
-    ((TRANSL (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)) (SMOBL (!PLACE *TIME))) PROCEDUREß ((!DROP !1 !2 !3)) MARKERSß ((!MOTION)))))
-     (TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!DROP !1 !2 PLACE *TIME)) MARKERSß ((!MOTION)))))))))
+    ((TRANSL (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)) (*smobl* (!PLACE *TIME))) PROCEDUREß ((!DROP *!1* *!2* *!3*)) MARKERSß ((!MOTION)))))
+     (TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!DROP *!1* *!2* PLACE *TIME)) MARKERSß ((!MOTION)))))))))
 (putprop! 'DROP 'FEATURES '(TRANSL TRANSL2 VB INF TRANS))
 
 (putprop! 'EACH 'SEMANTICS '((DET 'ALL)))
@@ -4754,7 +4746,7 @@
 (putprop! 'FIND 'SEMANTICS '((VB ((TRANS (!notice))))))
 (putprop! 'FIND 'FEATURES '(VB INF TRANS))
 
-(putprop! 'FINISH 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!END !2 *TIME)))))))))
+(putprop! 'FINISH 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!END *!2* *TIME)))))))))
 (putprop! 'FINISH 'FEATURES '(VB INF TRANS INFOB))
 
 (putprop! 'FIVE 'SEMANTICS '((NUM 5)))
@@ -4773,7 +4765,7 @@
 
 (putprop! 'GAVE 'IRREGULAR '(GIVE (PAST) (INF)))
 
-(putprop! 'GIVE 'SEMANTICS '((VB ((TRANS2 (relation (RESTRICTIONSß (((!ANIMATE)) ((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!GIVE !1 !2 !3 *TIME)))))))))
+(putprop! 'GIVE 'SEMANTICS '((VB ((TRANS2 (relation (RESTRICTIONSß (((!ANIMATE)) ((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!GIVE *!1* *!2* *!3* *TIME)))))))))
 (putprop! 'GIVE 'FEATURES '(VB INF TRANS2))
 
 (putprop! 'GO 'FEATURES '(ITRNS VB INF))
@@ -4811,8 +4803,8 @@
 
 (putprop! 'HOLD 'SEMANTICS '((VB ((TRANS
     (relation
-        (RESTRICTIONSß (((!HAND)) ((!MANIP))) PROCEDUREß ((!GRASPING !2 *TIME)))
-        (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) PROCEDUREß ((!GRASPING !2 *TIME)))))))))
+        (RESTRICTIONSß (((!HAND)) ((!MANIP))) PROCEDUREß ((!GRASPING *!2* *TIME)))
+        (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) PROCEDUREß ((!GRASPING *!2* *TIME)))))))))
 (putprop! 'HOLD 'FEATURES '(VB INF TRANS))
 
 (putprop! 'HE 'FEATURES '(PRON NS SUBJ))
@@ -4876,7 +4868,7 @@
 (putprop! 'LESS 'SEMANTICS '((NUMD (list '< *num*))))
 (putprop! 'LESS 'FEATURES '(NUMD NUMDAN))
 
-(putprop! 'LIKE 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!THING))) PROCEDUREß ((!LIKE !1 !2)))))))))
+(putprop! 'LIKE 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!THING))) PROCEDUREß ((!LIKE *!1* *!2*)))))))))
 (putprop! 'LIKE 'FEATURES '(VB INF TRANS))
 
 (putprop! 'LIST 'SEMANTICS '((VB ((TRANS (!name))))))
@@ -4904,12 +4896,12 @@
 (putprop! 'MOST 'SEMANTICS '((NUMD (list '< (inc *num*)))))
 (putprop! 'MOST 'FEATURES '(NUMD NUMDAT DET QNTFR NPL NONUM))
 
-(putprop! 'MOVE 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) PROCEDUREß ((!PUT !2 PLACE *TIME)) MARKERSß ((!MOTION)))))))))
+(putprop! 'MOVE 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) PROCEDUREß ((!PUT *!2* PLACE *TIME)) MARKERSß ((!MOTION)))))))))
 (putprop! 'MOVE 'FEATURES '(VB INF TRANS))
 
 (putprop! 'MY 'IRREGULAR '(I (POSS) (SUBJ)))
 
-(putprop! 'NAME 'SEMANTICS '((NOUN (object ((!NAME !ROLE) ((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL !2 !1))))))
+(putprop! 'NAME 'SEMANTICS '((NOUN (object ((!NAME !ROLE) ((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL *!2* *!1*))))))
                              (VB ((TRANS (!name))))))
 (putprop! 'NAME 'FEATURES '(NOUN NS VB INF TRANS))
 
@@ -4951,7 +4943,7 @@
                                     (RESTRICTIONSß (((!DIRECTION)) ((!PHYSOB)))
                                         PROCEDUREß ((!EVAL (list '!DIRECTION
                                                         (cadr (SETQ XX (or (assq '!DIRECTION (cddaar (INTERP MAP1))) (bug! "OF DEFINITION"))))
-                                                        (if (caddr XX) '*OF '!2) (if (caddr XX) '!2 '*OF) '*TIME)))))))
+                                                        (if (caddr XX) '*OF '*!2*) (if (caddr XX) '*!2* '*OF) '*TIME)))))))
                            (PREP2 true)))
 (putprop! 'OF 'FEATURES '(PREP PREP2 OF))
 
@@ -4996,7 +4988,7 @@
     (relation
         (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
             MARKERSß (!EVENT)
-            PROCEDUREß ((!EVAL (if (memq (num? SMOB1) '(1 NS)) '(!PICKUP !2 *TIME) '(!PUTIN !2 ßBOX *TIME)))))))))
+            PROCEDUREß ((!EVAL (if (memq (num? *smob1*) '(1 NS)) '(!PICKUP *!2* *TIME) '(!PUTIN *!2* ßBOX *TIME)))))))))
 (putprop! 'PICK-UP 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PLEASE 'FEATURES '(B-SPECIAL))
@@ -5009,22 +5001,22 @@
 (putprop! 'PUT 'PAST 'PUT)
 (putprop! 'PUT 'SEMANTICS '((VB ((TRANSL
     (relation
-        (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)) (SMOBL (!PLACE)))
+        (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)) (*smobl* (!PLACE)))
             MARKERSß (!EVENT)
             PROCEDUREß (!EVAL
                 (doall (map #(condp = (car %)
-                                '!ON (list '!PUTON '!2 (cadr %) '*TIME)
-                                '!IN (list '!PUTIN '!2 (cadr %) '*TIME)
+                                '!ON (list '!PUTON '*!2* (cadr %) '*TIME)
+                                '!IN (list '!PUTIN '*!2* (cadr %) '*TIME)
                                 (bug! "PUT DEFINITION"))
-                    (relations? SMOBL)))))))))))
+                    (relations? *smobl*)))))))))))
 (putprop! 'PUT 'FEATURES '(INF PAST VB TRANSL VPRT))
 
 (putprop! 'PUT-AWAY 'ROOT '(PUT AWAY))
-(putprop! 'PUT-AWAY 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTIN !2 ßBOX *TIME)))))))
+(putprop! 'PUT-AWAY 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTIN *!2* ßBOX *TIME)))))))
 (putprop! 'PUT-AWAY 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PUT-DOWN 'ROOT '(PUT DOWN))
-(putprop! 'PUT-DOWN 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON !2 ßTABLE *TIME)))))))
+(putprop! 'PUT-DOWN 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON *!2* ßTABLE *TIME)))))))
 (putprop! 'PUT-DOWN 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PUT-TOGETHER 'ROOT '(PUT TOGETHER))
@@ -5053,7 +5045,7 @@
 (putprop! 'SET 'FEATURES '(VB INF))
 
 (putprop! 'SET-DOWN 'ROOT '(SET DOWN))
-(putprop! 'SET-DOWN 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON !2 ßTABLE *TIME)))))))
+(putprop! 'SET-DOWN 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON *!2* ßTABLE *TIME)))))))
 (putprop! 'SET-DOWN 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'SHAPE 'SEMANTICS '((NOUN (object (MARKERSß (!SHAPE) PROCEDUREß ((!IS *** !SHAPE)))))))
@@ -5072,10 +5064,10 @@
 
 (putprop! 'SIT 'SEMANTICS '((VB ((ITRNSL
     (relation
-        (RESTRICTIONSß (((!PHYSOB)) (SMOBL (!PLACE)))
+        (RESTRICTIONSß (((!PHYSOB)) (*smobl* (!PLACE)))
             PROCEDUREß (!EVAL
-                (doall (map #(if (memq (car %) '(!ON !IN)) (list '!SUPPORT (cadr %) '!1 '*TIME) (bug! "SIT DEFINITION"))
-                    (relations? SMOBL)))))))))))
+                (doall (map #(if (memq (car %) '(!ON !IN)) (list '!SUPPORT (cadr %) '*!1* '*TIME) (bug! "SIT DEFINITION"))
+                    (relations? *smobl*)))))))))))
 (putprop! 'SIT 'FEATURES '(VB INF ITRNSL))
 
 (putprop! 'SIZE 'SEMANTICS '((NOUN (object (MARKERSß (!SIZE) PROCEDUREß ((!IS *** !SIZE)))))))
@@ -5104,11 +5096,11 @@
 (putprop! 'STACK-UP 'SEMANTICS '((TRANS (!stackup))))
 (putprop! 'STACK-UP 'FEATURES '(COMBINATION TRANS))
 
-(putprop! 'START 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START !2 *TIME)))))))))
+(putprop! 'START 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START *!2* *TIME)))))))))
 (putprop! 'START 'FEATURES '(VB INF TRANS INGOB1 TOOB1))
 
-(putprop! 'SUPPORT 'SEMANTICS '((NOUN (object (MARKERSß (!PHYSOB !ROLE) PROCEDUREß ((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT !1 !2))))))
-                                (VB ((TRANS (relation (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PROCEDUREß ((!SUPPORT !1 !2 *TIME)))))))))
+(putprop! 'SUPPORT 'SEMANTICS '((NOUN (object (MARKERSß (!PHYSOB !ROLE) PROCEDUREß ((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT *!1* *!2*))))))
+                                (VB ((TRANS (relation (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PROCEDUREß ((!SUPPORT *!1* *!2* *TIME)))))))))
 (putprop! 'SUPPORT 'FEATURES '(VB INF TRANS IMPERF NOUN NS))
 
 (putprop! 'TABLE 'SEMANTICS '((NOUN (object (MARKERSß (!TABLE) PROCEDUREß ((!IS *** !TABLE)))))))
@@ -5120,7 +5112,7 @@
                              (ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !HEIGHT *** (128 0 0))))))))
 (putprop! 'TALL 'FEATURES '(ADJ))
 
-(putprop! 'TELL 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT !1 !2 *TIME)))))))))
+(putprop! 'TELL 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
 (putprop! 'TELL 'FEATURES '(VB INF TRANS2 TOOB2))
 
 (putprop! 'THAN 'SEMANTICS '((nil? true)))
@@ -5180,7 +5172,7 @@
 
 (putprop! 'TIME 'FEATURES '(NOUN NS TIM1))
 
-(putprop! 'TO 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!DIRECTION))) PROCEDUREß ((!EVAL (SUBTOP '!1 '*OF (REFERENCE? SMOB1)))))))))
+(putprop! 'TO 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!DIRECTION))) PROCEDUREß ((!EVAL (SUBTOP '*!1* '*OF (REFERENCE? *smob1*)))))))))
 (putprop! 'TO 'FEATURES '(PREP))
 
 (putprop! 'TOGETHER 'SEMANTICS '((PRT true)))
@@ -5211,7 +5203,7 @@
 
 (putprop! 'US 'IRREGULAR '(WE (OBJ) (SUBJ)))
 
-(putprop! 'WANT 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT !1 !2 *TIME)))))))))
+(putprop! 'WANT 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
 (putprop! 'WANT 'FEATURES '(VB INF TRANS TOOB SUBTOB))
 
 (putprop! 'WAS 'IRREGULAR '(BE (V3PS VFS PAST) (INF)))
@@ -5296,7 +5288,7 @@
 (putprop! '!BLUE 'SYS '(!SPECTRUM))
 
 (defn- !blueprint [x]
-    (if (getprop x 'REFER) '!2
+    (if (getprop x 'REFER) '*!2*
         (let [a (loop-when [a nil x (cddaar (INTERP x))] x => a
                     (cond (not= (caar x) 'thgoal) (bug! "!BLUEPRINT THGOAL")
                         (= (caadar x) '!IS) (recur a (cdr x))
@@ -5313,7 +5305,7 @@
 (putprop! '!BOX 'SYS '(!PHYSOB))
 
 (defn- !build []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!STACK))) MARKERSß (!EVENT) PROCEDUREß ((!EVAL (list '!STACKUP (!blueprint SMOB1) '*TIME))))))
+    (relation (RESTRICTIONSß (((!ANIMATE)) ((!STACK))) MARKERSß (!EVENT) PROCEDUREß ((!EVAL (list '!STACKUP (!blueprint *smob1*) '*TIME))))))
 
 (putprop! '!CALL 'THMLIST '((3 '((THUSE TC-3)))))
 
@@ -5321,7 +5313,7 @@
 (putprop! '!COLOR 'SYS '(!PROPERTY))
 
 (defq- !color [& a]
-    (eval (SUBST (car a) 'COLOR '(object (MARKERSß (!PHYSOB COLOR) PROCEDUREß ((!color *** COLOR)))))))
+    (eval (SUBST (car a) 'COLOR '(object (MARKERSß (!PHYSOB COLOR) PROCEDUREß ((!color *** COLOR)))))))
 
 (putprop! '!CONSTRUCT 'SYSTEM '(!STACK !ROW))
 (putprop! '!CONSTRUCT 'SYS '(!PHYSOB))
@@ -5329,7 +5321,7 @@
 (putprop! '!CONTAIN 'PRIORITY -1)
 
 (defn- !cleanoff []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!CLEARTOP !2 *TIME)))))
+    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!CLEARTOP *!2* *TIME)))))
 
 (putprop! '!CLEARTOP 'THMLIST '((2 '((THUSE TC-2))) (3 '((THUSE TCT-3))) (4 '((THUSE TCTE-4)))))
 
@@ -5357,7 +5349,7 @@
     (relation
         (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
             MARKERSß (!EVENT)
-            PROCEDUREß ((!EVAL (if (istense *c* 'IMPERF) '(!GRASPING !2 *TIME) '(!GRASP !2 *TIME)))))))
+            PROCEDUREß ((!EVAL (if (istense *c* 'IMPERF) '(!GRASPING *!2* *TIME) '(!GRASP *!2* *TIME)))))))
 
 (putprop! '!GRASPING 'THMLIST '((3 '((THUSE TCT-GRASPING)))))
 
@@ -5367,22 +5359,22 @@
 
 (defn- !have []
     (relation
-        (RESTRICTIONSß (((!THING)) ((!THING) (and (memq '!ROLE (markers? SMOB1)) (check-markers (cadr (assq '!ROLE (relations? SMOB1))) (markers? SMSUB) (systems? SMSUB)))))
-            PROCEDUREß ((!SUBST !1 ?)))
+        (RESTRICTIONSß (((!THING)) ((!THING) (and (memq '!ROLE (markers? *smob1*)) (check-markers (cadr (assq '!ROLE (relations? *smob1*))) (markers? *smsub*) (systems? *smsub*)))))
+            PROCEDUREß ((!SUBST *!1* ?)))
         (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)))
-            PROCEDUREß ((!BELONG !2 !1)))))
+            PROCEDUREß ((!BELONG *!2* *!1*)))))
 
 (putprop! '!HEIGHT 'MEASFN #(caddr (size %)))
 
 (defn- !in []
     (if (cq 'LOBJ)
         (relation
-            (RESTRICTIONSß (((!THING)) ((!BOX))) MARKERSß (!PLACE) PROCEDUREß ((!IN !2))))
+            (RESTRICTIONSß (((!THING)) ((!BOX))) MARKERSß (!PLACE) PROCEDUREß ((!IN *!2*))))
         (relation
-            (RESTRICTIONSß (((!MANIP)) ((!BOX))) PROCEDUREß ((!CONTAIN !2 !1 *TIME)))
-            (RESTRICTIONSß (((!MANIP)) ((!HAND))) PROCEDUREß ((!GRASPING !1 *TIME)))
-            (RESTRICTIONSß (((!PLACE)) ((!BOX))) PROCEDUREß ((!IN !1 !2)))
-            (RESTRICTIONSß (((!MANIP)) ((!CONSTRUCT))) PROCEDUREß ((!PART !1 !2 *TIME))))))
+            (RESTRICTIONSß (((!MANIP)) ((!BOX))) PROCEDUREß ((!CONTAIN *!2* *!1* *TIME)))
+            (RESTRICTIONSß (((!MANIP)) ((!HAND))) PROCEDUREß ((!GRASPING *!1* *TIME)))
+            (RESTRICTIONSß (((!PLACE)) ((!BOX))) PROCEDUREß ((!IN *!1* *!2*)))
+            (RESTRICTIONSß (((!MANIP)) ((!CONSTRUCT))) PROCEDUREß ((!PART *!1* *!2* *TIME))))))
 
 (putprop! '!IS 'PRIORITY 64)
 
@@ -5399,8 +5391,8 @@
 (defn- !loc2 [loctype' locneg']
     (binding [*loctype* loctype' *locneg* locneg']
         (if (cq 'LOBJ)
-            (relation (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC *loctype* *locneg* !2)))))
-            (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC *loctype* (if *locneg* '!1 '!2) (if *locneg* '!2 '!1) '*TIME))))))))
+            (relation (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC *loctype* *locneg* *!2*)))))
+            (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC *loctype* (if *locneg* '*!1* '*!2*) (if *locneg* '*!2* '*!1*) '*TIME))))))))
 
 (putprop! '!MANIP 'SYS '(!PHYSOB))
 
@@ -5410,23 +5402,23 @@
 (putprop! '!NAME 'SYS '(!SYSTEMS))
 
 (defn- !name []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME !2)))))
+    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME *!2*)))))
 
 (putprop! '!NOTICE 'THMLIST '((2 '((THUSE TC-2)))))
 
 (defn- !notice []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NOTICE !2 *TIME)))))
+    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NOTICE *!2* *TIME)))))
 
 (putprop! '!ON 'THMLIST '((3 '((THUSE TC-ON))) (4 '((THUSE TCT-ON)))))
 
 (defn- !on []
     (if (cq 'LOBJ)
         (relation
-            (RESTRICTIONSß (((!THING)) ((!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!ON !2))))
+            (RESTRICTIONSß (((!THING)) ((!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!ON *!2*))))
         (relation
-            (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PARAPHRASEß (ANYWHERE ON TOP OF) PROCEDUREß ((!ON !1 !2 *TIME)))
-            (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PARAPHRASEß (DIRECTLY ON THE SURFACE) PROCEDUREß ((!SUPPORT !2 !1 *TIME)))
-            (RESTRICTIONSß (((!PLACE)) ((!PHYSOB))) PROCEDUREß ((!ON !1 !2))))))
+            (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PARAPHRASEß (ANYWHERE ON TOP OF) PROCEDUREß ((!ON *!1* *!2* *TIME)))
+            (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PARAPHRASEß (DIRECTLY ON THE SURFACE) PROCEDUREß ((!SUPPORT *!2* *!1* *TIME)))
+            (RESTRICTIONSß (((!PLACE)) ((!PHYSOB))) PROCEDUREß ((!ON *!1* *!2*))))))
 
 (putprop! '!PACK 'THMLIST '((3 '((THUSE TC-3)))))
 
@@ -5488,7 +5480,7 @@
 (putprop! '!STACKUP 'THMLIST '((2 '((THUSE TC-2)))))
 
 (defn- !stackup []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!STACKUP !2 *TIME)))))
+    (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!STACKUP *!2* *TIME)))))
 
 (putprop! '!START 'THMLIST '((3 '((THUSE TC-STARTEND3))) (4 '((THUSE TC-STARTEND4)))))
 
@@ -5732,7 +5724,7 @@
             true)))
 
 (defn- smpron [node]
-    (eval (semantics node))
+    (eval (semantics node))
     (when-not *sm*
         (set! *oops* (str "I DON'T KNOW WHAT \"" (from (firstword *h*) (wordafter *h*)) "\" REFERS TO.")))
     *sm*)
@@ -5784,7 +5776,7 @@
                 (and (cq 'ADJG)
                     (getr *c* 'OBJ1)
                     (setr *c* 'ADJGHEAD (compare-build (getr *c* 'HEAD) (cond (cq 'AS) '!ASMUCH (cq 'THAN) '!MORE :else (bug! "SMADJG-PREPG: FUNNY TYPE")))))
-                (if (getr *c* 'OBJ1) (do (SMCL1) *sm*)
+                (if (getr *c* 'OBJ1) (do (smcl1) *sm*)
                     (smset (binding [*sm* nil]
                         (smset (doall (map (lambda [x]
                             (build
@@ -5797,7 +5789,7 @@
                                 'REFER= (refer? x)
                                 'DETERMINER= '(NS-PL INDEF nil)))
                             smsub)))
-                        (eval (if (or (cq 'COMPAR) (cq 'SUP)) (findmeasure (getr *c* 'HEAD)) (semantics (getr *c* 'HEAD))))
+                        (eval (if (or (cq 'COMPAR) (cq 'SUP)) (findmeasure (getr *c* 'HEAD)) (semantics (getr *c* 'HEAD))))
                         *sm*)))))))
 
 (dynamic- *pronoun*)
@@ -5891,7 +5883,7 @@
                 'MARKERS= (markers? x)
                 'PARSENODE= *c*
                 'DETERMINER= (list (cond (cq 'NUM) (semantics (move-pt 'H 'PV '(NUM))) (isq *nb* 'BOTH) 2 :else 'NPL)
-                                (if (move-pt 'H 'PV '(QNTFR)) (eval (semantics *pt*)) 'INDEF)
+                                (if (move-pt 'H 'PV '(QNTFR)) (eval (semantics *pt*)) 'INDEF)
                                 (cond (cq 'HOWMANY) 'HOWMANY (cq 'QDET) 'WHICH))
                 'RELATIONS= (list (list 'thamong (list 'thv (variable? x)) (list 'quote (refer? x))))))
         (semantics (move-pt 'H 'DLC)))))
@@ -5923,13 +5915,13 @@
                 'RELATIONS= (when (cq 'TPRON) (list (list '!PHYSOB name)))
                 'DETERMINER= (list
                                 (cond
-                                    (cq 'NUMD) (binding [*num* (semantics (move-pt 'H 'PV '(NUM)))] (eval (semantics (move-pt 'H 'PV '(NUMD)))))
+                                    (cq 'NUMD) (binding [*num* (semantics (move-pt 'H 'PV '(NUM)))] (eval (semantics (move-pt 'H 'PV '(NUMD)))))
                                     (cq 'NUM) (semantics (move-pt 'H 'PV '(NUM)))
                                     (cq 'NPL) (cond (isq *nb* 'BOTH) 2 (cq 'NS) 'SG-PL :else 'NPL)
                                     :else 'NS)
                                 (cond
-                                    (cq 'QNTFR) (eval (semantics (move-pt 'H 'PV '(QNTFR))))
-                                    (cq 'TPRON) (eval (semantics (move-pt 'H 'PV '(TPRON))))
+                                    (cq 'QNTFR) (eval (semantics (move-pt 'H 'PV '(QNTFR))))
+                                    (cq 'TPRON) (eval (semantics (move-pt 'H 'PV '(TPRON))))
                                     (cq 'DEF) 'DEF
                                     (cq 'DET) 'INDEF
                                     :else 'NDET)
@@ -5939,16 +5931,16 @@
         (set! *word-being* *h*)
         (cond (isq *h* 'TPRON) true
             (cq 'INCOM) (do (smone) true)
-            :else (smset (eval (semantics *word-being*))))
+            :else (smset (eval (semantics *word-being*))))
         (loop []
             (when *sm*
                 (set! *word-being* (cdr *word-being*))
                 (when' *word-being* => *sm*
                     (cond
                         (or (isq *word-being* 'COMPAR) (isq *word-being* 'SUP))
-                            (eval (findmeasure *word-being*))
+                            (eval (findmeasure *word-being*))
                         (or (isq *word-being* 'ADJ) (isq *word-being* 'CLASF))
-                            (eval (semantics *word-being*))
+                            (eval (semantics *word-being*))
                         (isq *word-being* 'POSS)
                             (smposs))
                     (recur))))))
@@ -6037,7 +6029,7 @@
             (when-not (isq *word-being* 'NOUN)
                 (bug! "SMONE2: REFERENT OF \"ONE\" IS SCREWED UP"))
             (loop []
-                (eval (semantics *word-being*))                          ;; EVAL THE NOUN DEFINITION
+                (eval (semantics *word-being*))                          ;; EVAL THE NOUN DEFINITION
                 (set! *word-being* (cdr *word-being*))
                 (when (and *word-being* (isq *word-being* 'ADJ))    ;; IF WE REACHED END OF ADJECTIVES, STOP
                     (recur)))
@@ -6065,7 +6057,7 @@
         (and node (smrelate node))))
 
 (defn- smposs2 [headnode modnode]
-    (let [*sm* nil SMSUB (semantics modnode) SMOB1 (semantics headnode) SMOB2 nil SMOBL nil SMCOMP nil RELLIST SMOB1]
+    (binding [*sm* nil *smsub* (semantics modnode) *smob1* (semantics headnode) *smob2* nil *smobl* nil *smcomp* nil *rellist* *smob1*]
         (smset '(!have))
         (and *sm* (let [x (gensym 'NODE)] (and x (putprop! x 'SEMANTICS *sm*) (list x))))))
 
@@ -6094,64 +6086,65 @@
                     'REL= (rel? rel))))
             (semantics node)))))
 
-(§ defn- SMCL1 []
-    (let [SMSUB (getr *c* 'LOGICAL-SUBJECT) SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST nil]
+(dynamic- *smsub*)
+(dynamic- *smob1*)
+(dynamic- *smob2*)
+(dynamic- *smobl*)
+(dynamic- *smcomp*)
+(dynamic- *rellist*)
+(dynamic- *time*)
+
+(defn- smcl1 []
+    (binding [*smsub* (getr *c* 'LOGICAL-SUBJECT) *smob1* nil *smob2* nil *smobl* nil *smcomp* nil *rellist* nil]
         ;; SET UP GLOBAL VARIABLES WHICH CONSIST OF POINTERS TO THE SEMANTIC DEFINITIONS
         ;; OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB.
-        (SETQ SMSUB
-            (cond
-                SMSUB (semantics SMSUB)
+        (set! *smsub*
+            (cond *smsub* (semantics *smsub*)
                 (cq 'IMPER) '(SHRDLU-OSS)
                 (not (cq 'PASV)) (semantics (or (getr *c* 'SUBJECT) (bug! "SMCL1 -- NO SUBJECT")))
                 (cq 'AGENT) (bug! "SMCL1 -- AGENT MISSING")
                 :else '(UNKNOWN-OSS-BY)))
-        (SETQ SMOB1 (semantics (getr *c* (if (cq 'PASV) 'SUBJECT 'OBJ1))))
-        (SETQ SMOB2 (semantics (getr *c* 'OBJ2)))
-        (SETQ SMOBL (semantics (getr *c* 'LOBJ)))
-        (SETQ SMCOMP (semantics (getr *c* 'COMP)))
+        (set! *smob1* (semantics (getr *c* (if (cq 'PASV) 'SUBJECT 'OBJ1))))
+        (set! *smob2* (semantics (getr *c* 'OBJ2)))
+        (set! *smobl* (semantics (getr *c* 'LOBJ)))
+        (set! *smcomp* (semantics (getr *c* 'COMP)))
         ;; NATURALLY SEVERAL OF THESE GLOBAL VARIABLES (BOUND IN THIS PROG AND ACCESSED IN DEEPER ONES)
         ;; ARE NIL AT THIS POINT IN THE PROCEDURE.  THE FOLLOWING CHECKS ARE PRIMARILY FOR DEBUGGING PURPOSES
         ;; (HENCE THE "ERT") TO INSURE THAT THE NON-NIL REGISTERS AND THE TRANSITIVITY OF THE VERB ARE
         ;; BEING MATCHED IN EVERY CASE.
-        (or SMSUB (and (meet '(THERE ITRNS) *fe*) (bug! "SMCL1 TRANSITIVITY")))
-        (or SMOB1 (and (or (cq 'TRANS) (not (cq 'CLAUSE))) (bug! "SMCL1 TRANSITIVITY")))
-        (or (and SMOB1 SMOB2) (and (cq 'TRANS2) (bug! "SMCL1 TRANSITIVITY")))
-        (or (and SMOB1 SMOBL) (and (cq 'TRANSL) (bug! "SMCL1 TRANSITIVITY")))
-        (or SMCOMP (and (cq 'INT) (bug! "SMCL1 TRANSITIVITY")))
-        (SETQ RELLIST
+        (or *smsub* (and (meet '(THERE ITRNS) *fe*) (bug! "SMCL1 TRANSITIVITY")))
+        (or *smob1* (and (or (cq 'TRANS) (not (cq 'CLAUSE))) (bug! "SMCL1 TRANSITIVITY")))
+        (or (and *smob1* *smob2*) (and (cq 'TRANS2) (bug! "SMCL1 TRANSITIVITY")))
+        (or (and *smob1* *smobl*) (and (cq 'TRANSL) (bug! "SMCL1 TRANSITIVITY")))
+        (or *smcomp* (and (cq 'INT) (bug! "SMCL1 TRANSITIVITY")))
+        (set! *rellist*
             (semantics (cond (cq 'RSQ) (getr *c* 'RELHEAD) (or (cq 'PREPG) (cq 'ADJG)) (getr *c* 'LOGICAL-SUBJECT) (cq 'QUEST) (getr *c* 'RELHEAD))))
-        (and (not RELLIST)
-            (or (cq 'POLAR) (cq 'DECLAR))
-            (SETQ x (relfind *c*))
+        (when (and (not *rellist*) (or (cq 'POLAR) (cq 'DECLAR)))
             ;; FIND RELATIVE ELEMENT FOR POLAR CLAUSES WHICH CONTAIN INDEFINITE.
             ;; APPLIES TO TOPLEVEL CLAUSES SINCE ONLY THEY CAN HAVE FEATURES POLAR OR DECLAR.
-            (or (= x SMSUB)
-                (= x SMOB1)
-                (= x SMOB2)
-                (= x SMOBL)
-                (= x SMCOMP)
-                (bug! "SMCL1 -- POLAR REL DOESN'T MATCH"))
-            (SETQ RELLIST x))
-        (SETQ TIME (getr (move-pt 'C 'U '(CLAUSE)) 'TIME))
+            (let-when [x (relfind *c*)] x
+                (when' (any = x *smsub* *smob1* *smob2* *smobl* *smcomp*) => (bug! "SMCL1 -- POLAR REL DOESN'T MATCH")
+                    (set! *rellist* x))))
+        (set! *time* (getr (move-pt 'C 'U '(CLAUSE)) 'TIME))
         ;; THIS REFERS TO THE SEMANTIC SENSE OF THE VERB WHICH WILL PROBABLY VARY WITH ITS TRANSITIVITY.
         ;; THE VALUE THAT IS FINALLY DETERMINED REPRESENTS ALL POSSIBLE SENSES OF THE MEANING OF THE WORD
         ;; THAT ARE APPROPRIATE TO THE TRANSITIVITY FIGURED OUT BY THE SYNTACTIC PROGRAMS.
-        (SETQ SENSE-OF-VERB
-            (cond
-                (cq 'PREPG) (semantics (set! *word-being* (getr *c* 'HEAD)))
-                (cq 'ADJG) (semantics (set! *word-being* (getr *c* 'ADJGHEAD)))
-                :else (cadr (assq (car (meet *fe* '(ITRNS TRANS INT TRANSL TRANS2 THERE ITRNSL))) (semantics (set! *word-being* (getr *c* 'MVB)))))))
-        ;; THIS DETERMINES THE APPROPRIATE SEMANTIC INTERPRETATION(S) FOR THE CLAUSE BY CHECKING
-        ;; THE RESTRICTIONS OF EACH DEFINITION AGAINST THE MARKERS OF THE VARIOUS CANDIDATES FOR SMSUB,
-        ;; SMOB1, ETC.  THE VALUE OF THE EVALUATION IS A LIST OF RELATION-SEMANTIC-STRUCTURES, ONE FOR
-        ;; EACH PLAUSIBLE INTERPRETATION.
-        (smset (eval SENSE-OF-VERB))
-        ;; SMCL-MODIFIERS WILL EXAMINE ALL OF THE CONSTITUENTS OF THE CLAUSE THAT WERE NOT INVOLVED
-        ;; IN THE BUILDRSS AND WILL EVALUATE THE MEANINGS OF EACH IN TURN FOR THEIR EFFECT ON THE
-        ;; ESTABLISHED SM, THE PARSING TREE, OR ANYTHING ELSE THAT WOULD BE APPROPRIATE.
-        ;; THE VALUE OF SMCL1 IS NON-NIL ONLY IF SOME REASONABLE MEANING HAS BEEN FOUND FOR THE CLAUSE.
-        (smcl2 *h*)
-        *sm*))
+        (let [sense-of-verb
+                (cond
+                    (cq 'PREPG) (semantics (set! *word-being* (getr *c* 'HEAD)))
+                    (cq 'ADJG) (semantics (set! *word-being* (getr *c* 'ADJGHEAD)))
+                    :else (cadr (assq (car (meet *fe* '(ITRNS TRANS INT TRANSL TRANS2 THERE ITRNSL))) (semantics (set! *word-being* (getr *c* 'MVB))))))]
+            ;; THIS DETERMINES THE APPROPRIATE SEMANTIC INTERPRETATION(S) FOR THE CLAUSE BY CHECKING
+            ;; THE RESTRICTIONS OF EACH DEFINITION AGAINST THE MARKERS OF THE VARIOUS CANDIDATES FOR SMSUB,
+            ;; SMOB1, ETC.  THE VALUE OF THE EVALUATION IS A LIST OF RELATION-SEMANTIC-STRUCTURES, ONE FOR
+            ;; EACH PLAUSIBLE INTERPRETATION.
+            (smset (eval sense-of-verb))
+            ;; SMCL-MODIFIERS WILL EXAMINE ALL OF THE CONSTITUENTS OF THE CLAUSE THAT WERE NOT INVOLVED
+            ;; IN THE BUILDRSS AND WILL EVALUATE THE MEANINGS OF EACH IN TURN FOR THEIR EFFECT ON THE
+            ;; ESTABLISHED SM, THE PARSING TREE, OR ANYTHING ELSE THAT WOULD BE APPROPRIATE.
+            ;; THE VALUE OF SMCL1 IS NON-NIL ONLY IF SOME REASONABLE MEANING HAS BEEN FOUND FOR THE CLAUSE.
+            (smcl2 *h*)
+            *sm*)))
 
 (defn- smcl2 [node]
     ;; AS IN SMCL1, WE NEED TO SCAN THE CONSTITUENTS OF THE CLAUSE AND ALLOW THEM TO MAKE
@@ -6191,7 +6184,7 @@
             (bug! "SMCL-MOD BAD PREPG"))
     (isq x 'QADJ)
         (or (meet *fe* '(LOBJ COMPQ))
-            (eval (semantics x)))
+            (eval (semantics x)))
     (isq x 'BOUND) true
     (isq x 'BINDER) true
     (isq x 'QUEST) true
@@ -6215,7 +6208,7 @@
                     (oops! "NO SUCH THING EVER HAPPENED."))
                 (set! *start* (getprop (car e) 'START))
                 (set! *end* (getprop (car e) 'END))
-                (eval (semantics *pt*))
+                (eval (semantics *pt*))
                 true))))
 
 (defn- smbinder [tss start end]
@@ -6292,7 +6285,13 @@
                 (do (putprop! new (car old) (cadr old)) (recur (cddr old)))
                 (do (putprop! new 'PARSENODE= *c*) new)))))
 
-(§ defq- relation [& a]
+(dynamic- *relß*)
+(dynamic- *relmarkersß*)
+(dynamic- *!1*)
+(dynamic- *!2*)
+(dynamic- *!3*)
+
+(defq- relation [& a]
     ;; CONSTRUCTS RSS'S FOR GARDEN VARIETY VERBS.  USED IN DEFINITION OF SAME.
     ;;
     ;; INPUTS:
@@ -6317,64 +6316,62 @@
     ;;
     ;; SIDE-EFFECTS:
     ;;   CREATES AN RSS BY CALLING BUILD.
-    (iterate* (lambda [a SMSUB SMOB1 SMOB2 SMOBL SMCOMP]
-        ;; NOTICE THAT WITHIN THIS LAMBDA EXPRESSION THAT
-        ;; SMSUB = ONE OSS FOR SEMANTIC SUBJECT
-        ;; SMOB1 = ONE OSS FOR SEMANTIC OBJECT 1
-        ;; SMOB2 = ONE OSS FOR SEMANTIC OBJECT 2
-        ;; SMOBL = ONE OSS FOR LOCATIVE OBJECT
-        ;; SMCOMP = ONE OSS FOR SEMANTIC COMPLEMENT
-        ;; WHEREAS OUTSIDE OF THE LAMBDA EXPRESSION EACH OF THESE NAMES REPRESENTS A LIST OF THE SAME.
-        ;; THIS IS TO ALLOW DICTIONARY WRITERS TO USE THESE SELF SAME NAMES IN WRITING DEFINITIONS, A SIMPLY TERRIBLE IDEA.
-        (let [{restrictions 'RESTRICTIONSß procedure 'PROCEDUREß plausibility 'PLAUSIBILITYß paraphrase 'PARAPHRASEß markers 'MARKERSß} a]
-            (let [RELß nil RELMARKERSß nil !1 nil !2 nil !3 nil]
-                ;; RESTRICTIONSß IS EXPANDED HERE PUTTING IN IMPLICIT REGISTER REFERENCES, SO IT CAN BE UNIFORMLY GOBBLED BELOW.
-                (SETQ restrictions
+    (iterate* (lambda [a smsub' smob1' smob2' smobl' smcomp']
+        (binding [*smsub* smsub' *smob1* smob1' *smob2* smob2' *smobl* smobl' *smcomp* smcomp']
+            ;; NOTICE THAT WITHIN THIS LAMBDA EXPRESSION THAT
+            ;; SMSUB = ONE OSS FOR SEMANTIC SUBJECT
+            ;; SMOB1 = ONE OSS FOR SEMANTIC OBJECT 1
+            ;; SMOB2 = ONE OSS FOR SEMANTIC OBJECT 2
+            ;; SMOBL = ONE OSS FOR LOCATIVE OBJECT
+            ;; SMCOMP = ONE OSS FOR SEMANTIC COMPLEMENT
+            ;; WHEREAS OUTSIDE OF THE LAMBDA EXPRESSION EACH OF THESE NAMES REPRESENTS A LIST OF THE SAME.
+            ;; THIS IS TO ALLOW DICTIONARY WRITERS TO USE THESE SELF SAME NAMES IN WRITING DEFINITIONS, A SIMPLY TERRIBLE IDEA.
+            (let [{restrictions 'RESTRICTIONSß procedure 'PROCEDUREß plausibility 'PLAUSIBILITYß paraphrase 'PARAPHRASEß markers 'MARKERSß} a]
+                (binding [*relß* nil *relmarkersß* nil *!1* nil *!2* nil *!3* nil]
+                    ;; RESTRICTIONSß IS EXPANDED HERE PUTTING IN IMPLICIT REGISTER REFERENCES, SO IT CAN BE UNIFORMLY GOBBLED BELOW.
                     ;; %MARKL IS A SINGLE MARKER LIST FROM ON OF THE RESTRICTIONS IN THE DEFINITION, E.G. (!PHYSOB !RED).
                     ;; %RESTRICTNAM IS A NAME LIKE SMSUB, SMOBL, SMCOMP, .... WHICH REFERS TO REGISTERS ELSEWHERE
                     ;; IN THE PROGRAM WHOSE MARKERS MUST BE COMPATIBLE WITH %MARKL AS CHECKED BELOW.
                     ;; %NUM IS THE NUMBER WHICH WILL BE USED TO SUBSTITUTE IN THE DICTIONARY EXPRESSION.
-                    (doall (map (lambda [name marks %NUM]
-                            (let [x (if (term? (car marks)) marks (cons name marks))] (SET %NUM (eval (car x))) x))
-                        '(SMSUB SMOB1 SMOB2) restrictions '(!1 !2 !3))))
-                ;; CHECK THAT THIS DEFINITION SENSE MEETS ALL OF THE RESTRICTIONS SET FORTH IN THE DEFINITION UNDER RESTRICTIONSß.
-                (when (ERRSET
-                        ;; ENCLOSED IN A ERRSET SO THAT THE FAILURE OF A CHECK CAN CAUSE IMMEDIATE ESCAPE FROM THE MAPC
-                        ;; AND HENCE TO THE AND WHICH CUTS OFF ALL FURTHER PROCESSING OF THIS DEFINITION SENSE.
-                        ;; TEMPORARY STORAGE ON THE PROPERTY LIST OF TEMP USED TO AVOID SEARCHING FOR THESE ITEMS ON THE
-                        ;; ONE HAND OR THE CONFLICT OF NAMES BETWEEN THE MARKERS RESULTING FROM CHECKING THE REL ARE
-                        ;; SAVED TO PUT ON IT LATER WHEN THE CLAUSE IS RELATED.
-                        (dorun (map (lambda [marks]
-                            (let [oss (eval (car marks)) x (checkrel oss) CHECK nil]
-                                (when x (SETQ RELß (car x)))
-                                (cond
-                                    (not (and (or (nil? (cddr marks)) (eval (caddr marks)))
-                                            (SETQ CHECK (check-markers (cadr marks) (markers? oss) (systems? oss)))))
-                                        (ERR nil)
-                                    (= oss RELß)
-                                        (SETQ RELMARKERSß CHECK))
-                                nil))
-                            restrictions)))
-                    ;; SUBJECT RESTRICTION MARKERS USED IN THE DEFINITION AND THE REGISTERS OF THE SAME NAME REFERENCED AS FREE
-                    ;; VARIABLES IN THIS PROGRAM.  ON THE OTHER HAND, IF THE RESTRICTIONS HAVE BEEN MET, THEN BUILD AN RSS NODE.
-                    ;; RSSNODE= IS KEYWORD FOR INPUT INTO BUILD OF RSS NODE NAME.  IN THE CALL TO BUILD THE ITEMS ENDING IN =
-                    ;; ARE KEYWORDS WHOSE VALUE IS THE FOLLOWING ITEM.  MARKERSß, OF COURSE IS A VARIABLE IN THIS FUNCTION.
-                    ;; THIS CALL JUST SAYS SEND TO BUILD FOR MARKERS= THE VALUE SENT TO RELATION FOR MARKERSß.  THE PARSENODE
-                    ;; IS THE CURRENT NODE.  ***, #1, #2, AND #3 SUBSTITUTIONS DONE.  THIS IS FIRST STEP IN BUILDING PLANNER CODE.
-                    ;; NUMSUB IS THE ***, #1, #2, #3 SUBSTITUTION FUNCTION.  %PLNRPHRASE IS ONE CHUNK OF CONDENSED PLANNER CODE
-                    ;; LIKE (!COLOR *** !RED).
-                    (let [name (gensym 'RSS)] (build
-                        'RSSNODE= name
-                        'MARKERS= markers
-                        'VARIABLE= (let [x (gensym 'EVX)] (putprop! x 'RSSVAR x))
-                        'PARSENODE= *c*
-                        'RELATIONS= (reverse (doall (map #(plnr-numsub '<<<RELATION-ERROR>>> %) (evalcheck procedure))))
-                        'REL= RELß
-                        'NEGATIVE= (and (cq 'NEG) true)
-                        'RELMARKERS= RELMARKERSß
-                        'PLAUSIBILITY= (+ (plausibility? SMSUB) (plausibility? SMOB1) (plausibility? SMOB2) (or (eval plausibility) 0))
-                        'AMBIGUITIES= (concat (ambiguities? !1) (ambiguities? !2) (ambiguities? !3) (and paraphrase (list (list name paraphrase *word-being*))))))))))
-        a SMSUB SMOB1 SMOB2 SMOBL SMCOMP))
+                    (let [restrictions
+                            (doall (map (lambda [name marks num]
+                                    (let [x (if (term? (car marks)) marks (cons name marks))] (SET num (eval (car x))) x))
+                                '(*smsub* *smob1* *smob2*) restrictions '(*!1* *!2* *!3*)))]
+                        ;; CHECK THAT THIS DEFINITION SENSE MEETS ALL OF THE RESTRICTIONS SET FORTH IN THE DEFINITION UNDER RESTRICTIONSß.
+                        (when (ERRSET
+                                ;; ENCLOSED IN A ERRSET SO THAT THE FAILURE OF A CHECK CAN CAUSE IMMEDIATE ESCAPE FROM THE MAPC
+                                ;; AND HENCE TO THE AND WHICH CUTS OFF ALL FURTHER PROCESSING OF THIS DEFINITION SENSE.
+                                ;; TEMPORARY STORAGE ON THE PROPERTY LIST OF TEMP USED TO AVOID SEARCHING FOR THESE ITEMS ON THE
+                                ;; ONE HAND OR THE CONFLICT OF NAMES BETWEEN THE MARKERS RESULTING FROM CHECKING THE REL ARE
+                                ;; SAVED TO PUT ON IT LATER WHEN THE CLAUSE IS RELATED.
+                                (dorun (map (lambda [marks]
+                                    (let [oss (eval (car marks)) x (checkrel oss)]
+                                        (when x (set! *relß* (car x)))
+                                        (let [check (when (or (nil? (cddr marks)) (eval (caddr marks))) (check-markers (cadr marks) (markers? oss) (systems? oss)))]
+                                            (cond (not check) (ERR nil)
+                                                (= oss *relß*) (set! *relmarkersß* check))
+                                            nil)))
+                                    restrictions)))
+                            ;; SUBJECT RESTRICTION MARKERS USED IN THE DEFINITION AND THE REGISTERS OF THE SAME NAME REFERENCED AS FREE
+                            ;; VARIABLES IN THIS PROGRAM.  ON THE OTHER HAND, IF THE RESTRICTIONS HAVE BEEN MET, THEN BUILD AN RSS NODE.
+                            ;; RSSNODE= IS KEYWORD FOR INPUT INTO BUILD OF RSS NODE NAME.  IN THE CALL TO BUILD THE ITEMS ENDING IN =
+                            ;; ARE KEYWORDS WHOSE VALUE IS THE FOLLOWING ITEM.  MARKERSß, OF COURSE IS A VARIABLE IN THIS FUNCTION.
+                            ;; THIS CALL JUST SAYS SEND TO BUILD FOR MARKERS= THE VALUE SENT TO RELATION FOR MARKERSß.  THE PARSENODE
+                            ;; IS THE CURRENT NODE.  ***, #1, #2, AND #3 SUBSTITUTIONS DONE.  THIS IS FIRST STEP IN BUILDING PLANNER CODE.
+                            ;; NUMSUB IS THE ***, #1, #2, #3 SUBSTITUTION FUNCTION.  %PLNRPHRASE IS ONE CHUNK OF CONDENSED PLANNER CODE
+                            ;; LIKE (!COLOR *** !RED).
+                            (let [name (gensym 'RSS)] (build
+                                'RSSNODE= name
+                                'MARKERS= markers
+                                'VARIABLE= (let [x (gensym 'EVX)] (putprop! x 'RSSVAR x))
+                                'PARSENODE= *c*
+                                'RELATIONS= (reverse (doall (map #(plnr-numsub '<<<RELATION-ERROR>>> %) (evalcheck procedure))))
+                                'REL= *relß*
+                                'NEGATIVE= (and (cq 'NEG) true)
+                                'RELMARKERS= *relmarkersß*
+                                'PLAUSIBILITY= (+ (plausibility? *smsub*) (plausibility? *smob1*) (plausibility? *smob2*) (or (eval plausibility) 0))
+                                'AMBIGUITIES= (concat (ambiguities? *!1*) (ambiguities? *!2*) (ambiguities? *!3*) (and paraphrase (list (list name paraphrase *word-being*))))))))))))
+        a *smsub* *smob1* *smob2* *smobl* *smcomp*))
 
 (defn- dobackref [answer]
     ;; CALLED WHEN THE PROCESSING OF A SENTENCE IS COMPLETED.
@@ -6418,9 +6415,12 @@
     ;; EVALCHECK CHECKS FOR THE PRESENCE OF (!EVAL (MUMBLE ...) ...) IN THE INPUT S-EXPRESSION L.
     ;; IF IT FINDS ONE THEN THE EXPRESSION MUMBLE IS EVALUATED AND REPLACES (!EVAL ...), OTHERWISE
     ;; L IS RETURNED JUST THE WAY IT WAS.  HENCE THIS FUNCTION IS THE INVERSE OF QUOTE.
-    (cond (term? l) l (= (car l) '!EVAL) (eval (cadr l)) :else l))
+    (cond (term? l) l (= (car l) '!EVAL) (eval (cadr l)) :else l))
 
-(§ defq- iterate* [& l]
+(dynamic- *%X*)
+(dynamic- *%XL*)
+
+(defq- iterate* [& l]
     ;; GENERALIZED MAPPING FUNCTION.
     ;;  APPLIES FUNCTION TO THE CARTESIAN PRODUCT OF N LISTS GIVEN AS ARGUMENTS.
     ;;
@@ -6438,9 +6438,9 @@
     ;;
     ;; THIS SHOULD BECOME A MACRO SO THAT ITERATE TAILORS A MAPPING FUNCTION
     ;; FOR EACH APPLICATION WHICH IS THEN COMPILED.
-    (let [%X nil %XL nil] (eval (iteratex (car l) (cdr l)))))
+    (binding [*%X* nil *%XL* nil] (eval (iteratex (car l) (cdr l)))))
 
-(§ defn- iteratex [fun l]
+(defn- iteratex [fun l]
     ;; EXPANDS CALL ON ITERATE INTO A TAILORED SET OF MAPBLAND
     ;; CALLS WHICH DO THE APPROPRIATE COMPUTATION WHEN EVALUATED.
     ;; INPUTS:
@@ -6448,19 +6448,20 @@
     ;;      L      LIST OF N LISTS WHICH FUN IS TO BE APPLIED TO
     ;; VALUE:
     ;;  TAILORED FUNCTION
-    (if (nil? l) (cons (eval fun) %XL)
-        (list 'mapbland
-            (list 'lambda
-                ;; %X IS USED TO STORE THE VARIABLE NAME WHICH IT GETS FROM (GENSYM)
-                ;; %XL IS USED TO SAVE A LIST OF ALL OF THE VARIABLE NAMES SO FAR SO
-                ;; THAT THEY CAN BE GIVEN TO THE FUNCTION AT THE END (CONS %X NIL).
-                ;; CREATES A SHINY NEW CELL WHICH IS BOLTED ONTO THE BACK END OF %XL
-                ;; BY NCONC.  THIS PAIR IS NECESSARY BECAUSE SETQ RETURNS AS ITS VALUE
-                ;; THE RESULT OF THE LAST PAIR THAT IT PROCESSES.  A RUSE. PUTS (NIL)
-                ;; IN PLACE OF NIL AS A LIST TO PREVENT MAPBLAND FROM QUITTNG.
-                (list (SETQ %X (gensym) %XL (concat %XL (cons %X nil)) %X %X))
-                (iteratex fun (cdr l)))
-            (or (car l) '(nil)))))
+    (if (nil? l) (cons (eval fun) *%XL*)
+        (do (set! *%X* (gensym)) (set! *%XL* (concat *%XL* (cons *%X* nil)))
+            (list 'mapbland
+                (list 'lambda
+                    ;; %X IS USED TO STORE THE VARIABLE NAME WHICH IT GETS FROM (GENSYM)
+                    ;; %XL IS USED TO SAVE A LIST OF ALL OF THE VARIABLE NAMES SO FAR SO
+                    ;; THAT THEY CAN BE GIVEN TO THE FUNCTION AT THE END (CONS %X NIL).
+                    ;; CREATES A SHINY NEW CELL WHICH IS BOLTED ONTO THE BACK END OF %XL
+                    ;; BY NCONC.  THIS PAIR IS NECESSARY BECAUSE SETQ RETURNS AS ITS VALUE
+                    ;; THE RESULT OF THE LAST PAIR THAT IT PROCESSES.  A RUSE. PUTS (NIL)
+                    ;; IN PLACE OF NIL AS A LIST TO PREVENT MAPBLAND FROM QUITTNG.
+                    (list *%X*)
+                    (iteratex fun (cdr l)))
+                (or (car l) '(nil))))))
 
 (defn- mapbland [fun l]
     ;; THIS IS THE INSTAMATIC CAMERA FUNCTION.  NO MATTER WHAT YOU PUT INTO THE FUNCTION,
@@ -6539,7 +6540,7 @@
                         'REL= (rel? oss)
                         ;; THE OSS NAME PROVIDES A UNIQUE LABEL FOR WHERE THE AMBIGUITY OCCURRED FOR LATER COMPARISON.
                         'AMBIGUITIES= (concat (ambiguities? oss) (when paraphrase (list (list oss paraphrase *word-being*))))
-                        'PLAUSIBILITY= (+ (or (eval plausibility) 0) (plausibility? oss))))))
+                        'PLAUSIBILITY= (+ (or (eval plausibility) 0) (plausibility? oss))))))
             *sm* a)))
 
 ;; ######################################################
@@ -6650,7 +6651,7 @@
 (defn- plnr-numrel [oss]
     ;; THIS IS USED BY PLNR-NUMSUB TO HAVE THE VARIABLE NAME SUBSTITUTED
     ;; FOR THE OSS WHICH IS THE REL OF A PARTICULAR EXPRESSION.
-    (if (memq oss RELLIST) (SETQ RELß oss) oss))
+    (if (memq oss *rellist*) (set! *relß* oss) oss))
 
 (defn- plnr-numsub [me a]
     ;; FUNCTION WHICH SUBSTITUTES THE PROPER PARSE TIME VARIABLES
@@ -6670,9 +6671,9 @@
     ;;  THE CONDENSED PLANNER CODE AFTER THE SUBSTITUTIONS HAVE BEEN MADE.
     (doall (map (lambda [e] ;; E IS AN ATOM OF THE PHRASE
             (cond
-                (memq e '(!1 !2 !3)) (plnr-numrel (eval e))
+                (memq e '(*!1* *!2* *!3*)) (plnr-numrel (eval e))
                 (= e '***) me
-                (= e '*TIME) TIME ;; GETS THE CURRENT TIME
+                (= e '*TIME) *time* ;; GETS THE CURRENT TIME
                 :else e))
         (evalcheck a))))
 
@@ -6686,7 +6687,7 @@
         ;; + 1 AND THE (ASSQ ...) RETRIEVES THE APPROPRIATE RECOMMENDATION USING THIS NUMBER.
         ;; IF THERE IS NO SUCH NUMBER, NUMBERP FAILS AND SOME ARBITARY FUNCTION WHICH
         ;; IS STORED OUT THERE IS EVALUATED TO GIVE THE RECOMMENDATION.
-        (eval (if (number? (caar e)) (cadr (or (assq (count a) e) '(nil nil))) e))))
+        (eval (if (number? (caar e)) (cadr (or (assq (count a) e) '(nil nil))) e))))
 
 (defn- plnr-remtime [exp]
     ;; REMOVES ALL PRESENT TENSE TIME STRUCTURES
@@ -6710,7 +6711,7 @@
         (putprop! 'COMPARE-PSEUDO-VERB 'SEMANTICS
             (list 'relation
                 (list 'RESTRICTIONSß (list (list restrictions) (list restrictions))
-                      'PROCEDUREß (list (list degree dimension (if direction '!1 '!2) (if direction '!2 '!1))))))
+                      'PROCEDUREß (list (list degree dimension (if direction '*!1* '*!2*) (if direction '*!2* '*!1*))))))
         '(COMPARE-PSEUDO-VERB)))
 
 (defn- findmeasure [node]
@@ -6787,7 +6788,7 @@
         (= (car exp) '!SUBST) (bug! "EXPAND - IS !SUBST BEING HANDLED BY SOMEONE ELSE?")
         :else
             (binding [*quantifier* nil *choice* nil *var* nil *body* nil]
-                (let [multiple (eval (getprop (car exp) 'MULTIPLE))
+                (let [multiple (eval (getprop (car exp) 'MULTIPLE))
                       exp (doall (map (lambda [x]
                                 (cond (or (not (term? x)) (not (or (rss? x) (oss? x)))) x
                                     (refer? x)
@@ -6869,7 +6870,7 @@
     ;; IT RETURNS EITHER NIL OR A LIST OF WHICH THE FIRST ELEMENT IS THE REAL RELATIVE.
     ;; IT USES THIS FACT TO CHEAT ON RECURSION BY USING MAPCAN.
     (cond
-        (oss? oss) (memq oss RELLIST)
+        (oss? oss) (memq oss *rellist*)
         (rss? oss) (doall (mapcat #(when-not (term? %) (mapcat checkrel %)) (relations? oss)))))
 
 #_(ns shrdlu.smass)
@@ -7462,7 +7463,7 @@
     ;; NOTE THAT LISTNAMES WILL IN TURN PRODUCE A LIST OF EXPRESSIONS TO BE EVALUATED, WHICH WILL BE CAUGHT BY THE EVLIS.  CONFUSING?
 
 (defn- namelist-evaled [one spec listx]
-    (list (eval (list 'LISTNAMES (quotify one) (quotify spec) (quotify listx)))))
+    (list (eval (list 'LISTNAMES (quotify one) (quotify spec) (quotify listx)))))
 
 (def- numbers* ["NONE" "ONE" "TWO" "THREE" "FOUR" "FIVE" "SIX" "SEVEN" "EIGHT" "NINE" "TEN"])
 
@@ -7899,7 +7900,7 @@ ONT
         (when (cq 'PASV) (GO PONT))
 ONT1
         (when *labeltrace* (passing 'ONT1))
-        (when-not (SMCL1) (GO FAIL (m! 'SMCL1)))
+        (when-not (smcl1) (GO FAIL (m! 'SMCL1)))
         (when-not (cq 'REL-NOT-FOUND) (if *nn* (GO TONT) (GO RETSM)))
         (when-not (isq (getr (getr *c* 'RELHEAD) 'HEAD) 'TIM1) (GO PREPSHORT))
 TIMEQ
