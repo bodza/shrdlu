@@ -193,7 +193,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -339,15 +339,16 @@
         ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING.
         (do (set! *thalist* *tholist*) (thpop! *tree*) nil)))
 
-(defn- thtae [a thx type m]
+(defn- thtae [a x1 type m]
     (cond (term? a) nil
         (= (car a) :thuse)
-            (doall (map #(let-when [th (getprop % :theorem)] (and th (= (car th) type)) => (bug! 'thtae "BAD THEOREM" %)
-                            (list 'thapply % (car thx)))
-                (cdr a)))
+            (map #(let-when [th (getprop % :theorem)] (and th (= (car th) type)) => (bug! 'thtae "BAD THEOREM" %)
+                    (list 'thapply % x1))
+                (cdr a))
         (= (car a) :thtbf)
-            (doall (mapcat #(when (apply (cadr a) %) (list (list 'thapply % (car thx))))
-                (if (:l? @m) (:l @m) (:l (swap! m assoc :l? true :l (thmatchlist (car thx) (keyword type)))))))
+            (do (when-not (contains? @m :l) (swap! m assoc :l (thmatchlist x1 (keyword type))))
+                (mapcat #(when (apply (cadr a) %) (list (list 'thapply % x1)))
+                    (:l @m)))
         :else (bug! 'thtae "UNCLEAR RECOMMENDATION" a)))
 
 (defn- thass1 [a assert?]
@@ -385,7 +386,7 @@
                         (thpush! *tree* [(if assert? 'thassert 'therase) thx thy]))
                     ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
                     ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
-                    (let [m (atom {}) thy (doall (mapcat #(thtae % thx type m) a))]
+                    (let [m (atom {}) thy (doall (mapcat #(thtae % (car thx) type m) a))]
                         ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
                         ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>).
                         (when thy (set! *expr* (cons 'thdo thy)))
@@ -617,11 +618,11 @@
                 ;; 1 - THE INDICATOR "THTBF"
                 ;; 2 - THE ACTUAL FILTER (THTRUE IS THE MOST COMMON)
                 ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
-                (do (when-not (:t? @m) (swap! m assoc :t? true :t (thmatchlist a1 :thconse)))
+                (do (when-not (contains? @m :t) (swap! m assoc :t (thmatchlist a1 :thconse)))
                     (when (:t @m) [[:thtbf (cadr x) (:t @m)]]))
             ;; DO THE SAME THING, ONLY FOR DATABASE FILTERS.
             :thdbf
-                (do (when-not (:d? @m) (swap! m assoc :d? true :d (thmatchlist a1 :thassertion)))
+                (do (when-not (contains? @m :d) (swap! m assoc :d (thmatchlist a1 :thassertion)))
                     (when (:d @m) [[:thdbf (cadr x) (:d @m)]]))
             ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE STATEMENTS,
             ;; WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE.
@@ -4238,8 +4239,7 @@
                 (if (cq 'AND) (fq! 'NPL)
                     (do (move-pt :h) (trnsf 'NPL 'NS 'MASS 'NFS)))
             (cq 'VB)
-                (let [common (getprop 'VB :elim)]
-                    (dorun (map* #(SETQ common (meet common (features %))) *h*))
+                (let [common (reduce meet (getprop 'VB :elim) (map* features *h*))]
                     (feset *c* (union common (features *c*)))))
         (| (smconj *h*) 'RETURN "CONJOINß"))             ;; THEN MARK AS A LIST
 
@@ -6192,17 +6192,6 @@
         (let [x (fun (car l)) a (cond (nil? x) a (term? x) (concat a (cons x nil)) :else (concat a x)) l (cdr l)]
             (if l (recur a l) a))))
 
-(defn- mapc2 [fun l]
-    ;; MAPPING FUNCTION FOR GOING 2 AT A TIME THROUGH A LIST.
-    ;; INPUTS:
-    ;;     FUN - FUNCTION OF TWO ARGUMENTS
-    ;;     L   - LIST (ESPECIALLY ATTRIBUTE VALUE TYPE LIST)
-    ;; VALUE:
-    ;;  LIST (LIKE MAPCAR) OF FUN APPLIED TO TOP TWO ELEMENTS.
-    ;;
-    ;; FUN APPLIED TO TOP TWO ELEMENTS.  LIST IS STEPPED TWO AT A TIME.
-    (or (nil? l) (do (fun (car l) (cadr l)) (recur fun (cddr l)))))
-
 (defn- mumble [x]
     ;; MUMBLE IS THE PLANNER FILTER FOR LOOKING AT ASSERTIONS TO SEE WHEN THEY WERE MENTIONED
     ;; IN THE DIALOG.  IT USES THE FREE VARIABLE "WHO" TO DECIDE WHAT TO LOOK FOR.
@@ -6281,27 +6270,27 @@
         (or (= (car code) 'thand) (= (car code) 'thprog)) (list (doall (mapcat plnr-junkify2 code)))
         :else (list (doall (map plnr-junkify code)))))
 
-(defn- plnr-thconsify [varlist exp body]
+(defn- plnr-thconsify [vars expr body]
     ;; GENERATES A CONSEQUENT THEOREM.
     (let [th (gensym 'THEOREM)]
         (putprop! th :theorem
             (if (= (car body) 'thprog)
-                (concat (list 'thconse (union varlist (cadr body)) exp) (cddr body))
-                (list 'thconse varlist exp body)))
+                (concat (list 'thconse (union vars (cadr body)) expr) (cddr body))
+                (list 'thconse vars expr body)))
         th))
 
-(defn- plnr-findify [mode variable varlist body]
+(defn- plnr-findify [mode variable vars body]
     ;; GENERATES A THFIND STATEMENT FOR THE NOUN GROUP DESCRIBED IN THE OSS.
     ;; IT (CURRENTLY) ASSUMES THAT THE PLNRCODE PROPERTY OF THE OSS IS A LIST
     ;; OF PATERNS OF THGOAL STATEMENTS.  MODE IS DEFINED TO BE <MODE> IN THE
     ;; MICRO-PLANNER DESCRIPTION OF THFIND (SEE AI MEMO !203A) BODY
     ;; IS A SINGLE PLANNER EXPRESSION (POSSIBLY A THAND OR THPROG).
-    (let [[varlist body]
+    (let [[vars body]
             (condp = (car body)
-                'thand [varlist (cdr body)]
-                'thprog [(concat varlist (cadr body)) (cddr body)]
-                [varlist (list body)])]
-        (concat (list 'thfind mode (list 'thv variable) varlist) body)))
+                'thand [vars (cdr body)]
+                'thprog [(concat vars (cadr body)) (cddr body)]
+                [vars (list body)])]
+        (concat (list 'thfind mode (list 'thv variable) vars) body)))
 
 (defn- plnr-findspec [x]
     ;; GENERATES PARAMETER FOR THFIND FROM THE NOTATION USED IN THE DETERMINER.
@@ -6321,44 +6310,31 @@
         (if (getprop (car a) :nogoal) a
             (concat (list 'thgoal a [:thdbf 'mumble]) (plnr-recommendify a)))))
 
-(defn- plnr-mung [findexpr candidates]
+(defn- plnr-mung [e candidates]
     ;; DOES A HORRIBLE THING: MUNGS A THFIND EXPRESSION WHICH FINDS A NOUN GROUP REFERENCE.
     ;; IT PUTS A THAMONG EXPRESSION AS THE FIRST STATEMENT OF THE THFIND.  IF THERE IS ALREADY
     ;; A THAMONG EXPRESSION IN THE THFIND, THEN MUNG JUST CLOBBERS THE LIST IN THAT THAMONG.
-    (cons (car findexpr)
-        (cons (cadr findexpr)
-            (cons (caddr findexpr)
-                (cons (cadddr findexpr)
-                    (cons (list 'thamong (caddr findexpr) (quotify candidates))
-                        (cond (= (caaddr (cdr findexpr)) 'thfind) (cddddr (cdr findexpr))
-                            :else (cddddr findexpr))))))))
+    (list* (car e) (cadr e) (caddr e) (cadddr e) (list 'thamong (caddr e) (quotify candidates)) (cddddr (if (= (caaddr (cdr e)) 'thfind) (cdr e) e))))
 
 (defn- plnr-notify [neg a]
     ;; PUTS IN THNOT, BUT ELIMINATE DOUBLE NEGATIVES.
     (cond (not neg) a (= (car a) 'thnot) (cadr a) :else (list 'thnot a)))
 
-(dynamic- *newbody*)
-
-(defn- plnr-newbody [x] (set! *newbody* (cons x *newbody*)))
-
-(defn- plnr-progify [varlist body]
-    ;; SETS UP A THPROG OR THE SIMPLEST EQUIVALENT EXPRESSION FOR
-    ;; THE PARTICULAR CASE.  BODY IS A LIST OF EXPRESSIONS.
+(defn- plnr-progify [vars body]
+    ;; SETS UP A THPROG OR THE SIMPLEST EQUIVALENT EXPRESSION FOR THE PARTICULAR CASE.
+    ;; BODY IS A LIST OF EXPRESSIONS.
     (when body
-        (binding [*newbody* nil]
-            (dorun (map (lambda [x]
-                    (condp = (car x)
-                        'thprog
-                            (if (meet varlist (cadr x)) (plnr-newbody x)
-                                (do (SETQ varlist (concat varlist (cadr x))) (dorun (map plnr-newbody (cddr x)))))
-                        'thand
-                            (dorun (map plnr-newbody (cdr x)))
-                        (plnr-newbody x)))
-                body))
+        (let [[vars body]
+                (reduce (fn [[v b] x]
+                        (condp = (car x)
+                            'thprog (if (meet v (cadr x)) [v (cons x b)] [(concat v (cadr x)) (into b (cddr x))])
+                            'thand [v (into b (cdr x))]
+                            [v (cons x b)]))
+                    [vars nil] body)]
             (cond
-                varlist (list* 'thprog varlist (reverse *newbody*))
-                (cdr *newbody*) (cons 'thand (reverse *newbody*))
-                :else (car *newbody*)))))
+                vars (list* 'thprog vars (reverse body))
+                (cdr body) (cons 'thand (reverse body))
+                :else (car body)))))
 
 (defn- plnr-numrel [oss]
     ;; THIS IS USED BY PLNR-NUMSUB TO HAVE THE VARIABLE NAME SUBSTITUTED
@@ -6367,7 +6343,7 @@
 
 (defn- plnr-numsub [me a]
     ;; FUNCTION WHICH SUBSTITUTES THE PROPER PARSE TIME VARIABLES
-    ;; FOR !1, !2, !3, AND *** IN THE PLANNER SHCEMAS FROM DICTIONARY DEFINITIONS.
+    ;; FOR !1, !2, !3, AND *** IN THE PLANNER SCHEMAS FROM DICTIONARY DEFINITIONS.
     ;;
     ;; INPUTS:
     ;;     %ME         - OSS FOR CURRENT OBJECT
@@ -6432,13 +6408,13 @@
     (binding [*ordinal* nil]
         (loop-when [body nil a a] a => (if *ordinal* (ordmake *ordinal* var body) (plnr-progify nil body))
             (let [x (expand (car a) (and (nil? (cdr a)) (rssvar? var) (getprop var :used) (list 'thv var)) freevars)
-                  body (cond
-                        (= x '*ORDINAL*) body
+                  [body a] (cond
+                        (= x '*ORDINAL*) [body a]
                         ;; A SUBST DEFINITION IF IT IS THE ONLY THING IS TO BE APPLIED TO THE OSS TO WHICH THIS RSS WILL BE RELATED.
                         ;; THE VARIABLE FOR A RELATION IS INSERTED INTO THE SECOND PLACE OF THE RELATION IF IT IS REFERRED TO ANYWHERE ELSE.
-                        (and (cdr a) (= (car x) '!SUBST)) (do (mapc2 (lambda [x y] (SETQ a (subst x y a))) (cdr x)) body)
-                        x (cons x body)
-                        :else body)]
+                        (and (cdr a) (= (car x) '!SUBST)) [body (reduce (fn [a [x y]] (subst x y a)) a (partition 2 (cdr x)))]
+                        x [(cons x body) a]
+                        :else [body a])]
                 (recur body (cdr a))))))
 
 (dynamic- *rel*)
@@ -6472,25 +6448,25 @@
 
 (dynamic- *choice*)
 (dynamic- *var*)
-(dynamic- *body*)
+(dynamic- *body*)
 
-(defn- expand [exp event freevars]
+(defn- expand [expr event freevars]
     ;; THE HEART OF THE PLANNER BUILDER.
     ;; EXPANDS AN EXPRESSION WORRYING ABOUT THE QUANTIFIERS AND CONNECTIVES OF ITS CONSTITUENTS.
     ;; IT DOESN'T REALLY HANDLE EXPRESSIONS WITH MORE THAN ONE QUANTIFIED SS UNLESS ONE OF THEM IS THE REL.
     ;; THE EVENT IS NON-NIL ONLY IF THE EVENT-NAME IS TO BE INCLUDED IN THE EXPANSION OF THE EXPRESSION.
-    (cond (rss? exp)
+    (cond (rss? expr)
             (cond
-                (conjuncts? exp) (plnr-progify nil (doall (map #(expand % nil freevars) (conjuncts? exp))))
-                (disjuncts? exp) #_(PLNR-ORIFY (doall (map #(expand % nil freevars) (disjuncts? exp)))) (bug! 'plnr-orify "NOT WRITTEN YET")
-                :else (plnr-notify (negative? exp) (plnr-describe (relations? exp) (variable? exp) (cons (variable? exp) freevars))))
-        (term? exp) (bug! 'expand "ATOMIC MODIFIER" exp)
-        (= (car exp) '*ORDINAL*) (if *ordinal* (oops! "I CAN'T HANDLE TWO ORDINALS OR SUPERLATIVES AT ONCE.") (do (set! *ordinal* (cadr exp)) '*ORDINAL*))
-        (= (car exp) '!SUBST) (bug! 'expand "IS !SUBST BEING HANDLED BY SOMEONE ELSE?")
+                (conjuncts? expr) (plnr-progify nil (doall (map #(expand % nil freevars) (conjuncts? expr))))
+                (disjuncts? expr) #_(PLNR-ORIFY (doall (map #(expand % nil freevars) (disjuncts? expr)))) (bug! 'plnr-orify "NOT WRITTEN YET")
+                :else (plnr-notify (negative? expr) (plnr-describe (relations? expr) (variable? expr) (cons (variable? expr) freevars))))
+        (term? expr) (bug! 'expand "ATOMIC MODIFIER" expr)
+        (= (car expr) '*ORDINAL*) (if *ordinal* (oops! "I CAN'T HANDLE TWO ORDINALS OR SUPERLATIVES AT ONCE.") (do (set! *ordinal* (cadr expr)) '*ORDINAL*))
+        (= (car expr) '!SUBST) (bug! 'expand "IS !SUBST BEING HANDLED BY SOMEONE ELSE?")
         :else
             (binding [*quantifier* nil *choice* nil *var* nil *body* nil]
-                (let [multiple (eval (getprop (car exp) :multiple))
-                      exp (doall (map (lambda [x]
+                (let [multiple (eval (getprop (car expr) :multiple))
+                      expr (doall (map (lambda [x]
                                 (cond (or (not (term? x)) (not (or (rss? x) (oss? x)))) x
                                     (refer? x)
                                         (if (cdr (refer? x)) (if multiple (do (erqset 'AND) (set! *choice* (refer? x)) '*AND*) (refer? x)) (car (refer? x)))
@@ -6512,14 +6488,14 @@
                                         (do (set! *body* (plnr-describe (relations? x) (variable? x) (cons (variable? x) freevars)))
                                             (list 'thv (set! *var* (variable? x))))
                                     :else (bug! 'expand "STRANGE QUANTIFIER")))
-                            (if event (list* (car exp) event (cdr exp)) exp)))]
+                            (if event (list* (car expr) event (cdr expr)) expr)))]
                     (cond ;; THE EVENT NAME IS STUCK INTO THE SECOND POSITION IF THERE IS ONE.
-                        (nil? *quantifier*) (plnr-goalify exp)
-                        (= *quantifier* 'AND) (plnr-progify nil (doall (map #(expand (subst % '*AND* exp) nil freevars) *choice*)))
-                        (= *quantifier* 'OR) #_(PLNR-ORIFY (doall (map #(expand (subst % '*OR* exp) nil freevars) *choice*))) (bug! 'plnr-orify "NOT WRITTEN YET")
-                        (= *quantifier* 'FIND) (plnr-findify *choice* *var* (list *var*) (plnr-progify nil (cons *body* (list (plnr-goalify exp)))))
+                        (nil? *quantifier*) (plnr-goalify expr)
+                        (= *quantifier* 'AND) (plnr-progify nil (doall (map #(expand (subst % '*AND* expr) nil freevars) *choice*)))
+                        (= *quantifier* 'OR) #_(PLNR-ORIFY (doall (map #(expand (subst % '*OR* expr) nil freevars) *choice*))) (bug! 'plnr-orify "NOT WRITTEN YET")
+                        (= *quantifier* 'FIND) (plnr-findify *choice* *var* (list *var*) (plnr-progify nil (cons *body* (list (plnr-goalify expr)))))
                         :else (plnr-notify (memq *quantifier* ['ALL 'NO])
-                                (plnr-progify (and *var* (list *var*)) (cons *body* (list (plnr-notify (= *quantifier* 'ALL) (plnr-goalify exp)))))))))))
+                                (plnr-progify (and *var* (list *var*)) (cons *body* (list (plnr-notify (= *quantifier* 'ALL) (plnr-goalify expr)))))))))))
 
 (defn- erqset [x]
     ;; USED BY EXPAND TO MAKE SURE IT ISN'T GETTING CONFUSED BY TOO
@@ -6800,11 +6776,10 @@
         ;; WE ARE INSIDE A LOOP WHICH GOES THROUGH ALL THE DIFFERENT POSSIBLE AMBIGUITIES ON THE LIST FOR THE FIRST ANSWER ON ANSLIST.
         ;; ON EACH ANSWER WE LOOK FOR POSSIBLE INTERPRETATIONS FOR THE PARTICULAR NODE WHERE THE AMBIGUITY WAS CREATED.
         (loop [amb amb]
-            (let [possibilities (list (car amb))]
-                (dorun (map #(let [x (parse-assoc (caar amb) (ambiguities? (ansrss? %)))]
-                                (when (and x (not (memq x possibilities)))
-                                    (SETQ possibilities (cons x possibilities))))
-                    (cdr anslist)))
+            (let [possibilities
+                    (reduce #(let [x (parse-assoc (caar amb) (ambiguities? (ansrss? %2)))]
+                                (if (and x (not (memq x %1))) (cons x %1) %1))
+                        (list (car amb)) (cdr anslist))]
                 (cond (cdr possibilities)
                         (do (terpri)
                             (print "I'M NOT SURE WHAT YOU MEAN BY \"")
@@ -6995,47 +6970,38 @@
                                     true))
                         :else (bug! 'ansrel "FUNNY TYPE" type)))))))
 
-(dynamic- *neg*)
-(dynamic- *varlist*)
-(dynamic- *body*)
+(defn- ansthm+ [x m]
+    (let [_ (plnr-describe (relations? x) (variable? x) (list (variable? x)))]
+        (swap! m assoc :vars (cons (variable? x) (:vars @m)) :body (if (:body @m) (plnr-progify nil (list (:body @m) _)) _))
+        (list 'thv (variable? x))))
 
-(defn- ansthm [exp neg']
-    ;; GENERATES A THEOREM OR ASSERTION FOR AN EXPRESSION.
-    (binding [*neg* neg' *varlist* nil *body* nil]
-        ;; NOTELL MARKS THAT THIS ISN'T THE KIND OF ASSERTION IT CAN HANDLE.
-        ;; IT USES GLOBAL-ERR VAR AND NEG ARE SET AS FREE VARIABLES BY ANSTHMELEMENT WHICH ANALYZES EACH ELEMENT.
-        ;; IF THERE ARE NO VARS, IT IS A SIMPLE ASSERTION.
-        (if (or (term? exp) (not (getprop (car exp) :tellable))) (do (notell) nil)
-            (let-when [exp (doall (map ansthmelement (plnr-remtime exp)))] (or *varlist* *neg*) => exp
-                (plnr-thconsify *varlist* exp (if *neg* (plnr-progify nil (list *body* '(thfail))) *body*))))))
-
-(defn- ansthmadd [oss]
-    (let [_ (plnr-describe (relations? oss) (variable? oss) (list (variable? oss)))]
-        (set! *varlist* (cons (variable? oss) *varlist*))
-        (set! *body* (if *body* (plnr-progify nil (list *body* _)) _))
-        (list 'thv (variable? oss))))
-
-(defn- ansthmelement [x]
+(defn- ansthm1 [x m]
     (cond (not (term? x)) x
         (tss? x) (notell)
         (rss? x) (notell)
         (not (oss? x)) x
         (refer? x) (atomify (refer? x))
-        (= (quantifier? x) 'ALL) (if *neg* (notell) (ansthmadd x))
-        (= (quantifier? x) 'NO) (do (set! *neg* true) (ansthmadd x))
-        (= (quantifier? x) 'NDET) (ansthmadd x)
+        (= (quantifier? x) 'ALL) (if (:neg @m) (notell) (ansthm+ x m))
+        (= (quantifier? x) 'NO) (ansthm+ x (swap! m assoc :neg true))
+        (= (quantifier? x) 'NDET) (ansthm+ x m)
         (not (= (quantifier? x) 'INDEF)) (notell)
-        (isq (parsenode? x) 'ANY) (ansthmadd x)
+        (isq (parsenode? x) 'ANY) (ansthm+ x m)
         :else (oops! "YOU HAVE TO TELL ME WHICH")))
 
-(defn- ansunique [l]
-    ;; THIS FUNCTION SHOULD ELIMINATE ANSWERS WHICH GIVE THE SAME
-    ;; RESULT EVEN THOUGH THEY INVOLVE DIFFERENT INTERPRETATIONS.
-    ;; IT NEEDS TO CHECK FOR SIGNIFICANT DIFFERENCES, E.G. IN WHAT
-    ;; GETS PRINTED OR DONE, WHILE IGNORING INSIGNIFICANT ONES,
-    ;; E.G. THE NAMES OF ATOMS TO WHICH THINGS ARE ATTACHED.
+(defn- ansthm [expr neg]
+    ;; GENERATES A THEOREM OR ASSERTION FOR AN EXPRESSION.
+    ;; NOTELL MARKS THAT THIS ISN'T THE KIND OF ASSERTION IT CAN HANDLE.
+    ;; IF THERE ARE NO VARS, IT IS A SIMPLE ASSERTION.
+    (when' (and (not (term? expr)) (getprop (car expr) :tellable)) => (do (notell) nil)
+        (let-when [m (atom {:neg neg}) expr (doall (map #(ansthm1 % m) (plnr-remtime expr)))] (or (:vars @m) (:neg @m)) => expr
+            (plnr-thconsify (:vars @m) expr (if (:neg @m) (plnr-progify nil (list (:body @m) '(thfail))) (:body @m))))))
+
+(defn- ansunique [a]
+    ;; ELIMINATE ANSWERS WHICH GIVE THE SAME RESULT EVEN THOUGH THEY INVOLVE DIFFERENT INTERPRETATIONS.
+    ;; IT NEEDS TO CHECK FOR SIGNIFICANT DIFFERENCES, E.G. IN WHAT GETS PRINTED OR DONE,
+    ;; WHILE IGNORING INSIGNIFICANT ONES, E.G. THE NAMES OF ATOMS TO WHICH THINGS ARE ATTACHED.
     ;; FOR THE MOMENT, IT JUST RETURNS THE LIST UNTOUCHED.
-    l)
+    a)
 
 (defn- cutoff [x]
     ;; FOR CUTTING # OFF OF CONCEPT NAMES TO GET ENGLISH WORDS.
@@ -7050,11 +7016,10 @@
                     '((say "BECAUSE YOU TOLD ME TO"))
                     (cons '(say "TO") (nameaction 'INFINITIVE (getprop event :why))))
             (= type 'HOW)
-                (let [ans nil]
-                    (dorun (map #(and (= (getprop % :why) event) (SETQ ans (cons % ans))) *eventlist*))
-                    (if (nil? ans)
-                        '((say "I CAN'T ANALYZE HOW I DID IT"))
-                        (concat '((say "BY")) (nameaction 'ING (car ans)) (doall (mapcat #(list* '(print ";") '(say "THEN") (nameaction 'ING %)) (cdr ans))))))
+                (let [ans (into nil (filter #(= (getprop % :why) event) *eventlist*))]
+                    (if ans
+                        (concat '((say "BY")) (nameaction 'ING (car ans)) (doall (mapcat #(list* '(print ";") '(say "THEN") (nameaction 'ING %)) (cdr ans))))
+                        '((say "I CAN'T ANALYZE HOW I DID IT"))))
             (or (= type 'POLAR) (= type 'WHEN))
                 (if (= (getprop event :why) 'COMMAND)
                         (if (= event (toplevel (car *eventlist*)))
