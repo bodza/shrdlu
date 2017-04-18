@@ -140,7 +140,7 @@
 (defn- bug! [message] (throw (Error. message)))
 (defn- oops! [message] (set! *oops* message) (throw (RuntimeException. message)))
 
-(declare topcenter abs atab clear diff half endtime ev findspace goal grow locgreater MEMOREND memory occupier order packo packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 thass1 THASSERT thassertf thassertt THASVAL thbind thbi1 thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop threm1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue thtry1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? thvars2 thvarsubst THVSETQ %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 grammar! setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP popto previous rebuild root rq semantics trnsf word conjo comma cantake canparse !bethere !beint both thank !blueprint !build !COLOR !cleanoff !define !DEFINITION !eqdim !grasp !have !in !LOC !LOC2 !NAME !notice !on !propdefine !ROLE !stackup smtime smnewnoun smnewpropn smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjg-prepg SMIT smit2 smngof smng1 smng2 SMNG3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy RELATION dobackref evalcheck ITERATE ITERATEX mapbland mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime plnr-var compare-build findmeasure MEASURE plnr-describe relfind ordmake compare-proc EXPAND erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ANSREL ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare topcenter abs atab clear diff half endtime ev findspace goal grow locgreater MEMOREND memory occupier order packo packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 thass1 THASSERT thassertf thassertt THASVAL thbind thbi1 thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop threm1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue thtry1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? thvars2 thvarsubst THVSETQ %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 grammar! setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP popto previous rebuild root rq semantics trnsf word conjo comma cantake canparse !bethere !beint both thank !blueprint !build !COLOR !cleanoff !define !DEFINITION !eqdim !grasp !have !in !LOC !loc2 !name !notice !on !propdefine !ROLE !stackup smtime smnewnoun smnewpropn smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjg-prepg smit smit2 smngof smng1 smng2 SMNG3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy RELATION dobackref evalcheck ITERATE ITERATEX mapbland mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime plnr-var compare-build findmeasure MEASURE plnr-describe relfind ordmake compare-proc EXPAND erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -2451,129 +2451,110 @@
 
 (defn- uppercase-ify-char [c] (if (< 96 c 123) (- c 32) c))
 
+(dynamic- *word*)
+
 (§ defn- ETAOIN []
-    (let [word nil c nil wrd nil lst nil nxt nil x nil rd nil poss nil]
-        (set! *sent* (set! *punct* nil))
-        (terpri)
-        (print "READY")
-        (terpri)
-    CHAR (SETQ c (ascii (uppercase-ify-char (TYI))))
-        (cond (= c \space) (GO WORD)                     ;; DELIMITER
-            (= c (ascii 127))
-                (do (cond word (do (print (car word)) (SETQ word (cdr word)))
-                        *sent* (do (print (car *sent*)) (set! *sent* (cdr *sent*))))
-                    (GO CHAR))
-            (= c (ascii 13)) (GO WORD)
-            (memq c PUNCL)
-                (do (set! *punct* c)                           ;; DELIMITER
-                    (if word (GO WORD) (GO PUNC))))
-        (when (or (number? c) (and (= c '=) (nil? word)) (memq c VOWEL) (memq c CONSO))
-            (SETQ word (cons c word)))
-        (GO CHAR)
-
-    DO  (terpri)
-        (print "READY")
-        (terpri)
-        (dorun (map -print (reverse *sent*)))
-        (print \space)
-        (dorun (map print (reverse word)))
-        (GO CHAR)
-
-    WORD (cond (nil? word) (GO CHAR)
-            (and (SETQ wrd (ERRSET (READLIST (reverse word)))) (number? (SETQ wrd (car wrd))))
-                (do (set! *sent* (cons wrd *sent*))
-                    (buildword wrd (or (and (zero? (dec wrd)) '(NUM NS)) '(NUM)) (list 'NUM wrd) nil)) ;; NO ROOT FOR NUMBERS
-            (nil? wrd) (do (SETQ wrd (reverse word)) (GO NO))
-            :else
-                (let [? (getprop wrd 'FEATURES)]
-                    (cond ? ?                           ;; IF A WORD HAS FEATURES, IT'S PROPERTIES ARE ALL SET UP IN THE DICTIONARY
-                        (SETQ x (getprop wrd 'IRREGULAR))
-                            (buildword wrd (mod (getprop (car x) 'FEATURES) (cdr x)) (semantics x) (car x))
-                        (= (car (LAST word)) '=)
-                            (buildword wrd (if (memq '\" word) '(PROPN NS POSS) '(PROPN NS)) '((PROPN T)) nil) ;; "sic!
-                        :else (GO CUT))))
-        (GO WRD)
-
-        ;; --------------------------------------------
-        ;;               MORPHOLOGY CODE
-        ;; --------------------------------------------
-
-    CUT (cond
-            (sta word '(T \' N)) (do (SETQ rd (cdddr word)) (SETQ word (cons '* word)) (GO TRY))
-            (sta word '(S \')) (do (SETQ word (cddr word)) (SETQ poss wrd) (GO WORD))
-            (sta word '(\')) (do (SETQ word (cdr word)) (SETQ poss wrd) (GO WORD))
-            (sta word '(Y L)) (do (SETQ rd (cddr word)) (GO LY))
-            (sta word '(G N I)) (SETQ rd (cdddr word))
-            (sta word '(D E)) (SETQ rd (cddr word))
-            (sta word '(N E)) (SETQ rd (cddr word))
-            (sta word '(R E)) (SETQ rd (cddr word))
-            (sta word '(T S E)) (SETQ rd (cdddr word))
-            (sta word '(S)) (do (SETQ rd (cdr word)) (GO SIB))
-            :else (GO NO))
-        (SETQ lst (car rd))
-        (SETQ nxt (cadr rd))
-        (cond (and (memq lst CONSO) (not (memq lst LRSZV)) (= lst nxt)) (SETQ rd (cdr rd))
-            (= lst 'I) (SETQ rd (cons 'Y (cdr rd)))
-            (or
-                (and (memq lst CONSO) (memq nxt VOWEL) (not (= nxt 'E)) (memq (caddr rd) CONSO))
-                (and (memq lst LRSZV) (memq nxt CONSO) (not (memq nxt LRSZV)))
-                (and (= lst 'H) (= nxt 'T))
-                (and (memq lst CGSJVZ) (or (memq nxt LRSZV) (and (memq nxt VOWEL) (memq (caddr rd) VOWEL)))))
-                    (SETQ rd (cons 'E rd)))
-        (GO TRY)
-
-    LY  (when (and (memq (car rd) VOWEL) (not (= (car rd) 'E)) (memq (cadr rd) CONSO))
-            (SETQ rd (cons 'E rd)))
-        (when (memq 'ADJ (getprop (SETQ ROOT (READLIST (reverse rd))) 'FEATURES))
-            (buildword wrd '(ADV VBAD) nil ROOT) ;; TEMP NIL SEMANTICS ;; ROOT IS THE ADJECTIVE
-            (GO WRD))
-        (GO NO)
-
-    SIB (SETQ lst (car rd))
-        (SETQ nxt (cadr rd))
-        (cond (not= lst 'E) true
-            (= nxt 'I) (SETQ rd (cons 'Y (cddr rd)))
-            (= nxt 'X) (SETQ rd (cdr rd))
-            (and (= nxt 'H) (not (= (caddr rd) 'T))) (SETQ rd (cdr rd))
-            (and (memq nxt '(S Z)) (= nxt (caddr rd))) (SETQ rd (cddr rd)))
-    TRY (SETQ FEATURES (getprop (SETQ ROOT (READLIST (reverse rd))) 'FEATURES))
-        (cond (or FEATURES (and (SETQ x (getprop ROOT 'IRREGULAR)) (SETQ FEATURES (mod (getprop (SETQ ROOT (car x)) 'FEATURES) (cdr x)))))
-                (buildword wrd (mod FEATURES (getprop (car word) 'MOD)) (getprop ROOT 'SEMANTICS) ROOT)
-            (= (car rd) 'E) (do (SETQ rd (cdr rd)) (GO TRY))
-            :else (GO NO))
-
-        ;; -------------------------------------------------------
-        ;;   BUILD UP THE PROCESSED LIST OF WORDS TO BE RETURNED
-        ;; -------------------------------------------------------
-
-    WRD (set! *sent*
-            (if poss
-                (cond (or (memq 'NOUN (SETQ FEATURES (getprop wrd 'FEATURES))) (memq 'PROPN FEATURES))
-                        ;; IF IT'S A NOUN OR A PROPER NOUN, MARK IT AS POSSESSIVE
-                        (do (buildword poss (concat (meet FEATURES (getprop 'POSS 'ELIM)) '(POSS)) (getprop wrd 'SEMANTICS) ROOT)
-                            (cons poss *sent*))
-                    ;; CAN WE GENERALIZE IT???
-                    (buildword "'S" '(VB BE V3PS PRES) (getprop 'BE 'SEMANTICS) 'BE) (cons "'S" (cons wrd *sent*)))
-                (cons wrd *sent*)))
-
-    PUNC (when *punct*
-            (if (memq *punct* FINAL)
-                (RETURN (reverse *sent*)) ;; RETURN POINT !!!!!!!!!!!!!
-                (set! *sent* (cons *punct* *sent*)))
-            (set! *punct* nil))
-
-        (SETQ word (SETQ poss nil))
-        (GO CHAR)
-
-    NO  (terpri)
-        (print (str "SORRY, I DON'T KNOW THE WORD \"" wrd "\"."))
-        (terpri)
-        (print "PLEASE TYPE <LF> AND CONTINUE THE SENTENCE.")
-
-    =>  (when-not (== (TYI) 10) (GO =>))
-        (set! *punct* nil)
-        (SETQ word nil)
-        (GO DO)))
+    (binding [*word* nil] (set! *sent* (set! *punct* nil))
+        (let [wrd nil rd nil poss nil]
+        DO  (terpri)
+            (print "READY")
+            (terpri)
+            (when (or *sent* *word*)
+                (dorun (map -print (reverse *sent*)))
+                (print \space)
+                (dorun (map print (reverse *word*))))
+        CHAR (loop []
+                (let [c (ascii (uppercase-ify-char (TYI)))]
+                    (cond (or (= c \space) (= c (ascii 13))) (GO WORD)
+                        (= c (ascii 127))
+                            (cond *word* (do (print (car *word*)) (set! *word* (cdr *word*)))
+                                  *sent* (do (print (car *sent*)) (set! *sent* (cdr *sent*))))
+                        (memq c PUNCL)
+                            (do (set! *punct* c)
+                                (if *word* (GO WORD) (GO PUNC)))
+                        (or (number? c) (and (= c '=) (nil? *word*)) (memq c VOWEL) (memq c CONSO))
+                            (set! *word* (cons c *word*)))
+                    (recur)))
+        WORD (cond (nil? *word*) (GO CHAR)
+                (and (SETQ wrd (ERRSET (READLIST (reverse *word*)))) (number? (SETQ wrd (car wrd))))
+                    (do (set! *sent* (cons wrd *sent*))
+                        (buildword wrd (or (and (zero? (dec wrd)) '(NUM NS)) '(NUM)) (list 'NUM wrd) nil)) ;; NO ROOT FOR NUMBERS
+                (nil? wrd) (do (SETQ wrd (reverse *word*)) (GO NO))
+                :else
+                    (or (getprop wrd 'FEATURES)     ;; IF A WORD HAS FEATURES, IT'S PROPERTIES ARE ALL SET UP IN THE DICTIONARY
+                        (let [x (getprop wrd 'IRREGULAR)]
+                            (cond x
+                                    (buildword wrd (mod (getprop (car x) 'FEATURES) (cdr x)) (semantics x) (car x))
+                                (= (last *word*) '=)
+                                    (buildword wrd (if (memq '\" *word*) '(PROPN NS POSS) '(PROPN NS)) '((PROPN T)) nil) ;; "sic!
+                                :else (GO CUT)))))
+            (GO WRD)
+        CUT (cond
+                (sta *word* '(T \' N)) (do (SETQ rd (cdddr *word*)) (set! *word* (cons '* *word*)) (GO TRY))
+                (sta *word* '(S \')) (do (set! *word* (cddr *word*)) (SETQ poss wrd) (GO WORD))
+                (sta *word* '(\')) (do (set! *word* (cdr *word*)) (SETQ poss wrd) (GO WORD))
+                (sta *word* '(Y L)) (do (SETQ rd (cddr *word*)) (GO LY))
+                (sta *word* '(G N I)) (SETQ rd (cdddr *word*))
+                (sta *word* '(D E)) (SETQ rd (cddr *word*))
+                (sta *word* '(N E)) (SETQ rd (cddr *word*))
+                (sta *word* '(R E)) (SETQ rd (cddr *word*))
+                (sta *word* '(T S E)) (SETQ rd (cdddr *word*))
+                (sta *word* '(S)) (do (SETQ rd (cdr *word*)) (GO SIB))
+                :else (GO NO))
+            (let [lst (car rd) nxt (cadr rd)]
+                (cond (and (memq lst CONSO) (not (memq lst LRSZV)) (= lst nxt)) (SETQ rd (cdr rd))
+                    (= lst 'I) (SETQ rd (cons 'Y (cdr rd)))
+                    (or (and (memq lst CONSO) (memq nxt VOWEL) (not (= nxt 'E)) (memq (caddr rd) CONSO))
+                        (and (memq lst LRSZV) (memq nxt CONSO) (not (memq nxt LRSZV)))
+                        (and (= lst 'H) (= nxt 'T))
+                        (and (memq lst CGSJVZ) (or (memq nxt LRSZV) (and (memq nxt VOWEL) (memq (caddr rd) VOWEL)))))
+                            (SETQ rd (cons 'E rd))))
+            (GO TRY)
+        LY  (when (and (memq (car rd) VOWEL) (not (= (car rd) 'E)) (memq (cadr rd) CONSO))
+                (SETQ rd (cons 'E rd)))
+            (SETQ ROOT (READLIST (reverse rd)))
+            (when (memq 'ADJ (getprop ROOT 'FEATURES))
+                ;; TEMP NIL SEMANTICS ;; ROOT IS THE ADJECTIVE
+                (buildword wrd '(ADV VBAD) nil ROOT)
+                (GO WRD))
+            (GO NO)
+        SIB (let [lst (car rd) nxt (cadr rd)]
+                (cond (not= lst 'E) true
+                    (= nxt 'I) (SETQ rd (cons 'Y (cddr rd)))
+                    (= nxt 'X) (SETQ rd (cdr rd))
+                    (and (= nxt 'H) (not (= (caddr rd) 'T))) (SETQ rd (cdr rd))
+                    (and (memq nxt '(S Z)) (= nxt (caddr rd))) (SETQ rd (cddr rd))))
+        TRY (SETQ ROOT (READLIST (reverse rd)))
+            (let [features (getprop ROOT 'FEATURES)]
+                (cond (or features (let [x (getprop ROOT 'IRREGULAR)] (and x (SETQ features (mod (getprop (SETQ ROOT (car x)) 'FEATURES) (cdr x))))))
+                        (buildword wrd (mod features (getprop (car *word*) 'MOD)) (getprop ROOT 'SEMANTICS) ROOT)
+                    (= (car rd) 'E) (do (SETQ rd (cdr rd)) (GO TRY))
+                    :else (GO NO)))
+        WRD (set! *sent*
+                (if poss
+                    (let [features (getprop wrd 'FEATURES)]
+                        (if (or (memq 'NOUN features) (memq 'PROPN features))
+                            ;; IF IT'S A NOUN OR A PROPER NOUN, MARK IT AS POSSESSIVE
+                            (do (buildword poss (concat (meet features (getprop 'POSS 'ELIM)) '(POSS)) (getprop wrd 'SEMANTICS) ROOT)
+                                (cons poss *sent*))
+                            ;; CAN WE GENERALIZE IT???
+                            (do (buildword "'S" '(VB BE V3PS PRES) (getprop 'BE 'SEMANTICS) 'BE)
+                                (cons "'S" (cons wrd *sent*)))))
+                    (cons wrd *sent*)))
+        PUNC (when *punct*
+                (if (memq *punct* FINAL)
+                    (RETURN (reverse *sent*)) ;; RETURN POINT !!!!!!!!!!!!!
+                    (set! *sent* (cons *punct* *sent*)))
+                (set! *punct* nil))
+            (set! *word* (SETQ poss nil))
+            (GO CHAR)
+        NO  (terpri)
+            (print (str "SORRY, I DON'T KNOW THE WORD \"" wrd "\"."))
+            (terpri)
+            (print "PLEASE TYPE <LF> AND CONTINUE THE SENTENCE.")
+            (while (!= (TYI) 10) nil)
+            (set! *word* (set! *punct* nil))
+            (GO DO))))
 
 (defn- propname [x] (= (car (name x)) \=))
 
@@ -4746,7 +4727,7 @@
 (putprop! 'BY 'SEMANTICS '((PREP (RELATION (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO !1 !2 *TIME)))))))
 (putprop! 'BY 'FEATURES '(PREP))
 
-(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!THING)) ((!NAME))) PROCEDUREß ((!CALL !2 !3 *TIME)))))))))
+(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!THING)) ((!name))) PROCEDUREß ((!CALL !2 !3 *TIME)))))))))
 (putprop! 'CALL 'FEATURES '(VB INF TRANS2))
 
 (putprop! 'CAN 'SEMANTICS '((VB true)))
@@ -4948,7 +4929,7 @@
 
 (putprop! 'IS 'IRREGULAR '(BE (V3PS PRESENT) (INF)))
 
-(putprop! 'IT 'SEMANTICS '((PRON (SMIT 'IT))))
+(putprop! 'IT 'SEMANTICS '((PRON (smit 'IT))))
 (putprop! 'IT 'FEATURES '(PRON NS SUBJ OBJ))
 
 (putprop! 'ITS 'IRREGULAR '(IT (POSS) nil))
@@ -4971,7 +4952,7 @@
 (putprop! 'LIKE 'SEMANTICS '((VB ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!THING))) PROCEDUREß ((!LIKE !1 !2)))))))))
 (putprop! 'LIKE 'FEATURES '(VB INF TRANS))
 
-(putprop! 'LIST 'SEMANTICS '((VB ((TRANS (!NAME))))))
+(putprop! 'LIST 'SEMANTICS '((VB ((TRANS (!name))))))
 (putprop! 'LIST 'FEATURES '(VB VO TRANS))
 
 (putprop! 'LITTLE 'SEMANTICS '((MEASURE (MEASURE DIMENSIONß !SIZE RESTRICTIONSß (!PHYSOB) DIRECTIONß nil))
@@ -5002,7 +4983,7 @@
 (putprop! 'MY 'IRREGULAR '(I (POSS) (SUBJ)))
 
 (putprop! 'NAME 'SEMANTICS '((NOUN (OBJECT ((!NAME !ROLE) ((IS *** !NAME) (!CALL ? ***) (!ROLE (!THING) (!CALL !2 !1))))))
-                             (VB ((TRANS (!NAME))))))
+                             (VB ((TRANS (!name))))))
 (putprop! 'NAME 'FEATURES '(NOUN NS VB INF TRANS))
 
 (putprop! 'NARROW 'SEMANTICS '((ADJ (OBJECT (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !WIDTH (128 0 0) ***)))))
@@ -5251,7 +5232,7 @@
 (putprop! 'THERE 'SEMANTICS '((ADV true)))
 (putprop! 'THERE 'FEATURES '(ADV PLACE))
 
-(putprop! 'THEY 'SEMANTICS '((PRON (SMIT 'THEY))))
+(putprop! 'THEY 'SEMANTICS '((PRON (smit 'THEY))))
 (putprop! 'THEY 'FEATURES '(PRON SUBJ NPL))
 
 (putprop! 'THICK 'SEMANTICS '((ADJ (OBJECT (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !THICKNESS *** (0 128 0))))))
@@ -5499,12 +5480,16 @@
 
 (putprop! '!LOC 'THMLIST '((4 '((THUSE TC-LOC))) (5 '((THUSE TCT-LOC)))))
 
-(§ defq- !LOC [a] (!LOC2 (car a) (cadr a)))
+(§ defq- !LOC [a] (!loc2 (car a) (cadr a)))
 
-(§ defn- !LOC2 [LOCTYPE !LOC]
-    (if (cq 'LOBJ)
-        (RELATION (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC LOCTYPE !LOC !2)))))
-        (RELATION (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC LOCTYPE (if !LOC '!1 '!2) (if !LOC '!2 '!1) '*TIME)))))))
+(dynamic- *loctype*)
+(dynamic- *!loc*)
+
+(defn- !loc2 [loctype' !loc']
+    (binding [*loctype* loctype' *!loc* !loc']
+        (if (cq 'LOBJ)
+            (RELATION (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC *loctype* *!loc* !2)))))
+            (RELATION (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC *loctype* (if *!loc* '!1 '!2) (if *!loc* '!2 '!1) '*TIME))))))))
 
 (putprop! '!MANIP 'SYS '(!PHYSOB))
 
@@ -5513,7 +5498,7 @@
 (putprop! '!NAME 'THMLIST '((2 '((THUSE TC-2)))))
 (putprop! '!NAME 'SYS '(!SYSTEMS))
 
-(§ defn- !NAME []
+(defn- !name []
     (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME !2)))))
 
 (putprop! '!NEWWORD 'SYS '(!THING))
@@ -5869,7 +5854,7 @@
             'VARIABLE= 'NAME
             'DETERMINER= '(1 DEF nil)
             'PARSENODE= *c*
-            'MARKERS= (!NAME)
+            'MARKERS= '(!NAME)
             'REFER= (list (word (firstword *h*))))
         (let [name (gensym 'OSS)] (build
             'OSSNODE= name
@@ -5914,7 +5899,7 @@
 (dynamic- *pronoun*)
 (dynamic- *candidates*)
 
-(§ defn- SMIT [pronoun']
+(defn- smit [pronoun']
     ;; PRONOUN IS (IT THEY ONE) A NODE LIST OF POSSIBLE REFERENTS.
     ;; IS THIS A "DO IT!" COMMAND?  IF SO, RETURN THE LAST EVENT MENTIONED.
     ;; IF THIS PRONOUN HAS BEEN USED BEFORE IN THIS SENTENCE, THEN USE THE SAME CANDIDATES.
@@ -5923,43 +5908,39 @@
     ;; OR "A BLOCK TALLER THAN ANYTHING WHICH SUPPORTS IT".
     (binding [*pronoun* pronoun' *candidates* nil]
         (when-not discourse? (bug! "SMIT: DISCOURSE SWITCH NOT ON"))
-        (and *mvb*
-            (isq *mvb* 'DO)
-            (cq 'OBJ1)
-            (RETURN (smset LASTEVENT)))
-        (cond (getprop *pronoun* 'BIND)
-                (do (MAP #(smit2 % 0) (getprop *pronoun* 'BIND))
-                    (RETURN *sm*))
-            (smit2 (getprop *pronoun* 'LASTBIND) 0)
-                (GO DONE)
-            (or (MOVE-PT 'C 'U 'U '(NG) 'U 'U '(NG)) (MOVE-PT 'C 'U 'U '(NG) 'U '(COMP) 'PV '(SUBJ)))
-                (do (smit2 *pt* 0)
-                    (MOVE-PT 'C 'U 'U '(NG))
-                    (when (isq *pt* 'DEF)
-                        (add-f-pt 'INDEF *pt*)
-                        (remove-f-pt 'DEF *pt*)
-                        (dorun (map #(putprop! % 'DETERMINER= '((EXACTLY 1) INDEF nil)) (semantics *pt*))))
-                    (RETURN *sm*))
-            (or (MOVE-PT 'C 'U '(BOUND) 'U) (MOVE-PT 'C 'U '(and (isq *pt* 'CLAUSE) (isq *pt* 'COMPONENT)) 'U 'DLC))
-                (do (smit2 (getr *pt* 'OBJ2) 0)
-                    (smit2 (getr *pt* 'OBJ1) 0)
-                    (smit2 (getr *pt* 'SUBJECT) 0)
-                    (and (nil? *sm*)
-                        (isq *pt* 'RSQ)
-                        (smit2 (getr *pt* 'RELHEAD) 0))
-                    (when *sm* (RETURN *sm*))))
-        (smit2 (getr *lastsent* 'SUBJECT) 192)
-        (smit2 (parsenode? *lastrel*) 128)                ;; TRY REL (I.E. QUESTION FOCUS) OF THE LAST SENTENCE
-        (MOVE-PT 'LASTSENT 'DLC)
-    UP  (if (MOVE-PT 'PV '(NG)) (smit2 *pt* 64) (GO ON))    ;; GO THROUGH TOP LEVEL NG'S OF LAST SENTENCE
-        (when (MOVE-PT 'PV) (GO UP))
-    ON  (when-not *sm* ;; IF WE HAVEN'T YET FOUND A REFERENT MAP DOWN THE ANSREF (NG'S IN LAST ANSWER)
-            (MAP #(smit2 % 0) *ansname*))
-        (when-not *sm* ;; IF WE HAVEN'T YET FOUND A REFERENT MAP DOWN THE BACKREF2 (NG'S IN LAST SENTENCE) LIST
-            (MAP #(smit2 % 0) *backref2*))
-    DONE (putprop! *pronoun* 'BIND *candidates*)
-        (when-not (cdr *sm*) (remprop! (car *sm*) 'AMBIGUITIES=))
-        *sm*))
+        (let-when [last- #(do (smit2 (getr *lastsent* 'SUBJECT) 192)
+                            (smit2 (parsenode? *lastrel*) 128)          ;; TRY REL (I.E. QUESTION FOCUS) OF THE LAST SENTENCE
+                            (MOVE-PT 'LASTSENT 'DLC)
+                            (loop-when (MOVE-PT 'PV '(NG))              ;; GO THROUGH TOP LEVEL NG'S OF LAST SENTENCE
+                                (smit2 *pt* 64)
+                                (when (MOVE-PT 'PV) (recur)))
+                            (when-not *sm*                              ;; FIND A REFERENT MAP IN ANSNAME (NG'S IN LAST ANSWER)
+                                (MAP #(smit2 % 0) *ansname*))
+                            (when-not *sm*                              ;; FIND A REFERENT MAP IN BACKREF2 (NG'S IN LAST SENTENCE)
+                                (MAP #(smit2 % 0) *backref2*)))
+                   done- #(do (putprop! *pronoun* 'BIND *candidates*)
+                            (when-not (cdr *sm*) (remprop! (car *sm*) 'AMBIGUITIES=)))
+        ] (not (and *mvb* (isq *mvb* 'DO) (cq 'OBJ1))) => (smset LASTEVENT)
+            (cond (getprop *pronoun* 'BIND)
+                    (MAP #(smit2 % 0) (getprop *pronoun* 'BIND))
+                (smit2 (getprop *pronoun* 'LASTBIND) 0)
+                    (done-)
+                (or (MOVE-PT 'C 'U 'U '(NG) 'U 'U '(NG)) (MOVE-PT 'C 'U 'U '(NG) 'U '(COMP) 'PV '(SUBJ)))
+                    (do (smit2 *pt* 0)
+                        (MOVE-PT 'C 'U 'U '(NG))
+                        (when (isq *pt* 'DEF)
+                            (add-f-pt 'INDEF *pt*)
+                            (remove-f-pt 'DEF *pt*)
+                            (dorun (map #(putprop! % 'DETERMINER= '((EXACTLY 1) INDEF nil)) (semantics *pt*)))))
+                (or (MOVE-PT 'C 'U '(BOUND) 'U) (MOVE-PT 'C 'U '(and (isq *pt* 'CLAUSE) (isq *pt* 'COMPONENT)) 'U 'DLC))
+                    (do (smit2 (getr *pt* 'OBJ2) 0)
+                        (smit2 (getr *pt* 'OBJ1) 0)
+                        (smit2 (getr *pt* 'SUBJECT) 0)
+                        (when (and (nil? *sm*) (isq *pt* 'RSQ))
+                            (smit2 (getr *pt* 'RELHEAD) 0))
+                        (when-not *sm* (last-) (done-)))
+                :else (do (last-) (done-)))
+            *sm*)))
 
 (defn- smit2 [node plausibility]
     ;; MAKE SURE NODE IS REALLY THERE.
@@ -6034,8 +6015,8 @@
                 'OSSNODE= name
                 'PARSENODE= *c*
                 'VARIABLE= (gensym 'X)
-                'MARKERS= (and (cq 'TPRON) '(!VAGUE !PHYSOB !THING))
-                'RELATIONS= (and (cq 'TPRON) (list (list '!PHYSOB name)))
+                'MARKERS= (when (cq 'TPRON) '(!VAGUE !PHYSOB !THING))
+                'RELATIONS= (when (cq 'TPRON) (list (list '!PHYSOB name)))
                 'DETERMINER= (list
                                 (cond
                                     (cq 'NUMD) (binding [*num* (semantics (MOVE-PT 'H 'PV '(NUM)))] (eval (semantics (MOVE-PT 'H 'PV '(NUMD)))))
@@ -7340,85 +7321,70 @@
                         ans)))
                 nil))
         (rel? rss)
-            (ANSREL rss)
+            (ansrel rss)
         :else
             (ansnorel rss)))
 
-(§ defn- ANSREL [rss]
+(defn- ansrel [rss]
     ;; ANSREL HANDLES ALL QUESTIONS WITH A RELATIVE NG OF ANY TYPE.
-    (let [TYPE nil REL nil CODE nil plaus nil ANS nil PHRASE nil LENGTH nil NUM nil]
-        (or (SETQ REL (rel? rss)) (bug! "ANSREL -- NO REL"))
-        (SETQ PHRASE (cons 'nil (headpart (parsenode? REL))))
+    (let-when [rel (rel? rss)] rel => (bug! "ANSREL -- NO REL")
         ;; THIS IS FOR THE PART OF THE GENERATOR THAT WILL SUBSITUTE "ONE" FOR NOUN NAMES.
         ;; THE LEADING NIL IS TO MAKE THIS PHRASE COMPATIBLE WITH THE "SAY" PHRASES WHICH THE OTHER PARTS GENERATE.
         ;; UNIVERSALS ARE CONVERTED TO NOT THERE EXISTS NOT.
-        (SETQ TYPE (or (qtype? REL) (quantifier? REL) (bug! "ANSREL -- NO TYPE")))
-        (and (= TYPE 'ALL) (putprop! rss 'NEGATIVE= true))
-        (SETQ CODE (plnr-findify 'ALL (variable? REL) (list (variable? REL)) (plnr-describe (cons rss (relations? REL)) (variable? REL) (list (variable? REL)))))
-        (putprop! rss 'PLNRCODE= CODE)
-        ;; CONSING THE RSS ONTO THE THINGS TO BE DESCRIBED HAS THE EFFECT OF PUTTING THE RELATION INTO THE DESCRIPTION OF THE OBJECT.
-        ;; DISAMB PUTS IN THE JUNK IF THERE IS NO AMBIGUIT, AVOIDING HAVING TO GO THROUGH THE EVALUATION A SECOND TIME.
-        ;; THVAL-MULT RETURNS A LIST OF A PLAUSIBILITY AND AN ANSWER.
-        (SETQ ANS (thval-mult (ambput CODE)))
-        (SETQ plaus (car ANS))
-        (SETQ LENGTH (count (SETQ ANS (cadr ANS))))
-        (cond
-            (= TYPE 'ALL)
-                (ansbuild rss ANS
-                    (+ plaus (plausibility? rss))
-                    (if (nil? ANS) '((say "YES")) (cons '(say "NO, NOT") (prepput rss (namelist PHRASE 'INDEF ANS))))
-                    true)
-            (= TYPE 'HOWMANY)
-                (ansbuild rss ANS
-                    (+ plaus (plausibility? rss))
-                    (prepput rss (namesugar LENGTH REL))
-                    true)
-            (memq TYPE '(WHICH WHAT))
-                (ansbuild rss ANS
-                    (+ plaus (plausibility? rss) (if ANS 512 0))
-                    (prepput rss (namelist PHRASE 'DEF ANS))
-                    true)
-            (= TYPE 'INDEF)
-                (do (SETQ NUM (num? REL))
-                    (ansbuild rss ANS
-                        (+ plaus (plausibility? rss))
-                        (cond
-                            (memq NUM '(NS SG-PL))
-                                (if (nil? ANS)
-                                    (if (istense (parsenode? rss) 'MODAL) '((say "I DON'T KNOW")) '((say "NO")))
-                                    (concat '((say "YES,"))
-                                        (when-not (istense (parsenode? rss) 'MODAL)
-                                            (prepput rss (concat (and (cdr ANS) (concat (namesugar LENGTH REL) '((print \:)))) (namelist PHRASE 'INDEF ANS))))))
-                            (number? NUM)
-                                ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
-                                ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
-                                (concat
+        (let-when [phrase (cons 'nil (headpart (parsenode? rel))) type (or (qtype? rel) (quantifier? rel))] type => (bug! "ANSREL -- NO TYPE")
+            (when (= type 'ALL) (putprop! rss 'NEGATIVE= true))
+            (let [code (plnr-findify 'ALL (variable? rel) (list (variable? rel)) (plnr-describe (cons rss (relations? rel)) (variable? rel) (list (variable? rel))))]
+                (putprop! rss 'PLNRCODE= code)
+                ;; CONSING THE RSS ONTO THE THINGS TO BE DESCRIBED HAS THE EFFECT OF PUTTING THE RELATION INTO THE DESCRIPTION OF THE OBJECT.
+                ;; DISAMB PUTS IN THE JUNK IF THERE IS NO AMBIGUIT, AVOIDING HAVING TO GO THROUGH THE EVALUATION A SECOND TIME.
+                ;; THVAL-MULT RETURNS A LIST OF A PLAUSIBILITY AND AN ANSWER.
+                (let [ans (thval-mult (ambput code)) plaus (car ans) ans (cadr ans) len (count ans)]
+                    (cond
+                        (= type 'ALL)
+                            (ansbuild rss ans
+                                (+ plaus (plausibility? rss))
+                                (if (nil? ans) '((say "YES")) (cons '(say "NO, NOT") (prepput rss (namelist phrase 'INDEF ans))))
+                                true)
+                        (= type 'HOWMANY)
+                            (ansbuild rss ans
+                                (+ plaus (plausibility? rss))
+                                (prepput rss (namesugar len rel))
+                                true)
+                        (memq type '(WHICH WHAT))
+                            (ansbuild rss ans
+                                (+ plaus (plausibility? rss) (if ans 512 0))
+                                (prepput rss (namelist phrase 'DEF ans))
+                                true)
+                        (= type 'INDEF)
+                            (let [num (num? rel)]
+                                (ansbuild rss ans
+                                    (+ plaus (plausibility? rss))
                                     (cond
-                                        (= NUM LENGTH) '((say "YES,"))
-                                        (> LENGTH NUM) nil
-                                        (zero? NUM) '((say "NO,"))
-                                        :else '((say "NO, ONLY")))
-                                    (cond
-                                        (= NUM LENGTH) nil
-                                        :else (prepput rss (concat (namesugar LENGTH REL) '((print \:)))))
-                                    (prepput rss (namelist PHRASE 'INDEF ANS)))
-                            (= (car NUM) 'EXACTLY)
-                                (cond (= LENGTH NUM) '((say "YES"))
-                                    :else (cons '(say "NO,") (prepput rss (namesugar LENGTH RES))))
-                            (= (car NUM) '>)
-                                (cons (cond
-                                        (> LENGTH NUM) '(say "YES,")
-                                        (zero? LENGTH) '(say "NO,")
-                                        :else '(say "NO, ONLY"))
-                                    (prepput rss (namesugar LENGTH REL)))
-                            (= (car NUM) '<)
-                                (cons (cond
-                                        (< LENGTH NUM) '(say "YES,")
-                                        :else '(say "NO,"))
-                                    (prepput rss (namesugar LENGTH REL)))
-                            :else (bug! "ANSREL -- FUNNY NUMBER"))
-                        true))
-            :else (bug! "ANSREL-- FUNNY TYPE"))))
+                                        (memq num '(NS SG-PL))
+                                            (if ans (concat '((say "YES,"))
+                                                        (when-not (istense (parsenode? rss) 'MODAL)
+                                                            (prepput rss (concat (and (cdr ans) (concat (namesugar len rel) '((print \:)))) (namelist phrase 'INDEF ans)))))
+                                                (if (istense (parsenode? rss) 'MODAL) '((say "I DON'T KNOW")) '((say "NO"))))
+                                        (number? num)
+                                            ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
+                                            ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
+                                            (concat
+                                                (cond (= num len) '((say "YES,")) (< num len) nil (zero? num) '((say "NO,")) :else '((say "NO, ONLY")))
+                                                (cond (= num len) nil :else (prepput rss (concat (namesugar len rel) '((print \:)))))
+                                                (prepput rss (namelist phrase 'INDEF ans)))
+                                        (= (car num) 'EXACTLY)
+                                            (cond (= num len) '((say "YES")) :else (cons '(say "NO,") (prepput rss (namesugar len rel))))
+                                        (= (car num) '>)
+                                            (cons
+                                                (cond (> len num) '(say "YES,") (zero? len) '(say "NO,") :else '(say "NO, ONLY"))
+                                                (prepput rss (namesugar len rel)))
+                                        (= (car num) '<)
+                                            (cons
+                                                (cond (< len num) '(say "YES,") :else '(say "NO,"))
+                                                (prepput rss (namesugar len rel)))
+                                        :else (bug! "ANSREL -- FUNNY NUMBER"))
+                                    true))
+                        :else (bug! "ANSREL -- FUNNY TYPE")))))))
 
 (dynamic- *neg*)
 (dynamic- *varlist*)
@@ -7523,41 +7489,33 @@
     ;; NOTE THAT NODE IS ACTUALLY A LIST OF NODE (A PROPER GRAMMAR POINTER).
     (and (set! *pt* node) (MOVE-PT 'DLC 'PV '(NOUN)) (from (firstword node) (wordafter *pt*))))
 
-(§ defn- LISTNAMES [PHRASE spec names]
-    ;; PHRASE IS THE INITIAL THING TO COMPARE FOR USING "ONE", SPEC IS EITHER DEF OR INDEF, AND THE NAMES ARE OF DATA-BASE OBJECTS.
+(dynamic- *phrase*)
+
+(defn- listnames [phrase' spec names]
+    ;; PHRASE IS THE INITIAL THING TO COMPARE FOR USING "ONE", SPEC IS EITHER DEF OR INDEF, AND THE NAMES ARE OF DATABASE OBJECTS.
     ;; LISTNAMES PUTS OUT AN ACTION LIST, AS WELL AS PUTTING THINGS ONTO THE BACKREF.
     ;; IT IS CALLED AFTER THE ANSWER HAS BEEN DECIDED ON.
-    (let [COUNT nil EXAM nil x nil RES nil ANS nil comma? false]
+    (binding [*phrase* phrase']
         ;; NAMEOBJ RETURNS A LIST OF THE OBJECT AND THE ...
         ;; THIS PATCH MAY WELL BE TOTAL OUT OF PHASE WITH THE BACKREF HACKER - DDM 5-12-73 INSTRUCTIONS FOR NAMING IT.
-        (SETQ names (doall (map #(NAMEOBJ % spec) names)))
-        (when (nil? names) (RETURN '(say "NOTHING")))
-    UP  (SETQ COUNT 1)
-        (SETQ EXAM (car names))
-        (SETQ names (cdr names))
-    BACK (when (SETQ x (assq (car EXAM) names))
-            (SETQ names (delq x names))
-            (SETQ COUNT (inc COUNT))
-            (SETQ EXAM (list (car EXAM) (concat (cadr x) (cadr EXAM))))
-            (GO BACK))
-        ;; WHEN THERE ARE TWO OBJECTS WITH THE SAME ENGLISH DESCRIPTIONS, A JOINT OBJECT IS PRODUCED COMBINING THE OBJECTS.
-        ;; THE COUNT IS LATER USED TO PUT IN THE APPROPRIATE NUMBER, AND THE DESCRIPTION IS CHECKED TO SEE IF "ONE" CAN BE USED.
-        ;; ADD THE ONE JUST PRODUCED TO THE RESULT LIST.  TRY ANOTHER.
-        (SETQ RES (cons (cons (pluralize (car EXAM) COUNT) (cdr EXAM)) RES))
-        (when names (GO UP))
-        (SETQ RES
-            (doall (map (lambda [PHRASE2]
-                    (if (propname (caadr PHRASE2)) (car PHRASE2)
-                        ;; ANSNAME PARSES THE PHRASE AND PUTS THE ...
-                        ;; ANSONE SUBSTITUTES "ONE" IF POSSIBLE
-                        (do (ansname PHRASE2) (ONECHECK (car PHRASE2)))))
-                RES)))
-        (SETQ ANS (car RES))
-    OUTPUT (cond
-            (nil? (SETQ RES (cdr RES))) (RETURN ANS)
-            (cdr RES) (do (SETQ comma? true) (SETQ ANS (concat ANS '((print \,)) (car RES))))
-            :else (SETQ ANS (concat ANS (and comma? '((print \,))) '((say "AND")) (car RES))))
-        (GO OUTPUT)))
+        (let-when [names (doall (map #(NAMEOBJ % spec) names))] names => '(say "NOTHING")
+            (let [res (loop [res nil names names]
+                    (let [[n exam names]
+                            (loop [n 1 exam (car names) names (cdr names)]
+                                (let-when [x (assq (car exam) names)] x => [n exam names]
+                                    (recur (inc n) (list (car exam) (concat (cadr x) (cadr exam))) (delq x names))))
+                          ;; WHEN THERE ARE TWO OBJECTS WITH THE SAME ENGLISH DESCRIPTIONS, A JOINT OBJECT IS PRODUCED COMBINING THE OBJECTS.
+                          ;; THE COUNT IS LATER USED TO PUT IN THE APPROPRIATE NUMBER, AND THE DESCRIPTION IS CHECKED TO SEE IF "ONE" CAN BE USED.
+                          ;; ADD THE ONE JUST PRODUCED TO THE RESULT LIST.  TRY ANOTHER.
+                          res (cons (cons (pluralize (car exam) n) (cdr exam)) res)]
+                        (recur-if names [res names] => res)))]
+                ;; ANSNAME PARSES THE PHRASE AND PUTS THE ...
+                ;; ANSONE SUBSTITUTES "ONE" IF POSSIBLE.
+                (loop [res (doall (map #(if (propname (caadr %)) (car %) (do (ansname %) (ONECHECK (car %)))) res)) ans (car res) comma? false]
+                    (let-when [res (cdr res)] res => ans
+                        (if (cdr res)
+                            (recur res (concat ans '((print \,)) (car res)) true)
+                            (recur res (concat ans (when comma? '((print \,))) '((say "AND")) (car res)) comma?))))))))
 
 (defn- pron-prt [particle ng]
     ;; THIS IS EVENTUALLY SUPPOSED TO BE THE PLACE FOR THE PRONOUN-PARTICLE-INTERACTION MAGIC
@@ -7605,50 +7563,57 @@
     ;; GENERATES THE SYNTAX FOR ANSWER ACTIONS FROM A PHRASE.
     (list (cons 'say x)))
 
+(dynamic- *typeß*)
+(dynamic- *typelist*)
+(dynamic- *nameß*)
+(dynamic- *colorß*)
+(dynamic- *colorlist*)
+(dynamic- *sizeß*)
+(dynamic- *sizelist*)
+(dynamic- *cube*)
+
 (§ defn- NAMEOBJ [ITEM spec]
-    ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF
-    (let [TYPEß nil TYPELIST nil TYPE nil NAMEß nil COLORß nil COLORLIST nil SIZEß nil SIZELIST nil CUBE nil NAME nil]
-        (let [x (assq ITEM '((ßSHRDLU I) (ßFRIEND YOU)))]
-            (when x
-                (RETURN (list (ansay (cdr x)) (list ITEM))))                        ;;  SPECIAL CASE CHECK
+    ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF.
+    (binding [*typeß* nil *typelist* nil *nameß* nil *colorß* nil *colorlist* nil *sizeß* nil *sizelist* nil *cube* nil]
+        (let-when [x (assq ITEM '((ßSHRDLU I) (ßFRIEND YOU)))] (not x) => (list (ansay (cdr x)) (list ITEM))
             (thval2 nil '(THGOAL (!NAMEOBJ) (THUSE TC-NAMEOBJ)))
-            (when-not TYPELIST
+            (when-not *typelist*
                 (bug! "NAMEOBJ -- OBJECT WITH NO !IS ASSERTION"))
             ;; DISPUT CHECKS TO SEE IF DISCOURSE IS BEING KEPT, AND IF SO PUTS THE RELEVANT SENTENCE NUMBER AS A PROPERTY ON THE ASSERTION.
-            (disput TYPEß)
-            (SETQ TYPE (caddar TYPEß))
-            (cond (= TYPE '!NAME)                           ;; A NAME IS ITS OWN NAME.
-                    (RETURN (list (ansay (list ITEM)) (list ITEM)))
-                (memq '!PROPERTY (getprop TYPE 'SYS))
-                    ;; CUTOFF CUTS THE # OFF OF NAMES LIKE !RED AND !POINTED WHICH ARE USED FOR PROPERTIES.
-                    (RETURN (list (ansay (list (cutoff ITEM))) (list ITEM)))
-                (not (cdr TYPELIST))
-                    (RETURN (list (ansay (list 'THE (cutoff TYPE))) (list ITEM)))  ;; THERE IS ONLY ONE OBJECT OF THIS TYPE (E.G. TABLE, BOX, HAND)
-                CUBE (SETQ NAME '(CUBE))
-                :else (SETQ NAME (list (cutoff TYPE))))                                 ;; E.G. !BLOCK BECOMES BLOCK.
-            (when NAMEß
-                (RETURN (list (ansay (list 'THE (car NAME) 'NAMED (caddar NAMEß))) (list ITEM)))) ;; E.G. THE BLOCK NAMED SUPERBLOCK.
-            (disput COLORß)                                                         ;; IF WE HAVEN'T RETURNED YET, COLOR WILL BE NEEDED TO FULLY DESCRIBE THE OBJECT.
-            (SETQ NAME (cons (cutoff (caddar COLORß)) NAME))
-            (when-not (cdr COLORLIST)
-                (RETURN (list (ansay (cons 'THE NAME)) (list ITEM))))               ;; THERE ARE NO OTHERS OF THE SAME COLOR.  IF THERE ARE, WE MUST USE SIZE AS WELL.
-            (SETQ NAME (cons SIZEß NAME))
-            (list (cond
-                (nil? (cdr SIZELIST))
-                    (ansay (cons 'THE NAME))                                       ;; THE SIZE MANAGES TO FINISH SPECIFYING IT.
-                (= spec 'INDEF)
-                    (ansay (cons 'A NAME))                                         ;; IN THE INDEFINITE CASE WE DON'T CARE IF THIS ISN'T A FULL SPECIFICATION.
-                (SETQ x (thval2 nil '(THFIND ALL ($? x) (x (y ITEM)) (($G) (!SUPPORT ($? y) ($? x))))))
-                    (cons (concat '(say "THE") NAME)
-                        (cons '(say "WHICH SUPPORTS")
-                            (LISTNAMES nil 'INDEF x)))                             ;; IF IT SUPPORTS ANYTHING, NAME THEM.
-                :else (cons (concat '(say "THE") NAME)
-                    (cons '(say "WHICH IS TO THE RIGHT OF")
-                        (if (SETQ x (thval2 nil                                     ;; MAKE SURE IT IS AN ITEM WITH A LOCATION.
-                                    '(THFIND ALL ($? x) (x (y ITEM)) (($G) (!AT ($? x) ?)) (($G) (!LOC !RIGHT ($? y) ($? x)) (THUSE TC-LOC)))))
-                                (LISTNAMES nil 'INDEF x)
-                            '((say "NOTHING"))))))
-                (list ITEM)))))
+            (disput *typeß*)
+            (let [type (caddar *typeß*) name nil]
+                (cond (= type '!NAME)                           ;; A NAME IS ITS OWN NAME.
+                        (RETURN (list (ansay (list ITEM)) (list ITEM)))
+                    (memq '!PROPERTY (getprop type 'SYS))
+                        ;; CUTOFF CUTS THE # OFF OF NAMES LIKE !RED AND !POINTED WHICH ARE USED FOR PROPERTIES.
+                        (RETURN (list (ansay (list (cutoff ITEM))) (list ITEM)))
+                    (not (cdr *typelist*))
+                        (RETURN (list (ansay (list 'THE (cutoff type))) (list ITEM)))  ;; THERE IS ONLY ONE OBJECT OF THIS TYPE (E.G. TABLE, BOX, HAND)
+                    *cube* (SETQ name '(CUBE))
+                    :else (SETQ name (list (cutoff type))))                                 ;; E.G. !BLOCK BECOMES BLOCK.
+                (when *nameß*
+                    (RETURN (list (ansay (list 'THE (car name) 'NAMED (caddar *nameß*))) (list ITEM)))) ;; E.G. THE BLOCK NAMED SUPERBLOCK.
+                (disput *colorß*)                                                         ;; IF WE HAVEN'T RETURNED YET, COLOR WILL BE NEEDED TO FULLY DESCRIBE THE OBJECT.
+                (SETQ name (cons (cutoff (caddar *colorß*)) name))
+                (when-not (cdr *colorlist*)
+                    (RETURN (list (ansay (cons 'THE name)) (list ITEM))))               ;; THERE ARE NO OTHERS OF THE SAME COLOR.  IF THERE ARE, WE MUST USE SIZE AS WELL.
+                (SETQ name (cons *sizeß* name))
+                (list (cond
+                    (nil? (cdr *sizelist*))
+                        (ansay (cons 'THE name))                                       ;; THE SIZE MANAGES TO FINISH SPECIFYING IT.
+                    (= spec 'INDEF)
+                        (ansay (cons 'A name))                                         ;; IN THE INDEFINITE CASE WE DON'T CARE IF THIS ISN'T A FULL SPECIFICATION.
+                    (SETQ x (thval2 nil '(THFIND ALL ($? x) (x (y ITEM)) (($G) (!SUPPORT ($? y) ($? x))))))
+                        (cons (concat '(say "THE") name)
+                            (cons '(say "WHICH SUPPORTS")
+                                (listnames nil 'INDEF x)))                             ;; IF IT SUPPORTS ANYTHING, NAME THEM.
+                    :else (cons (concat '(say "THE") name)
+                        (cons '(say "WHICH IS TO THE RIGHT OF")
+                            (if (SETQ x (thval2 nil                                     ;; MAKE SURE IT IS AN ITEM WITH A LOCATION.
+                                        '(THFIND ALL ($? x) (x (y ITEM)) (($G) (!AT ($? x) ?)) (($G) (!LOC !RIGHT ($? y) ($? x)) (THUSE TC-LOC)))))
+                                    (listnames nil 'INDEF x)
+                                '((say "NOTHING"))))))
+                    (list ITEM))))))
 
 (putprop! 'TC-NAMEOBJ 'THEOREM
     ;; PLANNER IS CALLED TO SEE HOW MANY OBJECTS FIT VARIOUS FORMS OF THE DESCRIPTION.  IT USES FAILURE TO LOOP THROUGH THEM,
@@ -7663,22 +7628,22 @@
     '(THCONSE ((x ITEM) type color name #_size y z)
         (!NAMEOBJ)
         (($G) (!IS ($? x) ($? type)))
-        (SETQ TYPEß *thvalue*)
-        (or (SETQ CUBE (and (= ($? type) '!BLOCK) (!eqdim ($? x))))
+        (SETQ *typeß* *thvalue*)
+        (or (SETQ *cube* (and (= ($? type) '!BLOCK) (!eqdim ($? x))))
             true)
         (THCOND
             ((($G) (!NAME ($? x) ($? name)))
                 (SETQ name *thvalue*))
             ((($G) (!IS ($? y) ($? type)))
-                (or (not CUBE) (!eqdim ($? y)))
-                (SETQ TYPELIST (cons ($? y) TYPELIST))
+                (or (not *cube*) (!eqdim ($? y)))
+                (SETQ *typelist* (cons ($? y) *typelist*))
                 (($G) (!COLOR ($? x) ($? color)))
-                (SETQ COLORß *thvalue*)
+                (SETQ *colorß* *thvalue*)
                 (($G) (!COLOR ($? y) ($? color)))
-                (SETQ COLORLIST (cons ($? y) COLORLIST))
-                (SETQ SIZEß (namesize (size ($? x))))
-                (= SIZEß (namesize (size ($? y))))
-                (SETQ SIZELIST (cons ($? y) SIZELIST))
+                (SETQ *colorlist* (cons ($? y) *colorlist*))
+                (SETQ *sizeß* (namesize (size ($? x))))
+                (= *sizeß* (namesize (size ($? y))))
+                (SETQ *sizelist* (cons ($? y) *sizelist*))
                 (THFAIL)))))
 
 (defn- namesize [x]
@@ -7697,12 +7662,12 @@
 (§ defn- ONECHECK [ITEM]
     ;; CHECKS TO SEE IF A SUBSTITUTE "ONE" CAN BE USED.
     ;; ITEM IS A SINGLE "SAY" PHRASE.
-    ;; "PHRASE" IS A FREE VARIABLE IN LISTNAMES.
-    (let [ANS nil OLD nil NEW nil]
-        (and (= PHRASE '(nil))
-            (SETQ PHRASE (car ITEM))
+    ;; PHRASE IS A FREE VARIABLE IN LISTNAMES.
+    (let [OLD nil NEW nil]
+        (and (= *phrase* '(nil))
+            (set! *phrase* (car ITEM))
             (RETURN ITEM))
-        (SETQ OLD (reverse PHRASE))
+        (SETQ OLD (reverse *phrase*))
         (SETQ NEW (reverse (car ITEM)))
         (or (= (car OLD) (car NEW))
             (= (car OLD) (getprop (car NEW) 'ROOT))
@@ -7754,14 +7719,14 @@
     ;; ANSWER COULD HAVE BEEN GENERATED WITH HIS KNOWLEDGE TO SEE WHETHER HE REALLY
     ;; MEANT THIS INTERPRETATION.  RETURNS A LIST OF A PLAUSIBILITY AND THE RESULT
     ;; OF THE THVAL USING ALL THE KNOWLEDGE IN THE DATABASE.
-    (let [ANS (thval2 nil code)]
+    (let [ans (thval2 nil code)]
         ;; THIS FEATURE IS ONLY RELEVANT IN DISCOURSE AND WHEN THERE ARE AMBIGUITIES.
-        (when-not (and *ambig* discourse?) (RETURN (list 0 ANS)))
+        (when-not (and *ambig* discourse?) (RETURN (list 0 ans)))
         ;; GIVE A VALUE OF 256 IF HE COULDN'T HAVE ANSWERED IT AT ALL.
-        (when-not (= ANS (thval2 'HE code)) (RETURN (list 256 ANS)))
+        (when-not (= ans (thval2 'HE code)) (RETURN (list 256 ans)))
         ;; PLAUSIBILITY IS 0 IF HE COULD HAVE ANSWERED IT WITH RECENTLY MENTIONED INFORMATION.
         ;; 128 IF HE COULD ANSWER IT BUT NOT WITH RECENT INFO.
-        (if (= ANS (thval2 (list (- *sentno* 2) (inc *sentno*)) code)) (list 0 ANS) (list 128 ANS))))
+        (if (= ans (thval2 (list (- *sentno* 2) (inc *sentno*)) code)) (list 0 ans) (list 128 ans))))
 
 (defn- toplevel [event]
     ;; FINDS THE TOP LEVEL EVENT GOING ON AT THE TIME
