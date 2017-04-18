@@ -183,7 +183,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse !bethere !beint both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !loc2 !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref evalcheck iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -3702,7 +3702,7 @@
     'SIMPLE
         (move-pt 'C 'DLC)                                             ;; MOVE PT DOWN FROM THE CURRENT NODE BEING PARSED (VG) AND ACROSS TO THE MOST RECENTLY PARSED
         (trnsf 'VPL 'INF 'V3PS)                                         ;; DAUGHTER.  IN THIS CASE THAT DAUGHTER WAS PARSED IN THE DISPATCH TABLE JUST ABOVE
-        (set! *tense* (cond (and (isq *pt* 'PRESENT) (isq *pt* 'PAST)) '(PAST-PRESENT) (isq *pt* 'PAST) '(PAST) :else '(PRESENT)))
+        (set! *tense* (cond (and (isq *pt* 'PRESENT) (isq *pt* 'PAST)) ['PAST-PRESENT] (isq *pt* 'PAST) ['PAST] :else ['PRESENT]))
         (GO 'REV)
 
     'TO
@@ -4324,7 +4324,7 @@
 (putprop! 'AS :semantics [['NULL true]])
 
 (putprop! 'ASK :features ['VB 'TRANS 'INF 'SUBTOB])
-(putprop! 'ASK :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT] :procedure '((!WANT *!1* *!2* *TIME))])]]]])
+(putprop! 'ASK :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]] :procedure ['(!WANT *!1* *!2* *TIME)]])]]]])
 
 (putprop! 'AT :features ['AT])
 (putprop! 'AT :semantics [['NUMD true]])
@@ -4336,30 +4336,26 @@
 (putprop! 'BACK :semantics [['PREP2 true] ['NOUN true]])
 
 (putprop! 'BALL :features ['NOUN 'NS])
-(putprop! 'BALL :semantics [['NOUN '(object [:markers ['!MANIP '!ROUND] :procedure '((!IS *** !BALL))])]])
+(putprop! 'BALL :semantics [['NOUN '(object [:markers ['!MANIP '!ROUND] :procedure ['(!IS *** !BALL)]])]])
 
 (putprop! 'BE :features ['INT 'AUX 'VB 'BE 'INF])
-(putprop! 'BE :semantics [['VB [['THERE '(!bethere)] ['INT '(!beint)]]]])
-
-(defn- !bethere []
-    (relation [:restrictions [['(!THING) '(= (quantifier? *smsub*) 'INDEF)]] :procedure nil]))
-
-(defn- !beint []
-    (or (relation
-            [:restrictions [['(!PHYSOB)] '(*smcomp* (!PROPERTY))]
-                :procedure '(!EVAL (let [prop (meet (getprop '!PROPERTY :system) (markers? *smcomp*))] (if prop (list (list (car prop) '*!1* '*!2*)) (list '(*!2* *!1*)))))]
-            [:restrictions [['(!THING)] '(*smcomp* (!SYSTEMS) (and (not (refer? *smcomp*)) (= (rel? *smcomp*) *smsub*)))]
-                :procedure '(!EVAL (relations? *smcomp*))]
-            [:restrictions [['(!THING)] '(*smcomp* (!THING) (refer? *smcomp*))]
-                :procedure '((!EVAL (list 'thamong '*!1* (quotify (refer? *!2*)))))])
-        (oops! "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT.")))
+(putprop! 'BE :semantics [['VB
+    [['THERE '(relation [:restrictions [['(!THING) '(= (quantifier? *smsub*) 'INDEF)]]])]
+     ['INT '(or (relation
+                    [:restrictions [['(!PHYSOB)] '(*smcomp* (!PROPERTY))]
+                        :procedure #(let [prop (meet (getprop '!PROPERTY :system) (markers? *smcomp*))] (if prop [(list (car prop) '*!1* '*!2*)] ['(*!2* *!1*)]))]
+                    [:restrictions [['(!THING)] '(*smcomp* (!SYSTEMS) (and (not (refer? *smcomp*)) (= (rel? *smcomp*) *smsub*)))]
+                        :procedure #(relations? *smcomp*)]
+                    [:restrictions [['(!THING)] '(*smcomp* (!THING) (refer? *smcomp*))]
+                        :procedure [#(list 'thamong '*!1* (quotify (refer? *!2*)))]])
+                (oops! "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT."))]]]])
 
 (putprop! 'BEFORE :features ['BINDER 'TIME])
 (putprop! 'BEFORE :semantics [['BINDER '(smbinder *tss* nil *start*)]])
 
 (putprop! 'BEGIN :features ['VB 'TRANS 'INF 'TOOB 'INGOB 'ITRNS])
-(putprop! 'BEGIN :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT] :procedure '((!START *!2* *TIME))])]
-                                   ['ITRNS '(relation [:restrictions [['(!ANIMATE)]] :markers ['!EVENT] :procedure '((!START EE *TIME))])]]]])
+(putprop! 'BEGIN :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]] :procedure ['(!START *!2* *TIME)]])]
+                                   ['ITRNS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)]] :procedure ['(!START EE *TIME)]])]]]])
 
 (putprop! 'BEGAN :irregular ['BEGIN ['PAST] ['INF]])
 
@@ -4373,17 +4369,17 @@
 (putprop! 'BENEATH :semantics [['PREP '(!loc '!ABOVE false)]])
 
 (putprop! 'BESIDE :features ['PREP 'PLACE])
-(putprop! 'BESIDE :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure '((!NEXTO *!1* *!2* *TIME))])]])
+(putprop! 'BESIDE :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure ['(!NEXTO *!1* *!2* *TIME)]])]])
 
 (putprop! 'BIG :features ['ADJ])
 (putprop! 'BIG :semantics [['MEASURE '(measure :dimension '!SIZE :restrictions ['!PHYSOB] :direction true)]
-                            ['ADJ '(object [:markers ['!PHYSOB '!BIG] :procedure '((!MORE !SIZE *** [128 128 128]))])]])
+                            ['ADJ '(object [:markers ['!PHYSOB '!BIG] :procedure ['(!MORE !SIZE *** [128 128 128])]])]])
 
 (putprop! 'BLACK :features ['ADJ])
 (putprop! 'BLACK :semantics [['ADJ '(!color '!BLACK)]])
 
 (putprop! 'BLOCK :features ['NOUN 'NS])
-(putprop! 'BLOCK :semantics [['NOUN '(object [:markers ['!MANIP '!RECTANGULAR] :procedure '((!IS *** !BLOCK))])]])
+(putprop! 'BLOCK :semantics [['NOUN '(object [:markers ['!MANIP '!RECTANGULAR] :procedure ['(!IS *** !BLOCK)]])]])
 
 (putprop! 'BLUE :features ['ADJ])
 (putprop! 'BLUE :semantics [['ADJ '(!color '!BLUE)]])
@@ -4408,7 +4404,7 @@
             (do (set! *re* nil) (set! *n* nbb) nil)))))
 
 (putprop! 'BOX :features ['NOUN 'NS])
-(putprop! 'BOX :semantics [['NOUN '(object [:markers ['!BOX] :procedure '((!IS *** !BOX))])]])
+(putprop! 'BOX :semantics [['NOUN '(object [:markers ['!BOX] :procedure ['(!IS *** !BOX)]])]])
 
 (putprop! 'BRICK :features ['NOUN 'NS])
 
@@ -4420,10 +4416,10 @@
 (putprop! 'BUT :special conjo)
 
 (putprop! 'BY :features ['PREP])
-(putprop! 'BY :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure '((!NEXTO *!1* *!2* *TIME))])]])
+(putprop! 'BY :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure ['(!NEXTO *!1* *!2* *TIME)]])]])
 
 (putprop! 'CALL :features ['VB 'INF 'TRANS2])
-(putprop! 'CALL :semantics [['VB [['TRANS2 '(relation [:restrictions [['(!ANIMATE)] ['(!THING)] ['(!name)]] :procedure '((!CALL *!2* *!3* *TIME))])]]]])
+(putprop! 'CALL :semantics [['VB [['TRANS2 '(relation [:restrictions [['(!ANIMATE)] ['(!THING)] ['(!name)]] :procedure ['(!CALL *!2* *!3* *TIME)]])]]]])
 
 (putprop! 'CAN :features ['V3PS 'VFS 'VPL 'VB 'MODAL 'AUX])
 (putprop! 'CAN :semantics [['VB true]])
@@ -4458,7 +4454,7 @@
 (putprop! 'CLEAR-OUT :semantics [['TRANS '(!cleanoff)]])
 
 (putprop! 'COLOR :features ['NOUN 'NS])
-(putprop! 'COLOR :semantics [['NOUN '(object [:markers ['!COLOR] :procedure '((!IS *** !COLOR))])]])
+(putprop! 'COLOR :semantics [['NOUN '(object [:markers ['!COLOR] :procedure ['(!IS *** !COLOR)]])]])
 
 (putprop! 'CONSTRUCT :features ['VB 'INF 'TRANS])
 (putprop! 'CONSTRUCT :semantics [['VB [['TRANS '(!build)]]]])
@@ -4466,21 +4462,21 @@
 (putprop! 'CONTAIN :features ['VB 'INF 'TRANS])
 (putprop! 'CONTAIN :semantics [['VB [['TRANS
     '(relation
-        [:restrictions [['(!BOX)] ['(!PHYSOB)]] :procedure '((!CONTAIN *!1* *!2* *TIME))]
-        [:restrictions [['(!CONSTRUCT)] ['(!THING)]] :procedure '((!PART *!2* *!1* *TIME))])]]]])
+        [:restrictions [['(!BOX)] ['(!PHYSOB)]] :procedure ['(!CONTAIN *!1* *!2* *TIME)]]
+        [:restrictions [['(!CONSTRUCT)] ['(!THING)]] :procedure ['(!PART *!2* *!1* *TIME)]])]]]])
 
 (putprop! 'CONTAINER :features ['NOUN 'NS])
-(putprop! 'CONTAINER :semantics [['NOUN '(object [:markers ['!BOX] :procedure '((!IS *** !BOX))])]])
+(putprop! 'CONTAINER :semantics [['NOUN '(object [:markers ['!BOX] :procedure ['(!IS *** !BOX)]])]])
 
 (putprop! 'CORNER :features ['NOUN 'NS])
 
 (putprop! 'CUBE :features ['NOUN 'NS])
-(putprop! 'CUBE :semantics [['NOUN '(object [:markers ['!MANIP '!RECTANGULAR] :procedure '((!IS *** !BLOCK) (!eqdim ***))])]])
+(putprop! 'CUBE :semantics [['NOUN '(object [:markers ['!MANIP '!RECTANGULAR] :procedure ['(!IS *** !BLOCK) '(!eqdim ***)]])]])
 
 (putprop! 'DID :irregular ['DO ['PAST 'V3PS] ['INF 'PRESENT]])
 
 (putprop! 'DO :features ['TRANS 'VFS 'PRESENT 'VPL 'VB 'AUX 'DO 'INF])
-(putprop! 'DO :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT]])]]]])
+(putprop! 'DO :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]]])]]]])
 
 (putprop! 'DOES :irregular ['DO ['V3PS] ['VFS 'VPL 'INF]])
 
@@ -4489,8 +4485,8 @@
 
 (putprop! 'DROP :features ['TRANSL 'TRANSL2 'VB 'INF 'TRANS])
 (putprop! 'DROP :semantics [['VB
-    [['TRANSL '(relation [:restrictions [['(!ANIMATE)] ['(!MANIP)] '(*smobl* (!PLACE *TIME))] :procedure '((!DROP *!1* *!2* *!3*)) :markers [['!MOTION]]])]
-     ['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :markers ['!EVENT] :procedure '((!DROP *!1* *!2* PLACE *TIME)) :markers [['!MOTION]]])]]]])
+    [['TRANSL '(relation [:markers ['!MOTION] :restrictions [['(!ANIMATE)] ['(!MANIP)] '(*smobl* (!PLACE *TIME))] :procedure ['(!DROP *!1* *!2* *!3*)]])]
+     ['TRANS '(relation [:markers ['!EVENT '!MOTION] :restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :procedure ['(!DROP *!1* *!2* PLACE *TIME)]])]]]])
 
 (putprop! 'EACH :features ['DET 'NS 'QNTFR])
 (putprop! 'EACH :semantics [['DET 'ALL]])
@@ -4518,7 +4514,7 @@
 (putprop! 'FIND :semantics [['VB [['TRANS '(!notice)]]]])
 
 (putprop! 'FINISH :features ['VB 'INF 'TRANS 'INFOB])
-(putprop! 'FINISH :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT] :procedure '((!END *!2* *TIME))])]]]])
+(putprop! 'FINISH :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]] :procedure ['(!END *!2* *TIME)]])]]]])
 
 (putprop! 'FIVE :features ['NUM])
 (putprop! 'FIVE :semantics [['NUM 5]])
@@ -4527,7 +4523,7 @@
 (putprop! 'FOUR :semantics [['NUM 4]])
 
 (putprop! 'FRIEND :features ['NOUN 'NS])
-(putprop! 'FRIEND :refer 'ßFRIEND)
+(putprop! 'FRIEND :refer ['ßFRIEND])
 
 (putprop! 'FROM :features ['PREP])
 
@@ -4537,7 +4533,7 @@
 (putprop! 'GAVE :irregular ['GIVE ['PAST] ['INF]])
 
 (putprop! 'GIVE :features ['VB 'INF 'TRANS2])
-(putprop! 'GIVE :semantics [['VB [['TRANS2 '(relation [:restrictions [['(!ANIMATE)] ['(!ANIMATE)] ['(!PHYSOB)]] :markers ['!EVENT] :procedure '((!GIVE *!1* *!2* *!3* *TIME))])]]]])
+(putprop! 'GIVE :semantics [['VB [['TRANS2 '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!ANIMATE)] ['(!PHYSOB)]] :procedure ['(!GIVE *!1* *!2* *!3* *TIME)]])]]]])
 
 (putprop! 'GO :features ['ITRNS 'VB 'INF])
 
@@ -4558,7 +4554,7 @@
 (putprop! 'HAD :irregular ['HAVE ['PAST] ['INF]])
 
 (putprop! 'HAND :features ['NOUN 'NS])
-(putprop! 'HAND :semantics [['NOUN '(object [:markers ['!HAND] :procedure '((!IS *** !HAND))])]])
+(putprop! 'HAND :semantics [['NOUN '(object [:markers ['!HAND] :procedure ['(!IS *** !HAND)]])]])
 
 (putprop! 'HANDLE :features ['VB 'INF 'TRANS])
 (putprop! 'HANDLE :semantics [['VB [['TRANS '(!grasp)]]]])
@@ -4570,13 +4566,13 @@
 
 (putprop! 'HIGH :features ['ADJ])
 (putprop! 'HIGH :semantics [['MEASURE '(measure :dimension '!HEIGHT :restrictions ['!PHYSOB] :direction true)]
-                             ['ADJ '(object [:markers ['!PHYSOB] :procedure '((!HIGH ***))])]])
+                             ['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!HIGH ***)]])]])
 
 (putprop! 'HOLD :features ['VB 'INF 'TRANS])
 (putprop! 'HOLD :semantics [['VB [['TRANS
     '(relation
-        [:restrictions [['(!HAND)] ['(!MANIP)]] :procedure '((!GRASPING *!2* *TIME))]
-        [:restrictions [['(!ANIMATE)] ['(!MANIP)]] :procedure '((!GRASPING *!2* *TIME))])]]]])
+        [:restrictions [['(!HAND)] ['(!MANIP)]] :procedure ['(!GRASPING *!2* *TIME)]]
+        [:restrictions [['(!ANIMATE)] ['(!MANIP)]] :procedure ['(!GRASPING *!2* *TIME)]])]]]])
 
 (putprop! 'HE :features ['PRON 'NS 'SUBJ])
 
@@ -4628,30 +4624,30 @@
 
 (putprop! 'LARGE :features ['ADJ])
 (putprop! 'LARGE :semantics [['MEASURE '(measure :dimension '!SIZE :restrictions ['!PHYSOB] :direction true)]
-                              ['ADJ '(object [:markers ['!PHYSOB '!BIG] :procedure '((!MORE !SIZE *** [128 128 128]))])]])
+                              ['ADJ '(object [:markers ['!PHYSOB '!BIG] :procedure ['(!MORE !SIZE *** [128 128 128])]])]])
 
 (putprop! 'LEAST :features ['NUMD 'NUMDAT])
 (putprop! 'LEAST :semantics [['NUMD '(list '> (dec *num*))]])
 
 (putprop! 'LEFT :features ['NOUN 'NS])
-(putprop! 'LEFT :semantics [['NOUN '(object [:markers ['!DIRECTION] :procedure '((!DIRECTION !RIGHT nil))])]])
+(putprop! 'LEFT :semantics [['NOUN '(object [:markers ['!DIRECTION] :procedure ['(!DIRECTION !RIGHT nil)]])]])
 
 (putprop! 'LESS :features ['NUMD 'NUMDAN])
 (putprop! 'LESS :semantics [['NUMD '(list '< *num*)]])
 
 (putprop! 'LIKE :features ['VB 'INF 'TRANS])
-(putprop! 'LIKE :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!THING)]] :procedure '((!LIKE *!1* *!2*))])]]]])
+(putprop! 'LIKE :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!THING)]] :procedure ['(!LIKE *!1* *!2*)]])]]]])
 
 (putprop! 'LIST :features ['VB 'VO 'TRANS])
 (putprop! 'LIST :semantics [['VB [['TRANS '(!name)]]]])
 
 (putprop! 'LITTLE :features ['ADJ])
 (putprop! 'LITTLE :semantics [['MEASURE '(measure :dimension '!SIZE :restrictions ['!PHYSOB] :direction nil)]
-                               ['ADJ '(object [:markers ['!PHYSOB '!LITTLE] :procedure '((!MORE !SIZE [128 128 128] ***))])]])
+                               ['ADJ '(object [:markers ['!PHYSOB '!LITTLE] :procedure ['(!MORE !SIZE [128 128 128] ***)]])]])
 
 (putprop! 'LONG :features ['ADJ])
 (putprop! 'LONG :semantics [['MEASURE '(measure :dimension '!LENGTH :restrictions ['!PHYSOB] :direction true)]
-                             ['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !LENGTH *** [128 128 128]))])]])
+                             ['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !LENGTH *** [128 128 128])]])]])
 
 (putprop! 'MAKE :features ['VB 'INF 'TRANS])
 (putprop! 'MAKE :semantics [['VB [['TRANS '(!build)]]]])
@@ -4668,16 +4664,16 @@
 (putprop! 'MOST :semantics [['NUMD '(list '< (inc *num*))]])
 
 (putprop! 'MOVE :features ['VB 'INF 'TRANS])
-(putprop! 'MOVE :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :procedure '((!PUT *!2* PLACE *TIME)) :markers [['!MOTION]]])]]]])
+(putprop! 'MOVE :semantics [['VB [['TRANS '(relation [:markers ['!MOTION] :restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :procedure ['(!PUT *!2* PLACE *TIME)]])]]]])
 
 (putprop! 'MY :irregular ['I ['POSS] ['SUBJ]])
 
 (putprop! 'NAME :features ['NOUN 'NS 'VB 'INF 'TRANS])
-(putprop! 'NAME :semantics [['NOUN '(object [:markers ['!NAME '!ROLE] :procedure '((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL *!2* *!1*)))])]
+(putprop! 'NAME :semantics [['NOUN '(object [:markers ['!NAME '!ROLE] :procedure ['(IS *** !NAME) '(!CALL ? ***) '(!role (!THING) (!CALL *!2* *!1*))]])]
                              ['VB [['TRANS '(!name)]]]])
 
 (putprop! 'NARROW :features ['ADJ])
-(putprop! 'NARROW :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !WIDTH [128 0 0] ***))])]
+(putprop! 'NARROW :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !WIDTH [128 0 0] ***)]])]
                                ['MEASURE '(measure :dimension '!WIDTH :restrictions ['!PHSYOB] :direction nil)]])
 
 (putprop! 'NEITHER :features ['B-SPECIAL])
@@ -4685,7 +4681,7 @@
 (putprop! 'NEITHER :b-special #(both 'NOR))
 
 (putprop! 'NICE :features ['ADJ])
-(putprop! 'NICE :semantics [['ADJ '(object [:markers ['!THING] :procedure '((!LIKE ßFRIEND ***))])]])
+(putprop! 'NICE :semantics [['ADJ '(object [:markers ['!THING] :procedure ['(!LIKE ßFRIEND ***)]])]])
 
 (putprop! 'NO :features ['DET 'QNTFR 'NS 'NPL])
 (putprop! 'NO :semantics [['DET 'NO]])
@@ -4707,7 +4703,7 @@
 (putprop! 'NOW :semantics [['ADV '(or (= (cadr (assq 'TIME *fe*)) 'ßNOW) (bug! 'now "DEFINITION"))]])
 
 (putprop! 'OBJECT :features ['NOUN 'NS])
-(putprop! 'OBJECT :semantics [['NOUN '(object [:markers ['!PHYSOB '!VAGUE] :procedure '((!PHYSOB ***))])]])
+(putprop! 'OBJECT :semantics [['NOUN '(object [:markers ['!PHYSOB '!VAGUE] :procedure ['(!PHYSOB ***)]])]])
 
 (putprop! 'OF :features ['PREP 'PREP2 'OF])
 (putprop! 'OF :semantics [['PREP '(and (cq 'NG) (relation [:restrictions [['(!DIRECTION)] ['(!PHYSOB)]]]))] ['PREP2 true]])
@@ -4754,14 +4750,14 @@
     '(relation
         [:restrictions [['(!ANIMATE)] ['(!MANIP)]]
             :markers ['!EVENT]
-            :procedure '((!EVAL (if (memq (num? *smob1*) '(1 NS)) '(!PICKUP *!2* *TIME) '(!PUTIN *!2* ßBOX *TIME))))])]])
+            :procedure [#(if (memq (num? *smob1*) [1 'NS]) '(!PICKUP *!2* *TIME) '(!PUTIN *!2* ßBOX *TIME))]])]])
 
 (putprop! 'PLEASE :features ['B-SPECIAL])
 (putprop! 'PLEASE :semantics true)
 (putprop! 'PLEASE :b-special flushme)
 
 (putprop! 'POINTED :features ['ADJ])
-(putprop! 'POINTED :semantics [['ADJ '(object [:markers ['!PHYSOB '!POINTED] :procedure '((!SHAPE *** !POINTED))])]])
+(putprop! 'POINTED :semantics [['ADJ '(object [:markers ['!PHYSOB '!POINTED] :procedure ['(!SHAPE *** !POINTED)]])]])
 
 (putprop! 'PUT :past 'PUT)
 (putprop! 'PUT :features ['INF 'PAST 'VB 'TRANSL 'VPRT])
@@ -4769,27 +4765,22 @@
     '(relation
         [:restrictions [['(!ANIMATE)] ['(!PHYSOB)] '(*smobl* (!PLACE))]
             :markers ['!EVENT]
-            :procedure '(!EVAL
-                (doall (map #(condp = (car %)
-                                '!ON (list '!PUTON '*!2* (cadr %) '*TIME)
-                                '!IN (list '!PUTIN '*!2* (cadr %) '*TIME)
-                                (bug! 'put "DEFINITION"))
-                    (relations? *smobl*))))])]]]])
+            :procedure #(mapv (fn [[x y]] (condp = x '!ON (list '!PUTON '*!2* y '*TIME) '!IN (list '!PUTIN '*!2* y '*TIME) (bug! 'put "DEFINITION"))) (relations? *smobl*))])]]]])
 
 (putprop! 'PUT-AWAY :root '(PUT AWAY))
 (putprop! 'PUT-AWAY :features ['COMBINATION 'TRANS])
-(putprop! 'PUT-AWAY :semantics [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!MANIP)]] :markers ['!EVENT] :procedure '((!PUTIN *!2* ßBOX *TIME))])]])
+(putprop! 'PUT-AWAY :semantics [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!MANIP)]] :procedure ['(!PUTIN *!2* ßBOX *TIME)]])]])
 
 (putprop! 'PUT-DOWN :root '(PUT DOWN))
 (putprop! 'PUT-DOWN :features ['COMBINATION 'TRANS])
-(putprop! 'PUT-DOWN :semantics [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!MANIP)]] :markers ['!EVENT] :procedure '((!PUTON *!2* ßTABLE *TIME))])]])
+(putprop! 'PUT-DOWN :semantics [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!MANIP)]] :procedure ['(!PUTON *!2* ßTABLE *TIME)]])]])
 
 (putprop! 'PUT-TOGETHER :root '(PUT TOGETHER))
 (putprop! 'PUT-TOGETHER :features ['COMBINATION 'TRANS])
 (putprop! 'PUT-TOGETHER :semantics [['TRANS '(!build)]])
 
 (putprop! 'PYRAMID :features ['NOUN 'NS])
-(putprop! 'PYRAMID :semantics [['NOUN '(object [:markers ['!PHYSOB '!POINTED] :procedure '((!IS *** !PYRAMID))])]])
+(putprop! 'PYRAMID :semantics [['NOUN '(object [:markers ['!PHYSOB '!POINTED] :procedure ['(!IS *** !PYRAMID)]])]])
 
 (putprop! 'RED :features ['ADJ])
 (putprop! 'RED :semantics [['ADJ '(!color '!RED)]])
@@ -4797,10 +4788,10 @@
 (putprop! 'RELEASE :features ['VB 'TRANS 'INF])
 
 (putprop! 'RIGHT :features ['NOUN 'NS])
-(putprop! 'RIGHT :semantics [['NOUN '(object [:markers ['!DIRECTION] :procedure '((!DIRECTION !RIGHT true))])]])
+(putprop! 'RIGHT :semantics [['NOUN '(object [:markers ['!DIRECTION] :procedure ['(!DIRECTION !RIGHT true)]])]])
 
 (putprop! 'ROUND :features ['ADJ])
-(putprop! 'ROUND :semantics [['ADJ '(object [:markers ['!PHYSOB '!ROUND] :procedure '((!SHAPE *** !ROUND))])]])
+(putprop! 'ROUND :semantics [['ADJ '(object [:markers ['!PHYSOB '!ROUND] :procedure ['(!SHAPE *** !ROUND)]])]])
 
 (putprop! 'SAW :irregular ['SEE ['PAST] ['INF]])
 
@@ -4811,18 +4802,18 @@
 
 (putprop! 'SET-DOWN :root '(SET DOWN))
 (putprop! 'SET-DOWN :features ['COMBINATION 'TRANS])
-(putprop! 'SET-DOWN :semantics [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!MANIP)]] :markers ['!EVENT] :procedure '((!PUTON *!2* ßTABLE *TIME))])]])
+(putprop! 'SET-DOWN :semantics [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!MANIP)]] :procedure ['(!PUTON *!2* ßTABLE *TIME)]])]])
 
 (putprop! 'SHAPE :features ['NOUN 'NS])
-(putprop! 'SHAPE :semantics [['NOUN '(object [:markers ['!SHAPE] :procedure '((!IS *** !SHAPE))])]])
+(putprop! 'SHAPE :semantics [['NOUN '(object [:markers ['!SHAPE] :procedure ['(!IS *** !SHAPE)]])]])
 
 (putprop! 'SHE :features ['PRON 'SUBJ 'NS])
 
 (putprop! 'SHORT :features ['ADJ])
 (putprop! 'SHORT :semantics [['MEASURE '(measure :dimension '!HEIGHT :restrictions ['!PHYSOB] :direction nil)]
-                              ['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !HEIGHT [128 0 0] ***))])]])
+                              ['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !HEIGHT [128 0 0] ***)]])]])
 
-(putprop! 'SHRDLU :refer 'ßSHRDLU)
+(putprop! 'SHRDLU :refer ['ßSHRDLU])
 
 (putprop! 'SINCE :features ['BINDER 'TIME])
 (putprop! 'SINCE :semantics [['BINDER '(smbinder *tss* *end* nil)]])
@@ -4831,16 +4822,14 @@
 (putprop! 'SIT :semantics [['VB [['ITRNSL
     '(relation
         [:restrictions [['(!PHYSOB)] '(*smobl* (!PLACE))]
-            :procedure '(!EVAL
-                (doall (map #(if (memq (car %) '(!ON !IN)) (list '!SUPPORT (cadr %) '*!1* '*TIME) (bug! 'sit "DEFINITION"))
-                    (relations? *smobl*))))])]]]])
+            :procedure #(mapv (fn [[x y]] (if (memq x ['!ON '!IN]) (list '!SUPPORT y '*!1* '*TIME) (bug! 'sit "DEFINITION"))) (relations? *smobl*))])]]]])
 
 (putprop! 'SIZE :features ['NOUN 'NS])
-(putprop! 'SIZE :semantics [['NOUN '(object [:markers ['!SIZE] :procedure '((!IS *** !SIZE))])]])
+(putprop! 'SIZE :semantics [['NOUN '(object [:markers ['!SIZE] :procedure ['(!IS *** !SIZE)]])]])
 
 (putprop! 'SMALL :features ['ADJ])
 (putprop! 'SMALL :semantics [['MEASURE '(measure :dimension '!SIZE :restrictions ['!PHYSOB] :direction nil)]
-                              ['ADJ '(object [:markers ['!PHYSOB '!LITTLE] :procedure '((!MORE !SIZE [128 128 128] ***))])]])
+                              ['ADJ '(object [:markers ['!PHYSOB '!LITTLE] :procedure ['(!MORE !SIZE [128 128 128] ***)]])]])
 
 (putprop! 'SOME :features ['DET 'QNTFR 'NS 'NPL 'NONUM])
 (putprop! 'SOME :semantics [['DET 'INDEF]])
@@ -4851,10 +4840,10 @@
 (putprop! 'SPHERE :features ['NOUN 'NS])
 
 (putprop! 'SQUARE :features ['ADJ])
-(putprop! 'SQUARE :semantics [['ADJ '(object [:markers ['!PHYSOB '!RECTANGULAR] :procedure '((!SHAPE ** !RECTANGULAR))])]])
+(putprop! 'SQUARE :semantics [['ADJ '(object [:markers ['!PHYSOB '!RECTANGULAR] :procedure ['(!SHAPE ** !RECTANGULAR)]])]])
 
 (putprop! 'STACK :features ['NOUN 'NS 'VB 'INF 'VPRT 'TRANS])
-(putprop! 'STACK :semantics [['NOUN '(object [:markers ['!STACK] :procedure '((!IS *** !STACK))])]
+(putprop! 'STACK :semantics [['NOUN '(object [:markers ['!STACK] :procedure ['(!IS *** !STACK)]])]
                               ['VB [['TRANS '(!stackup)]]]])
 
 (putprop! 'STACK-UP :root '(STACK UP))
@@ -4862,23 +4851,23 @@
 (putprop! 'STACK-UP :semantics [['TRANS '(!stackup)]])
 
 (putprop! 'START :features ['VB 'INF 'TRANS 'INGOB1 'TOOB1])
-(putprop! 'START :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT] :procedure '((!START *!2* *TIME))])]]]])
+(putprop! 'START :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]] :procedure ['(!START *!2* *TIME)]])]]]])
 
 (putprop! 'SUPPORT :features ['VB 'INF 'TRANS 'IMPERF 'NOUN 'NS])
-(putprop! 'SUPPORT :semantics [['NOUN '(object [:markers ['!PHYSOB '!ROLE] :procedure '((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT *!1* *!2*)))])]
-                                ['VB [['TRANS '(relation [:restrictions [['(!PHYSOB)] ['(!MANIP)]] :procedure '((!SUPPORT *!1* *!2* *TIME))])]]]])
+(putprop! 'SUPPORT :semantics [['NOUN '(object [:markers ['!PHYSOB '!ROLE] :procedure ['(!SUPPORT *** ?) '(!role (!PHYSOB) (!SUPPORT *!1* *!2*))]])]
+                                ['VB [['TRANS '(relation [:restrictions [['(!PHYSOB)] ['(!MANIP)]] :procedure ['(!SUPPORT *!1* *!2* *TIME)]])]]]])
 
 (putprop! 'TABLE :features ['NOUN 'NS])
-(putprop! 'TABLE :semantics [['NOUN '(object [:markers ['!TABLE] :procedure '((!IS *** !TABLE))])]])
+(putprop! 'TABLE :semantics [['NOUN '(object [:markers ['!TABLE] :procedure ['(!IS *** !TABLE)]])]])
 
 (putprop! 'TAKE :features ['VB 'INF 'TRANSL 'TRANS])
 
 (putprop! 'TALL :features ['ADJ])
 (putprop! 'TALL :semantics [['MEASURE '(measure :dimension '!HEIGHT :restrictions ['!PHYSOB] :direction true)]
-                             ['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !HEIGHT *** [128 0 0]))])]])
+                             ['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !HEIGHT *** [128 0 0])]])]])
 
 (putprop! 'TELL :features ['VB 'INF 'TRANS2 'TOOB2])
-(putprop! 'TELL :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT] :procedure '((!WANT *!1* *!2* *TIME))])]]]])
+(putprop! 'TELL :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]] :procedure ['(!WANT *!1* *!2* *TIME)]])]]]])
 
 (putprop! 'THAN :features ['THAN])
 (putprop! 'THAN :semantics [['NULL true]])
@@ -4920,15 +4909,15 @@
 (putprop! 'THEY :semantics [['PRON '(smit 'THEY)]])
 
 (putprop! 'THICK :features ['ADJ])
-(putprop! 'THICK :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !THICKNESS *** [0 128 0]))])]
+(putprop! 'THICK :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !THICKNESS *** [0 128 0])]])]
                               ['MEASURE '(measure :dimension '!THICKNESS :restrictions ['!PHYSOB] :direction true)]])
 
 (putprop! 'THIN :features ['ADJ])
-(putprop! 'THIN :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !THICKNESS [0 128 0] ***))])]
+(putprop! 'THIN :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !THICKNESS [0 128 0] ***)]])]
                              ['MEASURE '(measure :dimension '!THICKNESS :restrictions ['!PHYSOB] :direction nil)]])
 
 (putprop! 'THING :features ['NOUN 'NS])
-(putprop! 'THING :semantics [['NOUN '(object [:markers ['!THING '!VAGUE '!PHYSOB] :procedure '((!PHYSOB  *** ))])]])
+(putprop! 'THING :semantics [['NOUN '(object [:markers ['!THING '!VAGUE '!PHYSOB] :procedure ['(!PHYSOB ***)]])]])
 
 (putprop! 'THIS :features ['NS 'DET 'DEM 'DEF])
 
@@ -4938,7 +4927,7 @@
 (putprop! 'TIME :features ['NOUN 'NS 'TIM1])
 
 (putprop! 'TO :features ['PREP])
-(putprop! 'TO :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!DIRECTION)]] :procedure '((!EVAL (SUBTOP '*!1* '*OF (REFERENCE? *smob1*))))])]])
+(putprop! 'TO :semantics [['PREP '(relation [:restrictions [['(!PHYSOB)] ['(!DIRECTION)]] :procedure [#(subst '*!1* '*OF (refer? *smob1*))]])]])
 
 (putprop! 'TOGETHER :features ['PRT])
 (putprop! 'TOGETHER :semantics [['PRT true]])
@@ -4952,7 +4941,7 @@
 (putprop! 'TOUCH :semantics [['VB [['TRANS '(!grasp)]]]])
 
 (putprop! 'TOY :features ['NOUN 'NS])
-(putprop! 'TOY :semantics [['NOUN '(object [:markers ['!PHYSOB] :procedure '((!MANIP ***))])]])
+(putprop! 'TOY :semantics [['NOUN '(object [:markers ['!PHYSOB] :procedure ['(!MANIP ***)]])]])
 
 (putprop! 'TWO :features ['NUM])
 (putprop! 'TWO :semantics [['NUM 2]])
@@ -4969,7 +4958,7 @@
 (putprop! 'US :irregular ['WE ['OBJ] ['SUBJ]])
 
 (putprop! 'WANT :features ['VB 'INF 'TRANS 'TOOB 'SUBTOB])
-(putprop! 'WANT :semantics [['VB [['TRANS '(relation [:restrictions [['(!ANIMATE)] ['(!EVENT)]] :markers ['!EVENT] :procedure '((!WANT *!1* *!2* *TIME))])]]]])
+(putprop! 'WANT :semantics [['VB [['TRANS '(relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!EVENT)]] :procedure ['(!WANT *!1* *!2* *TIME)]])]]]])
 
 (putprop! 'WAS :irregular ['BE ['V3PS 'VFS 'PAST] ['INF]])
 
@@ -5019,7 +5008,7 @@
 (putprop! 'WHYEVER :features ['PRON 'EVERPRON 'NS])
 
 (putprop! 'WIDE :features ['ADJ])
-(putprop! 'WIDE :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure '((!MORE !WIDTH *** [0 128 0]))])]
+(putprop! 'WIDE :semantics [['ADJ '(object [:markers ['!PHYSOB] :procedure ['(!MORE !WIDTH *** [0 128 0])]])]
                              ['MEASURE '(measure :dimension '!WIDTH :restrictions ['!PHYSOB] :direction true)]])
 
 (putprop! 'WILL :features ['VB 'AUX 'WILL 'MODAL 'V3PS 'VFS 'VPL])
@@ -5070,7 +5059,7 @@
 (putprop! '!BOX :sys ['!PHYSOB])
 
 (defn- !build []
-    (relation [:restrictions [['(!ANIMATE)] ['(!STACK)]] :markers ['!EVENT] :procedure '((!EVAL (list '!STACKUP (!blueprint *smob1*) '*TIME)))]))
+    (relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!STACK)]] :procedure [#(list '!STACKUP (!blueprint *smob1*) '*TIME)]]))
 
 (putprop! '!CALL :thmlist [[3 '((THUSE TC-3))]])
 
@@ -5078,7 +5067,7 @@
 (putprop! '!COLOR :sys ['!PROPERTY])
 
 (defn- !color [x]
-    (object [:markers (list '!PHYSOB x) :procedure (list (list '!color '*** x))]))
+    (object [:markers ['!PHYSOB x] :procedure [(list '!color '*** x)]]))
 
 (putprop! '!CONSTRUCT :system ['!STACK '!ROW])
 (putprop! '!CONSTRUCT :sys ['!PHYSOB])
@@ -5086,7 +5075,7 @@
 (putprop! '!CONTAIN :priority -1)
 
 (defn- !cleanoff []
-    (relation [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :markers ['!EVENT] :procedure '((!CLEARTOP *!2* *TIME))]))
+    (relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :procedure ['(!CLEARTOP *!2* *TIME)]]))
 
 (putprop! '!CLEARTOP :thmlist [[2 '((THUSE TC-2))] [3 '((THUSE TCT-3))] [4 '((THUSE TCTE-4))]])
 
@@ -5114,7 +5103,7 @@
     (relation
         [:restrictions [['(!ANIMATE)] ['(!MANIP)]]
             :markers ['!EVENT]
-            :procedure '((!EVAL (if (istense *c* 'IMPERF) '(!GRASPING *!2* *TIME) '(!GRASP *!2* *TIME))))]))
+            :procedure [#(if (istense *c* 'IMPERF) '(!GRASPING *!2* *TIME) '(!GRASP *!2* *TIME))]]))
 
 (putprop! '!GRASPING :thmlist [[3 '((THUSE TCT-GRASPING))]])
 
@@ -5125,21 +5114,21 @@
 (defn- !have []
     (relation
         [:restrictions [['(!THING)] ['(!THING) '(and (memq '!ROLE (markers? *smob1*)) (check-markers (cadr (assq '!ROLE (relations? *smob1*))) (markers? *smsub*) (systems? *smsub*)))]]
-            :procedure '((!SUBST *!1* ?))]
+            :procedure ['(!SUBST *!1* ?)]]
         [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]]
-            :procedure '((!BELONG *!2* *!1*))]))
+            :procedure ['(!BELONG *!2* *!1*)]]))
 
 (putprop! '!HEIGHT :measfn #(caddr (size %)))
 
 (defn- !in []
     (if (cq 'LOBJ)
         (relation
-            [:restrictions [['(!THING)] ['(!BOX)]] :markers ['!PLACE] :procedure '((!IN *!2*))])
+            [:markers ['!PLACE] :restrictions [['(!THING)] ['(!BOX)]] :procedure ['(!IN *!2*)]])
         (relation
-            [:restrictions [['(!MANIP)] ['(!BOX)]] :procedure '((!CONTAIN *!2* *!1* *TIME))]
-            [:restrictions [['(!MANIP)] ['(!HAND)]] :procedure '((!GRASPING *!1* *TIME))]
-            [:restrictions [['(!PLACE)] ['(!BOX)]] :procedure '((!IN *!1* *!2*))]
-            [:restrictions [['(!MANIP)] ['(!CONSTRUCT)]] :procedure '((!PART *!1* *!2* *TIME))])))
+            [:restrictions [['(!MANIP)] ['(!BOX)]] :procedure ['(!CONTAIN *!2* *!1* *TIME)]]
+            [:restrictions [['(!MANIP)] ['(!HAND)]] :procedure ['(!GRASPING *!1* *TIME)]]
+            [:restrictions [['(!PLACE)] ['(!BOX)]] :procedure ['(!IN *!1* *!2*)]]
+            [:restrictions [['(!MANIP)] ['(!CONSTRUCT)]] :procedure ['(!PART *!1* *!2* *TIME)]])))
 
 (putprop! '!IS :priority 64)
 
@@ -5148,16 +5137,10 @@
 
 (putprop! '!LOC :thmlist [[4 '((THUSE TC-LOC))] [5 '((THUSE TCT-LOC))]])
 
-(defn- !loc [& a] (!loc2 (car a) (cadr a)))
-
-(dynamic- *loctype*)
-(dynamic- *locneg*)
-
-(defn- !loc2 [loctype' locneg']
-    (binding [*loctype* loctype' *locneg* locneg']
-        (if (cq 'LOBJ)
-            (relation [:restrictions [['(!THING)] ['LOBJ '(!PHYSOB)]] :markers ['!PLACE] :procedure '((!EVAL (list '!LOC *loctype* *locneg* *!2*)))])
-            (relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure '((!EVAL (list '!LOC *loctype* (if *locneg* '*!1* '*!2*) (if *locneg* '*!2* '*!1*) '*TIME)))]))))
+(defn- !loc [type neg]
+    (if (cq 'LOBJ)
+        (relation [:markers ['!PLACE] :restrictions [['(!THING)] ['LOBJ '(!PHYSOB)]] :procedure [(list '!LOC type neg '*!2*)]])
+        (relation [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :procedure [(list '!LOC type (if neg '*!1* '*!2*) (if neg '*!2* '*!1*) '*TIME)]])))
 
 (putprop! '!MANIP :sys ['!PHYSOB])
 
@@ -5167,23 +5150,23 @@
 (putprop! '!NAME :sys ['!SYSTEMS])
 
 (defn- !name []
-    (relation [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :markers ['!EVENT] :procedure '((!NAME *!2*))]))
+    (relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :procedure ['(!NAME *!2*)]]))
 
 (putprop! '!NOTICE :thmlist [[2 '((THUSE TC-2))]])
 
 (defn- !notice []
-    (relation [:restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :markers ['!EVENT] :procedure '((!NOTICE *!2* *TIME))]))
+    (relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!PHYSOB)]] :procedure ['(!NOTICE *!2* *TIME)]]))
 
 (putprop! '!ON :thmlist [[3 '((THUSE TC-ON))] [4 '((THUSE TCT-ON))]])
 
 (defn- !on []
     (if (cq 'LOBJ)
         (relation
-            [:restrictions [['(!THING)] ['(!PHYSOB)]] :markers ['!PLACE] :procedure '((!ON *!2*))])
+            [:markers ['!PLACE] :restrictions [['(!THING)] ['(!PHYSOB)]] :procedure ['(!ON *!2*)]])
         (relation
-            [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :paraphrase '(ANYWHERE ON TOP OF) :procedure '((!ON *!1* *!2* *TIME))]
-            [:restrictions [['(!PHYSOB)] ['(!MANIP)]] :paraphrase '(DIRECTLY ON THE SURFACE) :procedure '((!SUPPORT *!2* *!1* *TIME))]
-            [:restrictions [['(!PLACE)] ['(!PHYSOB)]] :procedure '((!ON *!1* *!2*))])))
+            [:restrictions [['(!PHYSOB)] ['(!PHYSOB)]] :paraphrase '(ANYWHERE ON TOP OF) :procedure ['(!ON *!1* *!2* *TIME)]]
+            [:restrictions [['(!PHYSOB)] ['(!MANIP)]] :paraphrase '(DIRECTLY ON THE SURFACE) :procedure ['(!SUPPORT *!2* *!1* *TIME)]]
+            [:restrictions [['(!PLACE)] ['(!PHYSOB)]] :procedure ['(!ON *!1* *!2*)]])))
 
 (putprop! '!PACK :thmlist [[3 '((THUSE TC-3))]])
 
@@ -5245,7 +5228,7 @@
 (putprop! '!STACKUP :thmlist [[2 '((THUSE TC-2))]])
 
 (defn- !stackup []
-    (relation [:restrictions [['(!ANIMATE)] ['(!MANIP)]] :markers ['!EVENT] :procedure '((!STACKUP *!2* *TIME))]))
+    (relation [:markers ['!EVENT] :restrictions [['(!ANIMATE)] ['(!MANIP)]] :procedure ['(!STACKUP *!2* *TIME)]]))
 
 (putprop! '!START :thmlist [[3 '((THUSE TC-STARTEND3))] [4 '((THUSE TC-STARTEND4))]])
 
@@ -5302,13 +5285,13 @@
 ;;
 ;; ############################################################
 
-(putprop! 'D :mod '((PAST EN) (INF MODAL AUX)))
-(putprop! 'G :mod '((ING) (INF)))
-(putprop! 'R :mod '((COMPAR) nil))
-(putprop! 'T :mod '((SUP) nil))
-(putprop! 'N :mod '((EN) (INF)))
-(putprop! 'S :mod '((PRESENT V3PS NPL) (NS INF MODAL AUS MAS)))
-(putprop! '* :mod '((NEG) (nil)))
+(putprop! 'D :mod [['PAST 'EN] ['INF 'MODAL 'AUX]])
+(putprop! 'G :mod [['ING] ['INF]])
+(putprop! 'R :mod [['COMPAR] nil])
+(putprop! 'T :mod [['SUP] nil])
+(putprop! 'N :mod [['EN] ['INF]])
+(putprop! 'S :mod [['PRESENT 'V3PS 'NPL] ['NS 'INF 'MODAL 'AUS 'MAS]])
+(putprop! '* :mod [['NEG] nil])
 
 (putprop! 'thamong :nogoal true)
 (putprop! 'thand :nogoal true)
@@ -5327,7 +5310,7 @@
 
 (putprop! 'ANIMATE-OSS :ossnode 'ANIMATE-OSS)
 (putprop! 'ANIMATE-OSS :markers ['!ANIMATE '!THING '!SYSTEMS])
-(putprop! 'ANIMATE-OSS :relations '((!IS ($? ANIM) ?)))
+(putprop! 'ANIMATE-OSS :relations ['(!IS ($? ANIM) ?)])
 (putprop! 'ANIMATE-OSS :systems ['!THING '!SYSTEMS])
 (putprop! 'ANIMATE-OSS :determiner ['SG-PL 'INDEF 'WHICH])
 (putprop! 'ANIMATE-OSS :variable 'ANIM)
@@ -5353,7 +5336,7 @@
 (putprop! 'FRIEND-OSS :ossnode 'FRIEND-OSS)
 (putprop! 'FRIEND-OSS :markers ['!PERSON '!ANIMATE '!THING '!SYSTEMS])
 (putprop! 'FRIEND-OSS :systems ['!ANIMATE '!THING '!SYSTEMS])
-(putprop! 'FRIEND-OSS :refer '(ßFRIEND))
+(putprop! 'FRIEND-OSS :refer ['ßFRIEND])
 (putprop! 'FRIEND-OSS :determiner [1 'DEF nil])
 
 (putprop! 'NAME-OSS :ossnode 'NAME-OSS)
@@ -5370,7 +5353,7 @@
 (putprop! 'SHRDLU-OSS :ossnode 'SHRDLU-OSS)
 (putprop! 'SHRDLU-OSS :markers ['!ROBOT '!ANIMATE '!THING '!SYSTEMS])
 (putprop! 'SHRDLU-OSS :systems ['!ANIMATE '!THING '!SYSTEMS])
-(putprop! 'SHRDLU-OSS :refer '(ßSHRDLU))
+(putprop! 'SHRDLU-OSS :refer ['ßSHRDLU])
 (putprop! 'SHRDLU-OSS :determiner [1 'DEF nil])
 
 (putprop! 'STACKPARTS-OSS :ossnode 'STACKPARTS-OSS)
@@ -5386,7 +5369,7 @@
 (putprop! 'UNKNOWN-OSS :variable 'UNKNOWN)
 
 (putprop! 'UNKNOWN-OSS-BY :ossnode 'UNKNOWN-OSS-BY)
-(putprop! 'UNKNOWN-OSS-BY :relations '((!IS ($? UNKNOWN) ?)))
+(putprop! 'UNKNOWN-OSS-BY :relations ['(!IS ($? UNKNOWN) ?)])
 (putprop! 'UNKNOWN-OSS-BY :markers ['!THING '!SYSTEMS '!PHYSOB '!VAGUE])
 (putprop! 'UNKNOWN-OSS-BY :systems ['!THING '!SYSTEMS])
 (putprop! 'UNKNOWN-OSS-BY :determiner ['SG-PL 'INDEF nil])
@@ -5395,7 +5378,7 @@
 
 (putprop! 'UNKNOWNSG-OSS :ossnode 'UNKNOWNSG-OSS)
 (putprop! 'UNKNOWNSG-OSS :markers ['!THING '!SYSTEMS '!PHYSOB '!VAGUE])
-(putprop! 'UNKNOWNSG-OSS :relations '((!IS ($? UNKNOWN) ?)))
+(putprop! 'UNKNOWNSG-OSS :relations ['(!IS ($? UNKNOWN) ?)])
 (putprop! 'UNKNOWNSG-OSS :systems ['!THING '!SYSTEMS])
 (putprop! 'UNKNOWNSG-OSS :determiner ['NS 'INDEF 'WHICH])
 (putprop! 'UNKNOWNSG-OSS :variable 'UNKNOWN)
@@ -5522,13 +5505,13 @@
             :determiner [1 'DEF nil]
             :parsenode *c*
             :markers ['!NAME]
-            :refer (list (word (firstword *h*))))
+            :refer [(word (firstword *h*))])
         (let [name (gensym 'OSS)] (build
             :ossnode name
             :determiner [1 'DEF nil]
             :parsenode *c*
             :variable (gensym 'X)
-            :relations (list (list '!NAME name (word (firstword *h*))))))))
+            :relations [(list '!NAME name (word (firstword *h*)))]))))
     (smng2))
 
 (defn- smadjqshort [] (bug! 'smadjqshort "NOT WRITTEN YET"))
@@ -5633,7 +5616,7 @@
                     :markers (markers? x)
                     :systems (systems? x)
                     :plausibility plausibility
-                    :ambiguities (list (list name (from (firstword node) (wordafter node)) *c*))
+                    :ambiguities [(list name (from (firstword node) (wordafter node)) *c*)]
                     :refer (refer? x)
                     :variable (variable? x)
                     :parsenode *c* ;; INPUT PARAMETER
@@ -5641,7 +5624,7 @@
                     :determiner [(if (isq *c* 'NPL) 'NPL 'NS) 'INDEF nil]
                     ;; DONE SO THAT IF VARIBLE IS BOUND, PLANNER GENERATOR WILL USE IT.
                     ;; RELATION SAYS THAT THIS OSS "REFERS" TO THE OSS WHOSE VARIABLE NAME IS GIVEN.
-                    :relations (list (list '!REFERS (variable? x))))))
+                    :relations [(list '!REFERS (variable? x))])))
                 (semantics node)))
             *sm*))))
 
@@ -5661,7 +5644,7 @@
                 :determiner [(cond (cq 'NUM) (semantics (move-pt 'H 'PV '(NUM))) (isq *nb* 'BOTH) 2 :else 'NPL)
                                 (if (move-pt 'H 'PV '(QNTFR)) (eval (semantics *pt*)) 'INDEF)
                                 (cond (cq 'HOWMANY) 'HOWMANY (cq 'QDET) 'WHICH)]
-                :relations (list (list 'thamong (list 'thv (variable? x)) (quotify (refer? x))))))
+                :relations [(list 'thamong (list 'thv (variable? x)) (quotify (refer? x)))]))
         (semantics (move-pt 'H 'DLC)))))
 
 (dynamic- *num*)
@@ -5688,7 +5671,7 @@
                 :parsenode *c*
                 :variable (gensym 'X)
                 :markers (when (cq 'TPRON) ['!VAGUE '!PHYSOB '!THING])
-                :relations (when (cq 'TPRON) (list (list '!PHYSOB name)))
+                :relations (when (cq 'TPRON) [(list '!PHYSOB name)])
                 :determiner [(cond
                                 (cq 'NUMD) (binding [*num* (semantics (move-pt 'H 'PV '(NUM)))] (eval (semantics (move-pt 'H 'PV '(NUMD)))))
                                 (cq 'NUM) (semantics (move-pt 'H 'PV '(NUM)))
@@ -6047,7 +6030,7 @@
     ;; VALUE: THE NODE NAME OF THE OSS OR RSS CONSTRUCTED.  AN ATOM.
     ;; SIDE-EFFECTS: USES PUTPROP TO ATTACH PROPERTIES TO NODE NAMES.
     (let [? (and rssnode (not markers))
-          markers (if ? '(!RELATION) markers) m (if ? (assoc m :markers markers) m)
+          markers (if ? ['!RELATION] markers) m (if ? (assoc m :markers markers) m)
           ? (and markers (not systems))
           [markers systems] (if ? (let [x (check-markers markers nil nil)] [(car x) (cadr x)]) [markers systems]) m (if ? (assoc m :markers markers :systems systems) m)
           node (or ossnode rssnode tssnode ansnode (bug! 'build "NO NODE="))]
@@ -6104,7 +6087,7 @@
             ;; SMCOMP = ONE OSS FOR SEMANTIC COMPLEMENT
             ;; WHEREAS OUTSIDE OF THE LAMBDA EXPRESSION EACH OF THESE NAMES REPRESENTS A LIST OF THE SAME.
             ;; THIS IS TO ALLOW DICTIONARY WRITERS TO USE THESE SELF SAME NAMES IN WRITING DEFINITIONS, A SIMPLY TERRIBLE IDEA.
-            (let [{:keys [restrictions procedure plausibility paraphrase markers]} a]
+            (let [{:keys [markers restrictions procedure plausibility paraphrase]} a]
                 (binding [*relß* nil *relmarkersß* nil *!1* nil *!2* nil *!3* nil]
                     ;; RESTRICTIONSß IS EXPANDED HERE PUTTING IN IMPLICIT REGISTER REFERENCES, SO IT CAN BE UNIFORMLY GOBBLED BELOW.
                     ;; %MARKL IS A SINGLE MARKER LIST FROM ON OF THE RESTRICTIONS IN THE DEFINITION, E.G. (!PHYSOB !RED).
@@ -6143,12 +6126,12 @@
                                 :markers markers
                                 :variable (let [x (gensym 'EVX)] (putprop! x :rssvar= x))
                                 :parsenode *c*
-                                :relations (reverse (doall (map #(plnr-numsub '<<<RELATION-ERROR>>> %) (evalcheck procedure))))
+                                :relations (reverse (doall (map #(plnr-numsub '<<<RELATION-ERROR>>> %) (if (fn? procedure) (procedure) procedure))))
                                 :rel *relß*
                                 :negative (and (cq 'NEG) true)
                                 :relmarkers *relmarkersß*
                                 :plausibility (+ (plausibility? *smsub*) (plausibility? *smob1*) (plausibility? *smob2*) (or (eval plausibility) 0))
-                                :ambiguities (concat (ambiguities? *!1*) (ambiguities? *!2*) (ambiguities? *!3*) (and paraphrase (list (list name paraphrase *word-being*))))))))))))
+                                :ambiguities (concat (ambiguities? *!1*) (ambiguities? *!2*) (ambiguities? *!3*) (and paraphrase (list (list name paraphrase *word-being*))))))))))))
         a *smsub* *smob1* *smob2* *smobl* *smcomp*))
 
 (defn- dobackref [answer]
@@ -6184,12 +6167,6 @@
                 *backref2*)))
         ;; A FEW MISSING PIECES GO HERE
         nil))
-
-(defn- evalcheck [l]
-    ;; EVALCHECK CHECKS FOR THE PRESENCE OF (!EVAL (MUMBLE ...) ...) IN THE INPUT S-EXPRESSION L.
-    ;; IF IT FINDS ONE THEN THE EXPRESSION MUMBLE IS EVALUATED AND REPLACES (!EVAL ...), OTHERWISE
-    ;; L IS RETURNED JUST THE WAY IT WAS.  HENCE THIS FUNCTION IS THE INVERSE OF QUOTE.
-    (cond (term? l) l (= (car l) '!EVAL) (eval (cadr l)) :else l))
 
 (dynamic- *%X*)
 (dynamic- *%XL*)
@@ -6310,10 +6287,10 @@
                         :systems (cadr ms*)
                         :determiner (determiner? oss)
                         :variable (variable? oss)
-                        :relations (concat (reverse (doall (map #(plnr-numsub oss %) (evalcheck procedure)))) (relations? oss))
+                        :relations (concat (reverse (doall (map #(plnr-numsub oss %) (if (fn? procedure) (procedure) procedure)))) (relations? oss))
                         :rel (rel? oss)
                         ;; THE OSS NAME PROVIDES A UNIQUE LABEL FOR WHERE THE AMBIGUITY OCCURRED FOR LATER COMPARISON.
-                        :ambiguities (concat (ambiguities? oss) (when paraphrase (list (list oss paraphrase *word-being*))))
+                        :ambiguities (concat (ambiguities? oss) (when paraphrase (list (list oss paraphrase *word-being*))))
                         :plausibility (+ (or (eval plausibility) 0) (plausibility? oss))))))
             *sm* a)))
 
@@ -6449,7 +6426,7 @@
                 (= e '***) me
                 (= e '*TIME) *time* ;; GETS THE CURRENT TIME
                 :else e))
-        (evalcheck a))))
+        (if (fn? a) (a) a))))
 
 (defn- plnr-recommendify [a]
     ;; LOOKS UP IN THE DICTIONARY A RECOMMENDED THEOREM TO USE IN PROCESSING A PLNRPHRASE BY THGOAL.
@@ -6471,7 +6448,7 @@
         (delq t
             (doall (map (lambda [x]
                 (cond (not (term? x)) x
-                    (tss? x) (if (and (tense? x) (not (memq (tense? x) '((PRESENT PRESENT) (MODAL) (PRESENT))))) x t)
+                    (tss? x) (if (and (tense? x) (not (memq (tense? x) [['PRESENT 'PRESENT] ['MODAL] ['PRESENT]]))) x t)
                     :else x))
             exp)))))
 
@@ -6480,8 +6457,8 @@
     (let [{:keys [restrictions dimension direction]} (cdr (findmeasure node))]
         (putprop! 'COMPARE-PSEUDO-VERB :semantics
             (list 'relation
-                    [:restrictions (list (list restrictions) (list restrictions))
-                        :procedure (list (list degree dimension (if direction '*!1* '*!2*) (if direction '*!2* '*!1*)))]))
+                    [:restrictions [[restrictions] [restrictions]]
+                        :procedure [(list degree dimension (if direction '*!1* '*!2*) (if direction '*!2* '*!1*))]]))
         '(COMPARE-PSEUDO-VERB)))
 
 (defn- findmeasure [node]
@@ -6491,7 +6468,7 @@
 
 (defn- measure [& a]
     ;; USED TO GENERATE ORDINALS -- IT IS CALLED WHEN A MEASURE DEFINITION IS EVALLED
-    (object [:markers (cadr (memq :restrictions a)) :procedure (list (list '*ORDINAL* a))]))
+    (object [:markers (cadr (memq :restrictions a)) :procedure [(list '*ORDINAL* a)]]))
 
 (dynamic- *ordinal*)
 
