@@ -73,12 +73,14 @@
 (dynamic- *me*)
 (dynamic- *mes*)
 
-(dynamic- END)
+(dynamic- *start*)
+(dynamic- *end*)
+
 (dynamic- BOTH)
-(dynamic- BACKREF)
-(dynamic- BACKREF2)
-(dynamic- ANSNAME)
-(dynamic- LASTREL)
+(dynamic- *backref*)
+(dynamic- *backref2*)
+(dynamic- *ansname*)
+(dynamic- *lastrel*)
 (dynamic- WHO)
 (dynamic- *pt*)
 (dynamic- *ptw*)
@@ -107,7 +109,7 @@
 (defn- remprop! [x y] (swap! world update x dissoc y) nil)
 (defn- getprop [x y] (get-in @world [x y]))
 
-(declare topcenter abs atab CLEAR diff half ENDTIME EV FINDSPACE GOAL GROW LOCGREATER locg2 MEMOREND MEMORY OCCUPIER order PACKO PACKON packord size STARTHISTORY startime support tcent TFIND timechk evlis THADD THAMONG THAMONGF THAND thandf THANDT THANTE THAPPLY thapply1 THASS1 THASSERT thassertf thassertt THASVAL THBA THBIND thbi1 THBKPT THBRANCH THBRANCHUN THCOND thcondf THCONDT THCONSE THDEF THDO THDO1 THDOB THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf THFINDT THFLUSH thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 THCHECK THUNION THMATCH1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR THOR2 thorf thort thpopt THPROG THPROGA thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt THREMOVE thremprop THRESTRICT THRETURN THRPLACA THRPLACAS THURPLACA THRPLACD THRPLACDS THURPLACD THSETQ thsgal thstate THSUCCEED THTAE THTAG thtagf thtagt thtrue THTRY1 THTRY THUNDOF thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES THSEL %sent DA DISP DP FORGET ert bug global-err ERTEX COMBINATION? findb from MEET MOD PR1 PR2 PRINTC SETDIF STA UNION WALLP TAB uppercase-ify-char ETAOIN propname buildword undefined LABELTRACE passing UNLABELTRACE pev TELLCHOICE SHOWCHOICE SHOWTELL SHOWTELLCHOICE QUERY onoff REQUEST SHOWPROP treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left CALLSM MOVE-PT MOVE-PTW apply-grammar buildnode cq CUT CUT-BACK-ONE F features FESET FLUSHME following FQ getr H ISQ isx m! mq! N NB nextword nextword? nq parent parse PARSE2 PARSE3 PARSEREL POP POPTO previous PTFIND rebuild root RQ secondword? setr SM TRNSF UPREL word UPCHECK PDEFINE INTERPRET gocheck | CONJ COMMA doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH THANK !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN SMNEWPROPN SMCONJ SMCONJ2 SMVG SMPRON SMVAUX smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 SMONE3 SMPOSS SMPOSS2 SMRELATE SMCL1 SMCL2 SMCL-MODIFIERS SMBIND SMBINDER istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 MUMBLE OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung PLNR-NOTIFY PLNR-NEWBODY PLNR-PROGIFY PLNR-NUMREL PLNR-NUMSUB PLNR-RECOMMENDIFY PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ORDMAKE COMPARE-PROC EXPAND ERQSET SETQQCHECK THVAL2 WHO CHECK CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? SMSET ANSWER AMBPUT ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE PARSE-ASSOC ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ANSTHMELEMENT ansunique CUTOFF DESCRIBEVENT disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt NAMEACTION namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ORDNAME PLNR-ANDORIFY PREPPUT PLURALIZE PLURALMAKE THVAL-MULT toplevel findreduce FINDCHOOSE MUNG NAMEVENT prtput vbfix vbfix2 CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
+(declare topcenter abs atab CLEAR diff half ENDTIME EV FINDSPACE GOAL GROW LOCGREATER locg2 MEMOREND MEMORY OCCUPIER order PACKO PACKON packord size STARTHISTORY startime support tcent TFIND timechk evlis THADD THAMONG THAMONGF THAND thandf THANDT THANTE THAPPLY thapply1 THASS1 THASSERT thassertf thassertt THASVAL THBA THBIND thbi1 THBKPT THBRANCH THBRANCHUN THCOND thcondf THCONDT THCONSE THDEF THDO THDO1 THDOB THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf THFINDT THFLUSH thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 THCHECK THUNION THMATCH1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR THOR2 thorf thort thpopt THPROG THPROGA thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt THREMOVE thremprop THRESTRICT THRETURN THRPLACA THRPLACAS THURPLACA THRPLACD THRPLACDS THURPLACD THSETQ thsgal thstate THSUCCEED THTAE THTAG thtagf thtagt thtrue THTRY1 THTRY THUNDOF thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES THSEL %sent DA DISP DP FORGET ert bug global-err ERTEX COMBINATION? findb from MEET MOD PR1 PR2 PRINTC SETDIF STA UNION WALLP TAB uppercase-ify-char ETAOIN propname buildword undefined LABELTRACE passing UNLABELTRACE pev TELLCHOICE SHOWCHOICE SHOWTELL SHOWTELLCHOICE QUERY onoff REQUEST SHOWPROP treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left CALLSM MOVE-PT MOVE-PTW apply-grammar buildnode cq CUT CUT-BACK-ONE F features FESET FLUSHME following FQ getr H ISQ isx m! mq! N NB nextword nextword? nq parent parse PARSE2 PARSE3 PARSEREL POP POPTO previous PTFIND rebuild root RQ secondword? setr SM TRNSF UPREL word UPCHECK PDEFINE INTERPRET gocheck | CONJ COMMA doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH THANK !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN SMNEWPROPN SMCONJ SMCONJ2 SMVG SMPRON SMVAUX smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 SMONE3 SMPOSS SMPOSS2 SMRELATE SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 MUMBLE OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung PLNR-NOTIFY PLNR-NEWBODY PLNR-PROGIFY PLNR-NUMREL PLNR-NUMSUB PLNR-RECOMMENDIFY PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ORDMAKE COMPARE-PROC EXPAND ERQSET SETQQCHECK THVAL2 WHO CHECK CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? SMSET ANSWER AMBPUT ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE PARSE-ASSOC ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ANSTHMELEMENT ansunique CUTOFF DESCRIBEVENT disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt NAMEACTION namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ORDNAME PLNR-ANDORIFY PREPPUT PLURALIZE PLURALMAKE THVAL-MULT toplevel findreduce FINDCHOOSE MUNG NAMEVENT prtput vbfix vbfix2 CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
 
 #_(ns shrdlu.plnr)
 
@@ -2703,7 +2705,9 @@
 (§ defn- FORGET []
     (set! *lastsentno* 0)
     (set! *lastsent* nil)
-    (SETQ LASTREL nil BACKREF nil BACKREF2 nil)
+    (set! *lastrel* nil)
+    (set! *backref* nil)
+    (set! *backref2* nil)
     (dorun (map #'(lambda [pn]
         (dorun (map #'(lambda [prop] (remprop! pn prop))
             '(BIND LASTBIND))))
@@ -3450,7 +3454,7 @@
         (concat (list 'PROG
             (concat '(*fe* H *me* NB *c* SM CUT NN T1 T2 T3 ßRESULT) (cadr a))
             '(SETQ NN true)
-            '(SETQ CUT END)
+            '(SETQ CUT *end*)
             '(set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
             '(setr 'PARENT PARENT *c*))
             (mapcat spread1 (cddr a))
@@ -3572,7 +3576,7 @@
     (let [b N]
     =>  (COND
             ((= a b) (SETQ CUT a) (SETQ NN (not (= CUT N))) (RETURN true))
-            ((= b END) (RETURN nil))
+            ((= b *end*) (RETURN nil))
             ((SETQ b (cdr b)) (GO =>))
             ((nil? a) (SETQ CUT nil) (SETQ NN N) (RETURN true)))))
 
@@ -3631,12 +3635,12 @@
     ;; THE PARAMETER P INDICATES WHETHER PARSE2 IS BEING CALLED FROM THE TOPLEVEL.
     ;; IF P IS TRUE, PARSE2 DOES NOT APPEND THE NODE JUST PARSED TO THE PARSING TREE.
     ;; PARSE2 WILL CALL EITHER A COMPILED OR INTERPRETED VERSION OF THE GRAMMAR PROGRAM.
-    (let [UNIT (car REST) CREATED-NODE nil END nil PARENT nil *re* nil SPECIAL nil nbb N]
+    (let [UNIT (car REST) CREATED-NODE nil *end* nil PARENT nil *re* nil SPECIAL nil nbb N]
         (set! *level* (inc *level*))
         (COND ((= N CUT)
             (set! *level* (dec *level*))
             (RETURN nil)))
-        (SETQ END CUT)
+        (set! *end* CUT)
         (SETQ NN (not (= N CUT)))
         (SETQ PARENT *c*)
         (COND ((nq 'B-SPECIAL)
@@ -3716,8 +3720,8 @@
                             (ERRSET
                                 (and (MAP #'(lambda [PLACE] (and (= PLACE (NB BACKNODE)) (ERR))) N)
                                     (SETQ XX (cons (car BACKNODE) XX)))))
-                            BACKREF)
-                        (SETQ BACKREF XX)
+                            *backref*)
+                        (set! *backref* XX)
                         nil)
                     true)))
         ((eval (cons 'POPTO a)) (POP))))
@@ -3803,7 +3807,7 @@
     ;; IT IS SET TO A NODE ONE WISHES TO BE THE INITIAL DAUGHTER OF THIS NODE.
     ;; ONLY CONJ NEEDS THIS HACK.
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN true T1 nil T2 nil T3 nil]
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST))     ;; FEATURE LIST
             (SETQ NB (or (NB *re*) N))                    ;; BEGINNING IN SENTENCE OF THIS NODE
             N                                           ;; SENTENCE POINTER JUST AFTER THIS NODE
@@ -3854,7 +3858,7 @@
         (| (CUT (MOVE-PTW)) INIT MAJOR)
 
     MAJOR
-        (CUT END)
+        (CUT *end*)
         (COND ((= *punct* '?) (GO QUEST))
             ((or (cq 'IMPER *fe*) (= *punct* '!)) (GO IMPER)))
         (GO THEREINIT)
@@ -3918,7 +3922,7 @@
     ;; ONCE THAT IS DONE, SET THE SUBJECT REGISTER (FOR USE BY SEMANTIC ROUTINES AND OTHER PARTS OF THE GRAMMAR)
     ;; AND MOVE ONE TO THE CODE FOR WHICH LOOKS FOR THE MAIN VERB (MVB) - "VG"
 
-    SUBJ (CUT END)                                                  ;; RESET CUTPOINT INCASE IT WAS MODIFIED BY
+    SUBJ (CUT *end*)                                                  ;; RESET CUTPOINT INCASE IT WAS MODIFIED BY
     SUBJ3                                                           ;; PREVIOUS BACKUPS IF THE FIRST WORD INDICATES
         (| (or (and (nextword? N 'TO)                                 ;; THE POSSIBILITY OF A RANK-SHIFTED CLAUSE
                     (parse 'CLAUSE 'RSNG 'TO 'SUBJ))                    ;; SERVING AS THE SUBJECT, THEN TRY TO PARSE ONE
@@ -4044,7 +4048,7 @@
     ;;
     ;; ###############################################################
 
-    VG1 (CUT END)                                                   ;; RESET THE CUTPOINT IN CASE ANYONE CHANGED IT
+    VG1 (CUT *end*)                                                   ;; RESET THE CUTPOINT IN CASE ANYONE CHANGED IT
         (| (ISQ MVB BE) BE nil (BE))                                ;; JUMP TO "BE" PROCESSOR
 
         ;; There used to be a check here for a quoting MVB with a quoted subject.
@@ -4077,7 +4081,7 @@
             POPRT
             FINDOBJ1                                                        ;; IF THERE ARE MORE OR LESS NP'S THAN EXPECTED,
             nil)                                                            ;; THEN DON'T PARSE ANYTHING BUT GO TO NPRT
-        (CUT END)                                                           ;; INSTEAD. SIMILARLY, IF ANYTHING FOLLOWS THE
+        (CUT *end*)                                                           ;; INSTEAD. SIMILARLY, IF ANYTHING FOLLOWS THE
         (setr 'OBJ1 H *c*)                                                    ;; DISPLACED PARTICLE THEN A GRAMMATICALLY BAD
         (parse 'PRT)                                                         ;; FORM IS ASSUMED AND THE PIECES POPED OFF
         (FQ PRT DPRT)
@@ -4296,7 +4300,7 @@
 
     THERE
         (FQ THERE)
-        (CUT END)
+        (CUT *end*)
         (| (parse 'ADV 'TIMW) nil nil (THERE))                        ;; "THERE IS A BIRD.."
         (| (and (parse 'VG) (ISQ MVB BE)) THEF NOTHE (THERE))
 
@@ -4383,7 +4387,7 @@
         (setr 'RELHEAD H *c*)
 
     NGQST2
-        (CUT END)
+        (CUT *end*)
         (setr 'SUBJECT H *c*)
         (and (nq 'ADV) (parse 'ADJG 'ADV 'VBAD))
 
@@ -4918,7 +4922,7 @@
         (| (cq 'INGSUBJ *fe*) RETSM nil)
         ;; IF POSSESSIVE, ALL PREVIOUS MODIFIERS MODIFY THE POSSESSIVE NOUN, NOT THE NG HEAD
         (SETQ H (buildnode (reverse (cons 'POSS (SETDIF *fe* '(COMPONENT)))) NB N H SM))
-        (SETQ BACKREF (concat H (cdr BACKREF)))
+        (set! *backref* (concat H (cdr *backref*)))
         (| (setr 'FEATURES (set! *fe* (concat '(POSES DET DEF NS NPL) (reverse REST))) *c*)
             nil
             (bug nil))
@@ -5481,7 +5485,7 @@
         (| (CALLSM (SMADJG-PREPG)) RETURN (SMADJ)))                 ;; FAIL IF ONE WAS NOT FOUND.
 
 (§ defn- CONJ []
-    (let [END CUT goodie (apply-grammar 'CONJOIN)]
+    (let [*end* CUT goodie (apply-grammar 'CONJOIN)]
         (when goodie (set! *re* goodie))))
 
 (§ defn- COMMA []
@@ -5531,7 +5535,7 @@
                     (MEET (features H) '(DECLAR IMPER)))))
             nil
             LOSE2)
-        (CUT END)                                                   ;; RESTORE CUT POINT
+        (CUT *end*)                                                   ;; RESTORE CUT POINT
         (COND ((not (term? PREV))
                 ;; IF WE HAD COMMA FOLLOWED BY (AND OR BUT NOR), RETURN THE LIST OF GOODIES WE'VE FOUND
                 (GO RETSM))
@@ -5639,7 +5643,7 @@
 (putprop! 'ABOVE 'SEMANTICS '((PREP (!LOC !ABOVE true))))
 (putprop! 'ABOVE 'FEATURES '(PREP PLACE))
 
-(putprop! 'AFTER 'SEMANTICS '((BINDER (SMBINDER END nil))))
+(putprop! 'AFTER 'SEMANTICS '((BINDER (smbinder *end* nil))))
 (putprop! 'AFTER 'FEATURES '(BINDER TIME))
 
 (putprop! 'ALL 'SEMANTICS '((DET (COND ((cq 'OF *fe*) 'ALL) ((MEET '(NUM DEF) *fe*) 'DEF) ('NDET)))))
@@ -5697,7 +5701,7 @@
                 PROCEDUREß ((!EVAL (list 'THAMONG '!1 (list 'quote (refer? !2)))))))
         (ert "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT")))
 
-(putprop! 'BEFORE 'SEMANTICS '((BINDER (SMBINDER nil START))))
+(putprop! 'BEFORE 'SEMANTICS '((BINDER (smbinder nil *start*))))
 (putprop! 'BEFORE 'FEATURES '(BINDER TIME))
 
 (putprop! 'BEGIN 'SEMANTICS '((VB
@@ -5739,11 +5743,11 @@
 (§ defq- BOTH [a]
     ;; HANDLES (BOTH AND) (EITHER OR) (NEITHER NOR) COMBINATIONS
     ;; THE CONJOIN PROGRAM DOES SPECIAL THINGS WHEN BOTH IS SET
-    (let [END CUT]                                                ;; MAKE END OUT OF PREVIOUS CUT POINT
+    (let [*end* CUT]                                                ;; MAKE END OUT OF PREVIOUS CUT POINT
         (let [CUT nil nbb N BOTH nil]
             (and (FLUSHME)
                 (MOVE-PTW 'N 'NW '(= (word *ptw*) (car a)) 'NW)         ;; LOOK FOR THE MATCHING WORD E.G. AND, OR, NOR
-                (CUT END)
+                (CUT *end*)
                 (SETQ BOTH *ptw*)                                     ;; SAVE POINTER TO THE WORD AFTER THE MATCHING WORD
                 (set! *re* (COND
                     ((memq (car REST) '(PREP ADV)) (PARSE3 REST true))
@@ -6111,7 +6115,7 @@
 (putprop! 'PICK-UP 'SEMANTICS '((TRANS (RELATION
             (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
              MARKERSß (!EVENT)
-             PROCEDUREß ((!EVAL (COND ((memq (num? SMOB1) '(1 NS)) '(!PICKUP !2 *TIME)) ('(!PUTIN !2 ßBOX *TIME))))))))))
+             PROCEDUREß ((!EVAL (if (memq (num? SMOB1) '(1 NS)) '(!PICKUP !2 *TIME) '(!PUTIN !2 ßBOX *TIME)))))))))
 (putprop! 'PICK-UP 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PLEASE 'FEATURES '(B-SPECIAL))
@@ -6182,7 +6186,7 @@
 
 (putprop! 'SHRDLU 'REFER 'ßSHRDLU)
 
-(putprop! 'SINCE 'SEMANTICS '((BINDER (SMBINDER END nil))))
+(putprop! 'SINCE 'SEMANTICS '((BINDER (smbinder *end* nil))))
 (putprop! 'SINCE 'FEATURES '(BINDER TIME))
 
 (putprop! 'SIT 'SEMANTICS '((VB
@@ -6350,7 +6354,7 @@
 
 (putprop! 'WHEREVER 'FEATURES '(PRON EVERPRON NS))
 
-(putprop! 'WHEN 'SEMANTICS '((BINDER (SMBINDER START END)) (QADJ (FQ WHEN))))
+(putprop! 'WHEN 'SEMANTICS '((BINDER (smbinder *start* *end*)) (QADJ (FQ WHEN))))
 (putprop! 'WHEN 'FEATURES '(QADJ BINDER TIME))
 
 (putprop! 'WHENEVER 'FEATURES '(BINDER))
@@ -6360,7 +6364,7 @@
 
 (putprop! 'WHICHEVER 'FEATURES '(DET RSQDET NS NPL))
 
-(putprop! 'WHILE 'SEMANTICS '((BINDER (SMBINDER START END))))
+(putprop! 'WHILE 'SEMANTICS '((BINDER (smbinder *start* *end*))))
 (putprop! 'WHILE 'FEATURES '(BINDER TIME))
 
 (putprop! 'WHITE 'SEMANTICS '((ADJ (!COLOR !WHITE))))
@@ -7006,15 +7010,15 @@
                     (SMIT2 (getr 'RELHEAD *pt*) 0))
                 (and SM (RETURN SM))))
         (SMIT2 (getr 'SUBJECT *lastsent*) 192)
-        (SMIT2 (parsenode? LASTREL) 128)                ;; TRY REL (I.E. QUESTION FOCUS) OF THE LAST SENTENCE
+        (SMIT2 (parsenode? *lastrel*) 128)                ;; TRY REL (I.E. QUESTION FOCUS) OF THE LAST SENTENCE
         (MOVE-PT 'LASTSENT 'DLC)
     UP  (COND ((not (MOVE-PT 'PV '(NG))) (GO ON))
             (:else (SMIT2 *pt* 64)))                       ;; GO THROUGH TOP LEVEL NG'S OF LAST SENTENCE
         (and (MOVE-PT 'PV) (GO UP))
     ON  (or SM ;; IF WE HAVEN'T YET FOUND A REFERENT MAP DOWN THE ANSREF (NG'S IN LAST ANSWER)
-            (MAP #'(lambda [ANSNODE] (SMIT2 ANSNODE 0)) ANSNAME))
+            (MAP #(SMIT2 % 0) *ansname*))
         (or SM ;; IF WE HAVEN'T YET FOUND A REFERENT MAP DOWN THE BACKREF2 (NG'S IN LAST SENTENCE) LIST
-            (MAP #'(lambda [BACKNODE] (SMIT2 BACKNODE 0)) BACKREF2))
+            (MAP #(SMIT2 % 0) *backref2*))
     DONE (putprop! PRONOUN 'BIND CANDIDATES)
         (or (cdr SM) (remprop! (car SM) 'AMBIGUITIES=))
         SM))
@@ -7141,7 +7145,7 @@
     (and (not (cq 'ANSNAME *fe*))
         (getr 'HEAD *c*)
         discourse?
-        (SETQ BACKREF (cons (car *c*) BACKREF)))
+        (set! *backref* (cons (car *c*) *backref*)))
     (SMSET (MAPBLAND #'SMNG3 SM)))
 
 (§ defn- SMNG3 [oss]
@@ -7198,10 +7202,10 @@
                 (SETQ CONTRAST (list CONTRAST (root (NB x)))))
             ((SETQ x (cdr x)) (GO GO)))
     UP  (or (and (MOVE-PT 'C 'U 'U '(NG)) (SMONE2 (list (car *pt*))))
-            (SMONE2 (parsenode? LASTREL))
-            (SMONE2 BACKREF)
-            (SMONE2 ANSNAME)
-            (SMONE2 BACKREF2)
+            (SMONE2 (parsenode? *lastrel*))
+            (SMONE2 *backref*)
+            (SMONE2 *ansname*)
+            (SMONE2 *backref2*)
             (COND (CONTRAST (SETQ CONTRAST nil) (GO UP)))
             (and (MOVE-PT 'LASTSENT 'DLC 'PV '(NG)) (SMONE2 (list (car *pt*))))
             (ert "SMONE: CAN'T FIND REFERENT FOR \"ONE\""))
@@ -7404,30 +7408,30 @@
     ((ert "SMCL-MODIFIERS ATTEMPTED TO PROCESS AN UNEXPECTED TYPE OF CONSTITUENT"))))
 
 (§ defn- SMBIND []
-    (let [TSS nil EVENT nil START nil END nil]
+    (let [TSS nil EVENT nil *start* nil *end* nil]
         ;; DOES THE SM HAVE MORE THAN ONE VALUE???
-        (and (cdr (SM H))
+        (when (cdr (SM H))
             (ert "I DON'T KNOW WHAT TO DO WITH AMBIGUOUS BOUND CLAUSES"))
         ;; DISPATCH TABLE TO MATCH THE APPROPRIATE ACTION WITH EACH BINDER.
         ;; MOVE TO THE FIRST WORD OF THE CLAUSE (TO THE BINDER) AND CHECK FOR THE FEATURE TIME
         ;; (MAYBE ALSO CHECK FOR THE SM BEING MARKED AS AN EVENT???)
-        (COND ((ISQ (MOVE-PT 'H 'DF) TIME)
+        (when (ISQ (MOVE-PT 'H 'DF) TIME)
             (SETQ TSS (getr 'TIME *c*))
-            (or (SETQ EVENT (FINDEVENTS (car (SM H))))
+            (SETQ EVENT (FINDEVENTS (car (SM H))))
+            (when-not EVENT
                 (global-err "NO SUCH THING EVER HAPPENED"))
             (SETQ EVENT (car EVENT))
-            (SETQ START (getprop EVENT 'START))
-            (SETQ END (getprop EVENT 'END))
+            (set! *start* (getprop EVENT 'START))
+            (set! *end* (getprop EVENT 'END))
             (eval (SM *pt*))
-            (RETURN true)))
-        nil))
+            true)))
 
-(§ defn- SMBINDER [start-ev end-ev]
+(defn- smbinder [start-ev end-ev]
     ;; CALLED FOR A ABINDER - THE FIRST ARGUMENT GIVES THE BEGINNING, SECOND THE END.
     ;; A TYPICAL USE IS THE DEFINITION OF "AFTER", WHICH IS (SMBINDER END NIL) I.E.
     ;; THE EVENT STARTS AFTER THE END OF THE BOUND EVENT, WITH NO SPECIFICATION ON WHEN IT ENDS.
-    (putprop! TSS 'START= start-ev)
-    (putprop! TSS 'END= end-ev))
+    (putprop! TSS 'START= start-ev)
+    (putprop! TSS 'END= end-ev))
 
 #_(ns shrdlu.smutil)
 
@@ -7614,24 +7618,23 @@
     ;;    5. REMOVE THE BIND PROPERTY OF PRONOUNS (IT THEY) USED
     ;;       IN THIS SENTENCE AND MAKE IT THEIR LASTBIND PROPERTY.
     (let [ansrss (getprop answer 'ANSRSS=)]
-        (SETQ BACKREF2 BACKREF)
-        (SETQ BACKREF nil)
-        (SETQ LASTREL (rel? ansrss))
-        (dorun (map #'(lambda [PRONOUN] (putprop! PRONOUN 'LASTBIND (getprop PRONOUN 'BIND)) (remprop! PRONOUN 'BIND)) '(IT THEY ONE)))
+        (set! *backref2* *backref*)
+        (set! *backref* nil)
+        (set! *lastrel* (rel? ansrss))
+        (dorun (map #(do (putprop! % 'LASTBIND (getprop % 'BIND)) (remprop! % 'BIND)) '(IT THEY ONE)))
         (or
             (cq 'MODAL *fe*)
             (cq 'DECLAR *fe*)
-            (MAP #'(lambda [BACKNODE]
-                (COND ((cdr (SM BACKNODE)) ;; TRUE IF NODE HAD MULTIPLE INTERPRETATIONS
-                    (terpri)
-                    (pr (SM BACKNODE))
-                    (setr 'SEMANTICS (ert "DOBACKREF: RETURN AN OSS FOR BACKNODE") BACKNODE)))
-            (COND
-                ((refer? (car (SM BACKNODE)))) ;; IF NODE HAS REFERENT, FINE
-                (:else
-                    (putprop! (car (SM BACKNODE)) 'REFER=
-                        (or (getprop (variable? (car (SM BACKNODE))) 'BIND) (ert "DOBACKREF: RETURN REFERENT FOR BACKNODE"))))))
-            BACKREF2))
+            (MAP #'(lambda [backnode]
+                    (let [a (SM backnode)]
+                        (when (cdr a) ;; TRUE IF NODE HAD MULTIPLE INTERPRETATIONS
+                            (terpri)
+                            (pr a)
+                            (setr 'SEMANTICS (ert "DOBACKREF: RETURN AN OSS FOR BACKNODE") backnode))
+                        (or (refer? (car a)) ;; IF NODE HAS REFERENT, FINE
+                            (putprop! (car a) 'REFER=
+                                (or (getprop (variable? (car a)) 'BIND) (ert "DOBACKREF: RETURN REFERENT FOR BACKNODE"))))))
+                *backref2*))
         ;; A FEW MISSING PIECES GO HERE
         nil))
 
@@ -8297,7 +8300,7 @@
         ;; ANSLIST IS THE LIST OF POSSIBLE ANSWERS.
         ;; AMBIG IS A FLAG SET IF THERE IS A POSSIBLE AMBIGUITY.
         ;; CLEAR OUT ANSWER NAMES SAVED FOR BACKREF(ERENCE), I.E. MORE THAN ONE RSS FOR THE SENTENCE.
-        (SETQ ANSNAME nil)
+        (set! *ansname* nil)
         (SETQ AMBIG (cdr (SM node)))
         (SETQ anslist (ANSORDER (ansunique (doall (map #'ANSGEN (SM node))))))
         ;; ANSGEN GENERATES AN ANSWER FOR EACH INTERPRETATION.
@@ -8470,7 +8473,7 @@
         (SETQ ansnode (PARSE2 '(NG ANSNAME) true))                     ;; THE T SAYS NOT TO ATTACH THIS TO THE TREE
         (or ansnode
             (RETURN (ert "ANSNAME: FAILURE TO PARSE ANSWER NAME, BUT IF YOU ONLY EXPECT THE ANSWER TO BE AN ADJ, PROCEED THIS AND DON'T WORRY")))
-        (SETQ ANSNAME (concat ansnode ANSNAME))                     ;; LEAVE NODE AROUND IT ACCESSABLE PLACE
+        (set! *ansname* (concat ansnode *ansname*))                     ;; LEAVE NODE AROUND IT ACCESSABLE PLACE
         (putprop! (car (SM ansnode)) 'REFER= (cadr phrase))          ;; PUT THE REFERENT ON AS THE GUY GIVEN BY ANSWER
         nil))
 
@@ -9088,7 +9091,7 @@ GO  (let [x l]
 (§ defn- CLAUSE []
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil POSITION-OF-PRTMVB nil LOCATIONMARKER nil SUBJ-VB-BACKUP-TYPE1 nil POSITION-OF-PTW nil]
         (SETQ NN true)
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
         (setr 'PARENT PARENT *c*)
 ENTERING-CLAUSE
@@ -9113,7 +9116,7 @@ FIXIT
         (if ßRESULT (GO INIT) (GO MAJOR))
 MAJOR
         (when LABELTRACE (passing 'MAJOR))
-        (CUT END)
+        (CUT *end*)
         (COND ((= *punct* '?) (GO QUEST))
         ((or (cq 'IMPER *fe*) (= *punct* '!)) (GO IMPER)))
         (GO THEREINIT)
@@ -9151,7 +9154,7 @@ CLAUSETYPE
         (COND (ßRESULT (m! IMPER) (GO FAIL)))
 SUBJ
         (when LABELTRACE (passing 'SUBJ))
-        (CUT END)
+        (CUT *end*)
 SUBJ3
         (when LABELTRACE (passing 'SUBJ3))
         (SETQ ßRESULT (or (and (nextword? N 'TO) (parse 'CLAUSE 'RSNG 'TO 'SUBJ)) (and (parse 'CLAUSE 'RSNG 'ING 'SUBJ))))
@@ -9223,7 +9226,7 @@ VBREG
         (setr 'VG H *c*)
 VG1
         (when LABELTRACE (passing 'VG1))
-        (CUT END)
+        (CUT *end*)
         (SETQ ßRESULT (ISQ MVB BE))
         (COND (ßRESULT (COND ((nil? NN) (m! BE) (GO FAIL)) (:else (GO BE)))))
         (SETQ ßRESULT (ISQ MVB VPRT))
@@ -9246,7 +9249,7 @@ DPRT
         (CUT POSITION-OF-PRT)
         (SETQ ßRESULT (parse 'NG 'OBJ 'OBJ1))
         (if ßRESULT (GO POPRT) (GO FINDOBJ1))
-        (CUT END)
+        (CUT *end*)
         (setr 'OBJ1 H *c*)
         (parse 'PRT)
         (FQ PRT DPRT)
@@ -9411,7 +9414,7 @@ NPASV
 THERE
         (when LABELTRACE (passing 'THERE))
         (FQ THERE)
-        (CUT END)
+        (CUT *end*)
         (SETQ ßRESULT (parse 'ADV 'TIMW))
         (COND ((and (nil? NN) ßRESULT) (m! THERE) (GO FAIL)))
         (SETQ ßRESULT (and (parse 'VG) (ISQ MVB BE)))
@@ -9502,7 +9505,7 @@ NGQST
         (setr 'RELHEAD H *c*)
 NGQST2
         (when LABELTRACE (passing 'NGQST2))
-        (CUT END)
+        (CUT *end*)
         (setr 'SUBJECT H *c*)
         (and (nq 'ADV) (parse 'ADJG 'ADV 'VBAD))
         (COND ((parse 'VG 'NAUX) (FQ SUBJQ) (GO VG1))
@@ -9615,7 +9618,7 @@ RETURN
 (§ defn- NG []
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil]
         (SETQ NN true)
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
         (setr 'PARENT PARENT *c*)
 ENTERING-NG
@@ -9917,7 +9920,7 @@ POSS2
         (SETQ ßRESULT (cq 'INGSUBJ *fe*))
         (COND (ßRESULT (GO RETSM)))
         (SETQ H (buildnode (reverse (cons 'POSS (SETDIF *fe* '(COMPONENT)))) NB N H SM))
-        (SETQ BACKREF (concat H (cdr BACKREF)))
+        (set! *backref* (concat H (cdr *backref*)))
         (SETQ ßRESULT (setr 'FEATURES (set! *fe* (concat '(POSES DET DEF NS NPL) (reverse REST))) *c*))
         (COND ((nil? ßRESULT) (m! bug) (GO FAIL)))
         (SETQ ßRESULT (or (not NN) (ISQ H DEFPOSS)))
@@ -9977,7 +9980,7 @@ RETURN
 (§ defn- VG []
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil TENSE nil]
         (SETQ NN true)
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
         (setr 'PARENT PARENT *c*)
 ENTERING-VG
@@ -10214,7 +10217,7 @@ RETURN
 (§ defn- PREPG []
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil]
         (SETQ NN true)
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
         (setr 'PARENT PARENT *c*)
 ENTERING-PREPG
@@ -10303,7 +10306,7 @@ RETURN
 (§ defn- ADJG []
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil]
         (SETQ NN true)
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
         (setr 'PARENT PARENT *c*)
 ENTERING-ADJG
@@ -10399,7 +10402,7 @@ RETURN
 (§ defn- CONJOIN []
     (let [*fe* nil H nil *me* nil NB nil *c* nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil PREV nil]
         (SETQ NN true)
-        (SETQ CUT END)
+        (SETQ CUT *end*)
         (set! *c* (buildnode (set! *fe* (reverse REST)) (SETQ NB (or (NB *re*) N)) N (SETQ H *re*) nil))
         (setr 'PARENT PARENT *c*)
 ENTERING-CONJOIN
@@ -10422,7 +10425,7 @@ UP
                 (if (ISQ H MAJOR) H *lastsent*)
                 (MEET (features H) '(DECLAR IMPER))))))
         (when (nil? ßRESULT) (GO LOSE2))
-        (CUT END)
+        (CUT *end*)
         (COND ((not (term? PREV)) (GO RETSM))
             ((= PREV '\,) (COND ((nextword? N COMMA) (FQ LIST) (GO UP)) (:else (GO LIST))))
             ((memq PREV '(AND OR NOR BUT))
@@ -10469,7 +10472,7 @@ RETURN
               *global-message* nil
               *savesent* nil *lastsentno* 0 *lastsent* nil *sentno* 1
               *level* nil *sent* nil *punct* nil
-              END nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil *pt* nil *ptw* nil H nil N nil NB nil *fe* nil SM nil *re* nil *mes* nil *c* nil CUT nil
+              *end* nil BOTH nil *backref* nil *backref2* nil *ansname* nil *lastrel* nil WHO nil *pt* nil *ptw* nil H nil N nil NB nil *fe* nil SM nil *re* nil *mes* nil *c* nil CUT nil
               *savept* nil]
     =>  (*CATCH 'ABORT-PARSER
             (loop []
@@ -10479,7 +10482,7 @@ RETURN
                 (set! *sentno* (inc *sentno*))
                 (set! *level* 0)
                 (set! *mes* 'NOPE)
-                (SETQ BACKREF nil)                  ;; ???????????????????
+                (set! *backref* nil)                  ;; ???????????????????
                 (SETQ N (set! *sent* (ETAOIN)))
                 (when (and (ERRSET (set! *pt* (set! *c* (parse 'CLAUSE 'MAJOR 'TOPLEVEL)))) *c*)
                     (set! *fe* (features *c*))
