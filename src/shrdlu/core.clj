@@ -96,15 +96,6 @@
 
 (dynamic- *thtime* 0)
 
-(dynamic- *tree*)
-(dynamic- *vars*)
-(dynamic- *o'vars*)
-(dynamic- *value*)
-
-(dynamic- *expr*)
-(dynamic- *b'tree*)
-(dynamic- *b'vars*)
-
 (dynamic- *oops*)
 (dynamic- *lastsentno*)
 (dynamic- *lastsent*)
@@ -158,12 +149,12 @@
 (defn- -print [x] (print \space) (print x))
 (defn- print- [x] (print x) (print \space))
 
-(def- ai (atom {}))
+(def- world (atom {}))
 
-(defn- putprop! [x y z] (swap! ai assoc-in [x y] z) nil)
-(defn- remprop! [x y] (swap! ai update x dissoc y) nil)
-(defn- getprops [x] (get @ai x))
-(defn- getprop [x y] (get-in @ai [x y]))
+(defn- putprop! [x y z] (swap! world assoc-in [x y] z) nil)
+(defn- remprop! [x y] (swap! world update x dissoc y) nil)
+(defn- getprops [x] (get @world x))
+(defn- getprop [x y] (get-in @world [x y]))
 
 (defn- setr [node register value] (putprop! (car node) register value))
 (defn- getr [node register] (getprop (car node) register))
@@ -183,7 +174,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply thapply1 thtae thass1 thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thurplaca thurplacd thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thproga thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry1 thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
+(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply thapply1 thtae thass- thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thurplaca thurplacd thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thprog- thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry1 thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
 
 (putprop! 'EE :why :command)
 (putprop! 'EE :start 0)
@@ -200,6 +191,14 @@
 
 (defmacro thpush! [a x] (list 'set! a (list 'cons x a)))
 (defmacro thpop! [a] (list 'set! a (list 'cdr a)))
+
+(dynamic- *expr*)
+(dynamic- *vars*)
+(dynamic- *vars0*)
+(dynamic- *tree*)
+(dynamic- *tree1*)
+(dynamic- *vars1*)
+(dynamic- *value*)
 
 (defn- evlis [a]
     ;; EVLIS EVALS ELEMENTS OF ARG, THEN RETURNS ARG.
@@ -294,18 +293,23 @@
     (let [x (thgal (if (= (caar a) 'thev) (thval (cadar a) *vars*) (car a)) *vars*)]
         (if (= (cadr x) :thunassigned)
             (do (thpush! *tree* [:thamong x (thval (cadr a) *vars*)]) nil)
-            (memq (cadr x) (thval (cadr a) *vars*)))))       ;; IF ($? X) ASSIGNED, THAMONG REDUCES TO A MEMBERSHIP TEST
+            ;; IF ($? X) ASSIGNED, THAMONG REDUCES TO A MEMBERSHIP TEST.
+            (memq (cadr x) (thval (cadr a) *vars*)))))
 
-(defn- thamong'f []                                                 ;; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW VALUES))
-    (if (caddar *tree*)                                            ;; LIST OF NEW VALUES NON NIL
-        (do (RPLAC (cadadar *tree*) (caaddar *tree*))          ;; REPLACE OLD VALUE WITH NEW VALUE
-            (RPLAC (caddar *tree*) (cdaddar *tree*))           ;; POP NEW VALUES
-            (set! *b'tree* *tree*)                                  ;; STORE AWAY TREE FOR POSSIBLE BACKTRACKING
-            (set! *b'vars* *vars*)                                ;; STORE AWAY THALIST FOR POSSIBLE BACKTRACKING
-            (thpop! *tree*)                                                ;; POP TREE
-            true)                                                      ;; SUCCEED
-        (do (RPLAC (cadadar *tree*) :thunassigned)                   ;; NO NEW VALUES LEFT.  RETURN X TO THUNASSIGNED,
-            (thpop! *tree*)                                                ;; POP TREE AND CONTINUE FAILING.
+(defn- thamong'f [ ]
+    ;; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW VALUES))
+    (if (caddar *tree*)
+        ;; REPLACE OLD VALUE WITH NEW VALUE, POP NEW VALUES.
+        (do (RPLAC (cadadar *tree*) (caaddar *tree*))
+            (RPLAC (caddar *tree*) (cdaddar *tree*))
+            ;; STORE AWAY TREE AND THALIST FOR POSSIBLE BACKTRACKING.
+            (set! *tree1* *tree*)
+            (set! *vars1* *vars*)
+            (thpop! *tree*)
+            true)
+        ;; NO NEW VALUES LEFT.  RETURN X TO THUNASSIGNED.
+        (do (RPLAC (cadadar *tree*) :thunassigned)
+            (thpop! *tree*)
             nil)))
 
 (putprop! :thamong :thfail thamong'f)
@@ -315,8 +319,8 @@
     (or (nil? a)
         (do (thpush! *tree* [:thand a nil]) (set! *expr* (car a)))))
 
-(defn- thand'f [] (thbranchun) nil)
-(defn- thand't []
+(defn- thand'f [ ] (thbranchun) nil)
+(defn- thand't [ ]
     (if (cdadar *tree*)
         (do (thbranch)
             (set! *expr* (cadadar *tree*))
@@ -332,14 +336,14 @@
         (thpush! *tree* [:thor a])
         (set! *expr* (car a))))
 
-(defn- thor- [p]
+(defn- thor- [or?]
     (if (and (cadar *tree*) (cdadar *tree*))
         (do (RPLAC (cadar *tree*) (cdadar *tree*))
-            (set! *expr* (let [x (caadar *tree*)] (if p (do (when-not (cadar *tree*) (thpop! *tree*)) x) (car x)))))
+            (set! *expr* (let [x (caadar *tree*)] (if or? (do (when-not (cadar *tree*) (thpop! *tree*)) x) (car x)))))
         (do (thpop! *tree*) nil)))
 
-(defn- thor'f [] (thor- true))
-(defn- thor't [] (thpop! *tree*) *value*)
+(defn- thor'f [] (thor- true))
+(defn- thor't [_] *value*)
 
 (putprop! :thor :thfail thor'f)
 (putprop! :thor :thsucceed thor't)
@@ -348,8 +352,8 @@
     (thpush! *tree* [:thcond a nil])
     (set! *expr* (caar a)))
 
-(defn- thcond'f [] (thor- nil))
-(defn- thcond't []
+(defn- thcond'f [ ] (thor- nil))
+(defn- thcond't [ ]
     (RPLAC (caar *tree*) :thand)
     (RPLAC (cadar *tree*) (caadar *tree*))
     *value*)
@@ -357,22 +361,31 @@
 (putprop! :thcond :thfail thcond'f)
 (putprop! :thcond :thsucceed thcond't)
 
-(defn- thapply [& a]
-    ;; THAPPLY1 DOES THE REAL WORK, ALL WE DO IS GET THE THEOREM OFF THE PROPERTY LIST
-    (thapply1 (car a) (getprop (car a) :theorem) (cadr a)))
+(defn- thnot [e]
+    (set! *expr* (list 'thcond [e '(thfail)] ['(thsucceed)])))
 
-(defn- thapply1 [thm thb dat]
-    (thbind (cadr thb))
-    ;; MAKE SURE THE THEOREM PATTERN MATCHES THE GOAL
-    (if (thmatch1 dat (caddr thb))
+;; MAKE SURE THAT THE PATTERN HAS NO UNASSIGNED VARIABLES IN IT.  X, NATURALLY ENOUGH, IS THE PATTERN.
+;; SINCE THPURE IS ALWAYS CALLED AFTER THVARSUBST, ANY VARIABLES WHICH DO HAVE ASSIGNMENTS WILL HAVE GONE AWAY,
+;; REPLACED BY THEIR ASSIGNMENTS, SO ALL WE NEED TO DO IS LOOKING FOR ANY VARIABLES APPEARING AT ALL.
+
+(defn- thpure [x] (not-any? thvar? x))
+
+(defn- thapply [x y]
+    ;; THAPPLY1 DOES THE REAL WORK, ALL WE DO IS GET THE THEOREM OFF THE PROPERTY LIST.
+    (thapply1 (getprop x :theorem) y))
+
+(defn- thapply1 [b d]
+    (thbind (cadr b))
+    ;; MAKE SURE THE THEOREM PATTERN MATCHES THE GOAL.
+    (if (thmatch1 d (caddr b))
         ;; AS FAR AS THTREE GOES, ALL THEOREMS LOOK LIKE THPROG, AND
         ;; WHEN YOU COME DOWN TO IT, THEY ALL ACT LIKE THPROGS.
-        (do (thpush! *tree* [:thprog (cddr thb) nil (cddr thb)])
+        (do (thpush! *tree* [:thprog (cddr b) nil (cddr b)])
             ;; CALL THE MAIN THPROG WORKHORSE.
-            (thproga)
+            (thprog-)
             true)
         ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING.
-        (do (set! *vars* *o'vars*) (thpop! *tree*) nil)))
+        (do (set! *vars* *vars0*) (thpop! *tree*) nil)))
 
 (defn- thtae [a x1 t m]
     (cond (term? a) nil
@@ -386,12 +399,12 @@
                     (:l @m)))
         :else (bug! 'thtae "UNCLEAR RECOMMENDATION" a)))
 
-(defn- thass1 [a assert?]
+(defn- thass- [a assert?]
     ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
     ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES.
     ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED.
     ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
-    (let-when [x (car a) [? x] (if (term? x) [true x] (let [x (thvarsubst x nil)] [(thpure x) x]))] ? => (bug! 'thass1 "IMPURE ASSERTION OR ERASURE" x)
+    (let-when [x (car a) [? x] (if (term? x) [true x] (let [x (thvarsubst x nil)] [(thpure x) x]))] ? => (bug! 'thass- "IMPURE ASSERTION OR ERASURE" x)
         ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
         ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
         ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
@@ -400,7 +413,7 @@
             ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR.
             (let [t (if assert? :thante :therasing)]
                 ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
-                (thpush! *tree* [(if assert? :thassert :therase) x nil])
+                (thpush! *tree* [(if assert? :thassert :therase) x])
                 ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
                 (let [m (atom {}) a (doall (mapcat #(thtae % (car x) t m) a))]
                     ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
@@ -410,33 +423,17 @@
 
 ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
 
-(defn- thassert [& a] (thass1 a true))
-(defn- therase [& a] (thass1 a nil))
+(defn- thassert [& a] (thass- a true))
+(defn- therase [& a] (thass- a nil))
 
-(defn- thassert'f []
-    (let [a (cadar *tree*)]
-        (thremove (if (term? a) a (car a)))
-        (thpop! *tree*)
-        nil))
-
-(defn- thassert't []
-    (let [a (cadar *tree*)]
-        (thpop! *tree*)
-        a))
+(defn- thassert'f [x] (thremove (if (term? x) x (car x))) nil)
+(defn- thassert't [x] x)
 
 (putprop! :thassert :thfail thassert'f)
 (putprop! :thassert :thsucceed thassert't)
 
-(defn- therase'f []
-    (let [a (cadar *tree*)]
-        (thadd (if (term? a) a (car a)))
-        (thpop! *tree*)
-        nil))
-
-(defn- therase't []
-    (let [a (cadar *tree*)]
-        (thpop! *tree*)
-        a))
+(defn- therase'f [x] (thadd (if (term? x) x (car x))) nil)
+(defn- therase't [x] x)
 
 (putprop! :therase :thfail therase'f)
 (putprop! :therase :thsucceed therase't)
@@ -449,10 +446,10 @@
 
 (defn- thbind [a]
     ;; WHEN WE ENTER A NEW THEOREM OR THPROG, WE MUST BIND THE NEW VARIABLES.  A IS THE VARIABLE LIST.
-    (set! *o'vars* *vars*) ;; THOLIST IS THE OLD THALIST.
+    (set! *vars0* *vars*) ;; THOLIST IS THE OLD THALIST.
     (when a ;; IF A IS NIL, THERE IS NOTHING TO DO.
         ;; WHEN WE ARE DONE, JUST PUT A MARKER ON THTREE WITH A POINTER TO THE OLD THALIST, SO IT CAN BE RESTORED.
-        (loop-when a a => (thpush! *tree* [:thrembind *o'vars*])
+        (loop-when a a => (thpush! *tree* [:thrembind *vars0*])
             ;; OTHERWISE ADD TO THALIST THE NEW BINDING CELL.  THE FIRST ELEMENT IS THE NAME OF THE VARIABLE.
             ;; IF THE ENTRY IS AN ATOM, WE ARE JUST GIVEN THE VARIABLE AND ITS INITIAL ASSIGNMENT IS "THUNASSIGNED",
             ;; I.E. NO INITIAL ASSIGNMENT.  OTHERWISE WE ARE GIVEN BOTH THE VARIABLE AND ITS INITIAL ASSIGNMENT,
@@ -461,12 +458,18 @@
             ;; REPEAT FOR THE NEXT VARIABLE IN THE LIST.
             (recur (cdr a)))))
 
+(defn- thrembind'f [x] (set! *vars* x) nil)
+(defn- thrembind't [x] (set! *vars* x) *value*)
+
+(putprop! :thrembind :thfail thrembind'f)
+(putprop! :thrembind :thsucceed thrembind't)
+
 (defn- thbranch []
     ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS.
     ;; CAR THTREE IS THE THPROG MARKING.
     (cond ;; THERE ARE NO MORE EXPRESSIONS TO EXECUTE IN THE THPROG.
         (not (cdadar *tree*)) true
-        (= *b'tree* *tree*) (set! *b'tree* nil)
+        (= *tree1* *tree*) (set! *tree1* nil)
         ;; NORMAL CASE
         ;; CADDAR THTREE IS THE SECOND OF THE THREE ARGS ON THE THPROG MARK
         ;; THBRANCH AND THABRANCH ARE POINTERS TO THE THTREE AND THALIST
@@ -477,11 +480,11 @@
         ;; WE WILL NOW STORE THIS INFORMATION ON THE THPROG MARK,
         ;; SO THAT IF WE FAIL, WE WILL HAVE RECORDS OF WHAT HAPPEND.
         ;; IT IS STORED BY HACKING THE SECOND ARG TO THE THPROG MARK.
-        (RPLAC (caddar *tree*) (cons (list *b'tree* *b'vars* (cadar *tree*)) (caddar *tree*)))
+        (RPLAC (caddar *tree*) (cons (list *tree1* *vars1* (cadar *tree*)) (caddar *tree*)))
             ;; WE NOW SETQ THBRANCH TO NIL.  IF THE NEXT LINE ALSO SUCCEEDS,
             ;; THVAL WILL LOOK FOR A NIL THBRRANCH TO INDICATE THAT IT SHOULD
             ;; SETQ IT AGAIN TO THE POINT OF SUCCESS.
-            (set! *b'tree* nil)))
+            (set! *tree1* nil)))
 
 (defn- thbranchun []
     ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF.
@@ -503,20 +506,34 @@
     (or (nil? a)
         (do (thpush! *tree* [:thdo a nil nil]) (set! *expr* (car a)))))
 
-(defn- thdo'b []
+(defn- thdo'b [  ]
     (if (cdadar *tree*)
         (do (RPLAC (cadar *tree*) (cdadar *tree*))
             (set! *expr* (caadar *tree*))
-            (when *b'tree*
-                (RPLAC (caddar *tree*) (cons *b'tree* (caddar *tree*)))
-                (set! *b'tree* nil)
-                (RPLAC (cadddar *tree*) (cons *b'vars* (cadddar *tree*))))
+            (when *tree1*
+                (RPLAC (caddar *tree*) (cons *tree1* (caddar *tree*)))
+                (set! *tree1* nil)
+                (RPLAC (cadddar *tree*) (cons *vars1* (cadddar *tree*))))
             )
         (do (RPLAC (caar *tree*) :thundo)
             true)))
 
 (putprop! :thdo :thfail thdo'b)
 (putprop! :thdo :thsucceed thdo'b)
+
+(defn- thundo'f [  ]
+    (when' (caddar *tree*) => (thpop! *tree*)
+        (let [x (cddar *tree*)]
+            (set! *vars* (caadr x))
+            (RPLAC (cadr x) (cdadr x))
+            (set! *tree* (caar x))
+            (RPLAC (car x) (cdar x))))
+    nil)
+
+(defn- thundo't [_ _ _] true)
+
+(putprop! :thundo :thfail thundo'f)
+(putprop! :thundo :thsucceed thundo't)
 
 (defn- thfinalize [& a]
     (when' a => (bug! 'thfinalize "BAD CALL")
@@ -545,45 +562,42 @@
     (thbind (caddr a))
     (thpush! *tree*
         [:thfind
-            (cond (= (car a) 'ALL) [1 nil nil]                             ;; STANDARD ALL
-                (number? (car a)) [(car a) (car a) true]             ;; SINGLE NUMBER
-                (number? (caar a)) (car a)                                ;; WINOGRAD CROCK FORMAT
+            (cond (= (car a) 'ALL) [1 nil nil]                              ;; STANDARD ALL
+                (number? (car a)) [(car a) (car a) true]                    ;; SINGLE NUMBER
+                (number? (caar a)) (car a)                                  ;; WINOGRAD CROCK FORMAT
                 (= (caar a) 'EXACTLY) [(cadar a) (inc (cadar a)) nil]
                 (= (caar a) 'AT-MOST) [1 (inc (cadar a)) nil]
                 (= (caar a) 'AS-MANY-AS) [1 (cadar a) true]
                 ;; ONLY THING LEFT IS AT-LEAST
-                (nil? (cddar a)) [(cadar a) nil true]                  ;; NO AT-MOST
+                (nil? (cddar a)) [(cadar a) nil true]                       ;; NO AT-MOST
                 (= (caddar a) 'AT-MOST) [(cadar a) (inc (cadddar a)) nil]
                 :else [(cadar a) (cadddar a) true])
             (cons 0 nil)
             (cadr a)])
     (thpush! *tree* [:thprog (cddr a) nil (cddr a)])
-    (thproga))
+    (thprog-))
 
-(defn- thfind'f []
-    (set! *b'tree* nil)
+(defn- thfind'f [  ]
+    (set! *tree1* nil)
     (let [a (cdar *tree*)]
         (thpop! *tree*)
         (when-not (< (caadr a) (caar a)) (cdadr a))))
 
-(defn- thfind't []
+(defn- thfind't [  ]
     (let-when [a (cdar *tree*) x (thvarsubst (caddr a) nil)
           ? (when-not (memq x (cdadr a))
                 (RPLAC (cdadr a) (cons x (cdadr a)))
                 (let-when [y (inc (caadr a))] (not= (cadar a) y) => :break
                     (RPLAC (caadr a) y)
                     nil))
-    ] (not ?) => (let [_ (set! *b'tree* nil) _ (and (caddar a) (cdadr a))] (thpop! *tree*) _)
-        (set! *tree* *b'tree*)
-        (set! *vars* *b'vars*)
-        (set! *b'tree* nil)
+    ] (not ?) => (let [_ (set! *tree1* nil) _ (and (caddar a) (cdadr a))] (thpop! *tree*) _)
+        (set! *tree* *tree1*)
+        (set! *vars* *vars1*)
+        (set! *tree1* nil)
         nil))
 
 (putprop! :thfind :thfail thfind'f)
 (putprop! :thfind :thsucceed thfind't)
-
-(defn- thgo [x]
-    (thsucceed 'thtag x))
 
 (defn- thtry [x a1 m]
     ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
@@ -630,14 +644,14 @@
             (RPLAC (cdddar *tree*) 262143))
         nil))                                               ;; FAILS TO THGOALF
 
-(defn- thgoal'f []
+(defn- thgoal'f [ ]
     ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY.
     ;; IF THTRY1 RETURNS NIL, IT MEANS THAT IT COULDN'T FIND ANOTHER POSSIBILITY
     ;; AND WE SHOULD TELL THVAL THAT WE HAVE FAILED.
     ;; ALL THPOPT DOES IS TO LOB THE THGOAL ENTRY OFF THTREE.
     (or (thtry1) (do (thpop! *tree*) nil)))
 
-(defn- thgoal't []
+(defn- thgoal't [ ]
     (let [_ (if (= *value* 'thnoval) (thvarsubst (cadar *tree*) nil) *value*)] (thpop! *tree*) _))
 
 (putprop! :thgoal :thfail thgoal'f)
@@ -657,7 +671,7 @@
     ;; THMATCH2 DECIDES IF THE TWO ITEMS REALLY MATCH.
     ;; THOLIST IS THALIST WHICH WAS IN EXISTANCE BEFORE WE STARTED WORKING ON THE CURRENT LINE OF PLANNER CODE.
     ;; STANDARD CHECK FOR $E
-    (let [x (if (= (car x) 'thev) (thval (cadr x) *o'vars*) x)
+    (let [x (if (= (car x) 'thev) (thval (cadr x) *vars0*) x)
           y (if (= (car y) 'thev) (thval (cadr y) *vars*) y)]
         (cond ;; IF EITHER IS A ?, ANYTHING WILL MATCH, SO OK.
             (= x '?) true
@@ -666,7 +680,7 @@
             (or (memq (car x) ['thv 'thnv]) (memq (car y) ['thv 'thnv]))
                 ;; X AND Y PAIR ARE THE RESPECTIVE BINDING CELLS.
                 ;; IF THX OR THY IS NOT A VARIABLE (I.E. THE OTHER IS), THEN X OR Y PAIR WILL BE NIL.
-                (let [xpair (when (thvar? x) (thgal x *o'vars*)) ypair (when (thvar? y) (thgal y *vars*))]
+                (let [xpair (when (thvar? x) (thgal x *vars0*)) ypair (when (thvar? y) (thgal y *vars*))]
                     (cond
                         (and xpair ;; THX IS A VARIABLE.  THIS SEES IF THX IS UNASSIGNED.
                                 (or (= (car x) 'thnv) (and (= (car x) 'thv) (= (cadr xpair) :thunassigned))))
@@ -699,13 +713,13 @@
     ;; THX IS THE PATTERN TO BE MATCHED.  THY IS THE POSSIBLE CANDIDATE.
     ;; WE HAVE TO CHECK THAT THE PATTERN AND CANDIDATE ARE OF THE SAME LENGTH
     ;; SINCE THE USER MAY HAVE SPECIFIED THE CANDIDATE WITH A THUSE RECOMMENDATION.
-    (let-when [x (if (= (car x) 'thev) (thval (cadr x) *o'vars*) x)] (= (count x) (count y)) => false
+    (let-when [x (if (= (car x) 'thev) (thval (cadr x) *vars0*) x)] (= (count x) (count y)) => false
         ;; THML IS A FREE VARIABLE WHO WILL BE HACKED BY THMATCH2 WHEN THMATCH2 IS DONE.
         ;; THML WILL HAVE A RECORD OF ALL VARIABLE ASSIGNMENTS MADE DURING THE MATCH.
         ;; NATURALLY, WE MUST KEEP TRACK, SO IF WE FAIL BACK, WE CAN UNDO THEM.
         (let [a'undo (atom nil)]
             ;; IF THE MATCH FAILS, THMATCH2 EXITS WITH AN ERR, ELSE WILL BE "TRUE" PROVIDED THE MATCH WORKED.
-            (if (every? true? (map thmatch2 x y (repeat a'undo)))
+            (if (every? true? (map #(thmatch2 %1 %2 a'undo) x y))
                 ;; MATCH IS SUCCESSFUL, SO RECORD THE ASSIGNMENTS ON THTREE.
                 (do (when @a'undo (thpush! *tree* [:thmung @a'undo])) true)
                 ;; IF THE MATCH FAILED, WE MAY ALREADY HAVE SOME ASSIGNEMENTS TO BE UNDONE.
@@ -764,27 +778,21 @@
                                   [l l1 l2] (if (< l (+ m1 m2)) [l l1 l2] [(+ m1 m2) a1 a2])]
                                 (recur l l1 l2 a i)))))))))
 
-(defn- thmung'f [] (dorun (map eval (cadar *tree*))) (thpop! *tree*) nil)
-(defn- thmung't [] (thpop! *tree*) *value*)
+(defn- thputprop [x y z]
+    (thpush! *tree* [:thmung [(list 'putprop! (quotify x) (quotify y) (quotify (getprop x y)))]])
+    (putprop! x y z))
+
+(defn- thremprop [x y]
+    (thpush! *tree* [:thmung [(list 'putprop! (quotify x) (quotify y) (quotify (getprop x y)))]])
+    (remprop! x y))
+
+(defn- thmung'f [a] (doseq [f a] (eval f)) nil)
+(defn- thmung't [_] *value*)
 
 (putprop! :thmung :thfail thmung'f)
 (putprop! :thmung :thsucceed thmung't)
 
-(defn- thnot [& a]
-    (set! *expr* (list 'thcond [(car a) '(thfail)] ['(thsucceed)])))
-
-(defn- thprog [& a]
-    ;; THBIND HACKS THALIST TO BIND THE VARIABLES.
-    ;; IT ALSO HACKS THTREE SO WE CAN UNDO IT IF NEEDED.
-    (thbind (car a))
-    ;; PUT THPROG MARK ON THTREE.
-    ;; THE FIRST THA IS A POINTER ONE BEFORE THE NEXT PART OF THE THPROG TO BE HANDELED.
-    ;; THE SECOND ONE WILL BE KEPT WHOLE TO SEARCH FOR PROG TAGS.
-    (thpush! *tree* [:thprog a nil a])
-    ;; CALL WORKHORSE
-    (thproga))
-
-(defn- thproga []
+(defn- thprog- []
     ;; ODD CASE WHERE THE THPROG HAS NO SUBEXPRESSIONS.  RETURN SUCCESS.
     (let-when [x (cdar *tree*)] (cdar x) => (do (thpop! *tree*) 'thnoval)
         (if (term? (cadar x))
@@ -796,34 +804,25 @@
         (RPLAC (car x) (cdar x))
         *value*))
 
+(defn- thprog [& a]
+    ;; THBIND HACKS THALIST TO BIND THE VARIABLES.
+    ;; IT ALSO HACKS THTREE SO WE CAN UNDO IT IF NEEDED.
+    (thbind (car a))
+    ;; PUT THPROG MARK ON THTREE.
+    ;; THE FIRST THA IS A POINTER ONE BEFORE THE NEXT PART OF THE THPROG TO BE HANDELED.
+    ;; THE SECOND ONE WILL BE KEPT WHOLE TO SEARCH FOR PROG TAGS.
+    (thpush! *tree* [:thprog a nil a])
+    ;; CALL WORKHORSE
+    (thprog-))
+
 ;; THBRANCH AND THBRANCHUN ARE THE MAIN FUNCTIONS IN CHARGE OF HANDLING THE EFFECTS OF SUCCESS AND FAILURE.
 ;; THEY ARE ONLY CALLED BY THPROGT AND THPROGF.
 
-(defn- thprog'f [] (thbranchun) nil)
-(defn- thprog't [] (thbranch) (thproga))
+(defn- thprog'f [  ] (thbranchun) nil)
+(defn- thprog't [  ] (thbranch) (thprog-))
 
 (putprop! :thprog :thfail thprog'f)
 (putprop! :thprog :thsucceed thprog't)
-
-;; MAKE SURE THAT THE PATTERN HAS NO UNASSIGNED VARIABLES IN IT.  X, NATURALLY ENOUGH, IS THE PATTERN.
-;; SINCE THPURE IS ALWAYS CALLED AFTER THVARSUBST, ANY VARIABLES WHICH DO HAVE ASSIGNMENTS WILL HAVE GONE AWAY,
-;; REPLACED BY THEIR ASSIGNMENTS, SO ALL WE NEED TO DO IS LOOKING FOR ANY VARIABLES APPEARING AT ALL.
-
-(defn- thpure [x] (not-any? thvar? x))
-
-(defn- thputprop [x y z]
-    (thpush! *tree* [:thmung [(list 'putprop! (quotify x) (quotify y) (quotify (getprop x y)))]])
-    (putprop! x y z))
-
-(defn- thremprop [x y]
-    (thpush! *tree* [:thmung [(list 'putprop! (quotify x) (quotify y) (quotify (getprop x y)))]])
-    (remprop! x y))
-
-(defn- thrembind'f [] (set! *vars* (cadar *tree*)) (thpop! *tree*) nil)
-(defn- thrembind't [] (set! *vars* (cadar *tree*)) (thpop! *tree*) *value*)
-
-(putprop! :thrembind :thfail thrembind'f)
-(putprop! :thrembind :thsucceed thrembind't)
 
 (defn- assq- [x a ?]
     ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR.
@@ -867,14 +866,11 @@
                         (loop-when-recur [a a'      i 1]       a [(cdr a) (inc i)] (threm- (car a) t i n nil p b o))
                         o))))))
 
-(defn- threturn [x]
-    (thsucceed 'thprog x))
-
 (defn- thsucceed [& a]
     (when a
         (let [a (if (= (car a) 'theorem) (cons 'thprog (cdr a)) a)]
-            (set! *b'tree* *tree*)
-            (set! *b'vars* *vars*)
+            (set! *tree1* *tree*)
+            (set! *vars1* *vars*)
             (loop-when [] *tree* => (bug! 'thsucceed "OVERPOP" a)
                 (condp = (caar *tree*)
                     :thrembind
@@ -886,12 +882,18 @@
                             (RPLAC (cadar *tree*) (cons nil x))
                             (thprog't))))))))
 
-(defn- thtag [& a]
-    (when (car a)
-        (thpush! *tree* [:thtag (car a)])))
+(defn- threturn [x]
+    (thsucceed 'thprog x))
 
-(defn- thtag'f [] (thpop! *tree*) nil)
-(defn- thtag't [] (thpop! *tree*) *value*)
+(defn- thgo [x]
+    (thsucceed 'thtag x))
+
+(defn- thtag [x]
+    (when x
+        (thpush! *tree* [:thtag x])))
+
+(defn- thtag'f [_] nil)
+(defn- thtag't [_] *value*)
 
 (putprop! :thtag :thfail thtag'f)
 (putprop! :thtag :thsucceed thtag't)
@@ -906,29 +908,15 @@
             (let [x (caar y)]
                 (condp = (car x)
                     :thnum (do (RPLAC (cdr y) (cadr x)) (RPLAC (car y) (cdar y)) (recur))
-                    :thdbf (loop [] (set! *o'vars* *vars*)
+                    :thdbf (loop [] (set! *vars0* *vars*)
                             (when' (caddr x) => (do (RPLAC (car y) (cdar y)) (recur))
                                 (let-when [w (caaddr x)] (let [_ (and ((cadr x) w) (thmatch1 (cadr z) (car w)))] (RPLAC (caddr x) (cdaddr x)) _) => (recur)
                                     w)))
                     :thtbf (loop []
                             (when' (caddr x) => (do (RPLAC (car y) (cdar y)) (recur))
                                 (let-when [t (caaddr x) w (getprop t :theorem)] (and w (= (car w) :thconse)) => (bug! 'thtry1 "BAD THEOREM" t)
-                                    (when' (let [_ (and ((cadr x) (caaddr x)) (thapply1 t w (cadr z)))] (RPLAC (caddr x) (cdaddr x)) _) => (recur)
+                                    (when' (let [_ (and ((cadr x) (caaddr x)) (thapply1 w (cadr z)))] (RPLAC (caddr x) (cdaddr x)) _) => (recur)
                                         true)))))))))
-
-(defn- thundo'f []
-    (when' (caddar *tree*) => (thpop! *tree*)
-        (let [x (cddar *tree*)]
-            (set! *vars* (caadr x))
-            (RPLAC (cadr x) (cdadr x))
-            (set! *tree* (caar x))
-            (RPLAC (car x) (cdar x))))
-    nil)
-
-(defn- thundo't [] (thpop! *tree*) true)
-
-(putprop! :thundo :thfail thundo'f)
-(putprop! :thundo :thsucceed thundo't)
 
 (defn- thv- [x]
     ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
@@ -942,7 +930,7 @@
 (defn- thval [expr' vars']
     ;; CORRESPONDS TO LISP EVAL.
     ;; THEXP IS THE EXPRESSION TO BE THVALUATED.  THALIST IS THE VARIABLE BINDING LIST.
-    (binding [*expr* expr' *vars* vars' *o'vars* nil *tree* nil *b'tree* nil *b'vars* nil *value* 'thnoval]
+    (binding [*expr* expr' *vars* vars' *vars0* nil *tree* nil *tree1* nil *vars1* nil *value* 'thnoval]
         ;; E BECOMES THE CURRENT EXPRESSION.
         ;; THEXP IS RESERVED FOR FURTHER EXPRESSIONS, WHICH SHOULD BE THVALED BEFORE WE GO TO THE NEXT ITEM OF ACTUAL CODE.
         ;; FOR EXAMPLE, THASSERT USES THIS FEATURE TO PROCESS ANTECEDENT THEOREMS.
@@ -958,7 +946,7 @@
                                         ;; IF THVALUE IS NON NIL, IT MEANS THAT SO FAR THE THEOREM IS SUCCEEDING.
                                         *value*
                                             (do ;; SAVE CURRENT STATE OF THTREE AND THALIST IN CASE WE HAVE TO BACK UP.
-                                                (when-not *b'tree* (set! *b'tree* *tree*) (set! *b'vars* *vars*))
+                                                (when-not *tree1* (set! *tree1* *tree*) (set! *vars1* *vars*))
                                                 ;; IF THTREE IS NIL, THERE ARE NO MORE EXPRESSIONS TO PROCESS.
                                                 ;; ALL THEOREMS ACT LIKE A THPROG, INCLUDING PUTTING ITS MARK ON THTREE, SEE THAPPLY,
                                                 ;; HENCE NO NEED TO GROW MORE BRANCHES ON THTREE.
@@ -978,7 +966,7 @@
                                 ;; THEXP AT THIS POINT IS THE APPROPRIATE SUCCESS OR FAILURE ASSOCIATED FUNCTION.
                                 ;; EVAL IT AND AT THE SAME TIME,
                                 ;; SET IT TO NIL IN CASE WE NEED THEXP FOR MORE EXPRESSIONS TO BE PROCESSED.
-                                (let [f *expr*] (set! *expr* nil) (set! *value* (f))
+                                (let [f *expr* a (cdar *tree*)] (set! *expr* nil) (thpop! *tree*) (set! *value* (apply f a))
                                     ;; GO THROUGH THE ENTIRE PROCESS AGAIN
                                     ;; REMOVING EXPRESSIONS FROM THTREE UNTIL WE GET BACK TO THE ENTRY PUT ON BY THPROG.
                                     ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING.
@@ -1058,7 +1046,7 @@
         (pr name)
         (cond
             noassert? (-print "DEFINED, BUT NOT ASSERTED")
-            (thass1 (list name) true) (-print "DEFINED AND ASSERTED")
+            (thass- [name] true) (-print "DEFINED AND ASSERTED")
             :else (-print "REDEFINED"))
         true))
 
@@ -1449,7 +1437,7 @@
     [:thconse '[x y blocks pyr [why ($? ev)] ev]
         '[!STACKUP ($? x)]
         '(or (< (reduce + (map #(caddr (size %)) ($? x))) 641)
-            (not (DPRINT2 "TOO HIGH,")))
+            (bug! 'tc-stackup "TOO HIGH"))
         '(thcond
             '[(and ($? x) (cdr ($? x)))]
             '[(thsetq '($! x)
@@ -1547,7 +1535,7 @@
         '(thsetq '($? z) '(cadr ($? w)))])
 
 (putprop! 'TCT-LOC :theorem
-    [:thconse '[yy zz x y z time]
+    [:thconse '[x y z yy zz time]
         '[!LOC ($? x) ($? y) ($? z) ($? time)]
         '(thgoal '[!AT ($? y) ($? yy) ($? time)] '[:thuse TCT-AT])
         '(thgoal '[!AT ($? z) ($? zz) ($? time)] '[:thuse TCT-AT])
@@ -1678,33 +1666,33 @@
 (defn- topcenter [x] (let [x (atab x)] (tcent (cadr x) (caddr x))))
 
 (putprop! '!CLEARTOP :choose
-    '(((thgoal '[!SUPPORT ($? *) ?]))))
+    [['(thgoal '[!SUPPORT ($? *) ?])]])
 
 (putprop! '!GRASP :choose
-    '(((thnot '(thgoal '[!GRASPING ($? *)])) (thgoal '[!CLEARTOP ($? *)]))
-     ((thnot '(thgoal '[!GRASPING ($? *)])))))
+    [['(thnot '(thgoal '[!GRASPING ($? *)])) '(thgoal '[!CLEARTOP ($? *)])]
+     ['(thnot '(thgoal '[!GRASPING ($? *)]))]])
 
 (putprop! '!PICKUP :choose
-    '(((thgoal '[!SUPPORT ? ($? *)]) (thgoal '[!CLEARTOP ($? *)]))
-     ((thgoal '[!SUPPORT ? ($? *)]))))
+    [['(thgoal '[!SUPPORT ? ($? *)]) '(thgoal '[!CLEARTOP ($? *)])]
+     ['(thgoal '[!SUPPORT ? ($? *)])]])
 
 (putprop! '!PUTIN :choose
-    '(((thnot '(thgoal '[!CONTAIN ßBOX ($? *)])) (thgoal '[!CLEARTOP ($? *)]))
-     ((thnot '(thgoal '[!CONTAIN ßBOX ($? *)])))))
+    [['(thnot '(thgoal '[!CONTAIN ßBOX ($? *)])) '(thgoal '[!CLEARTOP ($? *)])]
+     ['(thnot '(thgoal '[!CONTAIN ßBOX ($? *)]))]])
 
 (putprop! '!PUTIN :choose2
-    '(((thgoal '[!IS ($? *) !BOX]))))
+    [['(thgoal '[!IS ($? *) !BOX])]])
 
 (putprop! '!PUTON :choose
-    '(((thgoal '[!CLEARTOP ($? *)]))))
+    [['(thgoal '[!CLEARTOP ($? *)])]])
 
 (putprop! '!PUTON :choose2
-    '(((thgoal '[!CLEARTOP ($? *)]) (thnot '(thgoal '[!IS ($? *) !PYRAMID])))
-     ((thnot '(thgoal '[!IS ($? *) !PYRAMID])))))
+    [['(thgoal '[!CLEARTOP ($? *)]) '(thnot '(thgoal '[!IS ($? *) !PYRAMID]))]
+     ['(thnot '(thgoal '[!IS ($? *) !PYRAMID]))]])
 
 (putprop! '!STACKUP :choose
-    '(((thgoal '[!CLEARTOP ($? *)]) (thnot '(thgoal '[!IS ($? *) !PYRAMID])))
-     ((thnot '(thgoal '[!IS ($? *) !PYRAMID])))))
+    [['(thgoal '[!CLEARTOP ($? *)]) '(thnot '(thgoal '[!IS ($? *) !PYRAMID]))]
+     ['(thnot '(thgoal '[!IS ($? *) !PYRAMID]))]])
 
 (thadd* 'TC-CALL 'TC-CLEARTOP 'TC-GET-RID-OF 'TC-GRASP 'TC-NAME 'TC-NOTICE 'TC-PACK 'TC-PICKUP 'TC-PUTIN 'TC-PUTON 'TC-RAISEHAND 'TC-STACKUP 'TC-UNGRASP 'TC-ON 'TC-PHYSOB)
 
@@ -5495,7 +5483,7 @@
                 (let-when [candidates (thval2 *who* finder)
                       ? (cond
                             (not candidates) :toofew
-                            (number? (num? oss)) (cond (< (count candidates) (num? oss)) :toofew (> (count candidates) (num? oss)) :toomany)
+                            (number? (num? oss)) (cond (< (count candidates) (num? oss)) :toofew (> (count candidates) (num? oss)) :toomany)
                             (= (num? oss) 'NS) (cond (nil? candidates) :toofew (cdr candidates) :toomany)
                             (memq (num? oss) ['NPL 'SG-PL]) nil
                             :else (bug! 'smng3 "SCREWY NUMBER PROPERTY OF OSS"))
@@ -6543,7 +6531,7 @@
                                 possibilities))
                             (print \?)
                             (terpri)
-                            (let [n (loop-when [n (read)] (or (not (number? n)) (not (<= 1 n (count possibilities)))) => n
+                            (let [n (loop-when [n (read)] (or (not (number? n)) (not (<= 1 n (count possibilities)))) => n
                                         (terpri)
                                         (print "PLEASE TYPE ONE OF THE NUMBERS")
                                         (terpri)
@@ -6696,7 +6684,7 @@
                                                         (when-not (istense (parsenode? rss) 'MODAL)
                                                             (prepput rss (concat (and (cdr ans) (concat (namesugar len rel) '((print \:)))) (namelist phrase 'INDEF ans)))))
                                                 (if (istense (parsenode? rss) 'MODAL) '((say "I DON'T KNOW")) '((say "NO"))))
-                                        (number? num)
+                                        (number? num)
                                             ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
                                             ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
                                             (concat
@@ -6981,7 +6969,7 @@
 
 (defn- namesize [x]
     ;; ACCEPTS EITHER SINGLE NUMBER OR LIST OF DIMENSIONS.
-    (let [x (if (number? x) x (reduce + x))]
+    (let [x (if (number? x) x (reduce + x))]
         (if (<= x 382) 'SMALL 'LARGE)))
 
 (defn- namesugar [num oss]
