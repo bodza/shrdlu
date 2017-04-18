@@ -70,7 +70,6 @@
 (dynamic- *lastsentno*)
 (dynamic- *lastsent*)
 (dynamic- *sentno*)
-(dynamic- *level*)
 (dynamic- *sent*)
 (dynamic- *punct*)
 (dynamic- *plan*)
@@ -512,8 +511,8 @@
                 (= (caar thtree1) tha1) (GO ELP1))
         ALP1 (SETQ thtree1 (cdr thtree1))
             (GO LP1)
-        ELP1 (COND ((= (car tha) 'THTAG)
-                (if (memq (cadr tha) (cadddr (car thtree1))) (GO TAGS) (GO ALP1))))
+        ELP1 (when (= (car tha) 'THTAG)
+                (if (memq (cadr tha) (cadddr (car thtree1))) (GO TAGS) (GO ALP1)))
             (set! *thmessage* (list (cdr thtree1) (and (cdr tha) (cadr tha))))
             (RETURN nil)
         TAGS (SETQ THX (caddar thtree1))
@@ -743,14 +742,15 @@
                         (thcheck (cddr XPAIR) (if YPAIR (cadr YPAIR) thy)))
                     ;; FURTHERMORE, THY IS ALSO A VARIABLE
                     ;; THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING
-                    (COND (YPAIR
-                            (thrplacas (cdr XPAIR) (cadr YPAIR))
-                            ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS
-                            (and (cddr YPAIR) (thrplacds (cdr XPAIR) (thunion (cddr XPAIR) (cddr YPAIR))))
-                            (thrplacds YPAIR (cdr XPAIR)))
+                    (if YPAIR
+                            (do (thrplacas (cdr XPAIR) (cadr YPAIR))
+                                ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS
+                                (when (cddr YPAIR)
+                                    (thrplacds (cdr XPAIR) (thunion (cddr XPAIR) (cddr YPAIR))))
+                                (thrplacds YPAIR (cdr XPAIR)))
                         ;; IF THY IS NOT A VARIALBE, JUST ASSIGN THX TO THY
                         ;; THRPLACAS WILL HACK THML, THE FREE VARIABLE FROM THMATCH1
-                        (:else (thrplacas (cdr XPAIR) thy))))
+                        (thrplacas (cdr XPAIR) thy)))
                 ;; IN THIS COND PAIR THY IS A VARIABLE AND THX IS EITHER
                 ;; A CONSTANT OR A PREVIOUSLY ASSIGNED VARIALBE
                 ((and YPAIR
@@ -1794,7 +1794,7 @@
         (THOR (THGOAL (!MANIP ($? z))) (THGOAL (!IS ($? z) !BOX)))
         (not (= ($? y) ($? z)))
         (locgreater LOC ($? y) ($? z)
-            ((lambda [x] (COND ((= x '!RIGHT) #'car) ((= x '!BEHIND) #'cadr) ((= x '!ABOVE) #'caddr) ((ert "TC-LOC")))) ($? x)))))
+            ((lambda [x] (cond (= x '!RIGHT) #'car (= x '!BEHIND) #'cadr (= x '!ABOVE) #'caddr :else (ert "TC-LOC"))) ($? x)))))
 
 (putprop! 'TC-MAKESPACE 'THEOREM
     '(THCONSE (surf size obj space x (WHY (ev)) EV)
@@ -1840,8 +1840,8 @@
 (putprop! 'TC-MOVEHAND2 'THEOREM
     '(THCONSE (y loc)
         (!MOVEHAND2 ($? y))
-        (COND ((= ($? y) *handat*) (THSUCCEED THEOREM))
-            ((and (<= 32 (car ($? y)) 608) (<= 0 (cadr ($? y)) 608) (<= 0 (caddr ($? y)) 512))))
+        (if (= ($? y) *handat*) (THSUCCEED THEOREM)
+            (and (<= 32 (car ($? y)) 608) (<= 0 (cadr ($? y)) 608) (<= 0 (caddr ($? y)) 512)))
         (THVSETQ ($_ loc) *handat*)
         (THSETQ *handat* ($? y))
         (THSETQ *thtime* (inc *thtime*))
@@ -1858,8 +1858,8 @@
 (putprop! 'TC-NOTICE 'THEOREM
     '(THCONSE (x)
         (!NOTICE ($? x))
-        (COND (doit? (BLINK ($? x)) (THSUCCEED))
-            ((THSETQ *plan* (cons (list 'BLINK (list 'quote ($? x))) *plan*))))))
+        (if doit? (do (BLINK ($? x)) (THSUCCEED))
+            (THSETQ *plan* (cons (list 'BLINK (list 'quote ($? x))) *plan*)))))
 
 (putprop! 'TC-ON 'THEOREM
     '(THCONSE (x y z)
@@ -1883,9 +1883,9 @@
                     (or (THSETQ ($? BLOCKS) (cdr ($? BLOCKS))) true)
                     (THCOND ((THVSETQ ($_ y) (or (packon ($? x) ($? PYR)) (packon ($? x) ($? BLOCKS))))
                             (THGOAL (!PUTON ($? y) ($? x)) (THUSE TC-PUTON))
-                            (COND ((memq ($? y) ($? PYR))
-                                    (THSETQ ($_ PYR) (DELQ ($? y) (concat ($? PYR) nil))))
-                                ((THSETQ ($_ BLOCKS) (DELQ ($? y) (concat ($? BLOCKS) nil))))))
+                            (if (memq ($? y) ($? PYR))
+                                (THSETQ ($_ PYR) (DELQ ($? y) (concat ($? PYR) nil)))
+                                (THSETQ ($_ BLOCKS) (DELQ ($? y) (concat ($? BLOCKS) nil)))))
                         ((THSUCCEED)))
                     (THGO =>)))))
 
@@ -2012,13 +2012,13 @@
             ((THSETQ ($_ x)
                 (concat ($? x)
                     (THVAL (list 'THFIND
-                        (COND ((nil? ($? x)) 3) (2))
+                        (if ($? x) 2 3)
                         '($? y)
                         '(y)
                         '(THOR (THAND (THGOAL (!IS ($? y) !BLOCK)) (THNOT (THGOAL (!SUPPORT ($? y) ?)))) (THGOAL (!IS ($? y) !BLOCK)))
                         '(not (= ($? x) ($? y))))
                         *thalist*)))))
-        (COND ((THVSETQ ($_ PYR) (PACKO ($? x) '!PYRAMID)) (nil? (cdr ($? PYR)))) (:else true))
+        (if (THVSETQ ($_ PYR) (PACKO ($? x) '!PYRAMID)) (nil? (cdr ($? PYR))) true)
         (THVSETQ ($_ BLOCKS) (cons 'ßTABLE (PACKO ($? x) '!BLOCK)))
         (memory)
     =>  (THCOND
@@ -2041,7 +2041,7 @@
         (THSETQ ($_ newev) (gensym 'EV))
         (putprop! ($? newev) 'END
             (putprop! ($? newev) 'START
-                (getprop ($? z) (COND ((= ($? x) '!START) 'START) ((= ($? x) '!END) 'END) ((ert "TC-STARTEND (THV x)"))))))
+                (getprop ($? z) (cond (= ($? x) '!START) 'START (= ($? x) '!END) 'END :else (ert "TC-STARTEND (THV x)")))))
         (timechk ($? newev) ($? TIME))
         (putprop! ($? newev) 'WHY ($? z))
         (putprop! ($? newev) 'TYPE '!START)))
@@ -2414,110 +2414,95 @@
 (defn- ev [] (or nomem? ($? EV)))
 
 (§ defn- FINDSPACE [type surf size obj]
-    (let [xymax nil xymin nil n nil v nil x1 nil x2 nil]
-        (SETQ obj (listify obj))
-        (and (memq surf obj) (RETURN nil))
-        (COND ((= surf 'ßTABLE)
-                (SETQ xymin '(0 0))
-                (SETQ xymax '(640 640))
-                (set! *level* 0)
-                (GO ON))
-            ((SETQ X (atab surf))))
-        (COND
-            ((= type 'CENTER)
-                (COND ((clear (SETQ v
-                        (list (max 0 (+ (caadr X) (half (- (caaddr X) (car size)))))
-                            (max 0 (+ (cadadr X) (half (- (cadr (caddr X)) (cadr size)))))
-                            (+ (caddr (cadr X)) (caddr (caddr X)))))
-                        size
-                        obj)
-                    (RETURN v))
-                ((RETURN nil))))
-            ((= (car X) 'ßBOX)
-                (SETQ xymin (list (caadr X) (cadadr X)))
-                (SETQ xymax (list (+ (caaddr X) (caadr X)) (+ (cadr (caddr X)) (cadadr X))))
-                (set! *level* 1))
-            ((SETQ x1 (half (car size)))
-                (SETQ y1 (half (cadr size)))
-                (SETQ xymax (list (min 640 (dec (+ (caaddr X) (caadr X) x1))) (min 640 (dec (+ (cadr (caddr X)) (cadadr X) y1)))))
-                (SETQ xymin (list (max 0 (- (caadr X) x1)) (max 0 (- (cadadr X) y1))))
-                (set! *level* (+ (caddr (cadr X)) (caddr (caddr X))))))
-    ON  (SETQ n 8)
-        (SETQ x1 (- (car xymax) (car xymin)))
-        (SETQ y1 (- (cadr xymax) (cadr xymin)))
-    GO  (COND ((zero? (SETQ n (dec n))) (RETURN nil))
-            ((or (not (SETQ v
-                        (GROW (list
-                                (+ (car xymin) (rem (abs (RANDOM)) x1))
-                                (+ (cadr xymin) (rem (abs (RANDOM)) y1))
-                                *level*)
-                            xymin xymax obj)))
-                    (< (- (caadr v) (caar v)) (car size))
-                    (< (- (cadadr v) (cadar v)) (cadr size)))
-                (GO GO))
-            ((RETURN (COND
-                ((= type 'RANDOM)
-                    (list (half (- (+ (caar v) (caadr v)) (car size)))
-                        (half (- (+ (cadar v) (cadadr v)) (cadr size)))
-                        *level*))
-                ((= type 'PACK)
-                    (list (caar v) (cadar v) *level*))
-                ((ert "FINDSPACE -- type"))))))))
+    (let [obj (listify obj)]
+        (when-not (memq surf obj)
+            (let [xymax nil xymin nil level nil]
+                (if (= surf 'ßTABLE)
+                    (do (SETQ xymin '(0 0))
+                        (SETQ xymax '(640 640))
+                        (SETQ level 0))
+                    (let [a (atab surf)]
+                        (cond (= type 'CENTER)
+                                (let [v (list (max 0 (+ (caadr a) (half (- (caaddr a) (car size)))))
+                                            (max 0 (+ (cadadr a) (half (- (cadr (caddr a)) (cadr size)))))
+                                            (+ (caddr (cadr a)) (caddr (caddr a))))]
+                                    (if (clear v size obj) (RETURN v) (RETURN nil)))
+                            (= (car a) 'ßBOX)
+                                (do (SETQ xymin (list (caadr a) (cadadr a)))
+                                    (SETQ xymax (list (+ (caaddr a) (caadr a)) (+ (cadr (caddr a)) (cadadr a))))
+                                    (SETQ level 1))
+                            :else
+                                (let [x1 (half (car size)) y1 (half (cadr size))]
+                                    (SETQ xymax (list (min 640 (dec (+ (caaddr a) (caadr a) x1))) (min 640 (dec (+ (cadr (caddr a)) (cadadr a) y1)))))
+                                    (SETQ xymin (list (max 0 (- (caadr a) x1)) (max 0 (- (cadadr a) y1))))
+                                    (SETQ level (+ (caddr (cadr a)) (caddr (caddr a))))))))
+                (let [x1 (- (car xymax) (car xymin)) y1 (- (cadr xymax) (cadr xymin))]
+                    (loop-when [n (dec 8)] (pos? n)
+                        (let [v (GROW (list (+ (car xymin) (rem (abs (RANDOM)) x1)) (+ (cadr xymin) (rem (abs (RANDOM)) y1)) level) xymin xymax obj)]
+                            (if (or (not v) (< (- (caadr v) (caar v)) (car size)) (< (- (cadadr v) (cadar v)) (cadr size)))
+                                (recur (dec n))
+                                (condp = type
+                                    'RANDOM (list (half (- (+ (caar v) (caadr v)) (car size))) (half (- (+ (cadar v) (cadadr v)) (cadr size))) level)
+                                    'PACK (list (caar v) (cadar v) level)
+                                    (ert "FINDSPACE -- type"))))))))))
 
 (defn- goal [& a]
     (binding [*plan* nil]
         (THVAL (list 'THGOAL (car a) '(THTBF thtrue)) '((EV COMMAND)))
         (evlis (reverse *plan*))))
 
+(dynamic- *xl*)
+(dynamic- *xh*)
+(dynamic- *xo*)
+(dynamic- *yl*)
+(dynamic- *yh*)
+(dynamic- *yo*)
+
 (§ defn- GROW [loc _min _max obj]
-    (let [grow nil XL nil XH nil XO nil YL nil YH nil YO nil]
-        (SETQ obj (listify obj))
-        (COND
-            ((or
-                (neg? (caar (SETQ XL (list (list (- (car loc) (car _min)) nil)))))
-                (neg? (caar (SETQ XH (list (list (- (car _max) (car loc)) nil)))))
-                (neg? (caar (SETQ YL (list (list (- (cadr loc) (cadr _min)) nil)))))
-                (neg? (caar (SETQ YH (list (list (- (cadr _max) (cadr loc)) nil)))))
-                (nil? (ERRSET
-                    (dorun (map (lambda [x]
-                        (let [xx nil yy nil]
-                            (COND ((or (memq (car x) obj)
-                                    (not (< (caadr x) (car _max)))
-                                    (not (< (cadadr x) (cadr _max)))
-                                    (not (> (SETQ xx (+ (caadr x) (caaddr x))) (car _min)))
-                                    (not (> (SETQ yy (+ (cadadr x) (cadr (caddr x)))) (cadr _min)))
-                                    (not (> (+ (caddr (cadr x)) (caddr (caddr x))) (caddr loc))))
-                                (RETURN nil))
-                            ((> (caadr x) (car loc))
-                                (SETQ XH (order (list (- (caadr x) (car loc)) (car x)) XH)))
-                            ((< xx (car loc))
-                                (SETQ XL (order (list (- (car loc) xx) (car x)) XL)))
-                            ((SETQ XO (cons (car x) XO))))
-                            (COND ((> (cadadr x) (cadr loc))
-                                (SETQ YH (order (list (- (cadadr x) (cadr loc)) (car x)) YH)))
-                            ((< yy (cadr loc))
-                                (SETQ YL (order (list (- (cadr loc) yy) (car x)) YL)))
-                            ((memq (car x) XO) (ERR nil))
-                            ((SETQ YO (cons (car x) YO))))
-                            nil))
-                    ATABLE)))))
-                (RETURN nil)))
-    =>  (SETQ grow (min (caar XL) (caar XH) (caar YL) (caar YH)))
-        (COND ((== grow 1024)
-            (RETURN (list
-                (list (- (car loc) (cadar XL)) (- (cadr loc) (cadar YL)))
-                (list (+ (car loc) (cadar XH)) (+ (cadr loc) (cadar YH))))))
-            (:else (dorun (map (lambda [y z w] (let [x (eval w)]
-                        (COND ((> (caar x) grow))
-                            ((or (nil? (cadar x)) (memq (cadar x) (eval y)))
-                                (RPLACA x (list 2000 (caar x))))
-                            ((SET z (cons (cadar x) (eval z)))
-                                (SET w (cdr x))))
-                        nil))
-                    '(YO YO XO XO)
-                    '(XO XO YO YO)
-                    '(XL XH YL YH)))
-                (GO =>)))))
+    (binding [*xl* nil *xh* nil *xo* nil *yl* nil *yh* nil *yo* nil]
+        (let [obj (listify obj)]
+            (when (or
+                    (neg? (caar (set! *xl* (list (list (- (car loc) (car _min)) nil)))))
+                    (neg? (caar (set! *xh* (list (list (- (car _max) (car loc)) nil)))))
+                    (neg? (caar (set! *yl* (list (list (- (cadr loc) (cadr _min)) nil)))))
+                    (neg? (caar (set! *yh* (list (list (- (cadr _max) (cadr loc)) nil)))))
+                    (nil? (ERRSET
+                        (dorun (map (lambda [a]
+                            (let [x nil y nil]
+                                (when (and (not (memq (car a) obj))
+                                        (< (caadr a) (car _max))
+                                        (< (cadadr a) (cadr _max))
+                                        (> (SETQ x (+ (caadr a) (caaddr a))) (car _min))
+                                        (> (SETQ y (+ (cadadr a) (cadr (caddr a)))) (cadr _min))
+                                        (> (+ (caddr (cadr a)) (caddr (caddr a))) (caddr loc)))
+                                    (cond
+                                        (< (car loc) (caadr a)) (set! *xh* (order (list (- (caadr a) (car loc)) (car a)) *xh*))
+                                        (< x (car loc)) (set! *xl* (order (list (- (car loc) x) (car a)) *xl*))
+                                        :else (set! *xo* (cons (car a) *xo*)))
+                                    (cond
+                                        (< (cadr loc) (cadadr a)) (set! *yh* (order (list (- (cadadr a) (cadr loc)) (car a)) *yh*))
+                                        (< y (cadr loc)) (set! *yl* (order (list (- (cadr loc) y) (car a)) *yl*))
+                                        (memq (car a) *xo*) (ERR nil)
+                                        :else (set! *yo* (cons (car a) *yo*))))
+                                nil))
+                        ATABLE)))))
+                    (RETURN nil))
+            (loop []
+                (let [grow (min (caar *xl*) (caar *xh*) (caar *yl*) (caar *yh*))]
+                    (if (== grow 1024)
+                        (list
+                            (list (- (car loc) (cadar *xl*)) (- (cadr loc) (cadar *yl*)))
+                            (list (+ (car loc) (cadar *xh*)) (+ (cadr loc) (cadar *yh*))))
+                        (do (dorun (map (lambda [y z w]
+                                (let [x (eval w)]
+                                    (cond (< grow (caar x)) true
+                                        (or (nil? (cadar x)) (memq (cadar x) (eval y))) (RPLACA x (list 2000 (caar x)))
+                                        (SET z (cons (cadar x) (eval z))) (SET w (cdr x)))
+                                    nil))
+                                '(*yo* *yo* *xo* *xo*)
+                                '(*xo* *xo* *yo* *yo*)
+                                '(*xl* *xh* *yl* *yh*)))
+                            (recur))))))))
 
 (defn- locgreater [loc y z fun]
     (let [loc- #(let [a (atab %2)] (if (= ($? loc) '!LOC) a (list* nil ($? %1) (cddr a))))
@@ -2691,9 +2676,8 @@
 
 (§ defn- ERTEX [message cause-abortion ignore-nostop?]
     (let [GLOP nil EXP nil ST-BUFFER nil BUILDING-ST-FORM nil FIRSTWORD nil]
-        (and nostop?
-            (not ignore-nostop?)
-            (and cause-abortion
+        (when (and nostop? (not ignore-nostop?))
+            (when cause-abortion
                 (*THROW 'ABORT-PARSER cause-abortion))
             (RETURN true))
         (terpri)
@@ -2703,36 +2687,34 @@
         (terpri)
         (print ">>> ")
     LISTEN
-        (COND                                                   ;; SHELP UP SPURIOUS CHARACTERS
-            ((memq (TYIPEEK) '(32 10))                        ;; SP, LF
-                (READCH)
-                (GO LISTEN))
-            ((== (TYIPEEK) 13)                                  ;; CR
-                (COND (BUILDING-ST-FORM
-                        (SETQ EXP (reverse ST-BUFFER))
-                        (GO EVAL-EXP))                          ;; DELIMITER CASE
-                    (:else (READCH) (GO LISTEN)))))                 ;; SPURIOUS CHARACTER CASE
+        (cond                                                   ;; SHELP UP SPURIOUS CHARACTERS
+            (memq (TYIPEEK) '(32 10))                        ;; SP, LF
+                (do (READCH) (GO LISTEN))
+            (== (TYIPEEK) 13)                                  ;; CR
+                (if BUILDING-ST-FORM
+                    (do (SETQ EXP (reverse ST-BUFFER)) (GO EVAL-EXP))                          ;; DELIMITER CASE
+                    (do (READCH) (GO LISTEN))))                 ;; SPURIOUS CHARACTER CASE
 
-        (or (ERRSET (SETQ GLOP (READ))) (GO PRINT))
+        (when-not (ERRSET (SETQ GLOP (READ))) (GO PRINT))
 
-        (COND ((term? GLOP)
-            (SETQ GLOP (or (getprop GLOP 'ABBREV) GLOP))
-            (COND ((memq GLOP '(true P nil))                     ;; LEAVE-LOOP CHARS
-                    (RETURN GLOP))
-                ((= GLOP 'GO)                                  ;; CAUSE RETURN TO READY-STATE
-                    (*THROW 'ABORT-PARSER 'GO))
-                (BUILDING-ST-FORM
-                    (SETQ ST-BUFFER (cons GLOP ST-BUFFER))
-                    (GO LISTEN))
-                ((and FIRSTWORD (memq GLOP '(SHOW TELL)))
-                    (SETQ BUILDING-ST-FORM true
-                        ST-BUFFER (cons GLOP ST-BUFFER)
-                        FIRSTWORD nil)
-                    (GO LISTEN))
-                (:else (SETQ EXP GLOP) (GO EVAL-EXP))))
-            (:else (COND ((= (car GLOP) 'RETURN)
-                    (RETURN (eval (cadr GLOP))))
-                (:else (SETQ EXP GLOP) (GO EVAL-EXP)))))
+        (if (term? GLOP)
+            (do (SETQ GLOP (or (getprop GLOP 'ABBREV) GLOP))
+                (cond (memq GLOP '(true P nil))                     ;; LEAVE-LOOP CHARS
+                        (RETURN GLOP)
+                    (= GLOP 'GO)                                  ;; CAUSE RETURN TO READY-STATE
+                        (*THROW 'ABORT-PARSER 'GO)
+                    BUILDING-ST-FORM
+                        (do (SETQ ST-BUFFER (cons GLOP ST-BUFFER))
+                            (GO LISTEN))
+                    (and FIRSTWORD (memq GLOP '(SHOW TELL)))
+                        (do (SETQ BUILDING-ST-FORM true
+                                ST-BUFFER (cons GLOP ST-BUFFER)
+                                FIRSTWORD nil)
+                            (GO LISTEN))
+                    :else (do (SETQ EXP GLOP) (GO EVAL-EXP))))
+            (if (= (car GLOP) 'RETURN)
+                (RETURN (eval (cadr GLOP)))
+                (do (SETQ EXP GLOP) (GO EVAL-EXP))))
 
     EVAL-EXP
         (ERRSET (let [_ (eval EXP)] (terpri) (pr _)))
@@ -3393,9 +3375,7 @@
     ;; IF P IS TRUE, PARSE2 DOES NOT APPEND THE NODE JUST PARSED TO THE PARSING TREE.
     ;; PARSE2 WILL CALL EITHER A COMPILED OR INTERPRETED VERSION OF THE GRAMMAR PROGRAM.
     (let [*rest* rest' UNIT (car *rest*) *end* nil *parent* nil *re* nil *special* nil nbb *n*]
-        (set! *level* (inc *level*))
         (COND ((= *n* *cut*)
-            (set! *level* (dec *level*))
             (RETURN nil)))
         (set! *end* *cut*)
         (set! *nn* (not= *n* *cut*))
@@ -3419,8 +3399,7 @@
                 (set! *h* (concat *re* *h*))
                 *sm*))
     LOSE (set! *nn* (not= *n* *cut*))
-    OK  (set! *level* (dec *level*))
-        *re*))
+    OK  *re*))
 
 (§ defn- PARSE3 [rest' p]
     ;; PARSE3 IS CALLED TO PARSE JUST THE NEXT WORD IN THE SENTENCE
@@ -9818,7 +9797,7 @@ RETURN
     (binding [*thtime* 0 *thtrace* nil *thtree* nil *thxx* nil *thalist* '((nil nil)) *tholist* '((nil nil))
               *global-message* nil
               *savesent* nil *lastsentno* 0 *lastsent* nil *sentno* 1
-              *level* nil *sent* nil *punct* nil
+              *sent* nil *punct* nil
               *end* nil *both* nil *backref* nil *backref2* nil *ansname* nil *lastrel* nil *who* nil *pt* nil *ptw* nil *h* nil *n* nil *nb* nil *fe* nil *sm* nil *re* nil *mes* nil *c* nil *cut* nil
               *savept* nil *labeltrace* nil *plannersee* nil]
     =>  (*CATCH 'ABORT-PARSER
@@ -9827,7 +9806,6 @@ RETURN
                 (set! *lastsentno* (inc *lastsentno*))
                 (set! *lastsent* *c*)
                 (set! *sentno* (inc *sentno*))
-                (set! *level* 0)
                 (set! *mes* 'NOPE)
                 (set! *backref* nil)                  ;; ???????????????????
                 (set! *n* (set! *sent* (ETAOIN)))
