@@ -84,7 +84,6 @@
 
 (dynamic- *thtime*)
 (dynamic- *tree*)
-(dynamic- *thxx*)
 (dynamic- *thalist*)
 (dynamic- *tholist*)
 (dynamic- *value*)
@@ -221,10 +220,6 @@
 (dynamic- *thal*)
 (dynamic- *thon*)
 (dynamic- *thbs*)
-(dynamic- *thy1*)
-(dynamic- *thy*)
-(dynamic- *thz1*)
-(dynamic- *thz*)
 
 (defn- thadd [thtt' thpl]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
@@ -278,8 +273,8 @@
                     ;; THIP IS THE WORKHORSE FOR THADD.
                     ;; IF IT RETURNS NIL, THE ASSERTEE IS ALREADY IN, SO FAIL.
                     (let [x (thip (car a))]
-                        ;; THOK WHICH IS RETURN BY THIP SAYS THAT THE ASSERTEE IS NOT IN ALREADY.
-                        (cond (= x 'THOK)
+                        ;; IF IT RETURNS THOK, THE ASSERTEE IS NOT IN ALREADY.
+                        (cond (= x 'thok)
                             (do (set! *thfst* nil)
                                 (dorun (map thip (cdr a)))
                                 (set! *thnf* 0)
@@ -293,10 +288,10 @@
     ;; $E - (THAMONG ($E ($? X)) (THFIND ... )) CAUSES THE THVALUE OF ($? X) TO BE THE FIRST INPUT TO THAMONG.
     ;; THXX SET TO OLD BINDING CELL OF ($? X) (OR ($E ($? X))) IF ($? X) VALUES PUSHED ONTO THTREE AND THAMONG
     ;; FAILS TO THUNASSIGNED, OLD VALUE AND LIST OF NEW THAMONGF.
-    (set! *thxx* (thgal (if (= (caar a) 'thev) (thval (cadar a) *thalist*) (car a)) *thalist*))
-    (if (= (cadr *thxx*) 'thunassigned)
-        (do (thpush! *tree* ['thamong *thxx* (thval (cadr a) *thalist*)]) nil)
-        (memq (cadr *thxx*) (thval (cadr a) *thalist*))))       ;; IF ($? X) ASSIGNED, THAMONG REDUCES TO A MEMBERSHIP TEST
+    (let [xx (thgal (if (= (caar a) 'thev) (thval (cadar a) *thalist*) (car a)) *thalist*)]
+        (if (= (cadr xx) 'thunassigned)
+            (do (thpush! *tree* ['thamong xx (thval (cadr a) *thalist*)]) nil)
+            (memq (cadr xx) (thval (cadr a) *thalist*)))))       ;; IF ($? X) ASSIGNED, THAMONG REDUCES TO A MEMBERSHIP TEST
 
 (defn- thamongf []                                                 ;; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW VALUES))
     (if (caddar *tree*)                                            ;; LIST OF NEW VALUES NON NIL
@@ -344,46 +339,56 @@
         ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING.
         (do (set! *thalist* *tholist*) (thpop! *tree*) nil)))
 
+(defn- thtae [a thx type m]
+    (cond (term? a) nil
+        (= (car a) :thuse)
+            (doall (map #(let-when [th (getprop % :theorem)] (and th (= (car th) type)) => (bug! 'thtae "BAD THEOREM" %)
+                            (list 'thapply % (car thx)))
+                (cdr a)))
+        (= (car a) :thtbf)
+            (doall (mapcat #(when (apply (cadr a) %) (list (list 'thapply % (car thx))))
+                (if (:l? @m) (:l @m) (:l (swap! m assoc :l? true :l (thmatchlist (car thx) (keyword type)))))))
+        :else (bug! 'thtae "UNCLEAR RECOMMENDATION" a)))
+
 (defn- thass1 [a assert?]
-    (binding [*thy1* nil *thy* nil]
-        ;; IF YOU SEE "THPSEUDO", SET FLAG "PSEUDO" TO T.
-        (let [pseudo? (and (cdr a) (= (caadr a) 'THPSEUDO))
-              ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
-              ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES.
-              ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED.
-              thx (car a) [? thx] (if (term? thx) [true thx] (let [thx (thvarsubst thx nil)] [(thpure thx) thx]))]
-            ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
-            (when-not (or ? pseudo?)
-                (bug! 'thass1 "IMPURE ASSERTION OR ERASURE" thx))
-            (let [a (if pseudo? (cddr a) (cdr a))
-                  ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
-                  ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
-                  ;; IF THPSEUDO, DON'T ALTER THE DATABASE.
-                  [thx a]
-                    (cond pseudo? [(list thx) a]
-                        ;; IF P IS "T", WE ARE ASSERTING, SO USE THADD.
-                        ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST,
-                        ;; AND REMOVE THPROP FROM THE RECOMMENDATION LIST.
-                        assert? (let [[y a] (if (and a (= (caar a) 'thprop)) [(eval (cadar a)) (cdr a)] [nil a])]
-                            ;; THADD TAKES TWO ARGS: THE FIRST IS ITEM TO BE ADDED,
-                            ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM.
-                            [(thadd thx (set! *thy* y)) a])
-                        ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE.
-                        :else [(thremove thx) a])]
-                ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
-                ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED WASN'T.
-                (when thx
-                    ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR.
-                    (let [type (if assert? 'thante 'therasing)]
-                        ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
-                        (when-not pseudo?
-                            (thpush! *tree* [(if assert? 'thassert 'therase) thx *thy*]))
-                        ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
-                        ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
-                        (set! *thy* (doall (mapcat #(thtae % thx type) a)))
+    ;; IF YOU SEE "THPSEUDO", SET FLAG "PSEUDO" TO T.
+    (let [pseudo? (and (cdr a) (= (caadr a) 'thpseudo))
+          ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
+          ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES.
+          ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED.
+          thx (car a) [? thx] (if (term? thx) [true thx] (let [thx (thvarsubst thx nil)] [(thpure thx) thx]))]
+        ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
+        (when-not (or ? pseudo?)
+            (bug! 'thass1 "IMPURE ASSERTION OR ERASURE" thx))
+        (let [a (if pseudo? (cddr a) (cdr a))
+              ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
+              ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
+              ;; IF THPSEUDO, DON'T ALTER THE DATABASE.
+              [thx thy a]
+                (cond pseudo? [(list thx) nil a]
+                    ;; IF P IS "T", WE ARE ASSERTING, SO USE THADD.
+                    ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST,
+                    ;; AND REMOVE THPROP FROM THE RECOMMENDATION LIST.
+                    assert? (let [[thy a] (if (and a (= (caar a) 'thprop)) [(eval (cadar a)) (cdr a)] [nil a])]
+                        ;; THADD TAKES TWO ARGS: THE FIRST IS ITEM TO BE ADDED,
+                        ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM.
+                        [(thadd thx thy) thy a])
+                    ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE.
+                    :else [(thremove thx) nil a])]
+            ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
+            ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED WASN'T.
+            (when thx
+                ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR.
+                (let [type (if assert? 'thante 'therasing)]
+                    ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
+                    (when-not pseudo?
+                        (thpush! *tree* [(if assert? 'thassert 'therase) thx thy]))
+                    ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
+                    ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
+                    (let [m (atom {}) thy (doall (mapcat #(thtae % thx type m) a))]
                         ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
                         ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>).
-                        (when *thy* (set! *expr* (cons 'thdo *thy*)))
+                        (when thy (set! *expr* (cons 'thdo thy)))
                         thx))))))
 
 ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
@@ -575,9 +580,9 @@
 
 (defn- thfindf []
     (set! *branch* nil)
-    (set! *thxx* (cdar *tree*))
-    (thpop! *tree*)
-    (when-not (< (caadr *thxx*) (caar *thxx*)) (cdadr *thxx*)))
+    (let [xx (cdar *tree*)]
+        (thpop! *tree*)
+        (when-not (< (caadr xx) (caar xx)) (cdadr xx))))
 
 (defn- thfindt []
     (let-when [a (cdar *tree*) x (thvarsubst (caddr a) nil)
@@ -594,29 +599,55 @@
 
 (defn- thgal [x a]
     ;; (THGAL ($? X) THALIST) RETURNS THE BINDING CELL (X -) OF X ON THALIST
-    (set! *thxx* x)
     (or (assq (cadr x) a) (bug! 'thgal "THUNBOUND" x)))
 
 (defq- thgo [& a]
     (apply thsucceed (cons 'thtag a)))
+
+(defn- thtry [x a1 m]
+    ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
+    ;; SO WHENEVER WE FAIL BACK TO A THGOAL, WE GO TO THE NEXT "THING TO DO".
+    ;; X IS THE LIST OF RECOMMENDATIONS.
+    ;; ANY ATOMIC RECOMMENDATION IS IGNORED.  THIS IS USEFUL IN ERROR RECOVERY.
+    (when-not (term? x)
+        (condp = (car x)
+            ;; HAVE A THEOREM BASE FILTER.
+            :thtbf
+                ;; MAKE UP A LIST WHICH GIVES
+                ;; 1 - THE INDICATOR "THTBF"
+                ;; 2 - THE ACTUAL FILTER (THTRUE IS THE MOST COMMON)
+                ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
+                (do (when-not (:t? @m) (swap! m assoc :t? true :t (thmatchlist a1 :thconse)))
+                    (when (:t @m) [[:thtbf (cadr x) (:t @m)]]))
+            ;; DO THE SAME THING, ONLY FOR DATABASE FILTERS.
+            :thdbf
+                (do (when-not (:d? @m) (swap! m assoc :d? true :d (thmatchlist a1 :thassertion)))
+                    (when (:d @m) [[:thdbf (cadr x) (:d @m)]]))
+            ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE STATEMENTS,
+            ;; WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE.
+            :thuse
+                [[:thtbf 'thtrue (cdr x)]]
+            :thnum
+                [x]
+            (bug! 'thtry "UNCLEAR RECOMMENDATION" x))))
 
 (defq- thgoal [& a]
     ;; THA = (PATTERN RECOMMENDATION)
     ;; PATTERN IS EITHER EXPLICIT, THE VALUE OF A PLANNER VARIABLE OR THVAL OF $E...
     ;; THA2 = INSTANTIATED PATTERN
     ;; THA1 = RECOMMENDATIONS
-    (binding [*thy* nil *thy1* nil *thz* nil *thz1* nil]
-        (let [a1 (thvarsubst (car a) true) a2 (cdr a)
-              a2 (condp = (caar a2)                         ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
-                    :thanum (list* [:thnum (cadar a2)] [:thdbf 'thtrue] (cdr a2))
-                    :thnodb (cdr a2)                        ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
-                    :thdbf a2
-                    (cons [:thdbf 'thtrue] a2))
-              a2 (doall (mapcat #(thtry % a1) a2))]         ;; THEOREMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
-            (when a2
-                (thpush! *tree* ['thgoal a1 a2])      ;; (THGOAL PATTERN MATCHES)
-                (RPLACD (cddar *tree*) 262143))
-            nil)))                                          ;; FAILS TO THGOALF
+    (let [a1 (thvarsubst (car a) true) a2 (cdr a)
+            a2 (condp = (caar a2)                           ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
+                :thanum (list* [:thnum (cadar a2)] [:thdbf 'thtrue] (cdr a2))
+                :thnodb (cdr a2)                            ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
+                :thdbf a2
+                (cons [:thdbf 'thtrue] a2))
+            a2 (let [m (atom {})]
+                (doall (mapcat #(thtry % a1 m) a2)))]       ;; THEOREMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
+        (when a2
+            (thpush! *tree* ['thgoal a1 a2])                ;; (THGOAL PATTERN MATCHES)
+            (RPLACD (cddar *tree*) 262143))
+        nil))                                               ;; FAILS TO THGOALF
 
 (defn- thgoalf []
     ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY.
@@ -651,7 +682,7 @@
             ;; THWH IS THE NAME OF THE PROPERTY TO LOOK UNDER ON THE ATOM.
             ;; IF THIS PROPERTY IS NOT THERE, THEN WE MUST PUT IT THERE.
             ;; IN PARTICULAR, NO PROPERTY MEANS THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
-            (cond (not x) (do (putprop! thi *thwh* (list nil (list *thnf* (list *thlas* 1 *thttl*)))) 'THOK)
+            (cond (not x) (do (putprop! thi *thwh* (list nil (list *thnf* (list *thlas* 1 *thttl*)))) 'thok)
                 ;; IF THE PROPERTY IS "THNOHASH", IT MEANS THAT WE SHOULD NOT BOTHER TO INDEX UNDER THIS ATOM,
                 ;; SO JUST RETURN TO THADD.
                 (= x 'thnohash) 'THBQF
@@ -659,13 +690,13 @@
                 ;; IF NOT, HACK THE ENTRY SO THERE IS.
                 ;; AGAIN THIS IMPLIES THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
                 :else (let [y (assq *thnf* (cdr x))] (cond
-                (not y) (do (concat x (list (list *thnf* (list *thlas* 1 *thttl*)))) 'THOK)
+                (not y) (do (concat x (list (list *thnf* (list *thlas* 1 *thttl*)))) 'thok)
                 ;; NOW LOOK WITHIN THE SUB-ENTRY FOR A SUB-SUB-ENTRY.
                 ;; I.E. THOSE PATTERNS WHICH ARE ALSO OF THE CORRECT TOTAL LENGTH.
                 ;; THLAS IS A VARIABLE FROM THADD WHICH GIVES THE LENGTH OF THE ASSERTEE.
                 ;; AGAIN, IF NOT THERE, HACK IT IN.
                 :else (let [z (assq *thlas* (cdr y))] (cond
-                (not z) (do (concat y (list (list *thlas* 1 *thttl*))) 'THOK)
+                (not z) (do (concat y (list (list *thlas* 1 *thttl*))) 'thok)
                 ;; THIS BRANCH SAYS THAT WE STILL NEED TO CHECK THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
                 ;; THIS MEANS THAT WE MUST LOOK DOWN THE REMAINING SUB-SUB-BUCKET LOOKING FOR THE ASSERTEE.
                 (and (or *thfst* *thfstp*)
@@ -678,9 +709,9 @@
                 ;; HACK IN THE LATEST ENTRY INTO THE SUB-SUB-BUCKET.
                 sv (do (RPLACA (cdr z) (inc (cadr z)))
                         (RPLACD (cdr z) (concat (list *thttl*) sv))
-                        'THOK)
+                        'thok)
                 ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO.
-                :else 'THOK))))))))))
+                :else 'thok))))))))))
 
 (defn- thmatch2 [thx thy]
     ;; THX IS ONE ITEM FROM THE PATTERN.  THY IS THE CORRESPONDING ITEM FROM THE CANDIDATE.
@@ -761,13 +792,10 @@
             :else (ERR nil))))
 
 (defn- thcheck [predicates x]
-    (or (nil? predicates)
-        (= x 'thunassigned)
-        (ERRSET (dorun (map #(or (% x) (ERR nil)) predicates)))))
+    (or (nil? predicates) (= x 'thunassigned) ((apply every-pred predicates) x)))
 
 (defn- thunion [l1 l2]
-    (dorun (map #(when-not (memq % l2) (SETQ l2 (cons % l2))) l1))
-    l2)
+    (reduce (fn [a x] (if (memq x a) a (cons x a))) l2 l1))
 
 (defn- thmatch1 [thx thy]
     ;; THX IS THE PATTERN TO BE MATCHED.  THY IS THE POSSIBLE CANDIDATE.
@@ -1079,19 +1107,6 @@
                             (RPLACA (cdar *tree*) (cons nil x))
                             (thprogt))))))))
 
-(defn- thtae [a thx type]
-    (cond (term? a) nil
-        (= (car a) :thuse)
-            (doall (map (lambda [x] (set! *thxx* (getprop x :theorem))
-                    (if (and *thxx* (= (car *thxx*) type))
-                        (list 'thapply x (car thx))
-                        (bug! 'thtae "BAD THEOREM" x)))
-                (cdr a)))
-        (= (car a) :thtbf)
-            (doall (mapcat #(when (apply (cadr a) %) (list (list 'thapply % (car thx))))
-                (if *thy1* *thy* (do (set! *thy1* true) (set! *thy* (thmatchlist (car thx) (keyword type)))))))
-        :else (bug! 'thtae "UNCLEAR RECOMMENDATION" a)))
-
 (defq- thtag [& a]
     (when (car a)
         (thpush! *tree* ['thtag (car a)])))
@@ -1122,40 +1137,13 @@
                                     (when' (let [_ (and ((cadr x) (caaddr x)) (thapply1 t w (cadr z)))] (RPLACA (cddr x) (cdaddr x)) _) => (recur)
                                         true)))))))))
 
-(defn- thtry [x a1]
-    ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
-    ;; SO WHENEVER WE FAIL BACK TO A THGOAL, WE GO TO THE NEXT "THING TO DO".
-    ;; X IS THE LIST OF RECOMMENDATIONS.
-    ;; ANY ATOMIC RECOMMENDATION IS IGNORED.  THIS IS USEFUL IN ERROR RECOVERY.
-    (when-not (term? x)
-        (condp = (car x)
-            ;; HAVE A THEOREM BASE FILTER.
-            :thtbf
-                ;; MAKE UP A LIST WHICH GIVES
-                ;; 1 - THE INDICATOR "THTBF"
-                ;; 2 - THE ACTUAL FILTER (THTRUE IS THE MOST COMMON)
-                ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
-                (do (when (not *thz1*) (set! *thz1* true) (set! *thz* (thmatchlist a1 :thconse)))
-                    (when *thz* [[:thtbf (cadr x) *thz*]]))
-            ;; DO THE SAME THING, ONLY FOR DATABASE FILTERS.
-            :thdbf
-                (do (when (not *thy1*) (set! *thy1* true) (set! *thy* (thmatchlist a1 :thassertion)))
-                    (when *thy* [[:thdbf (cadr x) *thy*]]))
-            ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE STATEMENTS,
-            ;; WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE.
-            :thuse
-                [[:thtbf 'thtrue (cdr x)]]
-            :thnum
-                [x]
-            (bug! 'thtry "UNCLEAR RECOMMENDATION" x))))
-
 (defn- thundof []
     (when' (caddar *tree*) => (thpop! *tree*)
-        (set! *thxx* (cddar *tree*))
-        (set! *thalist* (caadr *thxx*))
-        (RPLACA (cdr *thxx*) (cdadr *thxx*))
-        (set! *tree* (caar *thxx*))
-        (RPLACA *thxx* (cdar *thxx*)))
+        (let [xx (cddar *tree*)]
+            (set! *thalist* (caadr xx))
+            (RPLACA (cdr xx) (cdadr xx))
+            (set! *tree* (caar xx))
+            (RPLACA xx (cdar xx))))
     nil)
 
 (defn- thundot [] (thpop! *tree*) true)
@@ -1169,7 +1157,6 @@
 (defn- thv1 [x]
     ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
     ;; ($? X) RETURNS ERROR MESSAGE IF X UNBOUND OR UNASSIGNED.
-    (set! *thxx* x)
     (let [v (cadr (or (assq x *thalist*) (bug! 'thv1 "THUNBOUND" x)))]
         (if (= v 'thunassigned) (bug! 'thv1 "THUNASSIGNED" x) v)))
 
@@ -7547,7 +7534,7 @@
 (defn -main [& args]
     ;; LOAD '(PLNR SYSCOM MORPHO PROGMR GRAMAR DICTIO SMSPEC SMASS SMUTIL NEWANS BLOCKS DATA)
     (binding [*grasplist* nil *eventlist* '(EE)
-              *thtime* 0 *tree* nil *thxx* nil *thalist* '((nil nil)) *tholist* '((nil nil))
+              *thtime* 0 *tree* nil *thalist* '((nil nil)) *tholist* '((nil nil))
               *oops* nil
               *lastsentno* 0 *lastsent* nil *sentno* 1
               *sent* nil *punct* nil
