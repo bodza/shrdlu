@@ -2442,7 +2442,7 @@
 
 (defn- parse3 [rest' p]
     ;; PARSE3 IS CALLED TO PARSE JUST THE NEXT WORD IN THE SENTENCE.
-    (when' (not= *n* *cut*) => (do (m! 'CUT) nil)
+    (when' (not= *n* *cut*) => (do (m! "CUT") nil)
         (binding [*rest* rest' *re* nil]
             (let-when [nbb *n*
                   ? (when (nq 'B-SPECIAL)
@@ -2460,7 +2460,7 @@
                                             (let [[? f]
                                                     (cond (not (term? (car a))) [nil (cons (caar a) f)]
                                                         (or (= (car a) 'NULL) (memq (car a) (features *n*)) (memq (car a) ['COMPONENT 'BOTH])) [nil f]
-                                                        :else (do (m! (car a)) (set! *n* nbb) [:lose nil]))]
+                                                        :else (do (m! (str (car a))) (set! *n* nbb) [:lose nil]))]
                                                 (recur-if (and (not ?) (cdr a)) [f (cdr a)] => [? f])))
                                     (nextword? *n* (cadr a)) [nil nil]
                                     :else (do (set! *n* nbb) [:lose nil]))
@@ -2503,7 +2503,7 @@
     (loop [x *h*]
         (cond (apply isq x a) (loop [] (cond (= x *h*) *c* (pop*) (recur)))
             (cdr x) (recur (cdr x))
-            :else (do (m! 'POPTO) nil))))
+            :else (do (m! "POPTO") nil))))
 
 (defn- cq [feature] (memq feature *fe*))
 
@@ -2538,25 +2538,19 @@
 
 (defn- spread1 [e]
     (cond (term? e)
-            (list e (list 'when '*labeltrace* (list 'passing (quotify e))))
+            (list (quotify e) (list 'when '*labeltrace* (list 'passing (quotify e))))
+        (= (car e) 'quote)
+            (list (quotify (cadr e)) (list 'when '*labeltrace* (list 'passing (quotify (cadr e)))))
         (= (car e) '|)
             (let [predicate (cadr e) t1 (caddr e) t2 (cadddr e) t3 (caddddr e)
-                  go- #(if (term? %) (list 'GO %) (list 'GO ''FAIL (§ list 'm! (car %))))]
+                  go- #(if-not (string? %) (list 'GO %) (list 'GO ''FAIL (list 'm! %)))
+                  go-- (fn [t' t3] (if (and t3 (not= t' t3)) (list 'if '*nn* (go- t') (go- t3)) (go- t')))]
                 (list (cond
-                    (and t1 (nil? t2)) ;; T3 CAN BE EITHER THERE OR NOT
-                        (list 'when predicate (if t3 (list 'if '*nn* (go- t1) (go- t3)) (go- t1)))
-                    (and (nil? t1) t2 (nil? t3))
-                        (list 'when-not predicate (go- t2))
-                    (and (nil? t1) t2 t3)
-                        (list 'when-not predicate (list 'if '*nn* (go- t2) (go- t3)))
-                    (and t1 t2 (nil? t3))
-                        (list 'if predicate (go- t1) (go- t2))
-                    (and t1 t2 t3)
-                        (list 'if predicate (list 'if '*nn* (go- t1) (go- t3)) (go- t2))
-                    (and (nil? t1) (nil? t2) t3)
-                        (list 'when (list 'and predicate (list 'not '*nn*)) (go- t3))
-                    (and (nil? t1) (nil? t2) (nil? t3))
-                        (list 'I-AM-A-TAG))))
+                    (and t1 (nil? t2)) (list 'when predicate (go-- t1 t3))
+                    (and (nil? t1) t2) (list 'when-not predicate (go-- t2 t3))
+                    (and t1 t2) (list 'if predicate (go-- t1 t3) (go- t2))
+                    (and (nil? t1) (nil? t2) t3) (list 'when (list 'and predicate (list 'not '*nn*)) (go- t3))
+                    (and (nil? t1) (nil? t2) (nil? t3)) (bug! 'grammar "I-AM-A-TAG"))))
         :else (list e)))
 
 (defn- grammar [a]
@@ -2614,7 +2608,7 @@
                 (fq! 'DECLAR))
             'THERE
             nil
-            '(INIT))
+            "INIT")
 
     'THER2
         (and (nq 'PREP)
@@ -2638,7 +2632,7 @@
     ;; IT WAS NOT, AND EVERYTHING IS POPPED OFF (BY THE "INPOP" CODE).
 
     'INPOP
-        (| (move-pt 'C 'DLC) nil '(INPOP))                             ;; DOES ANYTHING REMAIN ON THE TREE?
+        (| (move-pt 'C 'DLC) nil "INPOP")                             ;; DOES ANYTHING REMAIN ON THE TREE?
 
     'BICUT
         (cut-back-one)                                              ;; "CUT-BACK-ONE" IS THE NORMAL BACKING UP MECHANISM
@@ -2654,7 +2648,7 @@
             'VG1
             nil)                                                    ;; SEE THE NOTE UNDER IMPERATIVES BELOW
         (fq! 'DECLAR)
-        (| (cq 'IMPER) '(IMPER) nil)
+        (| (cq 'IMPER) "IMPER" nil)
 
     ;; ###############################################################
     ;;         TRY TO PARSE A GRAMMATICLY ACCEPTABLE SUBJECT
@@ -2667,7 +2661,7 @@
     'SUBJ3                                                           ;; PREVIOUS BACKUPS IF THE FIRST WORD INDICATES
         (| (or (and (nextword? *n* 'TO)                                 ;; THE POSSIBILITY OF A RANK-SHIFTED CLAUSE
                     (parse 'CLAUSE 'RSNG 'TO 'SUBJ))                    ;; SERVING AS THE SUBJECT, THEN TRY TO PARSE ONE
-                (and (parse 'CLAUSE 'RSNG 'ING 'SUBJ)))                 ;; AS SUCH FEATURE "SUBJ" INSURES A CHECK THAT ANY
+                (parse 'CLAUSE 'RSNG 'ING 'SUBJ))                 ;; AS SUCH FEATURE "SUBJ" INSURES A CHECK THAT ANY
             'SUBREG                                                  ;; PRONOUNS FOUND ARE IN SUBJECTIVE CASE.
             nil
             'SUBJ1)
@@ -2704,7 +2698,7 @@
     'HEAD
         (| (or (move-ptw 'N 'PW '(NOUN)) (move-ptw 'N 'PW '(PRON)))       ;; COME HERE (ONLY?) TO TRY TIME PHRASE AS SUBJECT
             nil
-            '(HEAD))                                                 ;; MOVE PTW TO THE CLOSEST NOUN THEN SET THE CUT
+            "HEAD")                                                 ;; MOVE PTW TO THE CLOSEST NOUN THEN SET THE CUT
 
     'SUB2
         (| (pop*) nil 'FAIL)                                          ;; POINT TO IT AND ATTEMPT A NEW PARSING IF
@@ -2733,7 +2727,7 @@
                         (GO 'VBL))))
 
     'SUBJ11
-        (| (cut-back-one) 'SUBJ3 '(SUBJ11))                           ;; IF WE CAN'T CUT BACK ANY FURTHER, THEN FAIL
+        (| (cut-back-one) 'SUBJ3 "SUBJ11")                           ;; IF WE CAN'T CUT BACK ANY FURTHER, THEN FAIL
 
     'SUBREG
         (setr *c* :subject *h*)                                         ;; THIS SETS THE "SUBJECT" REGISTER OF THE CURRENT
@@ -2750,7 +2744,7 @@
     ;; ONCE ALL THE OBJECTS HAVE BEEN PARSED, THE PROGRAM JUMPS TO THE TAG "ONT", WHERE A SEMANTICS PROGRAM
     ;; IS CALLED TO MAKE SENSE OUT OF EVERYTHING.
 
-    'VB  (| (parse 'ADJG 'ADV 'VBAD) 'VB nil '(VB-ADJG))                  ;; PARSE ANY INITIAL MODIFIERS
+    'VB  (| (parse 'ADJG 'ADV 'VBAD) 'VB nil "VB-ADJG")                  ;; PARSE ANY INITIAL MODIFIERS
         (rq 'VBLOK)                                                  ;; ?????
 
     'VBL (| (parse 'VG) 'VBREG nil)                                    ;; ONCE THE VERB GROUP IS PARSED, SET THE REGISTER
@@ -2785,7 +2779,7 @@
     ;; ###############################################################
 
     'VG1 (cut *end*)                                                   ;; RESET THE CUTPOINT IN CASE ANYONE CHANGED IT
-        (| (isq *mvb* 'BE) 'BE nil '(BE))                                ;; JUMP TO "BE" PROCESSOR
+        (| (isq *mvb* 'BE) 'BE nil "BE")                                ;; JUMP TO "BE" PROCESSOR
 
         ;; There used to be a check here for a quoting MVB with a quoted subject.
         ;; It was deleted because it went to a tag that no longer exists and doesn't seem to have any modern analogs.
@@ -2958,7 +2952,7 @@
     'ONT
         (| (cq 'PASV) 'PONT nil)
     'ONT1
-        (| (smcl1) nil '(SMCL1))
+        (| (smcl1) nil "SMCL1")
 
         (| (not (cq 'REL-NOT-FOUND)) 'TONT nil 'RETSM)                 ;; IF THE FEATURE "REL-NOT-FOUND" IS PRESENT AT
                                                                     ;; THIS POINT, IT INDICATES THAT WE ARE IN A
@@ -2972,9 +2966,9 @@
         (GO 'TONT)
 
     'PREPSHORT
-        (| (and (nq 'PREP) (parse 'PREPG)) nil '(ONT-SHORT-PREP))
-        (| (smrelate *h*) nil '(ONTß))
-        (| (cq 'REL-NOT-FOUND) 'PREPSHORT 'TONT '(ONT-NOT-FOUND))       ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
+        (| (and (nq 'PREP) (parse 'PREPG)) nil "ONT-SHORT-PREP")
+        (| (smrelate *h*) nil "ONTß")
+        (| (cq 'REL-NOT-FOUND) 'PREPSHORT 'TONT "ONT-NOT-FOUND")       ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
                                                                     ;; AS ITS OBJECT. THE FEATURE REL-NOT-FOUND WILL
                                                                     ;; BE REMOVED IF THE PREPG DISCOVERS IT CAN'T FIND
 
@@ -3034,12 +3028,12 @@
     'THERE
         (fq! 'THERE)
         (cut *end*)
-        (| (parse 'ADV 'TIMW) nil nil '(THERE))                        ;; "THERE IS A BIRD.."
-        (| (and (parse 'VG) (isq *mvb* 'BE)) 'THEF 'NOTHE '(THERE))
+        (| (parse 'ADV 'TIMW) nil nil "THERE")                        ;; "THERE IS A BIRD.."
+        (| (and (parse 'VG) (isq *mvb* 'BE)) 'THEF 'NOTHE "THERE")
 
     'THERQ
         (| (isq (move-pt 'H 'PV '(QAUX)) 'BE) 'THERQ2 nil)               ;; IF THIS FAILS, THE THERE IS CONSIDERED TO BE
-        (| (and (nq 'TIMW) (parse 'ADV 'TIMW)) nil nil '(THEREQ))
+        (| (and (nq 'TIMW) (parse 'ADV 'TIMW)) nil nil "THEREQ")
         (| (and (parse 'VG) (isq *mvb* 'BE)) 'THERQ2 nil)
         (rq 'POLR2)
         (GO 'NOTHE)
@@ -3050,7 +3044,7 @@
         (| (cq 'POLAR) 'THEF 'ONT)
 
     'THEF
-        (| (and (nq 'ADV) (parse 'ADV 'TIMW)) nil nil '(THEF))
+        (| (and (nq 'ADV) (parse 'ADV 'TIMW)) nil nil "THEF")
         (| (parse 'NG 'SUBJ 'SUBJT) nil 'THERREL)
         (fq! 'THERE)
         (setr *c* :subject *h*)
@@ -3083,7 +3077,7 @@
         (GO 'VG1)
 
     'IMPOP
-        (| (pop* nil) 'IMPE '(IMPOP))
+        (| (pop* nil) 'IMPE "IMPOP")
 
     ;; ####################################################################
     ;;                             QUESTIONS
@@ -3092,7 +3086,7 @@
     'QUEST ;; PREP QUESTION
         (fq! 'QUEST)
         (| (nq 'PREP) nil 'NGQUES)
-        (| (parse 'PREPG) nil 'NGQUES '(PREPQ-INCOMPLETE))             ;; "ON WHICH BLOCK DID YOU PUT IT?"
+        (| (parse 'PREPG) nil 'NGQUES "PREPQ-INCOMPLETE")             ;; "ON WHICH BLOCK DID YOU PUT IT?"
         (| (isq *h* 'QUEST) nil 'QUEST)                                 ;; IF THE PREPG ISN'T THE QUESTION, TRY AGAIN "ON
         (setr *c* :qadj *h*)                                            ;; THAT DAY, WHERE DID YOU GO?" -- MAYBE WE COULD
                                                                     ;; MAKE USE OF THE COMMA CLUE. PREPQ IS HANDLED
@@ -3179,7 +3173,7 @@
         (GO 'QUEST2)
 
     'QCHOP
-        (| (popto 'CLAUSE 'BOUND) 'BICUT '(QCHOP))
+        (| (popto 'CLAUSE 'BOUND) 'BICUT "QCHOP")
 
     ;; ##############################################################################
     ;;                              SECONDARY CLAUSES
@@ -3201,10 +3195,10 @@
             (cq 'RSQ) (GO 'RSQ)
             (cq 'REPORT) (GO 'REPORT)
             (cq 'ING) (GO 'ING)
-            :else (GO 'FAIL (m! 'RSNG-TYPE)))
+            :else (GO 'FAIL (m! "RSNG-TYPE")))
 
     'BOUND ;; BINDER
-        (| (parse 'BINDER) nil '(BOUND) '(BINDER))
+        (| (parse 'BINDER) nil "BOUND" "BINDER")
         (set! *locationmarker* *n*)                                     ;; DO THIS TO ACT LIKE MAJOR DECLARATIVE CLAUSE
         (GO 'FDEC)                                                   ;; "FDEC" IS NEAR THE TOP OF THE MAJOR CLAUSE
 
@@ -3217,9 +3211,10 @@
 
     'RSQ2
         (cond (parse 'VG 'EN 'PASV)                                   ;; HAVING DETERMINED THAT THE VERB IS PASSIVE IF
-                (do (or (isq *mvb* 'TRANS) (GO 'FAIL))                      ;; IT WERE NOT ALSO TRANSITIVE, THEN WE WOULDN'T
-                    (setr *c* :subject (getr *c* :relhead))                 ;; KNOW WHAT TO DO WITH WHATEVER WAS PARSED AS A
-                    (GO 'VG1))                                           ;; SUBJECT - SO WE FAIL
+                (if (isq *mvb* 'TRANS)                              ;; IT WERE NOT ALSO TRANSITIVE, THEN WE WOULDN'T KNOW
+                    (do (setr *c* :subject (getr *c* :relhead))         ;; WHAT TO DO WITH WHATEVER WAS PARSED AS A SUBJECT, SO WE FAIL
+                        (GO 'VG1))
+                    (GO 'FAIL))
             (parse 'VG 'ING)
                 (do (setr *c* :subject (getr *c* :relhead))
                     (GO 'VG1))
@@ -3248,15 +3243,15 @@
         (setr *c* :subject *h*)
 
     'TO1
-        (| (parse 'VG 'TO) 'VG1 '(TO))
+        (| (parse 'VG 'TO) 'VG1 "TO")
 
     'ING
         (| (move-ptw 'N 'NW '(ING)) nil 'FAIL)
         (| (or (nq 'ING) (cq 'OBJ2) (and (parse 'NG 'SUBJ 'INGSUBJ) (setr *c* :subject *h*) (fq! 'SUBING) (rq 'ING)))
             nil
             nil
-            '(ING))
-        (| (parse 'VG 'ING) 'VG1 '(ING))
+            "ING")
+        (| (parse 'VG 'ING) 'VG1 "ING")
 
     'REPORT
         (and (nextword? *n* 'THAT) (parse nil 'THAT) (fq! 'THAT))
@@ -3292,7 +3287,7 @@
             (nq 'NOUN) (GO 'NOUN)
             (nq 'TIMORD) (GO 'TIMORD)
             (and (cq 'COMPONENT) (isq (move-pt 'PC) 'QUEST)) (GO 'QUEST)
-            :else (GO 'FAIL (m! 'START)))
+            :else (GO 'FAIL (m! "START")))
 
     ;; #######################################################
     ;; IF YOU CAN PARSE ANY OF THESE SMALL THINGS, YOU'RE DONE
@@ -3316,12 +3311,12 @@
         (| (parse 'PRON 'POSS) 'POSS nil 'RED2)                         ;; IS IT POSSESSIVE?
 
     'PRON2
-        (| (cq 'NPRON) '(NPRON) nil)
+        (| (cq 'NPRON) "NPRON" nil)
         (| (or (and (cq 'SUBJ) (parse 'PRON 'SUBJ))                    ;; CHECK SUBJECTIVE OR OBJECTIVE CASE
                 (and (or (cq 'OBJ) (cq 'TOSUBJ) (cq 'INGSUBJ)) (parse 'PRON 'OBJ))
                 (cq 'INGSUBJ))
             nil
-            '(PRON))
+            "PRON")
         (fq! 'PRONG 'DEF)
 
     'PRON3
@@ -3356,15 +3351,15 @@
 
     'AS  (| (and (parse nil 'AS) (parse 'NUMD 'NUMDAS) *nn* (parse nil 'AS))
             'NUMD2
-            '(AS)
-            '(AS))
+            "AS"
+            "AS")
 
     ;; -------------- AT + NUM ---------------
 
     'AT
-        (| (and (parse nil 'AT) (parse 'NUMD 'NUMDAT)) nil '(AT) '(AT))
+        (| (and (parse nil 'AT) (parse 'NUMD 'NUMDAT)) nil "AT" "AT")
     'NUMD2
-        (| (and (parse 'NUM) (fq! 'NUM 'NUMD)) 'DET1 '(NUMD2) 'INCOM)
+        (| (and (parse 'NUM) (fq! 'NUM 'NUMD)) 'DET1 "NUMD2" 'INCOM)
 
     ;; -------------- OTHER NUMBER WORDS ---------------
 
@@ -3372,13 +3367,13 @@
         (| (parse 'NUMD 'NUMDAN) nil 'ND3 'INCOM)
         (| (parse nil 'THAN) 'NUMD2 'INCOM 'POPCOM)
     'ND3
-        (| (parse 'NUMD 'NUMDALONE) 'NUMD2 '(NUMD) '(NUMD))
+        (| (parse 'NUMD 'NUMDALONE) 'NUMD2 "NUMD" "NUMD")
 
     ;; -------------- TIME WORDS ---------------
 
     'TIME
         (| (and (nq 'TIME) (parse 'NOUN 'TIME)) 'RETSM nil)
-        (| (move-ptw 'N 'NW '(TIM1)) 'LOOK '(TIME))
+        (| (move-ptw 'N 'NW '(TIM1)) 'LOOK "TIME")
 
     'TIMORD
         (| (parse 'ORD 'TIMORD) nil 'FAIL)
@@ -3398,7 +3393,7 @@
         (move-pt 'H)                                                 ;; SHIFT PTR TO THE DETERMINER
         (| (trnsf 'NPL 'NS 'PART 'DEF 'INDEF 'ANY 'NEG 'QNTFR)
             'IND
-            '(BUG)
+            "BUG"
             'INCOM)
 
     ;; -------------- INDETERMINATE ---------------
@@ -3407,7 +3402,7 @@
         (| (and (= (word (firstword *h*)) 'ALL) (= (word *n*) 'THE) (parse 'DET) (fq! 'DEF))
             'NUM
             nil
-            '(THE))
+            "THE")
         (| (and (isq *h* 'QNTFR) (fq! 'QNTFR)) 'QNUM nil)
 
     ;; -------------- ORDINALS AND NUMBERS ---------------
@@ -3429,7 +3424,7 @@
         (| (cq 'DET) nil 'DET1)
         (| (cond (and (isq *h* 'NS) (cq 'NS)) (rq 'NPL 'PART) (cq 'NPL) (rq 'NS 'PART))
             'ADJ
-            '(NUM)
+            "NUM"
             'INCOM)
 
     'DET1
@@ -3445,7 +3440,7 @@
         (| (and (parse 'NUM) (fq! 'NUM)) nil 'OF)
         (| (cond (== (semantics *h*) 1) (and (cq 'NS) (rq 'NPL)) (cq 'NPL) (rq 'NS)) ;; EXPLICIT CHECT FOR THE VALUE 1
             nil
-            '(NUMD)
+            "NUMD"
             'INCOM)
         (| (= (word (firstword *h*)) 'NO) 'ADJ nil)                          ;; CHECKS FOR WORD "NO"
 
@@ -3564,9 +3559,9 @@
     ;; CHECK FOR DISGUISED RSQ CLAUSES BY READING THE FAILURE MESSAGES SENT UP FROM PREPG.
 
     'DISGRSQ
-        (| (= (car *mes*) 'PREP-WHICH) nil 'RSQ)
+        (| (= (car *mes*) "PREP-WHICH") nil 'RSQ)
         (set! *mes* (cdr *mes*))
-        (| (parse 'CLAUSE 'RSQ 'PREPREL) 'PREPNG '(RSQ-PREPREL) 'RETSM)
+        (| (parse 'CLAUSE 'RSQ 'PREPREL) 'PREPNG "RSQ-PREPREL" 'RETSM)
 
     ;; -------------- ANY OTHER RSQ ---------------
 
@@ -3590,7 +3585,7 @@
     'RED1
         (pop*)
     'RED2
-        (cond (nil? *h*) (GO 'FAIL (m! 'NO))
+        (cond (nil? *h*) (GO 'FAIL (m! "NO"))
            (isq *h* 'NUMBER) (GO 'INCOM)
            (and (isq *h* 'POSS) (or (isq *h* 'PRON) (and (move-pt 'H 'DLC) (isq *pt* 'PRON)))) (do (pop*) (GO 'PRON2))
            (and (nil? (cdr *h*)) (cq 'DEFPOSS)) (GO 'POSSDEF)
@@ -3631,7 +3626,7 @@
         ;; IF POSSESSIVE, ALL PREVIOUS MODIFIERS MODIFY THE POSSESSIVE NOUN, NOT THE NG HEAD
         (set! *h* (buildnode (reverse (cons 'POSS (setdif *fe* '(COMPONENT)))) *nb* *n* *h* *sm*))
         (set! *backref* (concat *h* (cdr *backref*)))
-        (| (setr *c* :features (set! *fe* (concat ['POSES 'DET 'DEF 'NS 'NPL] (reverse *rest*)))) nil '(BUG))
+        (| (setr *c* :features (set! *fe* (concat ['POSES 'DET 'DEF 'NS 'NPL] (reverse *rest*)))) nil "BUG")
         (| (or (not *nn*) (isq *h* 'DEFPOSS)) nil 'ORD)
 
     'POSSDEF ;; THE PLACEMENT OF THIS TAG IS A GUESS. THE ORIGINAL IS LOST, ASSUMING THAT IT EVER EXISTED
@@ -3670,7 +3665,7 @@
     ;; -------------- YOU PROBABLY GOOFED, CUT AND TRY AGAIN. --------------
 
     'TRYA
-        (| (isq *h* 'NOUN) nil '(TRYA))
+        (| (isq *h* 'NOUN) nil "TRYA")
         (pop*)
         (cut *n*)
 
@@ -3696,13 +3691,13 @@
     ;; -------------- DISPATCH TABLE FOR EXAMINEING THE FIRST WORD ---------------
 
     'NEW                                                             ;; PARSE THE FIRST WORD WITH APPROPRIATE FEATURES
-        (cond (not (nq 'VB)) (GO 'FAIL (m! 'VB))                     ;; AND JUMP TO CODE THAT KNOWS WHAT SHOULD BE
+        (cond (not (nq 'VB)) (GO 'FAIL (m! "VB"))                     ;; AND JUMP TO CODE THAT KNOWS WHAT SHOULD BE
             (and (nq 'DO) (parse 'VB 'AUX 'DO)) (GO 'DO)               ;; LOOKED FOR NEXT IN EACH CASE
             (and (nq 'MODAL) (parse 'VB 'AUX 'MODAL)) (GO 'MODAL)
             (and (nq 'WILL) (parse 'VB 'AUX 'WILL)) (GO 'WILL)
             (and (nq 'BE) (parse 'VB 'AUX 'BE)) (GO 'BE)
             (and (nq 'HAVE) (parse 'VB 'AUX 'HAVE)) (GO 'HAVE)
-            (not (parse 'VB '(MVB))) (GO 'FAIL (m! 'VB)))
+            (not (parse 'VB '(MVB))) (GO 'FAIL (m! "VB")))
 
     'SIMPLE
         (move-pt 'C 'DLC)                                             ;; MOVE PT DOWN FROM THE CURRENT NODE BEING PARSED (VG) AND ACROSS TO THE MOST RECENTLY PARSED
@@ -3712,8 +3707,8 @@
 
     'TO
         (fq! 'NAGR)                                                   ;; "NAGR" MARKS THAT SUBJECT AND MAIN VERB NEED
-        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))            ;; NOT AGREE IN NUMBER AND PERSON AND INSURES THAT
-        (| (or (parse nil 'TO) (cq 'TODEL)) nil '(TO) '(TO))            ;; THE AGREEMENT CHECKER AT THE END OF THE PROGRAM
+        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")            ;; NOT AGREE IN NUMBER AND PERSON AND INSURES THAT
+        (| (or (parse nil 'TO) (cq 'TODEL)) nil "TO" "TO")            ;; THE AGREEMENT CHECKER AT THE END OF THE PROGRAM
                                                                     ;; ("REV") WILL NOT BE APPLIED "TODEL" MUST BE
         (set! *tense* '(INFINITIVE))                                  ;; GIVEN AS AN INITIAL FEATURE OR ELSE THIS
         (GO 'MODAL2)                                                 ;; STATEMENT FAILS TENSE IS USED TO HOLD THE TENSE
@@ -3721,13 +3716,13 @@
 
     'EN
         (fq! 'NAGR)
-        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))
+        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")
         (set! *tense* '(PAST))
         (| (and (parse 'VB 'EN '(MVB)) (setmvb *h*) (fq! 'PASV)) 'RETSM 'FAIL) ;; DONE AT "EN2"
 
     'ING
         (fq! 'NAGR)
-        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))
+        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")
 
     'INGADV
         (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'INGADV nil)
@@ -3735,10 +3730,10 @@
         (GO 'BE2)
 
     'IMPER
-        (| (and (parse 'VB 'DO 'NEG 'INF) (fq! 'NEG)) nil nil '(DONT))
+        (| (and (parse 'VB 'DO 'NEG 'INF) (fq! 'NEG)) nil nil "DONT")
         (| (and (parse 'VB '(MVB) 'INF) (setmvb *h*) (smvg))
             'RETURN
-            '(IMPER))                                                ;; MVB IS BOUND BY CLAUSE
+            "IMPER")                                                ;; MVB IS BOUND BY CLAUSE
 
     'POLR2                                                           ;; THE CLAUSE COULD ONLY BE MARKED AS "POLR2"
         (or (set! *pt* (getr (move-pt 'C 'U) :qaux))                    ;; ("DID THE...?") IF AN AUX OF SOME VERIETY HAD
@@ -3764,10 +3759,10 @@
                                                                     ;; REMAIN BEFORE THE CUT POINT, AND TO THE SECOND
                                                                     ;; TAG IF THERE ARE NONE
 
-    'DO2 (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))
+    'DO2 (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")
 
     'ADV2
-        (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'ADV2 nil '(ADV))
+        (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'ADV2 nil "ADV")
         (| (parse 'VB '(MVB) 'INF) nil 'MVB)                            ;; "MVB" ARRANGES FOR A CHECK TO INSURE THAT THE
         (GO 'REV)                                                    ;; VERB BEING PARSED CAN BE A MAIN VERB
 
@@ -3777,10 +3772,10 @@
         (if *nn* (GO 'MODAL2) (GO 'INCOMP))
 
     'MODAL2
-        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))
+        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")
 
     'ADV3
-        (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'ADV3 nil '(ADV))
+        (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'ADV3 nil "ADV")
         (cond (parse 'VB 'BE 'INF) (if *nn* (GO 'BE2) (GO 'MVB))                  ;; DISPATCH TABLE FOR THE NEXT VERB
             (parse 'VB 'HAVE 'INF) (if *nn* (GO 'HAV2) (GO 'MVB))
             (parse 'VB 'INF '(MVB)) (GO 'REV)
@@ -3799,10 +3794,10 @@
         (if *nn* (GO 'BE2) (GO 'MVB))
 
     'BE2
-        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))
+        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")
 
     'ADV4
-        (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'ADV4 nil '(ADV))
+        (| (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) 'ADV4 nil "ADV")
         (cond (and (nextword? *n* 'GOING) (parse 'VB)) (GO 'GOING)      ;; "...WILL BE GOING TO..."
             (and (nq 'BE) (parse 'VB 'ING))                           ;; "BE BEING"
                 (do (set! *tense* (cons 'PRESENT *tense*))
@@ -3810,7 +3805,7 @@
             (and (nq 'ING) (parse 'VB 'ING '(MVB)))                    ;; "BE X'ING"
                 (do (set! *tense* (cons 'PRESENT *tense*))
                     (GO 'REV))
-            (cq 'ING) (GO 'FAIL (m! 'ING)))                          ;; IF TRUE, IT IMPLYS THAT WE STARTED OFF WITH
+            (cq 'ING) (GO 'FAIL (m! "ING")))                          ;; IF TRUE, IT IMPLYS THAT WE STARTED OFF WITH
                                                                     ;; "BEING" - AS IN "BEING EATEN CAN BE UNPLEASANT"
                                                                     ;; - OTHERWISE IT IMPLYS THAT WE HAVE SOMETHING
                                                                     ;; OTHER THAN A VG ON OUR HANDS AND SHOULD FAIL TO
@@ -3842,7 +3837,7 @@
 
     'MVBE
         (| (isq (move-pt 'H 'PV '(VB)) 'AUX) nil 'MVB)                   ;; MOVE TO EARLIER AND EARLIER DAUGHTERS  UNTIL
-        (| (isq *pt* 'BE) nil '(MVBE))                                  ;; YOU REACH A VERB WHICH IS A "QAUX" - IF THERE
+        (| (isq *pt* 'BE) nil "MVBE")                                  ;; YOU REACH A VERB WHICH IS A "QAUX" - IF THERE
                                                                     ;; ARE NONE THEN CONTINUE AT "MVB" IF WHAT YOU ARE
                                                                     ;; POINTING TO (THE "QAUX") IS NOT A FORM OF "BE",
         (setmvb *pt*)                                                 ;; THEN FAIL BECAUSE OF THE UNGRAMMATICALITY OF THE
@@ -3856,10 +3851,10 @@
         (if *nn* (GO 'HAV2) (GO 'MVB))                                           ;; HAV2 WILL CATCH "HAVE HAD", OR "HAVE BEEN ..."
 
     'HAV2
-        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil '(NOT))            ;; OR "HAVE KISSED"
+        (| (and (parse nil 'NOT) (fq! 'NEG)) nil nil "NOT")            ;; OR "HAVE KISSED"
 
     'ADV5
-        (| (parse 'ADV) 'ADV5 nil '(ADV))
+        (| (parse 'ADV) 'ADV5 nil "ADV")
         (| (parse 'VB 'BE 'EN) nil 'HAV3)
         (set! *tense* (cons 'PAST *tense*))                             ;; "HAVE BEEN ..."
         (if *nn* (GO 'BE2) (GO 'MVB))
@@ -3876,7 +3871,7 @@
     'MVB
         (| (= (features *mvb*) (features *h*)) 'MVB2 nil)
         (pop* 'VB)                                                    ;; POP OFF EVERY THING UNTIL YOU REACH A VERB
-        (| (parse 'VB '(MVB)) nil '(MVB))
+        (| (parse 'VB '(MVB)) nil "MVB")
 
     'MVB2
         (GO 'REV)
@@ -3918,12 +3913,12 @@
             (and (= *tense* '(PAST-PRESENT))                      ;; NOTES WHETHER VERB AND SUBJECT WERE FOUND TO
                 (set! *tense* '(PAST))))                              ;; AGREE AND FAILS UNLESS A SPECIAL CONDITION
             nil                                                     ;; EXISTS AS NOTED DIRECTLY ABOVE
-            '(NAGR))
+            "NAGR")
 
     'NAUX
         (setmvb (or (move-pt 'H 'PV '(MVB)) *mvb*))
         (| (and (cq 'NAUX) (isq (move-pt 'H 'PV '(VB)) 'AUX) (not (move-pt 'PV 'PV '(VB))))
-            '(NAUX)
+            "NAUX"
             'RETSM)                                                  ;; THE VB MAY HAVE THE FEATURE "NAUX" WHICH
                                                                     ;; INDICATES THAT IT CAN NEVER SERVE AS THE
                                                                     ;; AUXILLIARY OF ANOTHER VERB. IF THE PRESENT
@@ -3942,17 +3937,17 @@
     'ENTERING-PREPG
 
     'ADV
-        (| (and (nq 'PREPADV) (parse 'ADV 'PREPADV)) 'ADV nil '(PREPADV)) ;; CHECK FOR ANY INITIAL MODIFING ADVERBS
+        (| (and (nq 'PREPADV) (parse 'ADV 'PREPADV)) 'ADV nil "PREPADV") ;; CHECK FOR ANY INITIAL MODIFING ADVERBS
         (| (cond (cq 'AGENT) (nextword? *n* 'BY)                       ;; EXAMINE THE INITIAL FEATURES OF THE PREPG TO
             (cq 'LOC) (nq 'PLACE)                                   ;; CHECK FOR CONSTRAINTS ON THE PREPOSITION
             (cq 'Q) (not (nq 'MOTOR))
             :else true)
             nil
-            '(PREP))                                                 ;; FAIL IF THE CONSTRAINTS AREN'T MET
+            "PREP")                                                 ;; FAIL IF THE CONSTRAINTS AREN'T MET
 
         ;; PARSE THE PREPOSITION
 
-        (| (parse 'PREP) nil '(PREP))
+        (| (parse 'PREP) nil "PREP")
         (move-pt 'H)
         (trnsf 'PLACE 'TIME)                                          ;; THIS IS NOT EXACTLY RIGHT, SINCE "ON WHAT DAY" IS NOT "PLACE"
 
@@ -3970,7 +3965,7 @@
                         (parse 'PREP2)))
             (set! *tmp* (buildnode (features *tmp*) *nb* *n* 'WORD (semantics *tmp*)))        ;; CREATE NODE FOR THE COMPOUND WORD
             (setr *tmp* :parent *c*))
-        (| (isq *h* 'NEED2) '(NEED2) nil)                               ;; FAIL IF LAST PARSED NEEDS ANOTHER WORD
+        (| (isq *h* 'NEED2) "NEED2" nil)                               ;; FAIL IF LAST PARSED NEEDS ANOTHER WORD
 
                                                                     ;; GIVE IT A PARENT
         (setr *c* :head *tmp*)                                           ;; SET THE REGESTER "PREP" TO THE CONSTITUENT JUST
@@ -3992,7 +3987,7 @@
                                                                     ;; CERTAIN RESTRICTIONS PLACED ON THE POSSIBLE
                                                                     ;; NOUN GROUPS THAT IT CAN TAKE - HENCE THE
                                                                     ;; SPECIAL CALL TO PARSE AS ABOVE, IF THE PREPG IS
-        (| (parse 'NG 'QUEST 'OBJ) 'OBJR '(PREPQUEST))                   ;; MARKED WITH THE FEATURE "QUEST" (INDICATING
+        (| (parse 'NG 'QUEST 'OBJ) 'OBJR "PREPQUEST")                   ;; MARKED WITH THE FEATURE "QUEST" (INDICATING
         (| (and (cq 'OF) (parse 'NG 'OFOBJ)) 'OBJR nil)                 ;; THAT IT SHOULD CONTAIN THE QUESTION ELEMENT OF
 
     'NG
@@ -4000,7 +3995,7 @@
 
     'REL
         (| (nextword? *n* 'WHICH) nil 'REST)                             ;; NOUN GROUP - NO RESTRICTIONS
-        (| (isq (move-pt 'U) 'CLAUSE) nil '(PREP-WHICH))               ;; IF THE NEXT WORD IS A RELWORD, SUCH AS "WHICH"
+        (| (isq (move-pt 'U) 'CLAUSE) nil "PREP-WHICH")               ;; IF THE NEXT WORD IS A RELWORD, SUCH AS "WHICH"
                                                                     ;; OR "WHOM", THEN A FAIRLY STRICT SET OF
                                                                     ;; CONSTRAINTS APPLY. THE PREPG IS REQUIRED TO BE
                                                                     ;; WITHIN A RANK-SHIFTED-QUALIFIER CLAUSE (RSQ)
@@ -4044,7 +4039,7 @@
         (GO 'RETT)
 
     'SHORT
-        (| (meet *fe* ['NOSHORT 'Q]) '(SHORT) nil)
+        (| (meet *fe* ['NOSHORT 'Q]) "SHORT" nil)
         (or (isq (move-pt 'C 'U) 'REL-NOT-FOUND)
             (isq (getr *pt* :question-element) 'QADJ)
             (GO 'FAIL))
@@ -4092,8 +4087,8 @@
                                                                     ;; ADJG'S HEAD ADJECTIVE
 
     'DISP
-        (| (and (nq 'AS) (parse nil 'AS)) 'AS nil '(AS))
-        (| (and (nq 'AS) (parse nil 'AS)) 'AS nil '(AS))
+        (| (and (nq 'AS) (parse nil 'AS)) 'AS nil "AS")
+        (| (and (nq 'AS) (parse nil 'AS)) 'AS nil "AS")
         (| (nextword? *n* 'HOW) 'HOW 'ADV)
 
     ;; --------------- HOW + ADJG ----------------
@@ -4111,7 +4106,7 @@
     'ADJ
         (| (if (cq 'ADV) (parse 'ADV 'VBAD) (parse 'ADJ))
             nil
-            '(ADJ))                                                  ;; IF THE CUT POINT WAS REACHED THEN NO MORE
+            "ADJ")                                                  ;; IF THE CUT POINT WAS REACHED THEN NO MORE
         (| (setr *c* :head *h*) nil nil 'RETSM)                          ;; PROCESSING (SUCH AS COMPAR BELOW) IS POSSIBLE.
 
     ;; -------------------------------------------
@@ -4129,7 +4124,7 @@
 
     'THAN
         (when-not *nn* (GO 'RETSM))
-        (| (parse nil 'THAN) nil 'RETSM '(THAN))
+        (| (parse nil 'THAN) nil 'RETSM "THAN")
         (rq 'THANNEED)                                               ;; THE FEATURE "THANNEEED" MARKS THAT THE WORD
         (fq! 'THAN)                                                   ;; "THAN" IS EXPLICITLY  REQUIRED IN THE PHRASE.
         (GO 'SUBJ)
@@ -4137,14 +4132,14 @@
     'AS
         (fq! 'AS)
         (rq 'THANNEED)
-        (| (and (parse 'ADJ) (setr *c* :head *h*)) nil '(ADJ) 'RETSM)
-        (| (parse nil 'AS) 'SUBJ 'RETSM '(AS))
+        (| (and (parse 'ADJ) (setr *c* :head *h*)) nil "ADJ" 'RETSM)
+        (| (parse nil 'AS) 'SUBJ 'RETSM "AS")
 
     ;; FIND A SUBJECT FOR THE COMPARATIVE
     ;; IE.  "AS BIG AS ..." , "BIGGER THAN ..."
 
     'SUBJ
-        (| (parse 'NG 'SUBJ 'COMPAR) nil '(THAN))
+        (| (parse 'NG 'SUBJ 'COMPAR) nil "THAN")
         (| (setr *c* :obj1 *h*) nil nil 'RETSM)
         (| (and (one-word-left *nb*) (parse 'VB 'AUX)) nil 'RETSM)
         (| (§ CHECK-AGREEMENT *h* (cdr *h*))                              ;; CHECKS FOR AGREEMENT IN NUMBER AND PERSON
@@ -4172,8 +4167,8 @@
     ;; FINAL CHECKS ON COMPARATIVES (SEMANTIC AND OTHERWISE)
 
     'RETSM
-        (| (cq 'THANNEED) '(THANNEED) nil)                            ;; IF ONE OF THE WORDS PARSED REQUIRED A "THAN",
-        (| (smadjg-prepg) 'RETURN '(SMADJ)))                 ;; FAIL IF ONE WAS NOT FOUND.
+        (| (cq 'THANNEED) "THANNEED" nil)                            ;; IF ONE OF THE WORDS PARSED REQUIRED A "THAN",
+        (| (smadjg-prepg) 'RETURN "SMADJ"))                 ;; FAIL IF ONE WAS NOT FOUND.
 
 (defn- conjo []
     (binding [*end* *cut*]
@@ -4252,7 +4247,7 @@
                 (not (or (isq *h* 'PRONG) (isq (cdr *h*) 'PRONG)))
                 (or (nextword? *n* '\,) (nil? *n*)))
             nil
-            '(CONJOINß HOPELESS LIST))
+            "CONJOINß-HOPELESS-LIST")
         (flushme)                                                   ;; GET RID OF TRAILING COMMA
         (fq! 'APPOSITIVE)
         (GO 'RETSM)
@@ -4270,7 +4265,7 @@
                 (let [common (getprop 'VB :elim)]
                     (dorun (map* #(SETQ common (meet common (features %))) *h*))
                     (feset *c* (union common (features *c*)))))
-        (| (smconj *h*) 'RETURN '(CONJOINß)))             ;; THEN MARK AS A LIST
+        (| (smconj *h*) 'RETURN "CONJOINß"))             ;; THEN MARK AS A LIST
 
 (defn- cantake [num type feature]
     (let [vbfeat (features *mvb*)]
@@ -7493,7 +7488,7 @@
         (fq! 'DECLAR)
 'THEREINIT
         (when *labeltrace* (passing 'THEREINIT))
-        (when (and (nextword? *n* 'THERE) (parse nil 'THERE) (fq! 'DECLAR)) (if *nn* (GO 'THERE) (GO 'FAIL (m! 'INIT))))
+        (when (and (nextword? *n* 'THERE) (parse nil 'THERE) (fq! 'DECLAR)) (if *nn* (GO 'THERE) (GO 'FAIL (m! "INIT"))))
 'THER2
         (when *labeltrace* (passing 'THER2))
         (and (nq 'PREP) (parse 'PREPG 'INIT) (or (smrelate *h*) (pop*)))
@@ -7503,7 +7498,7 @@
         (if (= *locationmarker* *n*) (if *nn* (GO 'CLAUSETYPE) (GO 'INPOP)) (GO 'INIT))
 'INPOP
         (when *labeltrace* (passing 'INPOP))
-        (when-not (move-pt 'C 'DLC) (GO 'FAIL (m! 'INPOP)))
+        (when-not (move-pt 'C 'DLC) (GO 'FAIL (m! "INPOP")))
 'BICUT
         (when *labeltrace* (passing 'BICUT))
         (cut-back-one)
@@ -7513,7 +7508,7 @@
         (when (cq 'DECLAR) (GO 'SUBJ))
         (when (and (nq 'VB) (nq 'INF) (parse 'VG 'IMPER) (fq! 'IMPER)) (GO 'VG1))
         (fq! 'DECLAR)
-        (when (cq 'IMPER) (GO 'FAIL (m! 'IMPER)))
+        (when (cq 'IMPER) (GO 'FAIL (m! "IMPER")))
 'SUBJ
         (when *labeltrace* (passing 'SUBJ))
         (cut *end*)
@@ -7533,7 +7528,7 @@
             :else (GO 'FAIL))
 'HEAD
         (when *labeltrace* (passing 'HEAD))
-        (when-not (or (move-ptw 'N 'PW '(NOUN)) (move-ptw 'N 'PW '(PRON))) (GO 'FAIL (m! 'HEAD)))
+        (when-not (or (move-ptw 'N 'PW '(NOUN)) (move-ptw 'N 'PW '(PRON))) (GO 'FAIL (m! "HEAD")))
 'SUB2
         (when *labeltrace* (passing 'SUB2))
         (when-not (pop*) (GO 'FAIL))
@@ -7546,14 +7541,14 @@
                 (isq *pt* 'HAVE) (do (fq! 'SUBQ) (rq 'REL-NOT-FOUND) (setr *c* :subject (getr *c* :relhead)) (GO 'VBL))))
 'SUBJ11
         (when *labeltrace* (passing 'SUBJ11))
-        (if (cut-back-one) (GO 'SUBJ3) (GO 'FAIL (m! 'SUBJ11)))
+        (if (cut-back-one) (GO 'SUBJ3) (GO 'FAIL (m! "SUBJ11")))
 'SUBREG
         (when *labeltrace* (passing 'SUBREG))
         (setr *c* :subject *h*)
         (GO 'VB)
 'VB
         (when *labeltrace* (passing 'VB))
-        (when (parse 'ADJG 'ADV 'VBAD) (if *nn* (GO 'VB) (GO 'FAIL (m! 'VB-ADJG))))
+        (when (parse 'ADJG 'ADV 'VBAD) (if *nn* (GO 'VB) (GO 'FAIL (m! "VB-ADJG"))))
         (rq 'VBLOK)
 'VBL
         (when *labeltrace* (passing 'VBL))
@@ -7575,7 +7570,7 @@
 'VG1
         (when *labeltrace* (passing 'VG1))
         (cut *end*)
-        (when (isq *mvb* 'BE) (if *nn* (GO 'BE) (GO 'FAIL (m! 'BE))))
+        (when (isq *mvb* 'BE) (if *nn* (GO 'BE) (GO 'FAIL (m! "BE"))))
         (when-not (isq *mvb* 'VPRT) (GO 'CHECKPASV))
         (when-not (and (nq 'PRT) (parse 'PRT)) (GO 'DPRT))
         (fq! 'PRT)
@@ -7674,8 +7669,8 @@
         (when (cq 'PASV) (GO 'PONT))
 'ONT1
         (when *labeltrace* (passing 'ONT1))
-        (when-not (smcl1) (GO 'FAIL (m! 'SMCL1)))
-        (when-not (cq 'REL-NOT-FOUND) (if *nn* (GO 'TONT) (GO 'RETSM)))
+        (when-not (smcl1) (GO 'FAIL (m! "SMCL1")))
+        (when (not (cq 'REL-NOT-FOUND)) (if *nn* (GO 'TONT) (GO 'RETSM)))
         (when-not (isq (getr (getr *c* :relhead) :head) 'TIM1) (GO 'PREPSHORT))
 'TIMEQ
         (when *labeltrace* (passing 'TIMEQ))
@@ -7684,9 +7679,9 @@
         (GO 'TONT)
 'PREPSHORT
         (when *labeltrace* (passing 'PREPSHORT))
-        (when-not (and (nq 'PREP) (parse 'PREPG)) (GO 'FAIL (m! 'ONT-SHORT-PREP)))
-        (when-not (smrelate *h*) (GO 'FAIL (m! 'ONTß)))
-        (if (cq 'REL-NOT-FOUND) (if *nn* (GO 'PREPSHORT) (GO 'FAIL (m! 'ONT-NOT-FOUND))) (GO 'TONT))
+        (when-not (and (nq 'PREP) (parse 'PREPG)) (GO 'FAIL (m! "ONT-SHORT-PREP")))
+        (when-not (smrelate *h*) (GO 'FAIL (m! "ONTß")))
+        (if (cq 'REL-NOT-FOUND) (if *nn* (GO 'PREPSHORT) (GO 'FAIL (m! "ONT-NOT-FOUND"))) (GO 'TONT))
 'PONT
         (when *labeltrace* (passing 'PONT))
         (and (nextword? *n* 'BY) (parse 'PREPG 'AGENT) (fq! 'AGENT))
@@ -7697,13 +7692,13 @@
         (when-not (set! *position-of-ptw* *n*) (GO 'RETSM))
 'NPASV
         (when *labeltrace* (passing 'NPASV))
-        (when (and (nq 'PREP) (parse 'PREPG) (smrelate *h*) (not *nn*)) (GO 'RETSM))
-        (when (and (nq 'TIMW) (parse 'ADV 'TIMW) (or (smtime) (GO 'FAIL)) (not *nn*)) (GO 'RETSM))
-        (when (and (not (cq 'BE)) (parse 'ADJG 'ADV) (or (smrelate *h*) (GO 'FAIL)) (not *nn*)) (GO 'RETSM))
-        (when (and (parse 'NG 'TIME) (or (smtime) (GO 'FAIL)) (not *nn*)) (GO 'RETSM))
-        (when (and (nq 'PLACE) (parse 'ADV 'PLACE) (or (smplace) (GO 'FAIL)) (not *nn*)) (GO 'RETSM))
-        (when (and (nq 'BINDER) (parse 'CLAUSE 'BOUND) (or (smbind) (GO 'FAIL)) (not *nn*)) (GO 'RETSM))
-        (when (and (nextword? *n* 'TO) (parse 'CLAUSE 'TO 'ADJUNCT) (or (smtoadj) (GO 'FAIL)) (not *nn*)) (GO 'RETSM))
+        (when (and (and (nq 'PREP) (parse 'PREPG) (smrelate *h*)) (not *nn*)) (GO 'RETSM))
+        (when (and (and (nq 'TIMW) (parse 'ADV 'TIMW) (or (smtime) (GO 'FAIL))) (not *nn*)) (GO 'RETSM))
+        (when (and (and (not (cq 'BE)) (parse 'ADJG 'ADV) (or (smrelate *h*) (GO 'FAIL))) (not *nn*)) (GO 'RETSM))
+        (when (and (and (parse 'NG 'TIME) (or (smtime) (GO 'FAIL))) (not *nn*)) (GO 'RETSM))
+        (when (and (and (nq 'PLACE) (parse 'ADV 'PLACE) (or (smplace) (GO 'FAIL))) (not *nn*)) (GO 'RETSM))
+        (when (and (and (nq 'BINDER) (parse 'CLAUSE 'BOUND) (or (smbind) (GO 'FAIL))) (not *nn*)) (GO 'RETSM))
+        (when (and (and (nextword? *n* 'TO) (parse 'CLAUSE 'TO 'ADJUNCT) (or (smtoadj) (GO 'FAIL))) (not *nn*)) (GO 'RETSM))
         (when-not (= *n* *position-of-ptw*) (if *nn* (GO 'TONT) (GO 'RETSM)))
         (when (or (not (cq 'TOPLEVEL)) (nq 'SPECIAL)) (GO 'RETSM))
         (bug! 'clause "SOMETHING LEFT OVER AT TOP LEVEL")
@@ -7711,12 +7706,12 @@
         (when *labeltrace* (passing 'THERE))
         (fq! 'THERE)
         (cut *end*)
-        (when (and (parse 'ADV 'TIMW) (not *nn*)) (GO 'FAIL (m! 'THERE)))
-        (if (and (parse 'VG) (isq *mvb* 'BE)) (if *nn* (GO 'THEF) (GO 'FAIL (m! 'THERE))) (GO 'NOTHE))
+        (when (and (parse 'ADV 'TIMW) (not *nn*)) (GO 'FAIL (m! "THERE")))
+        (if (and (parse 'VG) (isq *mvb* 'BE)) (if *nn* (GO 'THEF) (GO 'FAIL (m! "THERE"))) (GO 'NOTHE))
 'THERQ
         (when *labeltrace* (passing 'THERQ))
         (when (isq (move-pt 'H 'PV '(QAUX)) 'BE) (GO 'THERQ2))
-        (when (and (nq 'TIMW) (parse 'ADV 'TIMW) (not *nn*)) (GO 'FAIL (m! 'THEREQ)))
+        (when (and (and (nq 'TIMW) (parse 'ADV 'TIMW)) (not *nn*)) (GO 'FAIL (m! "THEREQ")))
         (when (and (parse 'VG) (isq *mvb* 'BE)) (GO 'THERQ2))
         (rq 'POLR2)
         (GO 'NOTHE)
@@ -7726,7 +7721,7 @@
         (if (cq 'POLAR) (GO 'THEF) (GO 'ONT))
 'THEF
         (when *labeltrace* (passing 'THEF))
-        (when (and (nq 'ADV) (parse 'ADV 'TIMW) (not *nn*)) (GO 'FAIL (m! 'THEF)))
+        (when (and (and (nq 'ADV) (parse 'ADV 'TIMW)) (not *nn*)) (GO 'FAIL (m! "THEF")))
         (when-not (parse 'NG 'SUBJ 'SUBJT) (GO 'THERREL))
         (fq! 'THERE)
         (setr *c* :subject *h*)
@@ -7746,8 +7741,8 @@
 'IMPER
         (when *labeltrace* (passing 'IMPER))
         (when (and (parse 'NG 'TIME) (not *nn*)) (GO 'IMPOP))
-        (when (and (nq 'ADV) (parse 'ADJG 'ADV 'VBAD) (not *nn*)) (GO 'IMPOP))
-        (when (and (nq 'ADV) (parse 'ADV 'TIMW) (not *nn*)) (GO 'IMPOP))
+        (when (and (and (nq 'ADV) (parse 'ADJG 'ADV 'VBAD)) (not *nn*)) (GO 'IMPOP))
+        (when (and (and (nq 'ADV) (parse 'ADV 'TIMW)) (not *nn*)) (GO 'IMPOP))
 'IMPE
         (when *labeltrace* (passing 'IMPE))
         (when-not (parse 'VG 'IMPER) (GO 'IMPOP))
@@ -7755,12 +7750,12 @@
         (GO 'VG1)
 'IMPOP
         (when *labeltrace* (passing 'IMPOP))
-        (if (pop* nil) (GO 'IMPE) (GO 'FAIL (m! 'IMPOP)))
+        (if (pop* nil) (GO 'IMPE) (GO 'FAIL (m! "IMPOP")))
 'QUEST
         (when *labeltrace* (passing 'QUEST))
         (fq! 'QUEST)
         (when-not (nq 'PREP) (GO 'NGQUES))
-        (when-not (parse 'PREPG) (if *nn* (GO 'NGQUES) (GO 'FAIL (m! 'PREPQ-INCOMPLETE))))
+        (when-not (parse 'PREPG) (if *nn* (GO 'NGQUES) (GO 'FAIL (m! "PREPQ-INCOMPLETE"))))
         (when-not (isq *h* 'QUEST) (GO 'QUEST))
         (setr *c* :qadj *h*)
         (GO 'POLAR)
@@ -7798,7 +7793,7 @@
         (GO 'QUEST2)
 'QCHOP
         (when *labeltrace* (passing 'QCHOP))
-        (if (popto 'CLAUSE 'BOUND) (GO 'BICUT) (GO 'FAIL (m! 'QCHOP)))
+        (if (popto 'CLAUSE 'BOUND) (GO 'BICUT) (GO 'FAIL (m! "QCHOP")))
 'SEC
         (when *labeltrace* (passing 'SEC))
         (cond (cq 'BOUND) (GO 'BOUND)
@@ -7806,10 +7801,10 @@
             (cq 'RSQ) (GO 'RSQ)
             (cq 'REPORT) (GO 'REPORT)
             (cq 'ING) (GO 'ING)
-            :else (GO 'FAIL (m! 'RSNG-TYPE)))
+            :else (GO 'FAIL (m! "RSNG-TYPE")))
 'BOUND
         (when *labeltrace* (passing 'BOUND))
-        (when-not (parse 'BINDER) (if *nn* (GO 'FAIL (m! 'BOUND)) (GO 'FAIL (m! 'BINDER))))
+        (when-not (parse 'BINDER) (if *nn* (GO 'FAIL (m! "BOUND")) (GO 'FAIL (m! "BINDER"))))
         (set! *locationmarker* *n*)
         (GO 'FDEC)
 'RSQ
@@ -7843,12 +7838,12 @@
         (setr *c* :subject *h*)
 'TO1
         (when *labeltrace* (passing 'TO1))
-        (if (parse 'VG 'TO) (GO 'VG1) (GO 'FAIL (m! 'TO)))
+        (if (parse 'VG 'TO) (GO 'VG1) (GO 'FAIL (m! "TO")))
 'ING
         (when *labeltrace* (passing 'ING))
         (when-not (move-ptw 'N 'NW '(ING)) (GO 'FAIL))
-        (when (and (or (nq 'ING) (cq 'OBJ2) (and (parse 'NG 'SUBJ 'INGSUBJ) (setr *c* :subject *h*) (fq! 'SUBING) (rq 'ING))) (not *nn*)) (GO 'FAIL (m! 'ING)))
-        (if (parse 'VG 'ING) (GO 'VG1) (GO 'FAIL (m! 'ING)))
+        (when (and (or (nq 'ING) (cq 'OBJ2) (and (parse 'NG 'SUBJ 'INGSUBJ) (setr *c* :subject *h*) (fq! 'SUBING) (rq 'ING))) (not *nn*)) (GO 'FAIL (m! "ING")))
+        (if (parse 'VG 'ING) (GO 'VG1) (GO 'FAIL (m! "ING")))
 'REPORT
         (when *labeltrace* (passing 'REPORT))
         (and (nextword? *n* 'THAT) (parse nil 'THAT) (fq! 'THAT))
@@ -7896,7 +7891,7 @@
             (nq 'NOUN) (GO 'NOUN)
             (nq 'TIMORD) (GO 'TIMORD)
             (and (cq 'COMPONENT) (isq (move-pt 'PC) 'QUEST)) (GO 'QUEST)
-            :else (GO 'FAIL (m! 'START)))
+            :else (GO 'FAIL (m! "START")))
 'START
         (when *labeltrace* (passing 'START))
 'PROPN
@@ -7914,8 +7909,8 @@
         (when (parse 'PRON 'POSS) (if *nn* (GO 'POSS) (GO 'RED2)))
 'PRON2
         (when *labeltrace* (passing 'PRON2))
-        (when (cq 'NPRON) (GO 'FAIL (m! 'NPRON)))
-        (when-not (or (and (cq 'SUBJ) (parse 'PRON 'SUBJ)) (and (or (cq 'OBJ) (cq 'TOSUBJ) (cq 'INGSUBJ)) (parse 'PRON 'OBJ)) (cq 'INGSUBJ)) (GO 'FAIL (m! 'PRON)))
+        (when (cq 'NPRON) (GO 'FAIL (m! "NPRON")))
+        (when-not (or (and (cq 'SUBJ) (parse 'PRON 'SUBJ)) (and (or (cq 'OBJ) (cq 'TOSUBJ) (cq 'INGSUBJ)) (parse 'PRON 'OBJ)) (cq 'INGSUBJ)) (GO 'FAIL (m! "PRON")))
         (fq! 'PRONG 'DEF)
 'PRON3
         (when *labeltrace* (passing 'PRON3))
@@ -7941,24 +7936,24 @@
         (if (and (parse 'CLAUSE 'RSQ 'NOREL) (smrelate *h*)) (GO 'RETSM) (GO 'FAIL))
 'AS
         (when *labeltrace* (passing 'AS))
-        (if (and (parse nil 'AS) (parse 'NUMD 'NUMDAS) *nn* (parse nil 'AS) *nn*) (GO 'NUMD2) (GO 'FAIL (m! 'AS)))
+        (if (and (parse nil 'AS) (parse 'NUMD 'NUMDAS) *nn* (parse nil 'AS)) (if *nn* (GO 'NUMD2) (GO 'FAIL (m! "AS"))) (GO 'FAIL (m! "AS")))
 'AT
         (when *labeltrace* (passing 'AT))
-        (when-not (and (parse nil 'AT) (parse 'NUMD 'NUMDAT)) (GO 'FAIL (m! 'AT)))
+        (when-not (and (parse nil 'AT) (parse 'NUMD 'NUMDAT)) (GO 'FAIL (m! "AT")))
 'NUMD2
         (when *labeltrace* (passing 'NUMD2))
-        (if (and (parse 'NUM) (fq! 'NUM 'NUMD)) (if *nn* (GO 'DET1) (GO 'INCOM)) (GO 'FAIL (m! 'NUMD2)))
+        (if (and (parse 'NUM) (fq! 'NUM 'NUMD)) (if *nn* (GO 'DET1) (GO 'INCOM)) (GO 'FAIL (m! "NUMD2")))
 'NUMD
         (when *labeltrace* (passing 'NUMD))
         (when-not (parse 'NUMD 'NUMDAN) (if *nn* (GO 'ND3) (GO 'INCOM)))
         (if (parse nil 'THAN) (if *nn* (GO 'NUMD2) (GO 'POPCOM)) (GO 'INCOM))
 'ND3
         (when *labeltrace* (passing 'ND3))
-        (if (and (parse 'NUMD 'NUMDALONE) *nn*) (GO 'NUMD2) (GO 'FAIL (m! 'NUMD)))
+        (if (parse 'NUMD 'NUMDALONE) (if *nn* (GO 'NUMD2) (GO 'FAIL (m! "NUMD"))) (GO 'FAIL (m! "NUMD")))
 'TIME
         (when *labeltrace* (passing 'TIME))
         (when (and (nq 'TIME) (parse 'NOUN 'TIME)) (GO 'RETSM))
-        (if (move-ptw 'N 'NW '(TIM1)) (GO 'LOOK) (GO 'FAIL (m! 'TIME)))
+        (if (move-ptw 'N 'NW '(TIM1)) (GO 'LOOK) (GO 'FAIL (m! "TIME")))
 'TIMORD
         (when *labeltrace* (passing 'TIMORD))
         (when-not (parse 'ORD 'TIMORD) (GO 'FAIL))
@@ -7968,10 +7963,10 @@
         (parse 'DET)
         (fq! 'DET)
         (move-pt 'H)
-        (if (trnsf 'NPL 'NS 'PART 'DEF 'INDEF 'ANY 'NEG 'QNTFR) (if *nn* (GO 'IND) (GO 'INCOM)) (GO 'FAIL (m! 'BUG)))
+        (if (trnsf 'NPL 'NS 'PART 'DEF 'INDEF 'ANY 'NEG 'QNTFR) (if *nn* (GO 'IND) (GO 'INCOM)) (GO 'FAIL (m! "BUG")))
 'IND
         (when *labeltrace* (passing 'IND))
-        (when (and (= (word (firstword *h*)) 'ALL) (= (word *n*) 'THE) (parse 'DET) (fq! 'DEF)) (if *nn* (GO 'NUM) (GO 'FAIL (m! 'THE))))
+        (when (and (= (word (firstword *h*)) 'ALL) (= (word *n*) 'THE) (parse 'DET) (fq! 'DEF)) (if *nn* (GO 'NUM) (GO 'FAIL (m! "THE"))))
         (when (and (isq *h* 'QNTFR) (fq! 'QNTFR)) (GO 'QNUM))
 'ORD
         (when *labeltrace* (passing 'ORD))
@@ -7983,7 +7978,7 @@
         (when-not (parse 'NUM) (GO 'ADJ))
         (fq! 'NUM)
         (when-not (cq 'DET) (GO 'DET1))
-        (if (cond (and (isq *h* 'NS) (cq 'NS)) (rq 'NPL 'PART) (cq 'NPL) (rq 'NS 'PART)) (if *nn* (GO 'ADJ) (GO 'INCOM)) (GO 'FAIL (m! 'NUM)))
+        (if (cond (and (isq *h* 'NS) (cq 'NS)) (rq 'NPL 'PART) (cq 'NPL) (rq 'NS 'PART)) (if *nn* (GO 'ADJ) (GO 'INCOM)) (GO 'FAIL (m! "NUM")))
 'DET1
         (when *labeltrace* (passing 'DET1))
         (if (isq *h* 'NS) (fq! 'NS) (fq! 'NPL))
@@ -7996,7 +7991,7 @@
         (when *labeltrace* (passing 'QNUM))
         (when (isq *h* 'NONUM) (GO 'OF))
         (when-not (and (parse 'NUM) (fq! 'NUM)) (GO 'OF))
-        (when-not (cond (== (semantics *h*) 1) (and (cq 'NS) (rq 'NPL)) (cq 'NPL) (rq 'NS)) (if *nn* (GO 'FAIL (m! 'NUMD)) (GO 'INCOM)))
+        (when-not (cond (== (semantics *h*) 1) (and (cq 'NS) (rq 'NPL)) (cq 'NPL) (rq 'NS)) (if *nn* (GO 'FAIL (m! "NUMD")) (GO 'INCOM)))
         (when (= (word (firstword *h*)) 'NO) (GO 'ADJ))
 'OF
         (when *labeltrace* (passing 'OF))
@@ -8042,7 +8037,7 @@
         (setr *c* :head *h*)
         (when (and (cq 'OBOFJ) (not (cq 'DEF))) (GO 'FAIL))
         (or (smng1) (GO 'FAIL))
-        (when (isq *h* 'POSS) (if *nn* (GO 'POSS) (GO 'RETSM)))
+        (when-not (not (isq *h* 'POSS)) (if *nn* (GO 'POSS) (GO 'RETSM)))
         (when-not (and (cq 'THAN) (parse 'ADJG)) (GO 'RSQ-TO))
         (if (smrelate *h*) (GO 'RETSM) (GO 'FAIL))
 'RSQ-TO
@@ -8063,9 +8058,9 @@
         (if (smrelate *h*) (if *nn* (GO 'RSQ-TO) (GO 'RETSM)) (GO 'POPRET))
 'DISGRSQ
         (when *labeltrace* (passing 'DISGRSQ))
-        (when-not (= (car *mes*) 'PREP-WHICH) (GO 'RSQ))
+        (when-not (= (car *mes*) "PREP-WHICH") (GO 'RSQ))
         (set! *mes* (cdr *mes*))
-        (if (parse 'CLAUSE 'RSQ 'PREPREL) (if *nn* (GO 'PREPNG) (GO 'RETSM)) (GO 'FAIL (m! 'RSQ-PREPREL)))
+        (if (parse 'CLAUSE 'RSQ 'PREPREL) (if *nn* (GO 'PREPNG) (GO 'RETSM)) (GO 'FAIL (m! "RSQ-PREPREL")))
 'RSQ
         (when *labeltrace* (passing 'RSQ))
         (when (and (isq (move-pt 'C 'U) 'POLR2) (cq 'SUBJ) (nq 'VB) (not (cq 'SUBJT)) (not (isq *pt* 'QADJ))) (GO 'RETSM))
@@ -8079,7 +8074,7 @@
         (pop*)
 'RED2
         (when *labeltrace* (passing 'RED2))
-        (cond (nil? *h*) (GO 'FAIL (m! 'NO))
+        (cond (nil? *h*) (GO 'FAIL (m! "NO"))
             (isq *h* 'NUMBER) (GO 'INCOM)
             (and (isq *h* 'POSS) (or (isq *h* 'PRON) (and (move-pt 'H 'DLC) (isq *pt* 'PRON)))) (do (pop*) (GO 'PRON2))
             (and (nil? (cdr *h*)) (cq 'DEFPOSS)) (GO 'POSSDEF)
@@ -8110,7 +8105,7 @@
         (when (cq 'INGSUBJ) (GO 'RETSM))
         (set! *h* (buildnode (reverse (cons 'POSS (setdif *fe* '(COMPONENT)))) *nb* *n* *h* *sm*))
         (set! *backref* (concat *h* (cdr *backref*)))
-        (when-not (setr *c* :features (set! *fe* (concat ['POSES 'DET 'DEF 'NS 'NPL] (reverse *rest*)))) (GO 'FAIL (m! 'BUG)))
+        (when-not (setr *c* :features (set! *fe* (concat ['POSES 'DET 'DEF 'NS 'NPL] (reverse *rest*)))) (GO 'FAIL (m! "BUG")))
         (when-not (or (not *nn*) (isq *h* 'DEFPOSS)) (GO 'ORD))
 'POSSDEF
         (when *labeltrace* (passing 'POSSDEF))
@@ -8140,7 +8135,7 @@
         (GO 'RETURN)
 'TRYA
         (when *labeltrace* (passing 'TRYA))
-        (when-not (isq *h* 'NOUN) (GO 'FAIL (m! 'TRYA)))
+        (when-not (isq *h* 'NOUN) (GO 'FAIL (m! "TRYA")))
         (pop*)
         (cut *n*)
 'UP
@@ -8172,13 +8167,13 @@
             (isq (move-pt 'C 'U) 'POLR2) (GO 'POLR2))
 'NEW
         (when *labeltrace* (passing 'NEW))
-        (cond (not (nq 'VB)) (GO 'FAIL (m! 'VB))
+        (cond (not (nq 'VB)) (GO 'FAIL (m! "VB"))
             (and (nq 'DO) (parse 'VB 'AUX 'DO)) (GO 'DO)
             (and (nq 'MODAL) (parse 'VB 'AUX 'MODAL)) (GO 'MODAL)
             (and (nq 'WILL) (parse 'VB 'AUX 'WILL)) (GO 'WILL)
             (and (nq 'BE) (parse 'VB 'AUX 'BE)) (GO 'BE)
             (and (nq 'HAVE) (parse 'VB 'AUX 'HAVE)) (GO 'HAVE)
-            (not (parse 'VB '(MVB))) (GO 'FAIL (m! 'VB)))
+            (not (parse 'VB '(MVB))) (GO 'FAIL (m! "VB")))
 'SIMPLE
         (when *labeltrace* (passing 'SIMPLE))
         (move-pt 'C 'DLC)
@@ -8188,20 +8183,20 @@
 'TO
         (when *labeltrace* (passing 'TO))
         (fq! 'NAGR)
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
-        (when-not (or (parse nil 'TO) (cq 'TODEL)) (GO 'FAIL (m! 'TO)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
+        (when-not (or (parse nil 'TO) (cq 'TODEL)) (GO 'FAIL (m! "TO")))
         (set! *tense* '(INFINITIVE))
         (GO 'MODAL2)
 'EN
         (when *labeltrace* (passing 'EN))
         (fq! 'NAGR)
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
         (set! *tense* '(PAST))
         (if (and (parse 'VB 'EN '(MVB)) (setmvb *h*) (fq! 'PASV)) (GO 'RETSM) (GO 'FAIL))
 'ING
         (when *labeltrace* (passing 'ING))
         (fq! 'NAGR)
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
 'INGADV
         (when *labeltrace* (passing 'INGADV))
         (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (GO 'INGADV))
@@ -8209,8 +8204,8 @@
         (GO 'BE2)
 'IMPER
         (when *labeltrace* (passing 'IMPER))
-        (when (and (parse 'VB 'DO 'NEG 'INF) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'DONT)))
-        (if (and (parse 'VB '(MVB) 'INF) (setmvb *h*) (smvg)) (GO 'RETURN) (GO 'FAIL (m! 'IMPER)))
+        (when (and (and (parse 'VB 'DO 'NEG 'INF) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "DONT")))
+        (if (and (parse 'VB '(MVB) 'INF) (setmvb *h*) (smvg)) (GO 'RETURN) (GO 'FAIL (m! "IMPER")))
 'POLR2
         (when *labeltrace* (passing 'POLR2))
         (or (set! *pt* (getr (move-pt 'C 'U) :qaux)) (bug! 'vgßpolr2 nil))
@@ -8231,10 +8226,10 @@
         (if *nn* (GO 'DO2) (GO 'MVB))
 'DO2
         (when *labeltrace* (passing 'DO2))
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
 'ADV2
         (when *labeltrace* (passing 'ADV2))
-        (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (if *nn* (GO 'ADV2) (GO 'FAIL (m! 'ADV))))
+        (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (if *nn* (GO 'ADV2) (GO 'FAIL (m! "ADV"))))
         (when-not (parse 'VB '(MVB) 'INF) (GO 'MVB))
         (GO 'REV)
 'MODAL
@@ -8244,10 +8239,10 @@
         (if *nn* (GO 'MODAL2) (GO 'INCOMP))
 'MODAL2
         (when *labeltrace* (passing 'MODAL2))
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
 'ADV3
         (when *labeltrace* (passing 'ADV3))
-        (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (if *nn* (GO 'ADV3) (GO 'FAIL (m! 'ADV))))
+        (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (if *nn* (GO 'ADV3) (GO 'FAIL (m! "ADV"))))
         (cond (parse 'VB 'BE 'INF) (if *nn* (GO 'BE2) (GO 'MVB))
             (parse 'VB 'HAVE 'INF) (if *nn* (GO 'HAV2) (GO 'MVB))
             (parse 'VB 'INF '(MVB)) (GO 'REV)
@@ -8265,14 +8260,14 @@
         (if *nn* (GO 'BE2) (GO 'MVB))
 'BE2
         (when *labeltrace* (passing 'BE2))
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
 'ADV4
         (when *labeltrace* (passing 'ADV4))
-        (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (if *nn* (GO 'ADV4) (GO 'FAIL (m! 'ADV))))
+        (when (or (parse 'ADV 'TIMW) (parse 'ADV 'VBAD)) (if *nn* (GO 'ADV4) (GO 'FAIL (m! "ADV"))))
         (cond (and (nextword? *n* 'GOING) (parse 'VB)) (GO 'GOING)
             (and (nq 'BE) (parse 'VB 'ING)) (do (set! *tense* (cons 'PRESENT *tense*)) (GO 'EN2))
             (and (nq 'ING) (parse 'VB 'ING '(MVB))) (do (set! *tense* (cons 'PRESENT *tense*)) (GO 'REV))
-            (cq 'ING) (GO 'FAIL (m! 'ING)))
+            (cq 'ING) (GO 'FAIL (m! "ING")))
 'EN2
         (when *labeltrace* (passing 'EN2))
         (when-not (parse 'VB 'EN '(MVB)) (GO 'MVBE))
@@ -8294,7 +8289,7 @@
 'MVBE
         (when *labeltrace* (passing 'MVBE))
         (when-not (isq (move-pt 'H 'PV '(VB)) 'AUX) (GO 'MVB))
-        (when-not (isq *pt* 'BE) (GO 'FAIL (m! 'MVBE)))
+        (when-not (isq *pt* 'BE) (GO 'FAIL (m! "MVBE")))
         (setmvb *pt*)
         (GO 'REV)
 'HAVE
@@ -8305,10 +8300,10 @@
         (if *nn* (GO 'HAV2) (GO 'MVB))
 'HAV2
         (when *labeltrace* (passing 'HAV2))
-        (when (and (parse nil 'NOT) (fq! 'NEG) (not *nn*)) (GO 'FAIL (m! 'NOT)))
+        (when (and (and (parse nil 'NOT) (fq! 'NEG)) (not *nn*)) (GO 'FAIL (m! "NOT")))
 'ADV5
         (when *labeltrace* (passing 'ADV5))
-        (when (parse 'ADV) (if *nn* (GO 'ADV5) (GO 'FAIL (m! 'ADV))))
+        (when (parse 'ADV) (if *nn* (GO 'ADV5) (GO 'FAIL (m! "ADV"))))
         (when-not (parse 'VB 'BE 'EN) (GO 'HAV3))
         (set! *tense* (cons 'PAST *tense*))
         (if *nn* (GO 'BE2) (GO 'MVB))
@@ -8325,7 +8320,7 @@
         (when *labeltrace* (passing 'MVB))
         (when (= (features *mvb*) (features *h*)) (GO 'MVB2))
         (pop* 'VB)
-        (when-not (parse 'VB '(MVB)) (GO 'FAIL (m! 'MVB)))
+        (when-not (parse 'VB '(MVB)) (GO 'FAIL (m! "MVB")))
 'MVB2
         (when *labeltrace* (passing 'MVB2))
         (GO 'REV)
@@ -8343,11 +8338,11 @@
         (when (or (isq *pt* 'PART) (isq *pt* 'NPL)) (or (and (meet *fe* ['INF 'VPL]) (set! *tmp* true)) (feset *pt* (setdif (features *pt*) ['PART 'NPL]))))
 'NAGR
         (when *labeltrace* (passing 'NAGR))
-        (when-not (or *tmp* (and (= '(PAST-PRESENT) *tense*) (set! *tense* '(PAST)))) (GO 'FAIL (m! 'NAGR)))
+        (when-not (or *tmp* (and (= *tense* '(PAST-PRESENT)) (set! *tense* '(PAST)))) (GO 'FAIL (m! "NAGR")))
 'NAUX
         (when *labeltrace* (passing 'NAUX))
         (setmvb (or (move-pt 'H 'PV '(MVB)) *mvb*))
-        (if (and (cq 'NAUX) (isq (move-pt 'H 'PV '(VB)) 'AUX) (not (move-pt 'PV 'PV '(VB)))) (GO 'FAIL (m! 'NAUX)) (GO 'RETSM))
+        (if (and (cq 'NAUX) (isq (move-pt 'H 'PV '(VB)) 'AUX) (not (move-pt 'PV 'PV '(VB)))) (GO 'FAIL (m! "NAUX")) (GO 'RETSM))
 'POPV
         (when *labeltrace* (passing 'POPV))
         (bug! 'vg "POPV")
@@ -8372,25 +8367,25 @@
         (when *labeltrace* (passing 'ENTERING-PREPG))
 'ADV
         (when *labeltrace* (passing 'ADV))
-        (when (and (nq 'PREPADV) (parse 'ADV 'PREPADV)) (if *nn* (GO 'ADV) (GO 'FAIL (m! 'PREPADV))))
-        (when-not (cond (cq 'AGENT) (nextword? *n* 'BY) (cq 'LOC) (nq 'PLACE) (cq 'Q) (not (nq 'MOTOR)) :else true) (GO 'FAIL (m! 'PREP)))
-        (when-not (parse 'PREP) (GO 'FAIL (m! 'PREP)))
+        (when (and (nq 'PREPADV) (parse 'ADV 'PREPADV)) (if *nn* (GO 'ADV) (GO 'FAIL (m! "PREPADV"))))
+        (when-not (cond (cq 'AGENT) (nextword? *n* 'BY) (cq 'LOC) (nq 'PLACE) (cq 'Q) (not (nq 'MOTOR)) :else true) (GO 'FAIL (m! "PREP")))
+        (when-not (parse 'PREP) (GO 'FAIL (m! "PREP")))
         (move-pt 'H)
         (trnsf 'PLACE 'TIME)
         (set! *tmp* *h*)
-        (when (nq 'PREP2)
+        (and (nq 'PREP2)
             (cond (set! *tmp* (combination? (word (firstword *h*)) (word *n*))) (parse 'PREP2)
                 (set! *tmp* (combination? (word (firstword *h*)) (word *n*) (word (cdr *n*)))) (do (parse 'PREP2) (parse 'PREP2)))
             (set! *tmp* (buildnode (features *tmp*) *nb* *n* 'WORD (semantics *tmp*)))
             (setr *tmp* :parent *c*))
-        (when (isq *h* 'NEED2) (GO 'FAIL (m! 'NEED2)))
+        (when (isq *h* 'NEED2) (GO 'FAIL (m! "NEED2")))
         (setr *c* :head *tmp*)
-        (or *nn* (GO 'SHORT))
+        (when-not *nn* (GO 'SHORT))
         (when (= (word *h*) 'BY) (fq! 'AGENT))
 'QUEST
         (when *labeltrace* (passing 'QUEST))
         (when-not (cq 'QUEST) (GO 'NG))
-        (if (parse 'NG 'QUEST 'OBJ) (GO 'OBJR) (GO 'FAIL (m! 'PREPQUEST)))
+        (if (parse 'NG 'QUEST 'OBJ) (GO 'OBJR) (GO 'FAIL (m! "PREPQUEST")))
         (when (and (cq 'OF) (parse 'NG 'OFOBJ)) (GO 'OBJR))
 'NG
         (when *labeltrace* (passing 'NG))
@@ -8398,7 +8393,7 @@
 'REL
         (when *labeltrace* (passing 'REL))
         (when-not (nextword? *n* 'WHICH) (GO 'REST))
-        (when-not (isq (move-pt 'U) 'CLAUSE) (GO 'FAIL (m! 'PREP-WHICH)))
+        (when-not (isq (move-pt 'U) 'CLAUSE) (GO 'FAIL (m! "PREP-WHICH")))
         (when-not (isq *pt* 'PRONREL) (GO 'PRONREL))
         (set! *mes* (cdr *mes*))
         (GO 'P-RELWRD)
@@ -8420,7 +8415,7 @@
         (GO 'RETT)
 'SHORT
         (when *labeltrace* (passing 'SHORT))
-        (when (meet *fe* ['NOSHORT 'Q]) (GO 'FAIL (m! 'SHORT)))
+        (when (meet *fe* ['NOSHORT 'Q]) (GO 'FAIL (m! "SHORT")))
         (or (isq (move-pt 'C 'U) 'REL-NOT-FOUND) (isq (getr *pt* :question-element) 'QADJ) (GO 'FAIL))
         (remove-f *pt* 'REL-NOT-FOUND)
         (add-f *pt* 'PREPREL)
@@ -8453,8 +8448,8 @@
         (GO 'THAN)
 'DISP
         (when *labeltrace* (passing 'DISP))
-        (when (and (nq 'AS) (parse nil 'AS)) (if *nn* (GO 'AS) (GO 'FAIL (m! 'AS))))
-        (when (and (nq 'AS) (parse nil 'AS)) (if *nn* (GO 'AS) (GO 'FAIL (m! 'AS))))
+        (when (and (nq 'AS) (parse nil 'AS)) (if *nn* (GO 'AS) (GO 'FAIL (m! "AS"))))
+        (when (and (nq 'AS) (parse nil 'AS)) (if *nn* (GO 'AS) (GO 'FAIL (m! "AS"))))
         (if (nextword? *n* 'HOW) (GO 'HOW) (GO 'ADV))
 'HOW
         (when *labeltrace* (passing 'HOW))
@@ -8468,7 +8463,7 @@
         (fq! 'COMPAR)
 'ADJ
         (when *labeltrace* (passing 'ADJ))
-        (when-not (if (cq 'ADV) (parse 'ADV 'VBAD) (parse 'ADJ)) (GO 'FAIL (m! 'ADJ)))
+        (when-not (if (cq 'ADV) (parse 'ADV 'VBAD) (parse 'ADJ)) (GO 'FAIL (m! "ADJ")))
         (when (and (setr *c* :head *h*) (not *nn*)) (GO 'RETSM))
         (when-not (or (cq 'COMPAR) (isq *h* 'COMPAR)) (GO 'RETSM))
         (fq! 'COMPAR)
@@ -8476,7 +8471,7 @@
 'THAN
         (when *labeltrace* (passing 'THAN))
         (when-not *nn* (GO 'RETSM))
-        (when-not (parse nil 'THAN) (if *nn* (GO 'RETSM) (GO 'FAIL (m! 'THAN))))
+        (when-not (parse nil 'THAN) (if *nn* (GO 'RETSM) (GO 'FAIL (m! "THAN"))))
         (rq 'THANNEED)
         (fq! 'THAN)
         (GO 'SUBJ)
@@ -8484,11 +8479,11 @@
         (when *labeltrace* (passing 'AS))
         (fq! 'AS)
         (rq 'THANNEED)
-        (when-not (and (parse 'ADJ) (setr *c* :head *h*)) (if *nn* (GO 'FAIL (m! 'ADJ)) (GO 'RETSM)))
-        (if (parse nil 'AS) (if *nn* (GO 'SUBJ) (GO 'FAIL (m! 'AS))) (GO 'RETSM))
+        (when-not (and (parse 'ADJ) (setr *c* :head *h*)) (if *nn* (GO 'FAIL (m! "ADJ")) (GO 'RETSM)))
+        (if (parse nil 'AS) (if *nn* (GO 'SUBJ) (GO 'FAIL (m! "AS"))) (GO 'RETSM))
 'SUBJ
         (when *labeltrace* (passing 'SUBJ))
-        (when-not (parse 'NG 'SUBJ 'COMPAR) (GO 'FAIL (m! 'THAN)))
+        (when-not (parse 'NG 'SUBJ 'COMPAR) (GO 'FAIL (m! "THAN")))
         (when (and (setr *c* :obj1 *h*) (not *nn*)) (GO 'RETSM))
         (when-not (and (one-word-left *nb*) (parse 'VB 'AUX)) (GO 'RETSM))
         (when (§ CHECK-AGREEMENT *h* (cdr *h*)) (GO 'RETSM))
@@ -8500,8 +8495,8 @@
         (GO 'ADJ)
 'RETSM
         (when *labeltrace* (passing 'RETSM))
-        (when (cq 'THANNEED) (GO 'FAIL (m! 'THANNEED)))
-        (if (smadjg-prepg) (GO 'RETURN) (GO 'FAIL (m! 'SMADJ)))
+        (when (cq 'THANNEED) (GO 'FAIL (m! "THANNEED")))
+        (if (smadjg-prepg) (GO 'RETURN) (GO 'FAIL (m! "SMADJ")))
 'FAIL
         (set! *mes* *me*)
         (set! *n* (or (wordafter *re*) *nb*))
@@ -8547,7 +8542,7 @@
         (when (cq 'LISTA) (GO 'LISTA))
 'LIST
         (when *labeltrace* (passing 'LIST))
-        (when-not (and (= *prev* '\,) (== (count *h*) 2) (isq *h* 'NG) (not (or (isq *h* 'PRONG) (isq (cdr *h*) 'PRONG))) (or (nextword? *n* '\,) (nil? *n*))) (GO 'FAIL (m! 'CONJOINß)))
+        (when-not (and (= *prev* '\,) (== (count *h*) 2) (isq *h* 'NG) (not (or (isq *h* 'PRONG) (isq (cdr *h*) 'PRONG))) (or (nextword? *n* '\,) (nil? *n*))) (GO 'FAIL (m! "CONJOINß-HOPELESS-LIST")))
         (flushme)
         (fq! 'APPOSITIVE)
         (GO 'RETSM)
@@ -8560,7 +8555,7 @@
         (and (> (count *h*) 2) (fq! 'LIST))
         (cond (or (cq 'NG) (cq 'NOUN)) (if (cq 'AND) (fq! 'NPL) (do (move-pt 'H) (trnsf 'NPL 'NS 'MASS 'NFS)))
             (cq 'VB) (let [common (getprop 'VB :elim)] (dorun (map* #(SETQ common (meet common (features %))) *h*)) (feset *c* (union common (features *c*)))))
-        (if (smconj *h*) (GO 'RETURN) (GO 'FAIL (m! 'CONJOINß)))
+        (if (smconj *h*) (GO 'RETURN) (GO 'FAIL (m! "CONJOINß")))
 'FAIL
         (set! *mes* *me*)
         (set! *n* (or (wordafter *re*) *nb*))
@@ -8739,7 +8734,7 @@
             (set! *lastsentno* (inc *lastsentno*))
             (set! *lastsent* *c*)
             (set! *sentno* (inc *sentno*))
-            (set! *mes* 'NOPE)
+            (set! *mes* nil)
             (set! *backref* nil)                  ;; ???????????????????
             (set! *n* (set! *sent* (ETAOIN)))
             (when (and (ERRSET (set! *pt* (set! *c* (parse 'CLAUSE 'MAJOR 'TOPLEVEL)))) *c*)
