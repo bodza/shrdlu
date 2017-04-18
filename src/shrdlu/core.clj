@@ -479,34 +479,18 @@
     ;; THERASING DEFINES AND OPTIONALLY ASSERTS ERASING THEOREMS
     (thdef 'therasing a))
 
-(§ defq- thfail [& a]
-    (when a
-        (let [thtree1 nil tha1 nil thx nil]
-            (SETQ tha1
-                (condp = (car a)
-                    'THEOREM 'thprog
-                    'thtag 'thprog
-                    'thmessage (do (set! *thmessage* (cadr a)) (RETURN nil))
-                    (car a)))
-            (SETQ thtree1 *thtree*)
-        LP1 (cond (nil? thtree1)
-                    (do (terpri)
-                        (pr a)
-                        (bug! "NOT FOUND - THFAIL"))
-                (= (caar thtree1) tha1) (GO ELP1))
-        ALP1 (SETQ thtree1 (cdr thtree1))
-            (GO LP1)
-        ELP1 (when (= (car a) 'thtag)
-                (if (memq (cadr a) (cadddr (car thtree1))) (GO TAGS) (GO ALP1)))
-            (set! *thmessage* (list (cdr thtree1) (and (cdr a) (cadr a))))
-            (RETURN nil)
-        TAGS (SETQ thx (caddar thtree1))
-        LP2  (cond (nil? thx) (GO ALP1)
-                (= (caaddr (car thx)) (cadr a))
-                    (do (set! *thmessage* (list (caar thx) (and (cddr a) (caddr a))))
-                        (RETURN nil)))
-            (SETQ thx (cdr thx))
-            (GO LP2))))
+(defq- thfail [& a]
+    (when a (set! *thmessage*
+        (if (= (car a) 'thmessage) (cadr a)
+            (let [a1 (condp = (car a) 'THEOREM 'thprog 'thtag 'thprog (car a))]
+                (loop-when [t1 *thtree*] t1 => (do (terpri) (pr a) (bug! "NOT FOUND - THFAIL"))
+                    (when' (= (caar t1) a1) => (recur (cdr t1))
+                        (when' (= (car a) 'thtag) => (list (cdr t1) (and (cdr a) (cadr a)))
+                            (when' (memq (cadr a) (cadddr (car t1))) => (recur (cdr t1))
+                                (loop-when [x (caddar t1)] x => (recur (cdr t1))
+                                    (when' (= (caaddr (car x)) (cadr a)) => (recur (cdr x))
+                                        (list (caar x) (and (cddr a) (caddr a))))))))))))
+        nil))
 
 (defn- thfail? [prd act]
     (thpush *thtree* (list 'thfail? prd act))
@@ -519,32 +503,28 @@
 
 (defn- thfail?t [] (thpopt) *thvalue*)
 
-(§ defq- thfinalize [& a]
-    (when (nil? a) (bug! "BAD CALL - THFINALIZE"))
-    (let [thtree1 nil THT nil thx nil]
-        (cond (term? a) (RETURN a)
-            (= (car a) 'thtag) (SETQ THT (cadr a))
-            (= (car a) 'THEOREM) (SETQ a (list 'thprog)))
-        (set! *thtree* (SETQ thtree1 (cons nil *thtree*)))
-    PLUP (SETQ thx (cadr thtree1))
-        (cond (nil? (cdr thtree1)) (do (terpri) (pr a) (bug! "OVERPOP - THFINALIZE"))
-            (and THT (= (car thx) 'thprog) (memq THT (cadddr thx)))
-                (GO RTLEV)
-            (or (= (car thx) 'thprog) (= (car thx) 'thand))
-                (do (RPLACA (cddr thx) nil)
-                    (SETQ thtree1 (cdr thtree1)))
-            (= (car thx) 'THREMBIND)
-                (SETQ thtree1 (cdr thtree1))
-            :else (RPLACD thtree1 (cddr thtree1)))
-        (when (= (car thx) (car a)) (GO DONE))
-        (GO PLUP)
-    RTLEV (SETQ thx (cddr thx))
-    LEVLP (cond (nil? (car thx)) (do (SETQ thtree1 (cdr thtree1)) (GO PLUP))
-            (= (caaddr (caar thx)) THT) (GO DONE))
-        (RPLACA thx (cdar thx))
-        (GO LEVLP)
-    DONE (set! *thtree* (cdr *thtree*))
-        true))
+(defq- thfinalize [& a]
+    (when' a => (bug! "BAD CALL - THFINALIZE")
+        (if (term? a) a
+            (let [[a a2] (condp = (car a) 'thtag [a (cadr a)] 'THEOREM [(list 'thprog) nil] [a nil])]
+                (set! *thtree* (cons nil *thtree*))
+                (loop-when [t1 *thtree*] (cdr t1) => (do (terpri) (pr a) (bug! "OVERPOP - THFINALIZE"))
+                    (let-when [x (cadr t1)
+                          [? t1] (cond
+                            (and a2 (= (car x) 'thprog) (memq a2 (cadddr x)))
+                                (loop-when [x (cddr x)] (car x) => [false (cdr t1)]
+                                    (if (= (caaddr (caar x)) a2)
+                                        [true nil]
+                                        (do (RPLACA x (cdar x)) (recur x))))
+                            (or (= (car x) 'thprog) (= (car x) 'thand))
+                                (do (RPLACA (cddr x) nil) [(= (car x) (car a)) (cdr t1)])
+                            (= (car x) 'THREMBIND)
+                                [(= (car x) (car a)) (cdr t1)]
+                            :else
+                                (do (RPLACD t1 (cddr t1)) [(= (car x) (car a)) t1]))
+                    ] ? => (recur t1)
+                        (set! *thtree* (cdr *thtree*))
+                        true))))))
 
 (defq- thfind [& a]
     (thbind (caddr a))
