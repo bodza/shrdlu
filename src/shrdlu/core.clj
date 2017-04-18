@@ -8,6 +8,7 @@
 (defmacro lambda [& _] `(fn ~@_))
 
 (def- ascii char)
+(def- terpri println)
 
 (def- car first)
 (def- cdr next)
@@ -57,7 +58,11 @@
 (def- ^:dynamic *global-message*)
 (def- ^:dynamic *savesent*)
 (def- ^:dynamic *lastsentno*)
+(def- ^:dynamic *lastsent*)
 (def- ^:dynamic *sentno*)
+(def- ^:dynamic *level*)
+(def- ^:dynamic *sent*)
+(def- ^:dynamic *punct*)
 
 (def- ^:dynamic *plan*)
 (def- ^:dynamic *plan2*)
@@ -480,7 +485,7 @@
 (§ DEFPROP TC-STACKUP
     (THCONSE (x y BLOCKS PYR (WHY (EV)) EV)
         (!STACKUP ($? x))
-        (or (< (reduce #'+ (map #'(lambda [x] (caddr (size x))) ($? x))) 641)
+        (or (< (reduce + (map #'(lambda [x] (caddr (size x))) ($? x))) 641)
             (not (DPRINT2 "TOO HIGH,")))
         (THCOND
             ((and ($? x) (cdr ($? x))))
@@ -827,7 +832,7 @@ nil
         (COND ((= surf 'ßTABLE)
                 (SETQ xymin '(0 0))
                 (SETQ xymax '(640 640))
-                (SETQ LEVEL 0)
+                (set! *level* 0)
                 (GO ON))
             ((SETQ X (atab surf))))
         (COND
@@ -843,12 +848,12 @@ nil
             ((= (car X) 'ßBOX)
                 (SETQ xymin (list (caadr X) (cadadr X)))
                 (SETQ xymax (list (+ (caaddr X) (caadr X)) (+ (cadr (caddr X)) (cadadr X))))
-                (SETQ LEVEL 1))
+                (set! *level* 1))
             ((SETQ x1 (half (car size)))
                 (SETQ y1 (half (cadr size)))
                 (SETQ xymax (list (min 640 (dec (+ (caaddr X) (caadr X) x1))) (min 640 (dec (+ (cadr (caddr X)) (cadadr X) y1)))))
                 (SETQ xymin (list (max 0 (- (caadr X) x1)) (max 0 (- (cadadr X) y1))))
-                (SETQ LEVEL (+ (caddr (cadr X)) (caddr (caddr X))))))
+                (set! *level* (+ (caddr (cadr X)) (caddr (caddr X))))))
     ON  (SETQ n 8)
         (SETQ x1 (- (car xymax) (car xymin)))
         (SETQ y1 (- (cadr xymax) (cadr xymin)))
@@ -857,7 +862,7 @@ nil
                         (GROW (list
                                 (+ (car xymin) (rem (abs (RANDOM)) x1))
                                 (+ (cadr xymin) (rem (abs (RANDOM)) y1))
-                                LEVEL)
+                                *level*)
                             xymin xymax obj)))
                     (< (- (caadr v) (caar v)) (car size))
                     (< (- (cadadr v) (cadar v)) (cadr size)))
@@ -866,9 +871,9 @@ nil
                 ((= type 'RANDOM)
                     (list (half (- (+ (caar v) (caadr v)) (car size)))
                         (half (- (+ (cadar v) (cadadr v)) (cadr size)))
-                        LEVEL))
+                        *level*))
                 ((= type 'PACK)
-                    (list (caar v) (cadar v) LEVEL))
+                    (list (caar v) (cadar v) *level*))
                 ((ert "FINDSPACE -- type"))))))))
 
 (§ defq- GOAL [x]
@@ -970,7 +975,7 @@ nil
         (dorun (map #'(lambda [x]
             (and (THVAL '(THGOAL (!IS ($? x) ($E TYPE))) (list (list 'X x))) (SETQ XX (packord x (size x) XX))))
         obj))
-        (doall (map #'cadr XX))))
+        (doall (map cadr XX))))
 
 (§ defn- PACKON [surf l]
     (let [x nil]
@@ -1182,8 +1187,6 @@ nil
     ;; EVLIS EVALS ELEMENTS OF ARG, THEN RETURNS ARG.
     (dorun (map eval l))
     l)
-
-(defn- thprintc [x] (TERPRI) (PRINC x) (PRINC \space))
 
 (§ defn- THADD [THTT thpl]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
@@ -1488,7 +1491,7 @@ nil
 
 (§ defn- THDATA []
     (let [x nil]
-    =>  (TERPRI)
+    =>  (terpri)
         (COND ((nil? (SETQ x (READ nil))) (RETURN true))
             ((PRINT (THADD (car x) (cdr x)))))
         (GO =>)))
@@ -1618,9 +1621,9 @@ nil
     (THPUSH *thtree*
         (list 'THFIND
             (COND ((= (car tha) 'ALL) ' (1 nil nil))               ;; STANDARD ALL
-                ((number? (car tha))
+                ((number? (car tha))
                     (list (car tha) (car tha) true))                       ;; SINGLE NUMBER
-                ((number? (caar tha)) (car tha))                    ;; WINOGRAD CROCK FORMAT
+                ((number? (caar tha)) (car tha))                    ;; WINOGRAD CROCK FORMAT
                 ((= (caar tha) 'EXACTLY)
                     (list (cadar tha) (inc (cadar tha)) nil))
                 ((= (caar tha) 'AT-MOST)
@@ -1727,7 +1730,7 @@ nil
         (SETQ THNF (inc THNF))
         ;; THNF IS A FREE VARIABLE FROM THADD (WHO CALLS THIS BUGER)
         ;; IT SAYS WE ARE LOOKING AT THE N'TH PLACE IN THE PATTERN
-        (COND ((and (term? thi) (not (= thi '?)) (not (number? thi)))
+        (COND ((and (term? thi) (not (= thi '?)) (not (number? thi)))
                 ;; THI1 IS THE NAME OF THE ATOM TO LOOK UNDER WHEN THI IS A USUAL ATOM
                 ;; THI1 = THI NUMBERS DON'T HAVE PROPERTY LISTS SO THEY DON'T COUNT AS
                 ;; NORMAL ATOMS, NOR DOES "?" SINCE IT IS A SORT OF VARIABLE IN PLANNER
@@ -1944,7 +1947,7 @@ nil
         ;; UPDATE THB1.
         (SETQ THB1 (cdr THB1))
         ;; IF THE ITEM IS NOT A NORMAL ATOM, SKIP IT AND GO TO NEXT PASS.
-    THP3 (COND ((or (nil? (term? THB2)) (number? THB2) (= THB2 '?))
+    THP3 (COND ((or (nil? (term? THB2)) (number? THB2) (= THB2 '?))
                 (GO THP1))
             ;; IF THE ITEM DOES NOT HAVE THE PROPERTY ON ITS PROPERTY LIST,
             ;; THEN IT OBVIOUSLY DOSEN'T HAVE ANY BUCKET AT ALL.
@@ -2116,7 +2119,7 @@ nil
         ;; THA4, THA5, THONE, AND THPC ARE NEW
         (SETQ THNF (inc THNF))
         ;; THIS COND SERVES THE SAME PURPOSE AS THE FIRST COND IN THIP
-        (COND ((and (term? thb) (not (= thb '?)) (not (number? thb)))
+        (COND ((and (term? thb) (not (= thb '?)) (not (number? thb)))
                 (SETQ THA thb))
             ((or (= thb '?) (memq (car thb) '(THV THNV)))
                 (COND (THFST (RETURN 'THVRB))
@@ -2210,7 +2213,9 @@ nil
 (§ defq- THRESTRICT [thb]
     (let [x (THGAL (car thb) *thalist*)]
         (COND ((term? x)
-                (thprintc "THRESTRICT IGNORED - CONTINUING"))
+                (terpri)
+                (print "THRESTRICT IGNORED - CONTINUING")
+                (print \space))
             ((THRPLACD (cdr x) (THUNION (cddr x) (cdr thb)))))
         x))
 
@@ -2607,7 +2612,7 @@ nil
         (SETQ x (COND
             ((term? x) (list x true nil))
             ((cddr x) x)
-            ((nil? (cdr x)) (PRINT x) (PRINC "BAD FORMAT") (RETURN nil))
+            ((nil? (cdr x)) (PRINT x) (print "BAD FORMAT") (RETURN nil))
             ((list (car x) (cadr x) nil))))
         ;; IF OBJECT-TO-BE-TRACED IS A PARTICULAR THEOREM, THEN THE TRIPLET
         ;; '(THEOREM (THSEL 'CADR) (THSEL 'CADDDR)) IS GUARANTEED TO
@@ -2660,7 +2665,7 @@ nil
 (§ DEFPROP THTRACES
     (lambda []
         (PRINT (cadar *thtree*))
-        (PRINC "FAILED ")
+        (print "FAILED ")
         (evlis (cddar *thtree*))
         (THPOPT)
         nil)
@@ -2669,7 +2674,7 @@ nil
 (§ DEFPROP THTRACES
     (lambda []
         (PRINT (cadar *thtree*))
-        (PRINC "SUCCEEDED ")
+        (print "SUCCEEDED ")
         (evlis (cddar *thtree*))
         (THPOPT)
         THVALUE)
@@ -2682,50 +2687,56 @@ nil
 (§ DEFPROP THBKPT
     (lambda [x B]
         (THPUSH *thtree* (list 'THTRACES (THGENS B) (and B '(ert nil))))
-        (thprintc "PASSING BKPT")
-        (PRIN1 (cadar *thtree*))
-        (PRINC \space)
+        (terpri)
+        (print "PASSING BKPT")
+        (print \space)
+        (pr (cadar *thtree*))
+        (print \space)
         ;; BY SETTING THBRANCH AND THABRANCH, A TRIPLE IS CREATED BY THVAL FOR BACKTRACKING.
         ;; THEN, THE TREE IS POPPED TO PREVENT THTRACES FROM TYPING OUT THE MEANINGLESS
         ;; THAT THE BREAKPOINT SUCCEEDED.
         (SETQ THBRANCH *thtree*)
         (SETQ THABRANCH *thalist*)
         (THPOPT)
-        (PRIN1 x))
+        (pr x))
     THTRACE)
 
 (§ DEFPROP THGOAL
     (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES (THGENS G) '(and THVALUE (PRIN1 THVALUE)) (and B '(ert nil))))
-        (thprintc "TRYING GOAL")
-        (PRIN1 (cadar *thtree*))
-        (PRINC \space)
-        (PRIN1 x))
+        (THPUSH *thtree* (list 'THTRACES (THGENS G) '(and THVALUE (pr THVALUE)) (and B '(ert nil))))
+        (terpri)
+        (print "TRYING GOAL")
+        (print \space)
+        (pr (cadar *thtree*))
+        (print \space)
+        (pr x))
     THTRACE)
 
 (§ DEFPROP THEOREM
     (lambda [x B]
-        (THPUSH *thtree* (list 'THTRACES x '(and THVALUE (PRIN1 THVALUE)) (and B '(ert nil))))
-        (thprintc "ENTERING THEOREM")
-        (PRIN1 x))
+        (THPUSH *thtree* (list 'THTRACES x '(and THVALUE (pr THVALUE)) (and B '(ert nil))))
+        (terpri)
+        (print "ENTERING THEOREM")
+        (print \space)
+        (pr x))
     THTRACE)
 
 (§ DEFPROP THASSERT
     (lambda [x B]
         (THPUSH *thtree* (list 'THTRACES (THGENS A) (and B '(ert nil))))
         (PRINT 'ASSERTING)
-        (PRIN1 (cadar *thtree*))
-        (PRINC \space)
-        (PRIN1 x))
+        (pr (cadar *thtree*))
+        (print \space)
+        (pr x))
     THTRACE)
 
 (§ DEFPROP THERASE
     (lambda [x B]
         (THPUSH *thtree* (list 'THTRACES (THGENS E) (and B '(ert nil))))
         (PRINT 'ERASING)
-        (PRIN1 (cadar *thtree*))
-        (PRINC \space)
-        (PRIN1 x))
+        (pr (cadar *thtree*))
+        (print \space)
+        (pr x))
     THTRACE)
 
 ;; FOR THE TRACE-OBJECT 'THEOREM, IF ANY SPECIFIC THMS ARE TRACED, '(THSEL 'CADR) AND '(THSEL 'CADDDR)
@@ -2742,8 +2753,8 @@ nil
 
 (§ SETQ THGENS 0)
 
-;; MAKES A NAME WITH PREFIX X AND SUFFIX A UNIQUE NUMBER.
 (§ defq- THGENS [x]
+    ;; MAKES A NAME WITH PREFIX X AND SUFFIX A UNIQUE NUMBER.
     (MAKNAM (concat (EXPLODE (car x)) (EXPLODE (SETQ THGENS (inc THGENS))))))
 
 #_(ns shrdlu.syscom)
@@ -2756,40 +2767,40 @@ nil
 
 (§ defn- %SENT []
     ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
-    (TERPRI)
-    (dorun (map #'PRINT3 SENT))
-    (PRINC PUNCT))
+    (terpri)
+    (dorun (map #'PRINT3 *sent*))
+    (print *punct*))
 
 (§ defn- DA [x]
-    (and (get x 'THASSERTION) (DISP (APPLY #'concat (doall (map #'cddr (APPLY #'concat (doall (map #'cdr (cdr (get x 'THASSERTION)))))))))))
+    (and (get x 'THASSERTION) (DISP (APPLY #'concat (doall (map cddr (APPLY #'concat (doall (map cdr (cdr (get x 'THASSERTION)))))))))))
 
 (def- LINEL 65)
 
 (§ defq- DISP [a]
-    (TYO 12)
-    (TERPRI)
+    (print (ascii 12))
+    (terpri)
     (and (cdr a)
-        (PRINC (car a))
-        (PRINC " >> ")
-        (PRINC (cadr a))
-        (TERPRI))
+        (print (car a))
+        (print " >> ")
+        (print (cadr a))
+        (terpri))
     (SPRINT (COND ((cdr a) (get (car a) (cadr a))) ((eval (car a)))) LINEL 0)
     '*)
 
 (§ defn- DP [x]
-    (TERPRI)
-    (TERPRI)
-    (PRINC \[)
-    (PRINC x)
-    (PRINC \])
+    (terpri)
+    (terpri)
+    (print \[)
+    (print x)
+    (print \])
     (let [L (PLIST x)]
     A   (COND ((memq (car L) '(PNAME VALUE)) (GO B)))
-        (TERPRI)
+        (terpri)
         (TAB 4)
-        (PRINC (car L))
+        (print (car L))
         (SPRINT (cadr L) (- LINEL 18) 18)
     B   (COND ((SETQ L (cddr L)) (GO A)))
-        (TERPRI)
+        (terpri)
         '*))
 
 ;; ################################################################
@@ -2797,8 +2808,9 @@ nil
 ;; ################################################################
 
 (§ defn- FORGET []
-    (SETQ LASTSENT nil LASTREL nil BACKREF nil BACKREF2 nil)
     (set! *lastsentno* 0)
+    (set! *lastsent* nil)
+    (SETQ LASTREL nil BACKREF nil BACKREF2 nil)
     (dorun (map #'(lambda [pn]
         (dorun (map #'(lambda [prop] (REMPROP pn prop))
             '(BIND LASTBIND))))
@@ -2856,9 +2868,9 @@ nil
         (and nostop?
             (not IGNORE-NOSTOP-SWITCH?)
             (and cause-abortion
-                (THROW cause-abortion ABORT-PARSER))
+                (*THROW 'ABORT-PARSER cause-abortion))
             (RETURN true))
-        (TERPRI)
+        (terpri)
         (dorun (map #'PRINT3 message))
     PRINT
         (SETQ FIRSTWORD true ST-BUFFER nil BUILDING-ST-FORM nil)   ;; "ST" REFERS TO SHOW, TELL
@@ -2881,7 +2893,7 @@ nil
             (COND ((memq GLOP '(true P nil))                     ;; LEAVE-LOOP CHARS
                     (RETURN GLOP))
                 ((= GLOP 'GO)                                  ;; CAUSE RETURN TO READY-STATE
-                    (THROW 'GO ABORT-PARSER))
+                    (*THROW 'ABORT-PARSER 'GO))
                 (BUILDING-ST-FORM
                     (SETQ ST-BUFFER (cons GLOP ST-BUFFER))
                     (GO LISTEN))
@@ -2967,24 +2979,24 @@ nil
 (def- CHRCT 76)
 
 (§ defn- PRINT2 [x]
-    (COND ((> CHRCT (FLATSIZE x)) (PRINC \space))
-        (:else (TERPRI)))
-    (PRINC x))
+    (COND ((> CHRCT (FLATSIZE x)) (print \space))
+        (:else (terpri)))
+    (print x))
 
 (§ defn- PRINT3 [x]
-    (PROG2 (or (> CHRCT (FLATSIZE x)) (TERPRI)) (PRINC x) (PRINC \space)))
+    (PROG2 (or (> CHRCT (FLATSIZE x)) (terpri)) (print x) (print \space)))
 
 (§ defn- PRINTEXT [text]
     (COND (text
-        (TERPRI)
+        (terpri)
         (eval (cons 'SAY (listify text))))))
 
 (§ defq- PRINTC [l]
-    (TERPRI)
+    (terpri)
 =>  (COND ((nil? l) (RETURN nil)))
     (let [test (eval (car l))]
         (COND ((= test '<TAB>))
-            (:else (PRINC test) (PRINC \space))))
+            (:else (print test) (print \space))))
     (SETQ l (cdr l))
     (GO =>))
 
@@ -3019,8 +3031,8 @@ nil
 
 (§ defn- WALLP [a]
     (let [ALIST nil LINEL 72]
-        (TYO 12)
-        (TERPRI)
+        (print (ascii 12))
+        (terpri)
         (SPRINT (list (PR1 a) (reverse ALIST)) LINEL 0)
         nil))
 
@@ -3029,7 +3041,7 @@ nil
         (COND ((> n LINEL) (RETURN '<TAB>)))
     =>  (SETQ P (- LINEL CHRCT))
         (COND ((not (> n P)) (RETURN '<TAB>)))
-        (PRINC \space)
+        (print \space)
         (GO =>)))
 
 #_(ns shrdlu.morpho)
@@ -3042,77 +3054,74 @@ nil
 ;;
 ;; ################################################################################
 
-(def- CARRET (ascii 13))
 (def- ALTMODE (ascii 27))
-(def- RUBOUT (ascii 127))
 
-(def- FINAL '(\. ? !))
-(def- PUNCL '(\. ? ! \: \; \"))
+(def- FINAL (seq ".?!"))
+(def- PUNCL (seq ".?!:;\""))
 
-(def- VOWEL '(nil A E I O U Y))
-(def- CONSO '(B C D F G H J K L M N P Q R S T V W X Z))
-(def- LIQUID '(L R S Z V))
+(def- VOWEL (cons nil "AEIOUY"))
+(def- CONSO (seq "BCDFGHJKLMNPQRSTVWXZ"))
+(def- LRSZV (seq "LRSZV"))
+(def- CGSJVZ (seq "CGSJVZ"))
 
 (defn- uppercase-ify-char [c] (if (< 96 c 123) (- c 32) c))
 
 (§ defn- ETAOIN []
-    (let [WORD nil NEWWORD nil CHAR nil ALTN nil ALREADY-BLGING-NEWWRD nil WRD nil LAST nil NEXT nil Y nil WORD1 nil x nil RD nil POSS nil]
-    THRU (SETQ SENT (SETQ WORD (SETQ PUNCT (SETQ POSS nil))))
+    (let [WORD nil NEWWORD nil c nil ALTN nil ALREADY-BLGING-NEWWRD nil WRD nil LAST nil NEXT nil Y nil WORD1 nil x nil RD nil POSS nil]
+    THRU (set! *sent* (SETQ WORD (set! *punct* (SETQ POSS nil))))
         (PRINT 'READY)
-        (TERPRI)
-    CHAR (COND ((== (TYIPEEK) 24) (READCH) (ert nil) (GO THRU)) ;; "CNTRL-X" BREAK LEFT OVER FROM CMU
+        (terpri)
+    CHAR (COND ((== (TYIPEEK) 24) (READCH) (ert nil) (GO THRU)) ;; "CTRL-X" BREAK LEFT OVER FROM CMU
             ((== (TYIPEEK) 3) (bug "ETAOIN: ABOUT TO READ EOF")))
-        ;; THIS LITTLE HACK MAPS ALL LOWERCASE LETTERS INTO UPPERCASE.
-        (SETQ CHAR (COND ((> 123 (SETQ CHAR (TYI)) 96) (- CHAR 32)) ((> 91 CHAR 64) CHAR) (:else CHAR))
-            CHAR (ascii CHAR))
-        (COND ((= CHAR \space) (GO WORD))                     ;; DELIMITER
-            ((= CHAR ALTMODE)
-                (SETQ CHAR (ascii (uppercase-ify-char (TYI))))
-                (COND ((= CHAR ALTMODE) (ert nil) (GO THRU)) ;; ALTMODE-ALTMODE
-                    ((= CHAR 'C) (TYO 12) (GO DO))         ;; ALTMODE-C
-                    ((= CHAR 'R) (TERPRI) (GO DO))         ;; ALTMODE-R
-                    ((and (= CHAR 'S) *savesent*)            ;; ALTMODE-S CAUSES THE LAST SENTENCE TYPED IN TO
-                        (SETQ SENT (car *savesent*))          ;; RETURNED AS THE SENTENCE TO BE INTERPRETED
-                        (SETQ PUNCT (cdr *savesent*))
+        (SETQ c (ascii (uppercase-ify-char (TYI))))
+        (COND ((= c \space) (GO WORD))                     ;; DELIMITER
+            ((= c ALTMODE)
+                (SETQ c (ascii (uppercase-ify-char (TYI))))
+                (COND ((= c ALTMODE) (ert nil) (GO THRU)) ;; ALTMODE-ALTMODE
+                    ((= c 'C) (print (ascii 12)) (GO DO))         ;; ALTMODE-C
+                    ((= c 'R) (terpri) (GO DO))         ;; ALTMODE-R
+                    ((and (= c 'S) *savesent*)            ;; ALTMODE-S CAUSES THE LAST SENTENCE TYPED IN TO
+                        (set! *sent* (car *savesent*))          ;; RETURNED AS THE SENTENCE TO BE INTERPRETED
+                        (set! *punct* (cdr *savesent*))
                         (%SENT)
-                        (RETURN SENT))
-                    ((= CHAR 'N)                           ;; ALTMODE-N COMPLEMENTS THE NEWWORD FLAG, WHICH
+                        (RETURN *sent*))
+                    ((= c 'N)                           ;; ALTMODE-N COMPLEMENTS THE NEWWORD FLAG, WHICH
                                                             ;; DETERMINES WHETHER UNRECOGNIZED WORDS WILL BE
                                                             ;; CONSIDERED SPELLING ERRORS OR NEW WORDS.
                         (SETQ NEWWORD (not NEWWORD) ALTN (not ALTN))
                         (GO CHAR))
                     ((GO THRU))))
-            ((= CHAR RUBOUT)
-                (COND (WORD (PRINC (car WORD)) (SETQ WORD (cdr WORD)))
-                    (SENT (PRINT (car SENT)) (SETQ SENT (cdr SENT))))
+            ((= c (ascii 127))
+                (COND (WORD (print (car WORD)) (SETQ WORD (cdr WORD)))
+                    (*sent* (PRINT (car *sent*)) (set! *sent* (cdr *sent*))))
                 (GO CHAR))
-            ((= CHAR CARRET) (GO WORD))
-            ((memq CHAR PUNCL)
-                (SETQ PUNCT CHAR)                           ;; DELIMITER
+            ((= c (ascii 13)) (GO WORD))
+            ((memq c PUNCL)
+                (set! *punct* c)                           ;; DELIMITER
                 (and WORD (GO WORD))
                 (GO PUNC)))
         (and
-            (or (and (= CHAR '\") (not ALREADY-BLGING-NEWRD) (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD true)) (GO CHAR)) ;; "sic!
-                (and (= CHAR '\") ALREADY-BLGING-NEWRD (not (SETQ ALREADY-BLGING-NEWRD nil)) (GO WORD)) ;; "sic!
+            (or (and (= c '\") (not ALREADY-BLGING-NEWRD) (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD true)) (GO CHAR)) ;; "sic!
+                (and (= c '\") ALREADY-BLGING-NEWRD (not (SETQ ALREADY-BLGING-NEWRD nil)) (GO WORD)) ;; "sic!
                                                             ;; WITHIN THIS "AND" ARE ALL THE CHARACTERS THAT ARE UNDERSTOOD BY THE SYSTEM
-                (number? CHAR)
-                (and (= CHAR '=) (nil? WORD))
-                (memq CHAR VOWEL)
-                (memq CHAR CONSO))
-            (SETQ WORD (cons CHAR WORD)))
+                (number? c)
+                (and (= c '=) (nil? WORD))
+                (memq c VOWEL)
+                (memq c CONSO))
+            (SETQ WORD (cons c WORD)))
         (GO CHAR)
 
     DO  (PRINT 'READY)
-        (TERPRI)
-        (dorun (map #'(lambda [x] (PRINT2 x)) (reverse SENT)))
-        (PRINC \space)
-        (dorun (map #'PRINC (reverse WORD)))
+        (terpri)
+        (dorun (map #'(lambda [x] (PRINT2 x)) (reverse *sent*)))
+        (print \space)
+        (dorun (map print (reverse WORD)))
         (GO CHAR)
 
     WORD (COND ((nil? WORD) (GO CHAR))
             ((= WORD '(P L E H)) (HELP) (GO THRU))
-            ((and (SETQ WRD (ERRSET (READLIST (reverse WORD)))) (number? (SETQ WRD (car WRD))))
-                (SETQ SENT (cons WRD SENT))
+            ((and (SETQ WRD (ERRSET (READLIST (reverse WORD)))) (number? (SETQ WRD (car WRD))))
+                (set! *sent* (cons WRD *sent*))
                 (BUILDWORD WRD (or (and (zero? (dec WRD)) '(NUM NS)) '(NUM)) (list 'NUM WRD) nil))
                                                             ;; NO ROOT FOR NUMBERS
             ((nil? WRD) (SETQ WRD (reverse WORD)) (GO NO))
@@ -3142,13 +3151,13 @@ nil
             (:else (GO NO)))
         (SETQ LAST (car RD))
         (SETQ NEXT (cadr RD))
-        (COND ((and (memq LAST CONSO) (not (memq LAST LIQUID)) (= LAST NEXT)) (SETQ RD (cdr RD)))
+        (COND ((and (memq LAST CONSO) (not (memq LAST LRSZV)) (= LAST NEXT)) (SETQ RD (cdr RD)))
             ((= LAST 'I) (SETQ RD (cons 'Y (cdr RD))))
             ((or
                 (and (memq LAST CONSO) (memq NEXT VOWEL) (not (= NEXT 'E)) (memq (caddr RD) CONSO))
-                (and (memq LAST LIQUID) (memq NEXT CONSO) (not (memq NEXT LIQUID)))
+                (and (memq LAST LRSZV) (memq NEXT CONSO) (not (memq NEXT LRSZV)))
                 (and (= LAST 'H) (= NEXT 'T))
-                (and (memq LAST '(C G S J V Z)) (or (memq NEXT LIQUID) (and (memq NEXT VOWEL) (memq (caddr RD) VOWEL)))))
+                (and (memq LAST CGSJVZ) (or (memq NEXT LRSZV) (and (memq NEXT VOWEL) (memq (caddr RD) VOWEL)))))
                     (SETQ RD (cons 'E RD))))
         (GO TRY)
 
@@ -3178,23 +3187,23 @@ nil
         ;;   BUILD UP THE PROCESSED LIST OF WORDS TO BE RETURNED
         ;; -------------------------------------------------------
 
-    WRD (SETQ SENT
+    WRD (set! *sent*
             (COND (POSS
                 (COND ((or (memq 'NOUN (SETQ FEATURES (get WRD 'FEATURES))) (memq 'PROPN FEATURES))
                         ;; IF IT'S A NOUN OR A PROPER NOUN, MARK IT AS POSSESSIVE
                         (BUILDWORD POSS (concat (MEET FEATURES (get 'POSS 'ELIM)) '(POSS)) (get WRD 'SEMANTICS) ROOT)
-                        (cons POSS SENT))
+                        (cons POSS *sent*))
                     ;; CAN WE GENERALIZE IT???
-                    ((BUILDWORD "'S" '(VB BE V3PS PRES) (get 'BE 'SEMANTICS) 'BE) (cons "'S" (cons WRD SENT)))))
-                ((cons WRD SENT))))
+                    ((BUILDWORD "'S" '(VB BE V3PS PRES) (get 'BE 'SEMANTICS) 'BE) (cons "'S" (cons WRD *sent*)))))
+                ((cons WRD *sent*))))
 
-    PUNC (COND (PUNCT
-            (COND ((and (= PUNCT '?) (nil? SENT)) (HELP) (GO THRU))
-                ((memq PUNCT FINAL)
-                    (RETURN (car (set! *savesent* (cons (reverse SENT) PUNCT))))) ;; RETURN POINT !!!!!!!!!!!!!
-                ((SETQ SENT (cons PUNCT SENT))))))
+    PUNC (COND (*punct*
+            (COND ((and (= *punct* '?) (nil? *sent*)) (HELP) (GO THRU))
+                ((memq *punct* FINAL)
+                    (RETURN (car (set! *savesent* (cons (reverse *sent*) *punct*))))) ;; RETURN POINT !!!!!!!!!!!!!
+                ((set! *sent* (cons *punct* *sent*))))))
 
-        (SETQ PUNCT nil)
+        (set! *punct* nil)
         (SETQ WORD (SETQ POSS nil))
         (GO CHAR)
 
@@ -3202,15 +3211,14 @@ nil
             (BUILDWORD WRD '(NOUN NS) '((NOUN (SMNEWNOUN)) (PROPN (SMNEWPROPN))) WRD)
             (or ALTN (SETQ NEWWORD nil))
             (GO PUNC)))
-        (TERPRI)
-        (SAY *SORRY I DON'T KNOW THE WORD \") ;; "sic!
-        (PRINC WRD)
-        (PRINC "\".") ;; "sic!
-        (TERPRI)
-        (SAY PLEASE TYPE <LF> AND CONTINUE THE SENTENCE\.)
+        (terpri)
+        (SAY (str "SORRY, I DON'T KNOW THE WORD \"" WRD "\"."))
+        (terpri)
+        (SAY "PLEASE TYPE <LF> AND CONTINUE THE SENTENCE.")
 
     NOGO (or (== (TYI) 10) (GO NOGO))
-        (SETQ PUNCT nil WORD nil)
+        (set! *punct* nil)
+        (SETQ WORD nil)
         (GO DO)))
 
 (§ defn- PROPNAME [x] (= (car (EXPLODE x)) '=))
@@ -3229,7 +3237,7 @@ nil
             (and (cdddr x) (cadddr x)))))
         a)))
 
-(§ defn- UNDEFINED [] (PRINC (word N)) (ert "UNDEFINED"))
+(§ defn- UNDEFINED [] (print (word N)) (ert "UNDEFINED"))
 
 #_(ns shrdlu.show)
 
@@ -3237,25 +3245,25 @@ nil
     (dorun (map #'(lambda [x]
         (let [BODY nil]
             (PRINT x)
-            (COND ((get x 'LABELTRACED) (PRINC 'ALREADY-) (GO TRACED))
+            (COND ((get x 'LABELTRACED) (print "ALREADY-") (GO TRACED))
                 ((get x 'INTERPRET) (SETQ BODY (cdr (get x 'INTERPRET))))
                 ((get x 'EXPR) (SETQ BODY (cddr (caddr (get x 'EXPR)))))
-                (:else (PRINC "CAN'T BE-") (GO TRACED)))
+                (:else (print "CAN'T BE-") (GO TRACED)))
             (MAP #'(lambda [y]
                     (and (term? (car y))
                         (RPLACD y (cons (list 'PASSING (list 'quote (car y))) (cdr y)))))
                 BODY)
             (PUTPROP x true 'LABELTRACED)
         TRACED
-            (PRINC 'LABELTRACED)
+            (print "LABELTRACED")
             nil))
         a)))
 
 (§ defn- PASSING [a]
     (SETQ LASTLABEL a)
     (and (COND
-            ((term? LABELTRACE) (and LABELTRACE (PRINT 'PASSING) (PRINC a)))
-            ((memq a LABELTRACE) (PRINT 'PASSING) (PRINC a)))
+            ((term? LABELTRACE) (and LABELTRACE (PRINT 'PASSING) (print a)))
+            ((memq a LABELTRACE) (PRINT 'PASSING) (print a)))
         (COND
             ((term? LABELBREAK) (and LABELBREAK (ert "LABELBREAK")))
             ((memq a LABELBREAK) (ert "LABELBREAK")))))
@@ -3269,15 +3277,15 @@ nil
         (let [BODY nil]
             (PRINT x)
             (COND
-                ((not (get x 'LABELTRACED)) (PRINC "ISN'T ALREADY-") (GO TRACED))
+                ((not (get x 'LABELTRACED)) (print "ISN'T ALREADY-") (GO TRACED))
                 ((get x 'INTERPRET) (SETQ BODY (cdr (get x 'INTERPRET))))
                 ((get x 'EXPR) (SETQ BODY (cddr (caddr (get x 'EXPR)))))
-                (:else (PRINC "CAN'T BE-") (GO TRACED)))
+                (:else (print "CAN'T BE-") (GO TRACED)))
             (MAP #'(lambda [y] (and (term? (car y)) (RPLACD y (cddr y)))) BODY)
             (PUTPROP x nil 'LABELTRACED)
-            (PRINC 'UN)
+            (print "UN")
         TRACED
-            (PRINC 'LABELTRACED)
+            (print "LABELTRACED")
             nil))
         a)))
 
@@ -3297,18 +3305,18 @@ nil
                 -- BEWARE OF INTERACTIONS WITH SPECIAL HACKS FOR LOCATION\, ETC\.))))))
 
 (§ defn- PEV [ev col top]
-    (TERPRI)
+    (terpri)
     (TAB col)
-    (PRINC ev)
-    (PRINC "  ")
-    (PRINC (get ev 'TYPE))
-    (PRINC "  TIME: ")
-    (PRINC (get ev 'START))
-    (PRINC " TO ")
-    (PRINC (get ev 'END))
+    (print ev)
+    (print "  ")
+    (print (get ev 'TYPE))
+    (print "  TIME: ")
+    (print (get ev 'START))
+    (print " TO ")
+    (print (get ev 'END))
     (and top
-        (PRINC " REASON: ")
-        (PRINC (get ev 'WHY)))
+        (print " REASON: ")
+        (print (get ev 'WHY)))
     (dorun (map #'(lambda [x] (and (= ev (get x 'WHY)) (PEV x (+ col 8) nil)))
         (reverse EVENTLIST))))
 
@@ -3330,26 +3338,26 @@ nil
 
 (§ defn- SHOWSCENE [x]
     (let [PLANNERSEE nil]
-        (TERPRI)
+        (terpri)
         (TAB 16)
-        (PRINC "CURRENT SCENE")
-        (TERPRI)
-        (TERPRI)
+        (print "CURRENT SCENE")
+        (terpri)
+        (terpri)
         (dorun (map #'(lambda [OBJ]
             (PRINT OBJ)
-            (PRINC "-->  ")
+            (print "-->  ")
             (evlis (car (NAMEOBJ OBJ 'DESCRIBE)))
-            (PRINC " AT ")
-            (PRINC (cadr (assq OBJ ATABLE)))
+            (print " AT ")
+            (print (cadr (assq OBJ ATABLE)))
             (and (SETQ OBJ (THVAL '(THFIND ALL ($? x) (x) (THGOAL (!SUPPORT ($? OBJ) ($? x)))) (list (list 'OBJ OBJ))))
                     (TAB 13)
-                    (PRINC "SUPPORTS ")
-                    (PRINC OBJ)))
+                    (print "SUPPORTS ")
+                    (print OBJ)))
                 '(ßB1 ßB2 ßB3 ßB4 ßB5 ßB6 ßB7 ßB10 ßBOX)))
-        (TERPRI)
-        (SAY THE HAND IS GRASPING)
-        (PRINC \space)
-        (PRINC (COND
+        (terpri)
+        (SAY "THE HAND IS GRASPING")
+        (print \space)
+        (print (COND
             ((SETQ OBJ (THVAL '(THGOAL (!GRASPING ($_ x))) '((x THUNBOUND)))) (cadar OBJ))
             (:else 'NOTHING)))
         nil))
@@ -3379,8 +3387,8 @@ nil
         (PRINTEXT text)
     READ (COND ((memq (SETQ CHAR (READCH)) breakchars)
             (COND ((not NOTINIT) (GO READ))
-                ((cdr CH2) (TYO 7) (GO READ))
-                (:else (dorun (map #'PRINC (car EX2)))
+                ((cdr CH2) (print (ascii 7)) (GO READ))
+                (:else (dorun (map print (car EX2)))
                     (and (= (car CH2) 'QUIT)
                     (ERR nil))
                     (RETURN (car CH2)))))
@@ -3427,9 +3435,9 @@ nil
     (SHOWTELL a 'CANTELL 'TELLTREE 'TELLINFO 'TELL))
 
 (§ defn- TREEPRINT [root tr col]
-    (TERPRI)
+    (terpri)
     (TAB col)
-    (PRINC root)
+    (print root)
     (dorun (map #'(lambda [x] (TREEPRINT x tr (+ col 8)))
         (get root tr)))
     '*)
@@ -3475,11 +3483,11 @@ nil
     TELL (lambda [x]
             (COND ((nil? (cdr x)) (TELLCHOICE x))
                 ((= (cadr x) 'ON)
-                    (TYO 12)
+                    (print (ascii 12))
                     (THTRACE THEOREM THASSERT THERASE (THGOAL true true))
                     (SETQ PLANNERSEE true))
                 ((= (cadr x) 'OFF)
-                    (TYO 12)
+                    (print (ascii 12))
                     (SETQ PLANNERSEE nil)
                     (THUNTRACE))
                 (:else (TELLCHOICE x)))))
@@ -3491,11 +3499,11 @@ nil
     TELL (lambda [x]
             (COND ((nil? (cdr x)) (TELLCHOICE x))
                 ((= (cadr x) 'ON)
-                    (TYO 12)
+                    (print (ascii 12))
                     (SETQ LABELTRACE true)
                     (TRACE CALLSM PARSE))
                 ((= (cadr x) 'OFF)
-                    (TYO 12)
+                    (print (ascii 12))
                     (SETQ LABELTRACE nil)
                     (UNTRACE CALLSM PARSE))
                 (:else (TELLCHOICE x)))))
@@ -3545,13 +3553,13 @@ nil
     SHOW (lambda [x]
             (COND ((get (cadr x) 'FEATURES) (DP (cadr x)))
                 ((SHOWMOVE (cdr x)) (DP (car PT)) (RESTOREPT))
-                (:else (SAY NO SUCH NODE)))))
+                (:else (SAY "NO SUCH NODE")))))
 
 (§ DEFS TREE
     SHOW (lambda [x]
             (COND ((get (cadr x) 'FEATURES) (WALLP (list (cadr x))))
                 ((SHOWMOVE (cdr x)) (WALLP PT) (RESTOREPT))
-                (:else (SAY NO SUCH TREE)))))
+                (:else (SAY "NO SUCH TREE")))))
 
 (§ DEFS UNIT
     SHOW (lambda [x] (APPLY #'DG (or (cdr x) (list (REQUEST "UNIT:" '(GRAMMAR UNIT WHOSE PROGRAM IS TO BE EXAMINED -- "E.G."  CLAUSE NG PREPG VG ADJG)))))))
@@ -3795,7 +3803,7 @@ nil
             ((= XX 'H) (or (SETQ PT H) (GO FAIL)) (GO EX))
             ((= XX 'C) (SETQ PT C) (GO EX))
             ((= XX 'PC) (SETQ PT (H (PARENT C))) (GO EX))
-            ((= XX 'LASTSENT) (SETQ PT LASTSENT) (GO EX))
+            ((= XX 'LASTSENT) (SETQ PT *lastsent*) (GO EX))
             ((= XX 'U) (or (SETQ PT (PARENT PT)) (GO FAIL)))
             ((= XX 'DLC) (or (SETQ PT (H PT)) (GO FAIL)))
             ((= XX 'DF) (SETQ L2 (cons 'DLC (cons 'FR L2))) (SETQ XX 'DLC) (GO LOOK))
@@ -3824,14 +3832,14 @@ nil
             (GO EX)))
     LOOK1 (SETQ XX (car EXEC))
     LOOK (COND ((= XX 'N) (SETQ PTW N))
-            ((= XX 'LASTSENT) (SETQ PTW (NB LASTSENT)))
+            ((= XX 'LASTSENT) (SETQ PTW (NB *lastsent*)))
             ((= XX 'FW) (SETQ PTW (NB PT)))
             ((= XX 'AW) (COND ((= PT C) (GO FAIL)) ((SETQ PTW (N PT)) (SETQ XX 'PW) (GO LOOK))))
             ((= XX 'LW) (COND ((= PT C) (GO FAIL)) ((SETQ PTW (N PT)) (SETQ XX 'PW) (GO LOOK))))
-            ((= XX 'NW) (COND ((SETQ PTW (cdr PTW))) ((SETQ PTW (FINDB SENT nil)) (GO FAIL))))
-            ((= XX 'PW) (COND ((SETQ PTW (FINDB SENT PTW))) ((SETQ PTW SENT) (GO FAIL))))
-            ((= XX 'SFW) (SETQ PTW SENT))
-            ((= XX 'SLW) (SETQ PTW (FINDB SENT nil)))
+            ((= XX 'NW) (COND ((SETQ PTW (cdr PTW))) ((SETQ PTW (FINDB *sent* nil)) (GO FAIL))))
+            ((= XX 'PW) (COND ((SETQ PTW (FINDB *sent* PTW))) ((SETQ PTW *sent*) (GO FAIL))))
+            ((= XX 'SFW) (SETQ PTW *sent*))
+            ((= XX 'SLW) (SETQ PTW (FINDB *sent* nil)))
             (:else (bug "MOVE-PTW: ILLEGAL INSTRUCTION")))
     EX  (COND ((nil? (cdr EXEC)) (RETURN PTW))
             ((term? (cadr EXEC)) true)
@@ -3930,9 +3938,9 @@ nil
     ;; IF P IS TRUE, PARSE2 DOES NOT APPEND THE NODE JUST PARSED TO THE PARSING TREE.
     ;; PARSE2 WILL CALL EITHER A COMPILED OR INTERPRETED VERSION OF THE GRAMMAR PROGRAM.
     (let [UNIT (car REST) CREATED-NODE nil END nil PARENT nil RE nil SPECIAL nil nbb N]
-        (SETQ LEVEL (inc LEVEL))
+        (set! *level* (inc *level*))
         (COND ((= N CUT)
-            (SETQ LEVEL (dec LEVEL))
+            (set! *level* (dec *level*))
             (RETURN nil)))
         (SETQ END CUT)
         (SETQ NN (not (= N CUT)))
@@ -3956,7 +3964,7 @@ nil
                 SM
                 C))
     LOSE (SETQ NN (not (= N CUT)))
-    OK  (SETQ LEVEL (dec LEVEL))
+    OK  (set! *level* (dec *level*))
         RE))
 
 (§ defn- PARSE3 [rest p]
@@ -4169,8 +4177,8 @@ nil
 
     MAJOR
         (CUT END)
-        (COND ((= PUNCT '?) (GO QUEST))
-            ((or (CQ IMPER) (= PUNCT '!)) (GO IMPER)))
+        (COND ((= *punct* '?) (GO QUEST))
+            ((or (CQ IMPER) (= *punct* '!)) (GO IMPER)))
         (GO THEREINIT)
 
     FDEC
@@ -5609,7 +5617,7 @@ nil
     QUEST
         (| (CQ QUEST) nil NG)
                                                                     ;; CERTAIN RESTRICTIONS PLACED ON THE POSSIBLE
-                                                                    ;; NOUN GROUPS THAT IT CAN TAKE - HENSE THE
+                                                                    ;; NOUN GROUPS THAT IT CAN TAKE - HENCE THE
                                                                     ;; SPECIAL CALL TO PARSE AS ABOVE, IF THE PREPG IS
         (| (PARSE NG QUEST OBJ) OBJR (PREPQUEST))                   ;; MARKED WITH THE FEATURE "QUEST" (INDICATING
         (| (and (CQ OF) (PARSE NG OFOBJ)) OBJR nil)                 ;; THAT IT SHOULD CONTAIN THE QUESTION ELEMENT OF
@@ -5837,11 +5845,11 @@ nil
             ((memq (car REST) '(NG PREPG ADJG))
                 (and (not (CQ OFOBJ)) (PARSE2 (concat REST '(COMPONENT)) nil)))
             ((= (car REST) 'CLAUSE)
-                ((lambda [LASTSENT AUXFE]
+                ((lambda [*lastsent* AUXFE]
                     (and (PARSE2 (concat REST AUXFE '(COMPONENT)) nil)
                         (or (not AUXFE) (F (car AUXFE)))
                         (SETR 'TIME (GETR 'TIME H) C)))             ;; MARK COMPOUND CLAUSE AS TO DECLAR/IMPER FOR ANSGEN
-                    (COND ((ISQ H MAJOR) H) (LASTSENT))
+                    (if (ISQ H MAJOR) H *lastsent*)
                     (MEET (FE H) '(DECLAR IMPER)))))
             nil
             LOSE2)
@@ -5989,8 +5997,7 @@ nil
     (RELATION (RESTRICTIONSß (((!THING) (= (quantifier? SMSUB) 'INDEF))) PROCEDUREß nil)))
 
 (§ defn- !BEINT []
-    (COND
-        ((RELATION
+    (or (RELATION
             (RESTRICTIONSß (((!PHYSOB)) (SMCOMP (!PROPERTY)))
                 PROCEDUREß (!EVAL (let [PROPERTY nil]
                                     (COND
@@ -6000,8 +6007,8 @@ nil
             (RESTRICTIONSß (((!THING)) (SMCOMP (!SYSTEMS) (and (not (refer? SMCOMP)) (= (rel? SMCOMP) SMSUB))))
                 PROCEDUREß (!EVAL (relations? SMCOMP)))
             (RESTRICTIONSß (((!THING)) (SMCOMP (!THING) (refer? SMCOMP)))
-                PROCEDUREß ((!EVAL (list 'THAMONG '!1 (list 'quote (refer? !2))))))))
-        (:else (ERTSTOP SORRY I DON'T UNDERSTAND THE VERB BE WHEN YOU USE IT LIKE THAT))))
+                PROCEDUREß ((!EVAL (list 'THAMONG '!1 (list 'quote (refer? !2)))))))
+        (ert "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT")))
 
 (§ DEFS BEFORE SEMANTICS ((BINDER (SMBINDER nil START))) FEATURES (BINDER TIME))
 
@@ -6598,7 +6605,7 @@ nil
 
 (§ defn- THANK []
     (COND ((= (cadr N) 'YOU)
-        (SAY YOU'RE WELCOME)
+        (SAY "YOU'RE WELCOME")
         (FLUSHME)
         (FLUSHME)
         (or NN (ß_G))
@@ -6988,7 +6995,7 @@ nil
 (§ DEFS !ROBOT SYS (!ANIMATE))
 
 (§ DEFS !SIZE
-    MEASFN (lambda [x] (reduce #'+ (size x)))
+    MEASFN (lambda [x] (reduce + (size x)))
     SYS (!PROPERTY))
 
 (§ DEFS !SHAPE PRIORITY 128 SYS (!PROPERTY))
@@ -7436,9 +7443,9 @@ nil
                     (ISQ PT RSQ)
                     (SMIT2 (GETR 'RELHEAD PT) 0))
                 (and SM (RETURN SM))))
-        (SMIT2 (GETR 'SUBJECT LASTSENT) 192)
+        (SMIT2 (GETR 'SUBJECT *lastsent*) 192)
         (SMIT2 (parsenode? LASTREL) 128)                ;; TRY REL (I.E. QUESTION FOCUS) OF THE LAST SENTENCE
-        (MOVE-PT LASTSENT DLC)
+        (MOVE-PT *lastsent* DLC)
     UP  (COND ((not (MOVE-PT PV (NG))) (GO ON))
             (:else (SMIT2 PT 64)))                       ;; GO THROUGH TOP LEVEL NG'S OF LAST SENTENCE
         (and (MOVE-PT PV) (GO UP))
@@ -7596,7 +7603,7 @@ nil
         (SETQ WHO nil)
     UP  (COND
             ((not (SETQ CANDIDATES (THVAL2 WHO FINDER))) (GO TOOFEW))
-            ((number? (num? oss)) (COND ((< (count CANDIDATES) (num? oss)) (GO TOOFEW)) ((> (count CANDIDATES) (num? oss)) (GO TOOMANY))))
+            ((number? (num? oss)) (COND ((< (count CANDIDATES) (num? oss)) (GO TOOFEW)) ((> (count CANDIDATES) (num? oss)) (GO TOOMANY))))
             ((= (num? oss) 'NS) (COND ((nil? CANDIDATES) (GO TOOFEW)) ((cdr CANDIDATES) (GO TOOMANY))))
             ((memq (num? oss) '(NPL SG-PL)))
             ((ert "SMNG3: SCREWY NUMBER PROPERTY OF OSS")))
@@ -7638,7 +7645,7 @@ nil
             (SMONE2 ANSNAME)
             (SMONE2 BACKREF2)
             (COND (CONTRAST (SETQ CONTRAST nil) (GO UP)))
-            (and (MOVE-PT LASTSENT DLC PV (NG)) (SMONE2 (list (car PT))))
+            (and (MOVE-PT *lastsent* DLC PV (NG)) (SMONE2 (list (car PT))))
             (ert "SMONE: CAN'T FIND REFERENT FOR \"ONE\""))
         SM))
 
@@ -7731,7 +7738,7 @@ nil
 (§ defn- SMCL1 []
     (let [SMSUB nil SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST nil]
         ;; SET UP GLOBAL VARIABLES WHICH CONSIST OF POINTERS TO THE SEMANTIC DEFINITIONS
-        ;; OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB
+        ;; OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB.
         (SETQ SMSUB (COND
             ((SETQ SMSUB (GETR 'LOGICAL-SUBJECT C)) (SM SMSUB))
             ((CQ IMPER) '(SHRDLU-OSS))
@@ -7744,7 +7751,7 @@ nil
         (SETQ SMCOMP (SM (GETR 'COMP C)))
         ;; NATURALLY SEVERAL OF THESE GLOBAL VARIABLES (BOUND IN THIS PROG AND ACCESSED IN DEEPER ONES)
         ;; ARE NIL AT THIS POINT IN THE PROCEDURE.  THE FOLLOWING CHECKS ARE PRIMARILY FOR DEBUGGING PURPOSES
-        ;; (HENSE THE "ERT") TO INSURE THAT THE NON-NIL REGISTERS AND THE TRANSITIVITY OF THE VERB ARE
+        ;; (HENCE THE "ERT") TO INSURE THAT THE NON-NIL REGISTERS AND THE TRANSITIVITY OF THE VERB ARE
         ;; BEING MATCHED IN EVERY CASE.
         (or SMSUB (and (MEET '(THERE ITRNS) FE) (GO CHECK)))
         (or SMOB1 (and (or (CQ TRANS) (not (CQ CLAUSE))) (GO CHECK)))
@@ -8280,7 +8287,7 @@ nil
 (defn- plnr-findspec [x]
     ;; GENERATES PARAMETER FOR THFIND FROM THE NOTATION USED IN THE DETERMINER.
     (cond
-        (number? x) x
+        (number? x) x
         (memq x '(NS NPL SG-PL)) 1
         (= (car x) 'EXACTLY) (list (cadr x) (inc (cadr x)) nil)
         (= (car x) '>) (inc (cadr x))
@@ -8376,7 +8383,7 @@ nil
         (RETURN
             (and (SETQ %ELEMENT (get (car %PLNRPHRASE) 'THMLIST))
                 (eval (COND
-                    ((number? (caar %ELEMENT)) (cadr (or (assq (count %PLNRPHRASE) %ELEMENT) '(nil nil))))
+                    ((number? (caar %ELEMENT)) (cadr (or (assq (count %PLNRPHRASE) %ELEMENT) '(nil nil))))
                     (%ELEMENT)))))))
 
 (§ defn- PLNR-REMTIME [exp]
@@ -8774,8 +8781,8 @@ nil
         ;; THE ACTION INCLUDES BOTH THE THINGS TO BE DONE
         ;; AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
         (evlis (action? (car anslist)))
-        (PRINC '\.)
-        (TERPRI)
+        (print \.)
+        (terpri)
         ;; DOBACKREF STORES AWAY DISCOURSE INFORMATION.
         (DOBACKREF (car anslist))
         true))
@@ -8822,7 +8829,7 @@ nil
             ;; TO GET THE DATA BASE STRAIGHT IF THIS ANSWER IS PICKED.  IT ALSO TAKES CARE OF THE BACKREF STUFF.
             (ANSBUILD
                 (COND (SUCCESS (plausibility? RSS)) (:else (- (plausibility? RSS) 512)))
-                (COND (SUCCESS (concat (reverse *plan2*) '((SAY OK)))) (:else '((SAY I CAN'T))))
+                (COND (SUCCESS (concat (reverse *plan2*) '((SAY "OK")))) (:else '((SAY "I CAN'T"))))
                 true)))))
 
 (§ defn- ANSDECLARE [RSS]
@@ -8835,15 +8842,15 @@ nil
                 ;; CONJOINED DECLARATIVES ARE HANDLED BY DOING EACH ONE SEPARATELY.
                 (SETQ ANS (doall (map #'ANSDECLARE (and? RSS))))
                 (RETURN (ANSBUILD
-                    (reduce #'+ (map #'plausibility? ANS))
-                    (cons '(SAY I UNDERSTAND) (doall (map #'(lambda [x] (DELETE '(SAY I UNDERSTAND) (action? x))) ANS)))
+                    (reduce + (map plausibility? ANS))
+                    (cons '(SAY "I UNDERSTAND") (doall (map #'(lambda [x] (DELETE '(SAY "I UNDERSTAND") (action? x))) ANS)))
                     nil))))
         ((not (ISTENSE (parsenode? RSS) 'PRESENT))
             (global-err "I ONLY UNDERSTAND PRESENT TENSE DECLARATIVES"))
         (:else (ANSBUILD
             (plausibility? RSS)
             ;; ANSTHM GENERATES THE APPROPRIATE ASSERTION OR THEOREM.
-            (cons '(SAY I UNDERSTAND) (doall (map #'(lambda [x] (list 'THADD (quotify (ANSTHM x)) nil)) (relations? RSS))))
+            (cons '(SAY "I UNDERSTAND") (doall (map #'(lambda [x] (list 'THADD (quotify (ANSTHM x)) nil)) (relations? RSS))))
             nil))))
 
 (§ defn- ANSELIMINATE [anslist]
@@ -8863,26 +8870,26 @@ nil
         (COND ((cdr POSSIBILITIES) true)
             ((SETQ AMB (cdr AMB)) (GO UP))
             (:else (bug "ANSELIMINATE -- NO CONFLICT")))
-        (TERPRI)
-        (SAY I'M NOT SURE WHAT YOU MEAN BY \") ;; "sic!
+        (terpri)
+        (SAY "I'M NOT SURE WHAT YOU MEAN BY \"")
         (dorun (map #'PRINT2 (FROM (NB (caddar AMB)) (N (caddar AMB)))))
-        (SAY \" IN THE PHRASE \") ;; "sic!
+        (SAY "\" IN THE PHRASE \"")
         (dorun (map #'PRINT2 (FROM (NB (SETQ XX (PARENT? (caddar AMB)))) (N XX))))
-        (PRINC "\".")
-        (TERPRI)
-        (SAY DO YOU "MEAN:")
+        (print "\".")
+        (terpri)
+        (SAY "DO YOU MEAN:")
         (SETQ XX 0)
         (dorun (map #'(lambda [POSS]
                 (PRINT (SETQ XX (inc XX)))
                 (dorun (map #'PRINT2 (cadr POSS)))) ;; THE PARAPHRASE
             POSSIBILITIES))
-        (PRINC '?)
-        (TERPRI)
+        (print \?)
+        (terpri)
     READ (SETQ XX (READ))
-        (COND ((or (not (number? XX)) (> XX (count POSSIBILITIES)))
-            (TERPRI)
-            (SAY PLEASE TYPE ONE OF THE NUMBERS)
-            (TERPRI)
+        (COND ((or (not (number? XX)) (> XX (count POSSIBILITIES)))
+            (terpri)
+            (SAY "PLEASE TYPE ONE OF THE NUMBERS")
+            (terpri)
             (GO READ)))
         (SETQ POSSIBILITIES (NTH XX POSSIBILITIES))
         (RETURN
@@ -8964,14 +8971,14 @@ nil
                 (SETQ ans (THVAL-MULT (AMBPUT code)))
                 (ANSBUILD
                     (+ (car ans) (plausibility? rss))
-                    (COND ((cadr ans) '((SAY YES))) ((ISTENSE NODE 'MODAL) '((SAY I DON'T KNOW))) (:else '((SAY NO))))
+                    (COND ((cadr ans) '((SAY "YES"))) ((ISTENSE NODE 'MODAL) '((SAY "I DON'T KNOW"))) (:else '((SAY "NO"))))
                     true))
             ((SETQ ans (THVAL-MULT (PLNR-FINDIFY 'ALL var (list var) (AMBPUT code))))
                 (ANSBUILD
                     ;; AN ANSWER IS VERY IMPLAUSIBILE IF IT MENTIONS AN EVENT THE SYSTEM CAN'T FIND.
                     (COND ((cadr ans) (+ (plausibility? rss) (car ans))) (:else (- (plausibility? rss) 512)))
-                    (COND ((nil? (cadr ans)) '((SAY I CAN'T DISCUSS A NON-EXISTENT EVENT)))
-                        ((concat (and (= type 'POLAR) '((SAY YES))) (list (list 'evlis (list 'DESCRIBEVENT (quotify (cadr ans)) (quotify type)))))))
+                    (COND ((nil? (cadr ans)) '((SAY "I CAN'T DISCUSS A NON-EXISTENT EVENT")))
+                        ((concat (and (= type 'POLAR) '((SAY "YES"))) (list (list 'evlis (list 'DESCRIBEVENT (quotify (cadr ans)) (quotify type)))))))
                     true))))))
 
 (§ defn- ANSORDER [l]
@@ -8988,13 +8995,13 @@ GO  (let [x l]
     (cond (or (or? RSS) (and? RSS))
         (let [ans (doall (map #'ANSQUEST (or (and? RSS) (or? RSS))))]
             (ANSBUILD
-                (reduce #'+ (map #'plausibility? ans))
+                (reduce + (map plausibility? ans))
                 (concat
-                    (and (not (ISQ (parsenode? RSS) COMPONENT)) '((SAY YOU'RE TRYING TO CONFUSE ME\.)))
+                    (and (not (ISQ (parsenode? RSS) COMPONENT)) '((SAY "YOU'RE TRYING TO CONFUSE ME.")))
                     (doall (map #'(lambda [QUEST]
-                        (concat '((TERPRI))
+                        (concat '((terpri))
                             (ansay (ELIZA (FROM (NB (parsenode? (ansrss? QUEST))) (N (parsenode? (ansrss? QUEST))))))
-                            '((PRINC '?) (TERPRI))
+                            '((print \?) (terpri))
                             ;; CONJOINED QUESTIONS ARE HANDLED BY SIMPLY REPEATING EACH PART AND ANSWERING IT SEPARATELY.
                             (action? QUEST)))
                     ans)))
@@ -9028,7 +9035,7 @@ GO  (let [x l]
             ((= TYPE 'ALL)
                 (ANSBUILD
                     (+ PLAUS (plausibility? RSS))
-                    (COND ((nil? ANS) '((SAY YES))) ((cons '(SAY NO, NOT) (PREPPUT (namelist PHRASE 'INDEF ANS)))))
+                    (COND ((nil? ANS) '((SAY "YES"))) ((cons '(SAY "NO, NOT") (PREPPUT (namelist PHRASE 'INDEF ANS)))))
                     true))
             ((= TYPE 'HOWMANY)
                 (ANSBUILD
@@ -9047,36 +9054,36 @@ GO  (let [x l]
                     (COND
                         ((memq NUM '(NS SG-PL))
                             (COND
-                                ((nil? ANS) (COND ((ISTENSE (parsenode? RSS) 'MODAL) '((SAY I DON'T KNOW))) (:else '((SAY NO)))))
-                                (:else (concat '((SAY YES,)) (COND
+                                ((nil? ANS) (COND ((ISTENSE (parsenode? RSS) 'MODAL) '((SAY "I DON'T KNOW"))) (:else '((SAY "NO")))))
+                                (:else (concat '((SAY "YES,")) (COND
                                     ((ISTENSE (parsenode? RSS) 'MODAL) nil)
-                                    ((PREPPUT (concat (and (cdr ANS) (concat (NAMESUGAR LENGTH REL) '((PRINC \:)))) (namelist PHRASE 'INDEF ANS)))))))))
-                        ((number? NUM)
+                                    ((PREPPUT (concat (and (cdr ANS) (concat (NAMESUGAR LENGTH REL) '((print \:)))) (namelist PHRASE 'INDEF ANS)))))))))
+                        ((number? NUM)
                             ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
                             ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
                             (concat
                                 (COND
-                                    ((= NUM LENGTH) '((SAY YES,)))
+                                    ((= NUM LENGTH) '((SAY "YES,")))
                                     ((> LENGTH NUM) nil)
-                                    ((zero? NUM) '((SAY NO,)))
-                                    (:else '((SAY NO, ONLY))))
+                                    ((zero? NUM) '((SAY "NO,")))
+                                    (:else '((SAY "NO, ONLY"))))
                                 (COND
                                     ((= NUM LENGTH) nil)
-                                    (:else (PREPPUT (concat (NAMESUGAR LENGTH REL) '((PRINC \:))))))
+                                    (:else (PREPPUT (concat (NAMESUGAR LENGTH REL) '((print \:))))))
                                 (PREPPUT (namelist PHRASE 'INDEF ANS))))
                         ((= (car NUM) 'EXACTLY)
-                            (COND ((= LENGTH NUM) '((SAY YES)))
-                                (:else (cons '(SAY NO,) (PREPPUT (NAMESUGAR LENGTH RES))))))
+                            (COND ((= LENGTH NUM) '((SAY "YES")))
+                                (:else (cons '(SAY "NO,") (PREPPUT (NAMESUGAR LENGTH RES))))))
                         ((= (car NUM) '>)
                             (cons (COND
-                                    ((> LENGTH NUM) '(SAY YES,))
-                                    ((zero? LENGTH) '(SAY NO,))
-                                    (:else '(SAY NO, ONLY)))
+                                    ((> LENGTH NUM) '(SAY "YES,"))
+                                    ((zero? LENGTH) '(SAY "NO,"))
+                                    (:else '(SAY "NO, ONLY")))
                                 (PREPPUT (NAMESUGAR LENGTH REL))))
                         ((= (car NUM) '<)
                             (cons (COND
-                                    ((< LENGTH NUM) '(SAY YES,))
-                                    (:else '(SAY NO,)))
+                                    ((< LENGTH NUM) '(SAY "YES,"))
+                                    (:else '(SAY "NO,")))
                                 (PREPPUT (NAMESUGAR LENGTH REL))))
                         ((ert "ANSREL -- FUNNY NUMBER")))
                     true))
@@ -9139,21 +9146,21 @@ GO  (let [x l]
         ((= type 'WHERE)
             (global-err "I CAN'T ANSWER \"WHERE\" QUESTIONS YET"))
         ((= type 'WHY)
-            (COND ((= (get event 'WHY) 'COMMAND) '((SAY BECAUSE YOU TOLD ME TO)))
-                (:else (cons '(SAY TO) (NAMEACTION 'INFINITIVE (get event 'WHY))))))
+            (COND ((= (get event 'WHY) 'COMMAND) '((SAY "BECAUSE YOU TOLD ME TO")))
+                (:else (cons '(SAY "TO") (NAMEACTION 'INFINITIVE (get event 'WHY))))))
         ((= type 'HOW)
             (let [ans nil]
                 (dorun (map #'(lambda [x] (and (= (get x 'WHY) event) (SETQ ans (cons x ans)))) EVENTLIST))
                 (COND
-                    ((nil? ans) '((SAY I CAN'T ANALYZE HOW I DID IT)))
-                    (:else (concat '((SAY BY)) (NAMEACTION 'ING (car ans)) (doall (map #'(lambda [x] (cons '(PRINC '\;) (CONS '(SAY THEN) (NAMEACTION 'ING x)))) (CDR ans))))))))
+                    ((nil? ans) '((SAY "I CAN'T ANALYZE HOW I DID IT")))
+                    (:else (concat '((SAY "BY")) (NAMEACTION 'ING (car ans)) (doall (map #'(lambda [x] (cons '(print \;) (CONS '(SAY "THEN") (NAMEACTION 'ING x)))) (CDR ans))))))))
         ((or (= type 'POLAR) (= type 'WHEN))
             (COND
                 ((= (get event 'WHY) 'COMMAND)
                     (COND
-                        ((= event (toplevel (car EVENTLIST))) '((SAY JUST NOW)))
-                        (:else (cons '(SAY BEFORE) (NAMEACTION 'PAST (toplevel (car (FINDB event EVENTLIST))))))))
-                (:else (cons '(SAY WHILE) (NAMEACTION 'PRES-PAST (toplevel event))))))
+                        ((= event (toplevel (car EVENTLIST))) '((SAY "JUST NOW")))
+                        (:else (cons '(SAY "BEFORE") (NAMEACTION 'PAST (toplevel (car (FINDB event EVENTLIST))))))))
+                (:else (cons '(SAY "WHILE") (NAMEACTION 'PRES-PAST (toplevel event))))))
         ((bug "DESCRIBEVENT -- FUNNY type"))))
 
 (§ defn- DISPUT [assertion]
@@ -9202,7 +9209,7 @@ GO  (let [x l]
         ;; NAMEOBJ RETURNS A LIST OF THE OBJECT AND THE ...
         ;; THIS PATCH MAY WELL BE TOTAL OUT OF PHASE WITH THE BACKREF HACKER - DDM 5-12-73 INSTRUCTIONS FOR NAMING IT.
         (SETQ names (doall (map #'(lambda [x] (NAMEOBJ x spec)) names)))
-        (COND ((nil? names) (RETURN '(SAY NOTHING))))
+        (COND ((nil? names) (RETURN '(SAY "NOTHING"))))
     UP  (SETQ COUNT 1)
         (SETQ EXAM (car names))
         (SETQ names (cdr names))
@@ -9226,8 +9233,8 @@ GO  (let [x l]
         (SETQ ANS (car RES))
     OUTPUT (COND
             ((nil? (SETQ RES (cdr RES))) (RETURN ANS))
-            ((cdr RES) (SETQ COMMA? true) (SETQ ANS (concat ANS '((PRINC '\,)) (car RES))))
-            ((SETQ ANS (concat ANS (and COMMA? '((PRINC '\,))) '((SAY AND)) (car RES)))))
+            ((cdr RES) (SETQ COMMA? true) (SETQ ANS (concat ANS '((print \,)) (car RES))))
+            ((SETQ ANS (concat ANS (and COMMA? '((print \,))) '((SAY "AND")) (car RES)))))
         (GO OUTPUT)))
 
 (§ defn- NAMEACTION [TENSE event]
@@ -9248,7 +9255,7 @@ GO  (let [x l]
             (= verb 'PICKUP)
                 (cons (SAYIFY (VBFIX 'PUT true)) (pron-prt 'UP obj1))
             (= verb 'PUTON)
-                (concat (cons (SAYIFY (VBFIX 'PUT true)) (namelist-evaled '(nil) 'DEF obj1)) (cons '(SAY ON) (namelist-evaled '(nil) 'DEF obj2)))
+                (concat (cons (SAYIFY (VBFIX 'PUT true)) (namelist-evaled '(nil) 'DEF obj1)) (cons '(SAY "ON") (namelist-evaled '(nil) 'DEF obj2)))
             (= verb 'STACKUP)
                 (cons (VBFIX STACK true) (pron-prt 'UP obj1))
             (= verb 'RAISEHAND)
@@ -9302,15 +9309,15 @@ GO  (let [x l]
             ((= spec 'INDEF)
                 (ansay (cons 'A NAME)))                                         ;; IN THE INDEFINITE CASE WE DON'T CARE IF THIS ISN'T A FULL SPECIFICATION.
             ((SETQ x (THVAL2 nil '(THFIND ALL ($? x) (x (y ITEM)) (($G) (!SUPPORT ($? y) ($? x))))))
-                (cons (concat '(SAY THE) NAME)
-                    (cons '(SAY WHICH SUPPORTS)
+                (cons (concat '(SAY "THE") NAME)
+                    (cons '(SAY "WHICH SUPPORTS")
                         (LISTNAMES nil 'INDEF x))))                             ;; IF IT SUPPORTS ANYTHING, NAME THEM.
-            ((cons (concat '(SAY THE) NAME)
-                (cons '(SAY WHICH IS TO THE RIGHT OF)
+            ((cons (concat '(SAY "THE") NAME)
+                (cons '(SAY "WHICH IS TO THE RIGHT OF")
                     (COND ((SETQ x (THVAL2 nil '(THFIND ALL ($? x) (x (y ITEM))
                                 (($G) (!AT ($? x) ?)) (($G) (!LOC !RIGHT ($? y) ($? x)) (THUSE TC-LOC))))) ;; MAKE SURE IT IS AN ITEM WITH A LOCATION.
                             (LISTNAMES nil 'INDEF x))
-                        ('((SAY NOTHING))))))))
+                        ('((SAY "NOTHING"))))))))
             (list ITEM)))))
 
 (§ DEFPROP TC-NAMEOBJ
@@ -9347,7 +9354,7 @@ GO  (let [x l]
 
 (§ defn- NAMESIZE [x]
     ;; ACCEPTS EITHER SINGLE NUMBER OR LIST OF DIMENSIONS.
-    (or (number? x) (SETQ x (reduce #'+ x)))
+    (or (number? x) (SETQ x (reduce + x)))
     (COND ((> x 383) 'LARGE) (:else 'SMALL)))
 
 (§ defn- NAMESUGAR [num oss]
@@ -9543,7 +9550,7 @@ GO  (let [x l]
                 ((ert "NAMEVENT DATA"))))
             (set! *thalist* (list
                 (list 'EVENT event)
-                (list 'SUBJ (COND ((number? (car EV)) nil) ('I)))
+                (list 'SUBJ (COND ((number? (car EV)) nil) ('I)))
                 (list 'OBJ1 nil) (list 'OBJ2 nil))))
             (ert "NAMEVENT THVAL"))
         (dorun (map #'(lambda [x]
@@ -9608,8 +9615,8 @@ FIXIT
 MAJOR
         (and LABELTRACE (PASSING 'MAJOR))
         (CUT END)
-        (COND ((= PUNCT '?) (GO QUEST))
-        ((or (CQ IMPER) (= PUNCT '!)) (GO IMPER)))
+        (COND ((= *punct* '?) (GO QUEST))
+        ((or (CQ IMPER) (= *punct* '!)) (GO IMPER)))
         (GO THEREINIT)
 FDEC
         (and LABELTRACE (PASSING 'FDEC))
@@ -10912,9 +10919,9 @@ UP
             ((memq (car REST) '(ADJ NUM NOUN PREP VB ADV)) (PARSE3 (concat REST '(COMPONENT)) nil))
             ((memq (car REST) '(NG PREPG ADJG)) (and (not (CQ OFOBJ)) (PARSE2 (concat REST '(COMPONENT)) nil)))
             ((= (car REST) 'CLAUSE)
-                ((lambda [LASTSENT AUXFE]
+                ((lambda [*lastsent* AUXFE]
                     (and (PARSE2 (concat REST AUXFE '(COMPONENT)) nil) (or (not AUXFE) (F (car AUXFE))) (SETR 'TIME (GETR 'TIME H) C)))
-                (COND ((ISQ H MAJOR) H) (LASTSENT))
+                (if (ISQ H MAJOR) H *lastsent*)
                 (MEET (FE H) '(DECLAR IMPER))))))
         (COND ((nil? ßRESULT) (GO LOSE2)))
         (CUT END)
@@ -10960,28 +10967,29 @@ RETURN
 #_(ns shrdlu.init)
 
 (§ defn- SHRDLU []
-    (binding [*thtime* 0 *thtrace* nil *thtree* nil *thxx* nil *thalist* '((nil nil)) *tholist* '((nil nil)) *global-message* nil *savesent* nil *lastsentno* 0 *sentno* 1]
-        (let [END nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil SENT nil PUNCT nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil LEVEL nil]
+    (binding [*thtime* 0 *thtrace* nil *thtree* nil *thxx* nil *thalist* '((nil nil)) *tholist* '((nil nil))
+              *global-message* nil
+              *savesent* nil *lastsentno* 0 *lastsent* nil *sentno* 1
+              *level* nil *sent* nil *punct* nil]
+        (let [END nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil]
             (CLEANOUT TSS EVX NODE ANS OSS RSS X)       ;; FLUSH OLD GENSYMS
-        =>  (CATCH
+        =>  (*CATCH 'ABORT-PARSER
                 (loop []
                     (set! *global-message* nil)
                     (set! *lastsentno* (inc *lastsentno*))
-                    (SETQ LASTSENT C)
+                    (set! *lastsent* C)
                     (set! *sentno* (inc *sentno*))
-                    (SETQ LEVEL 0)
+                    (set! *level* 0)
                     (SETQ MES 'NOPE)
                     (SETQ BACKREF nil)                  ;; ???????????????????
-                    (SETQ N (SETQ SENT (ETAOIN)))
-                    (COND ((and (ERRSET (SETQ PT (SETQ C (eval (cons 'PARSE '(CLAUSE MAJOR TOPLEVEL)))))) C)
+                    (SETQ N (set! *sent* (ETAOIN)))
+                    (when (and (ERRSET (SETQ PT (SETQ C (eval (cons 'PARSE '(CLAUSE MAJOR TOPLEVEL)))))) C)
                         (SETQ FE (FE C))
-                        (SETQ NB SENT)
+                        (SETQ NB *sent*)
                         (SETQ H (H C))
                         (SETQ INTERPRETATION (SM C))
-                        (COND ((ERRSET (eval '(ANSWER C))))
-                            (:else (APPLY #'SAY (or *global-message* "I DON'T UNDERSTAND."))))))
-                    (recur))
-                ABORT-PARSER)
+                        (or (ERRSET (eval '(ANSWER C))) (APPLY #'SAY (or *global-message* "I DON'T UNDERSTAND."))))
+                    (recur)))
             (GO =>))))
 
 (§ defn -main [& args]
@@ -10993,12 +11001,12 @@ RETURN
 
     (ERRSET (STARTHISTORY))
 
-    (TERPRI)
-    (SAY YOU ARE NOW IN A READ-EVAL-PRINT LOOP)
-    (TERPRI)
-    (SAY TYPE "\"GO \"" TO ENTER READY STATE) ;; "sic!
+    (terpri)
+    (SAY "YOU ARE NOW IN A READ-EVAL-PRINT LOOP")
+    (terpri)
+    (SAY "TYPE \"GO \" TO ENTER READY STATE")
 
-    (CATCH (ert nil) ABORT-PARSER)
+    (*CATCH 'ABORT-PARSER (ert nil))
 
     (SHRDLU))
 
