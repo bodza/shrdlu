@@ -689,13 +689,13 @@
                     ((THSUCCEED))))))
     THEOREM)
 
-(DEFUN TOPCENTER (X) ((lambda (X) (TCENT (cadr X) (caddr X))) (ATAB X)))
+(DEFUN TOPCENTER [X] ((lambda (X) (TCENT (cadr X) (caddr X))) (ATAB X)))
 
 (SETQ DOIT nil)
 
 (SETQ NOSTACKS true)
 
-(DEFUN SASSQ (X Y Z) (or (ASSQ X Y) (APPLY Z nil)))
+(DEFUN SASSQ [X Y Z] (or (ASSQ X Y) (APPLY Z nil)))
 
 (DEFPROP #CLEARTOP (((THGOAL (#SUPPORT $?* ?)))) CHOOSE)
 
@@ -746,7 +746,7 @@
     (TC-PHYSOB)
 nil
 
-(DEFUN UNION (A B)
+(DEFUN UNION [A B]
 =>  (COND ((nil? A) (RETURN B))
         ((MEMQ (car A) B))
         ((SETQ B (cons (car A) B))))
@@ -767,11 +767,11 @@ nil
 ;;
 ;; ################################################################
 
-(DEFUN ABSVAL (X) (COND ((neg? X) (- X)) (X)))
+(DEFUN ABSVAL [X] (COND ((neg? X) (- X)) (X)))
 
-(DEFUN ATAB (X) (or (ASSQ X ATABLE) (ERT ATABLE)))
+(DEFUN ATAB [X] (or (ASSQ X ATABLE) (ERT ATABLE)))
 
-(DEFUN CLEAR (LOC SIZE OBJ)
+(DEFUN CLEAR [LOC SIZE OBJ]
     (let [W nil X1 nil X2 nil]
         (SETQ OBJ (LISTIFY OBJ))
         (and (MEMQ nil (doall (map #'(lambda (X Y) (and (> X -1) (> 641 (+ X Y)) true)) LOC SIZE)))
@@ -789,18 +789,18 @@ nil
         (SETQ W (cdr W))
         (GO =>)))
 
-(DEFUN DIFF (X Y) (doall (map #'- X Y)))
+(DEFUN DIFF [X Y] (doall (map #'- X Y)))
 
-(DEFUN DIV2 (X) (/ X 2))
+(DEFUN DIV2 [X] (/ X 2))
 
-(DEFUN ENDTIME (list TIME)
+(DEFUN ENDTIME [LIST TIME]
     (let [Y nil]
         (or (SETQ Y (END? TIME)) (RETURN LIST))
     =>  (COND ((nil? LIST) (RETURN nil))
             ((not (> (caar LIST) Y)) (RETURN LIST))
             ((SETQ LIST (cdr LIST)) (GO =>)))))
 
-(DEFUN EV nil (or NOMEM $?EV))
+(DEFUN EV [] (or NOMEM $?EV))
 
 (DEFUN FINDSPACE
     (TYPE SURF SIZE OBJ)
@@ -854,12 +854,12 @@ nil
                     (list (caar V) (cadar V) LEVEL))
                 ((ERT FINDSPACE \-- TYPE))))))))
 
-(DEFUN GOAL FEXPR (X)
+(DEFUN GOAL FEXPR [X]
     (SETQ PLAN nil)
     (THVAL (list 'THGOAL (car X) '(THTBF THTRUE)) '((EV COMMAND)))
     (EVLIS (reverse PLAN)))
 
-(DEFUN GROW (LOC MIN MAX OBJ)
+(DEFUN GROW [LOC MIN MAX OBJ]
     (let [GROW nil XL nil XH nil XO nil YL nil YH nil YO nil]
         (SETQ OBJ (LISTIFY OBJ))
         (COND
@@ -909,29 +909,29 @@ nil
                     '(XL XH YL YH)))
                 (GO =>)))))
 
-(DEFUN LISTIFY (X) (COND ((ATOM X) (list X)) (X)))
+(DEFUN LISTIFY [X] (COND ((ATOM X) (list X)) (X)))
 
-(DEFUN LOCGREATER (X Y FN)
+(DEFUN LOCGREATER [X Y FN]
     ((lambda (XX YY) (not (< (FN (cadr XX)) (+ (FN (cadr YY)) (FN (caddr YY))))))
         (LOCG2 '$?YY X)
         (LOCG2 '$?ZZ Y)))
 
-(DEFUN LOCG2 (X Y) (COND ((EQ $?LOC '#LOC) (ATAB Y)) ((cons nil (cons (eval X) (cddr (ATAB Y)))))))
+(DEFUN LOCG2 [X Y] (COND ((EQ $?LOC '#LOC) (ATAB Y)) ((cons nil (cons (eval X) (cddr (ATAB Y)))))))
 
-(DEFUN MEMOREND FEXPR (A)
+(DEFUN MEMOREND FEXPR [A]
     (or NOMEM
         (and (PUTPROP $?EV THTIME 'END)
             (APPLY #'THASSERT (list (THVARSUBST (car A) nil)))
             (PUTPROP $?EV (caar A) 'TYPE))))
 
-(DEFUN MEMORY nil
+(DEFUN MEMORY []
     (or NOMEM
         (THAND (THVSETQ $_EV (MAKESYM 'E))
             (THSETQ EVENTLIST (cons $?EV EVENTLIST))
             (PUTPROP $?EV THTIME 'START)
             (PUTPROP $?EV $?WHY 'WHY))))
 
-(DEFUN OCCUPIER (X Y Z)
+(DEFUN OCCUPIER [X Y Z]
     (let [W nil X1 nil X2 nil]
         (COND ((neg? Z) (RETURN ':TABLE)))
         (SETQ W ATABLE)
@@ -943,20 +943,20 @@ nil
         (SETQ W (cdr W))
         (GO =>)))
 
-(DEFUN ORDER (X Y)
+(DEFUN ORDER [X Y]
     (COND ((nil? Y) (list X))
         ((> (car X) (caar Y))
             (cons (car Y) (ORDER X (cdr Y))))
         ((cons X Y))))
 
-(DEFUN PACKO (OBJ TYPE)
+(DEFUN PACKO [OBJ TYPE]
     (let [XX nil]
         (dorun (map #'(lambda (X)
             (and (THVAL '(THGOAL (#IS $?X $E TYPE)) (list (list 'X X))) (SETQ XX (PACKORD X (SIZE X) XX))))
         OBJ))
         (RETURN (doall (map #'cadr XX)))))
 
-(DEFUN PACKON (SURF LIST)
+(DEFUN PACKON [SURF LIST]
     (let [X nil]
         (SETQ SURF (ATAB SURF))
     =>  (COND ((nil? LIST) (RETURN nil))
@@ -967,20 +967,20 @@ nil
                 (GO =>))
             ((RETURN (car X))))))
 
-(DEFUN PACKORD (X SIZE LIST)
+(DEFUN PACKORD [X SIZE LIST]
     (COND ((nil? LIST) (list (list SIZE X)))
         ((or (> (caaar LIST) (car SIZE))
             (and (EQ (car SIZE) (caaar LIST)) (> (cadaar LIST) (cadr SIZE))))
         (cons (car LIST) (PACKORD X SIZE (cdr LIST))))
         ((cons (list SIZE X) LIST))))
 
-(DEFUN SIZE (X)
+(DEFUN SIZE [X]
     (COND ((EQ X ':BOX) '(256 256 192))
         ((EQ X ':TABLE) '(640 640 640))
         ((ATOM X) (caddr (ATAB X)))
         (X)))
 
-(DEFUN STARTHISTORY nil
+(DEFUN STARTHISTORY []
     (SETQ THTIME 0)
     (SETQ GRASPLIST nil)
     (DEFPROP EE COMMAND WHY)
@@ -999,24 +999,24 @@ nil
             'HISTORY)))
     ATABLE)))
 
-(DEFUN STARTIME (list TIME) (< (caar LIST) (or (START? TIME) -1)))
+(DEFUN STARTIME [LIST TIME] (< (caar LIST) (or (START? TIME) -1)))
 
-(DEFUN SUPPORT (LOC SIZE X)
+(DEFUN SUPPORT [LOC SIZE X]
     (COND ((EQ (caddr LOC) 0) ':TABLE)
         ((SETQ LOC (OCCUPIER (+ (car LOC) (DIV2 (car SIZE))) (+ (cadr LOC) (DIV2 (cadr SIZE))) (dec (caddr LOC))))
             (COND ((EQ LOC X) nil) (LOC)))))
 
-(DEFUN TCENT (X1 X2)
+(DEFUN TCENT [X1 X2]
     (list (+ (car X1) (DIV2 (car X2))) (+ (cadr X1) (DIV2 (cadr X2))) (+ (caddr X1) (caddr X2))))
 
-(DEFUN TFIND (X Y)
+(DEFUN TFIND [X Y]
     (let [Z nil]
         (or (SETQ Z (GET X 'HISTORY)) (RETURN nil))
     =>  (COND ((not (> (caar Z) (or (END? Y) 32767)))
                 (RETURN Z))
             ((SETQ Z (cdr Z)) (GO =>)))))
 
-(DEFUN TIMECHK (EV TIME)
+(DEFUN TIMECHK [EV TIME]
     (COND ((IMPERF? TIME)
         (not (or (< (GET EV 'END) (or (START? TIME) -1))
             (< (or (END? TIME) 262143)
@@ -1173,7 +1173,7 @@ nil
 
 (SETQ THVERSION nil)
 
-(DEFUN THREAD nil
+(DEFUN THREAD []
     ;; FUNCTION FOR THE /$ READ MACRO
     (let [CHAR nil]
         (RETURN (COND
@@ -1191,17 +1191,17 @@ nil
                 (PRINC (READ))
                 (ERR nil))))))
 
-(DEFUN THPUSH MACRO (A)
+(defmacro THPUSH [& A]
     ;; (THPUSH THTREE NEWINFO) CONSES NEWINFO ONTO THTREE
-    (list 'SETQ (cadr A) (list 'CONS (caddr A) (cadr A))))
+    (list 'SETQ (car A) (list 'cons (cadr A) (car A))))
 
-(DEFUN EVLIS (X)
+(DEFUN EVLIS [X]
     ;; EVLIS EVALS ELEMENTS OF ARG THEN RETURNS ARG
     (dorun (map #'EVAL X)))
 
-(DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '\ ))
+(DEFUN THPRINTC [X] (TERPRI) (PRINC X) (PRINC '\ ))
 
-(DEFUN THADD (THTT THPL)
+(DEFUN THADD [THTT THPL]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
     ;; THPL - PROPERTY LIST TO BE PLACED ON ASSERTION DATABASE INPUTS
     ;; THTT - NAME OF THM OR ACTUAL ASSERTION
@@ -1268,7 +1268,7 @@ nil
         (dorun (map #'THIP THFOO))
         (RETURN THTTL)))
 
-(DEFUN THAMONG FEXPR (THA)
+(DEFUN THAMONG FEXPR [THA]
     ;; EXAMPLE - (THAMONG $?X (THFIND ... ))
     ;; $E - (THAMONG $E$?X (THFIND ... )) CAUSES THE THVALUE OF $?X TO BE THE FIRST INPUT TO THAMONG.
     ;; THXX SET TO OLD BINDING CELL OF $?X (OR $E$?X) IF $?X VALUES PUSHED ONTO THTREE AND THAMONG
@@ -1279,7 +1279,7 @@ nil
             nil)
         (:else (MEMBER (cadr THXX) (THVAL (cadr THA) THALIST)))))       ;; IF $?X ASSIGNED, THAMONG REDUCES TO A MEMBERSHIP TEST
 
-(DEFUN THAMONGF nil                                                 ;; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW VALUES))
+(DEFUN THAMONGF []                                                 ;; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW VALUES))
     (COND (THMESSAGE (THPOPT) nil)
         ((caddar THTREE)                                            ;; LIST OF NEW VALUES NON NIL
             (RPLACA (cdadar THTREE) (caaddr (car THTREE)))          ;; REPLACE OLD VALUE WITH NEW VALUE
@@ -1292,13 +1292,13 @@ nil
             (THPOPT)                                                ;; POP TREE AND CONTINUE FAILING.
             nil)))
 
-(DEFUN THAND FEXPR (A)
+(DEFUN THAND FEXPR [A]
     (or (not A)
         (do (THPUSH THTREE (list 'THAND A nil)) (SETQ THEXP (car A)))))
 
-(DEFUN THANDF nil (THBRANCHUN) nil)
+(DEFUN THANDF [] (THBRANCHUN) nil)
 
-(DEFUN THANDT nil
+(DEFUN THANDT []
     (COND ((cdadar THTREE)
             (THBRANCH)
             (SETQ THEXP (cadr (cadar THTREE)))
@@ -1306,17 +1306,17 @@ nil
         ((THPOPT)))
     THVALUE)
 
-(DEFUN THANTE FEXPR (THX)
+(DEFUN THANTE FEXPR [THX]
     ;; DEFINES AND OPTIONALLY ASSERTS ANTECEDENT THEOREMS
     (THDEF 'THANTE THX))
 
-(DEFUN THAPPLY FEXPR (L)
+(DEFUN THAPPLY FEXPR [L]
     (THAPPLY1 (car L)
         ;; THAPPLY1 DOES THE REAL WORK, ALL WE DO IS GET THE THEOREM OFF THE PROPERTY LIST
         (GET (car L) 'THEOREM)
         (cadr L)))
 
-(DEFUN THAPPLY1 (THM THB DAT)
+(DEFUN THAPPLY1 [THM THB DAT]
     ;; MAKE SURE THE THEOREM PATTERN MATCHES THE GOAL
     (COND ((and (THBIND (cadr THB)) (THMATCH1 DAT (caddr THB)))
             (and THTRACE (THTRACES 'THEOREM THM))
@@ -1329,7 +1329,7 @@ nil
         ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING.
         (:else (SETQ THALIST THOLIST) (THPOPT) nil)))
 
-(DEFUN THASS1 (THA P)
+(DEFUN THASS1 [THA P]
     (let [THX nil THY1 nil THY nil TYPE nil PSEUDO nil]
         (and (cdr THA) (EQ (caadr THA) 'THPSEUDO) (SETQ PSEUDO true))
         ;; IF YOU SEE "THPSEUDO" SET FLAG "PSEUDO" TO T
@@ -1379,22 +1379,22 @@ nil
         (COND (THY (SETQ THEXP (cons 'THDO THY))))
         (RETURN THX)))
 
-(DEFUN THASSERT FEXPR (THA)
+(DEFUN THASSERT FEXPR [THA]
     ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
     (THASS1 THA true))
 
-(DEFUN THASSERTF nil
+(DEFUN THASSERTF []
     (THREMOVE (COND ((ATOM (cadar THTREE)) (cadar THTREE)) (:else (caadar THTREE))))
     (THPOPT)
     nil)
 
-(DEFUN THASSERTT nil (PROG1 (cadar THTREE) (THPOPT)))
+(DEFUN THASSERTT [] (PROG1 (cadar THTREE) (THPOPT)))
 
-(DEFUN THASVAL FEXPR (X)
+(DEFUN THASVAL FEXPR [X]
     ((lambda (X) (and X (not (EQ (cadr X) 'THUNASSIGNED))))
         (THGAL (car X) THALIST)))
 
-(DEFUN THBA (TH1 TH2)
+(DEFUN THBA [TH1 TH2]
     ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR.
     ;; USED ONLY BY THAD AND THREMOVE.
     (let [THP nil]
@@ -1404,7 +1404,7 @@ nil
         (or (cdr (SETQ THP (cdr THP))) (RETURN nil))
         (GO =>)))
 
-(DEFUN THBAP (TH1 TH2)
+(DEFUN THBAP [TH1 TH2]
     ;; LIKE THBA, ONLY USED EQUAL RATHER THAN EQ
     (let [THP nil]
         (SETQ THP TH2)
@@ -1413,7 +1413,7 @@ nil
         (or (cdr (SETQ THP (cdr THP))) (RETURN nil))
         (GO =>)))
 
-(DEFUN THBIND (A)
+(DEFUN THBIND [A]
     ;; WHEN WE ENTER A NEW THEOREM OR THPROG, WE MUST BIND THE NEW VARIABLES.  A IS THE VARIABLE LIST
     (SETQ THOLIST THALIST) ;; THOLIST IS THE OLD THALIST
     ;; IF A IS NIL THERE IS NOTHING TO DO
@@ -1443,11 +1443,11 @@ nil
             ;; REPEAT FOR THE NEXT VARIABLE IN THE LIST
             (GO =>))))
 
-(DEFUN THBI1 (X) (COND ((ATOM X) (list X 'THUNASSIGNED)) (:else (list (car X) (eval (cadr X))))))
+(DEFUN THBI1 [X] (COND ((ATOM X) (list X 'THUNASSIGNED)) (:else (list (car X) (eval (cadr X))))))
 
-(DEFUN THBKPT FEXPR (L) (or (and THTRACE (THTRACES 'THBKPT L)) THVALUE))
+(DEFUN THBKPT FEXPR [L] (or (and THTRACE (THTRACES 'THBKPT L)) THVALUE))
 
-(DEFUN THBRANCH nil
+(DEFUN THBRANCH []
     ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS.
     ;; CAR THTREE IS THE THPROG MARKING.
     (COND ;; THERE ARE NO MORE EXPRESSIONS TO EXECUTE IN THE THPROG.
@@ -1469,7 +1469,7 @@ nil
             ;; SETQ IT AGAIN TO THE POINT OF SUCCESS
             (SETQ THBRANCH nil))))
 
-(DEFUN THBRANCHUN nil
+(DEFUN THBRANCHUN []
     ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF.
     (let [X nil] (RETURN
         (COND ;; IF THE SECOND ARG TO THE PROG MARK IS NON-NIL, IT MEANS THAT THERE ARE PREVIOUS LINES IN THE THPROG TO FAIL BACK TO
@@ -1486,22 +1486,22 @@ nil
             ;; SO JUST RETURN NIL.
             (:else (THPOPT) nil)))))
 
-(DEFUN THCOND FEXPR (THA)
+(DEFUN THCOND FEXPR [THA]
     (THPUSH THTREE (list 'THCOND THA nil))
     (SETQ THEXP (caar THA)))
 
-(DEFUN THCONDF nil (THOR2 nil))
+(DEFUN THCONDF [] (THOR2 nil))
 
-(DEFUN THCONDT nil
+(DEFUN THCONDT []
     (RPLACA (car THTREE) 'THAND)
     (RPLACA (cdar THTREE) (caadar THTREE))
     THVALUE)
 
 ;; THCONSE DEFINES AND OPTIONALLY ASSERTS CONSEQUENT THEOREMS
 
-(DEFUN THCONSE FEXPR (THX) (THDEF 'THCONSE THX))
+(DEFUN THCONSE FEXPR [THX] (THDEF 'THCONSE THX))
 
-(DEFUN THDATA nil
+(DEFUN THDATA []
     (let [X nil]
     =>  (TERPRI)
         (COND ((nil? (SETQ X (READ nil))) (RETURN true))
@@ -1510,7 +1510,7 @@ nil
 
 ;; THDEF DEFINES AND OPTIONALLY ASSERTS THEOREMS
 
-(DEFUN THDEF (THMTYPE THX)
+(DEFUN THDEF [THMTYPE THX]
     (let [THNOASSERT? nil THMNAME nil THMBODY nil]
         (COND ((not (ATOM (car THX)))
                 (SETQ THMBODY THX)
@@ -1529,11 +1529,11 @@ nil
             (:else (PRINT (list THMNAME 'REDEFINED))))
         (RETURN true)))
 
-(DEFUN THDO FEXPR (A)
+(DEFUN THDO FEXPR [A]
     (or (not A)
         (do (THPUSH THTREE (list 'THDO A nil nil)) (SETQ THEXP (car A)))))
 
-(DEFUN THDO1 nil
+(DEFUN THDO1 []
     (RPLACA (cdar THTREE) (cdadar THTREE))
     (SETQ THEXP (caadar THTREE))
     (COND (THBRANCH
@@ -1541,27 +1541,27 @@ nil
         (SETQ THBRANCH nil)
         (RPLACA (cdddar THTREE) (cons THABRANCH (car (cdddar THTREE)))))))
 
-(DEFUN THDOB nil
+(DEFUN THDOB []
     (COND ((or THMESSAGE (nil? (cdadar THTREE)))
             (RPLACA (car THTREE) 'THUNDO)
             true)
         ((THDO1))))
 
-(DEFUN THERASE FEXPR (THA) (THASS1 THA nil))
+(DEFUN THERASE FEXPR [THA] (THASS1 THA nil))
 
-(DEFUN THERASEF nil
+(DEFUN THERASEF []
     (THADD (COND ((ATOM (cadar THTREE)) (cadar THTREE)) (:else (caadar THTREE)))
         (COND ((ATOM (cadar THTREE)) nil) (:else (cdadar THTREE))))
     (THPOPT)
     nil)
 
-(DEFUN THERASET nil (PROG1 (cadar THTREE) (THPOPT)))
+(DEFUN THERASET [] (PROG1 (cadar THTREE) (THPOPT)))
 
 ;; THERASING DEFINES AND OPTIONALLY ASSERTS ERASING THEOREMS
 
-(DEFUN THERASING FEXPR (THX) (THDEF 'THERASING THX))
+(DEFUN THERASING FEXPR [THX] (THDEF 'THERASING THX))
 
-(DEFUN THFAIL FEXPR (THA)
+(DEFUN THFAIL FEXPR [THA]
     (and THA
         (let [THTREE1 nil THA1 nil THX nil]
         F   (SETQ THA1 (COND
@@ -1591,18 +1591,18 @@ nil
             (SETQ THX (cdr THX))
             (GO LP2))))
 
-(DEFUN THFAIL? (PRD ACT)
+(DEFUN THFAIL? [PRD ACT]
     (THPUSH THTREE (list 'THFAIL? PRD ACT))
     THVALUE)
 
-(DEFUN THFAIL?F nil
+(DEFUN THFAIL?F []
     (COND ((eval (cadar THTREE))
             (eval (PROG2 (SETQ THMESSAGE nil) (caddar THTREE) (THPOPT))))
         (:else (THPOPT) nil)))
 
-(DEFUN THFAIL?T nil (THPOPT) THVALUE)
+(DEFUN THFAIL?T [] (THPOPT) THVALUE)
 
-(DEFUN THFINALIZE FEXPR (THA)
+(DEFUN THFINALIZE FEXPR [THA]
     (let [THTREE1 nil THT nil THX nil]
         (COND ((nil? THA) (SETQ THA (THERT BAD CALL - THFINALIZE))))
         (COND ((ATOM THA) (RETURN THA))
@@ -1629,7 +1629,7 @@ nil
     DONE (SETQ THTREE (cdr THTREE))
         (RETURN true)))
 
-(DEFUN THFIND FEXPR (THA)
+(DEFUN THFIND FEXPR [THA]
     (THBIND (caddr THA))
     (THPUSH THTREE
         (list 'THFIND
@@ -1654,14 +1654,14 @@ nil
     (THPUSH THTREE (list 'THPROG (cddr THA) nil (cddr THA)))
     (THPROGA))
 
-(DEFUN THFINDF nil
+(DEFUN THFINDF []
     (SETQ THBRANCH nil)
     (COND ((or THMESSAGE (< (caadr (SETQ THXX (cdar THTREE))) (caar THXX)))
             (THPOPT)
             nil)
         (:else (THPOPT) (cdadr THXX))))
 
-(DEFUN THFINDT nil
+(DEFUN THFINDT []
     (let [THX nil THY nil THZ nil THCDAR nil]
         (SETQ THZ (caddr (SETQ THCDAR (cdar THTREE))))
         (and (MEMBER (SETQ THX (THVARSUBST THZ nil)) (cdadr THCDAR))
@@ -1675,7 +1675,7 @@ nil
         (SETQ THBRANCH nil)
         (RETURN nil)))
 
-(DEFUN THFLUSH FEXPR (A)
+(DEFUN THFLUSH FEXPR [A]
     ;; (THFLUSH) FLUSHES ALL ASSERTIONS AND THEOREMS
     ;; INPUT = SEQUENCE OF INDICATORS DEFAULT =
     ;; EFFECT = FLUSHES THE PROPERTIES OF THESE
@@ -1689,19 +1689,19 @@ nil
         (MAKOBLIST nil))))
     (COND (A) (' (THASSERTION THCONSE THANTE THERASING))))))
 
-(DEFUN THGAL (X Y)
+(DEFUN THGAL [X Y]
     ;; (THGAL $?X THALIST) RETURNS THE BINDING CELL (X -) OF X ON THALIST
     (SETQ THXX X)
     (SASSQ (cadr X) Y #'(lambda nil (PRINT THXX) (THERT THUNBOUND THGAL))))
 
-(DEFUN THGENAME FEXPR (X)
+(DEFUN THGENAME FEXPR [X]
     ;; GENERATES UNIQUE NAME WITH ARG AS PREFIX
     (READLIST (concat (EXPLODE (car X)) (EXPLODE (SETQ THGENAME (inc THGENAME))))))
 
-(DEFUN THGO FEXPR (X)
+(DEFUN THGO FEXPR [X]
     (APPLY #'THSUCCEED (cons 'THTAG X)))
 
-(DEFUN THGOAL FEXPR (THA)                                   ;; THA = (PATTERN RECOMMENDATION)
+(DEFUN THGOAL FEXPR [THA]                                   ;; THA = (PATTERN RECOMMENDATION)
     (let [THY nil THY1 nil THZ nil THZ1 nil THA1 nil THA2 nil]                     ;; PATTERN IS EITHER EXPLICIT, THE VALUE OF A
         (SETQ THA2 (THVARSUBST (car THA) true))                ;; PLANNER VARIABLE OR THVAL OF $E... THA2 =
         (SETQ THA1 (cdr THA))                               ;; INSTANTIATED PATTERN THA1 = RECOMMENDATIONS
@@ -1719,20 +1719,20 @@ nil
         (RPLACD (cddar THTREE) 262143)
         (RETURN nil)))                                      ;; FAILS TO THGOALF
 
-(DEFUN THGOALF nil
+(DEFUN THGOALF []
     ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY.
     ;; IF THTRY1 RETURNS NIL, IT MEANS THAT IT COULDN'T FIND ANOTHER POSSIBILITY
     ;; AND WE SHOULD TELL THVAL THAT WE HAVE FAILED.
     ;; ALL THPOPT DOES IS TO LOB THE THGOAL ENTRY OFF THTREE.
     (COND (THMESSAGE (THPOPT) nil) ((THTRY1)) (:else (THPOPT) nil)))
 
-(DEFUN THGOALT nil
+(DEFUN THGOALT []
     (PROG1
         (COND ((EQ THVALUE 'THNOVAL) (THVARSUBST (cadar THTREE) nil))
             (THVALUE))
         (THPOPT)))
 
-(DEFUN THIP (THI)
+(DEFUN THIP [THI]
     ;; THI IS AN ITEM FROM THE ASSERTION OR PATTERN OF THE THEOREM BEING ENTERED
     (let [THT1 nil THT3 nil THSV nil THT2 nil THI1 nil]
         (SETQ THNF (inc THNF))
@@ -1792,7 +1792,7 @@ nil
         ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO
         (RETURN 'THOK)))
 
-(DEFUN THMATCH2 (THX THY)
+(DEFUN THMATCH2 [THX THY]
     ;; THX IS ONE ITEM FROM THE PATTERN.
     ;; THY IS THE CORESPONDING ITEM FROM THE CANDIDATE.
     ;; THMATCH2 DECIDES IF THE TWO ITEMS REALLY MATCH.
@@ -1890,12 +1890,12 @@ nil
         ;; IF NOT, THEY DON'T, SO REPORT FAILURE
         (:else (ERR nil))))
 
-(DEFUN THCHECK (THPRD THX)
+(DEFUN THCHECK [THPRD THX]
     (or (nil? THPRD)
         (EQ THX 'THUNASSIGNED)
         (ERRSET (dorun (map #'(lambda (THY) (or (THY THX) (ERR nil))) THPRD)))))
 
-(DEFUN THUNION (L1 L2)
+(DEFUN THUNION [L1 L2]
     (dorun (map #'(lambda (THX)
             (COND ((MEMBER THX L2))
                 (:else (SETQ L2 (cons THX L2)))))
@@ -1907,7 +1907,7 @@ nil
         (COND ((> THX 2) (ARG 3)) (:else THALIST))
         (COND ((> THX 3) (ARG 4)) (:else THALIST))))
 
-(DEFUN THMATCH1 (THX THY)
+(DEFUN THMATCH1 [THX THY]
     ;; THX IS THE PATTERN TO BE MATCHED.
     ;; THY IS THE POSSIBLE CANDIDATE.
     ;; THMATCH1 DOES PRELIMINARLY WORK BEFORE HANDING THE PATTERN AND CANDIDATE OFF TO THMATCH2
@@ -1930,7 +1930,7 @@ nil
         ;; WHICH IS A LIST OF EXPRESSIONS WHICH, WHEN EVALED, UNASSIGN THE VARIABLES
         (:else (EVLIS THML) (RETURN nil)))))
 
-(DEFUN THMATCHLIST (THTB THWH)
+(DEFUN THMATCHLIST [THTB THWH]
     ;; THTB IS A PATTERN WHICH EVENTUALLY IS TO BE MATCHED.
     ;; THWH SAYS IF IT IS AN ASSERTION, CONSEQUENT THEOREM, ETC.
     ;; THMATCHLIST GOES THROUGH THE DATA BASE, LOOKING ON ALL THE BUCKETS OF THE ATOMS IN THE PATTERN.
@@ -2012,11 +2012,11 @@ nil
         ;; GO BACK FOR ANOTHER PASS.
         (GO THP1)))
 
-(DEFUN THMESSAGE FEXPR (THA)
+(DEFUN THMESSAGE FEXPR [THA]
     (THPUSH THTREE (cons 'THMESSAGE THA))
     THVALUE)
 
-(DEFUN THMESSAGEF nil
+(DEFUN THMESSAGEF []
     (let [BOD nil]
         (SETQ BOD (car THTREE))
         (THPOPT)
@@ -2027,31 +2027,31 @@ nil
             (:else (SETQ THALIST THOLIST)))
         (RETURN nil)))
 
-(DEFUN THMESSAGET nil (THPOPT) THVALUE)
+(DEFUN THMESSAGET [] (THPOPT) THVALUE)
 
-(DEFUN THMUNGF nil (EVLIS (cadar THTREE)) (THPOPT) nil)
+(DEFUN THMUNGF [] (EVLIS (cadar THTREE)) (THPOPT) nil)
 
-(DEFUN THMUNGT nil (THPOPT) THVALUE)
+(DEFUN THMUNGT [] (THPOPT) THVALUE)
 
-(DEFUN THNOFAIL (THX)
+(DEFUN THNOFAIL [THX]
     (COND (THX (DEFPROP THPROG THPROGT THFAIL))
         (:else (DEFPROP THPROG THPROGF THFAIL))))
 
-(DEFUN THNOHASH FEXPR (THA)
+(DEFUN THNOHASH FEXPR [THA]
     (dorun (map #'(lambda (X) (PUTPROP (car THA) 'THNOHASH X))
         (or (cdr THA) '(THASSERTION THCONSE THANTE THERASING)))))
 
-(DEFUN THNOT FEXPR (THA)
+(DEFUN THNOT FEXPR [THA]
     (SETQ THEXP (list 'THCOND (list (car THA) '(THFAIL THAND)) '((THSUCCEED)))))
 
-(DEFUN THNV FEXPR (X) (THV1 (car X)))
+(DEFUN THNV FEXPR [X] (THV1 (car X)))
 
-(DEFUN THOR FEXPR (THA)
+(DEFUN THOR FEXPR [THA]
     (and THA
         (THPUSH THTREE (list 'THOR THA))
         (SETQ THEXP (car THA))))
 
-(DEFUN THOR2 (P)
+(DEFUN THOR2 [P]
     (COND (THMESSAGE (THPOPT) nil)
         ((and (cadar THTREE) (cdadar THTREE))
             (RPLACA (cdar THTREE) (cdadar THTREE))
@@ -2060,13 +2060,13 @@ nil
                     ((car (caadar THTREE))))))
         (:else (THPOPT) nil)))
 
-(DEFUN THORF nil (THOR2 true))
+(DEFUN THORF [] (THOR2 true))
 
-(DEFUN THORT nil (THPOPT) THVALUE)
+(DEFUN THORT [] (THPOPT) THVALUE)
 
-(DEFUN THPOPT nil (SETQ THTREE (cdr THTREE)))
+(DEFUN THPOPT [] (SETQ THTREE (cdr THTREE)))
 
-(DEFUN THPROG FEXPR (THA)
+(DEFUN THPROG FEXPR [THA]
     ;; THBIND HACKS THALIST TO BIND THE VARIABLES.
     ;; IT ALSO HACKS THTREE SO WE CAN UNDO IT IF NEEDED.
     (THBIND (car THA))
@@ -2077,7 +2077,7 @@ nil
     ;; CALL WORKHORSE
     (THPROGA))
 
-(DEFUN THPROGA nil
+(DEFUN THPROGA []
     ((lambda (X) (COND
             ;; ODD CASE WHERE THE THPROG HAS NO SUBEXPRESSIONS.  RETURN SUCCESS.
             ((nil? (cdar X)) (THPOPT) 'THNOVAL)
@@ -2098,11 +2098,11 @@ nil
 ;; THBRANCH AND THBRANCHUN ARE THE MAIN FUNCTIONS IN CHARGE OF HANDLING THE EFFECTS OF SUCCESS AND FAILURE.
 ;; THEY ARE ONLY CALLED BY THPROGT AND F
 
-(DEFUN THPROGF nil (THBRANCHUN) nil)
+(DEFUN THPROGF [] (THBRANCHUN) nil)
 
-(DEFUN THPROGT nil (THBRANCH) (THPROGA))
+(DEFUN THPROGT [] (THBRANCH) (THPROGA))
 
-(DEFUN THPURE (XX)
+(DEFUN THPURE [XX]
     ;; CHECKS TO MAKE SURE THAT THE PATTERN HAS NO UNASSIGNED VARIABLES IN IT.
 
     ;; XX, NATURALLY ENOUGH IS THE PATTERN
@@ -2112,7 +2112,7 @@ nil
     ;; SO ALL WE NEED DO IS LOOK FOR ANY VARIABLES APPEARING AT ALL
     (ERRSET (dorun (map #'(lambda (Y) (and (THVAR Y) (ERR nil))) XX))))
 
-(DEFUN THPUTPROP (ATO VAL IND)
+(DEFUN THPUTPROP [ATO VAL IND]
     (THPUSH THTREE
         (list 'THMUNG
             (list (list 'PUTPROP
@@ -2121,7 +2121,7 @@ nil
                 (list 'quote IND)))))
     (PUTPROP ATO VAL IND))
 
-(DEFUN THREM1 (THB)
+(DEFUN THREM1 [THB]
     ;; THIS FUNCTION IS ROUGHLY THE SAME AS THIP, EXCEPT WHILE THIP ADDS ASSERTIONS TO THE DATABASE, THREM1 REMOVES THEM
     ;; HENCE ALL COMMENTS WILL BE GUIDES TO THE CORRESPONDENCE BETWEEN THREM1 AND THIP
 
@@ -2170,11 +2170,11 @@ nil
         (REMPROP THA THWH)
         (RETURN THONE)))
 
-(DEFUN THREMBINDF nil (SETQ THALIST (cadar THTREE)) (THPOPT) nil)
+(DEFUN THREMBINDF [] (SETQ THALIST (cadar THTREE)) (THPOPT) nil)
 
-(DEFUN THREMBINDT nil (SETQ THALIST (cadar THTREE)) (THPOPT) THVALUE)
+(DEFUN THREMBINDT [] (SETQ THALIST (cadar THTREE)) (THPOPT) THVALUE)
 
-(DEFUN THREMOVE (THB)
+(DEFUN THREMOVE [THB]
     ;; THIS FUNCTION IS ANALAGOUS TO THADD EXCEPT THREMOVE REMOVES RATHER THAN ADDS.
     ;; AS WITH THREM1, ALL COMMENTS WILL EXPLICATE THE ANALOGY,
     ;; SO ONE SHOULD FIRST BECOME FAMILIAR WITH THADD.
@@ -2215,7 +2215,7 @@ nil
         (dorun (map #'THREM1 THFOO))
         (RETURN THON)))
 
-(DEFUN THREMPROP (ATO IND)
+(DEFUN THREMPROP [ATO IND]
     (THPUSH THTREE
         (list 'THMUNG
             (list (list 'PUTPROP
@@ -2224,41 +2224,41 @@ nil
                 (list 'quote IND)))))
     (REMPROP ATO IND))
 
-(DEFUN THRESTRICT FEXPR (THB)
+(DEFUN THRESTRICT FEXPR [THB]
     (let [X nil]
         (COND ((ATOM (SETQ X (THGAL (car THB) THALIST)))
                 (THPRINTC 'THRESTRICT\ IGNORED\ -\ CONTINUING))
             ((THRPLACD (cdr X) (THUNION (cddr X) (cdr THB)))))
         (RETURN X)))
 
-(DEFUN THRETURN FEXPR (X)
+(DEFUN THRETURN FEXPR [X]
     (APPLY #'THSUCCEED (cons 'THPROG X)))
 
-(DEFUN THRPLACA (X Y)
+(DEFUN THRPLACA [X Y]
     (let [THML nil]
         (THRPLACAS X Y)
         (THPUSH THTREE (list 'THMUNG THML))
         (RETURN X)))
 
-(DEFUN THRPLACAS (X Y)
+(DEFUN THRPLACAS [X Y]
     (THPUSH THML (list 'THURPLACA X (car X)))
     (RPLACA X Y))
 
-(DEFUN THURPLACA FEXPR (L) (RPLACA (car L) (cadr L)))
+(DEFUN THURPLACA FEXPR [L] (RPLACA (car L) (cadr L)))
 
-(DEFUN THRPLACD (X Y)
+(DEFUN THRPLACD [X Y]
     (let [THML nil]
         (THRPLACDS X Y)
         (THPUSH THTREE (list 'THMUNG THML))
         (RETURN X)))
 
-(DEFUN THRPLACDS (X Y)
+(DEFUN THRPLACDS [X Y]
     (THPUSH THML (list 'THURPLACD X (cdr X)))
     (RPLACD X Y))
 
-(DEFUN THURPLACD FEXPR (L) (RPLACD (car L) (cadr L)))
+(DEFUN THURPLACD FEXPR [L] (RPLACD (car L) (cadr L)))
 
-(DEFUN THSETQ FEXPR (THL1)
+(DEFUN THSETQ FEXPR [THL1]
     (let [THML nil THL nil]
         (SETQ THL THL1)
     =>  (COND
@@ -2276,14 +2276,14 @@ nil
         (SETQ THL (cddr THL))
         (GO =>)))
 
-(DEFUN THSGAL (X)
+(DEFUN THSGAL [X]
     (SASSQ (cadr X) THALIST
         #'(lambda nil (let [Y nil]
             (SETQ Y (list (cadr X) 'THUNASSIGNED))
             (concat (GET 'THALIST 'VALUE) (list Y))
             (RETURN Y)))))
 
-(DEFUN THSTATE FEXPR (THINDICATORS)
+(DEFUN THSTATE FEXPR [THINDICATORS]
     ;; PRINTS THAT PART OF THE STATE OF THE MICRO-PLANNER WORLD SPECIFIED BY THE INDICATORS IN REREADABLE FORM.
     ;; NOTE THAT IT IS BLIND TO ASSERTIONS THAT BEGIN WITH EITHER NUMBERS, LIST STRUCTURE, NOHASHED ATOMS OR NON-INTERNED ATOMS.
     (let [THP nil]
@@ -2303,7 +2303,7 @@ nil
         (PRINT nil)
         nil))
 
-(DEFUN THSUCCEED FEXPR (THA)
+(DEFUN THSUCCEED FEXPR [THA]
     (or (not THA)
         (let [THX nil]
             (and (EQ (car THA) 'THEOREM)
@@ -2327,7 +2327,7 @@ nil
                 (:else (THPOPT) (GO =>)))
         nil)))
 
-(DEFUN THTAE (XX)
+(DEFUN THTAE [XX]
     (COND
         ((ATOM XX) nil)
         ((EQ (car XX) 'THUSE)
@@ -2346,17 +2346,17 @@ nil
                         (SETQ THY (THMATCHLIST (car THX) TYPE)))))))
     (:else (PRINT XX) (THTAE (THERT UNCLEAR RECCOMMENDATION \-THTAE)))))
 
-(DEFUN THTAG FEXPR (L)
+(DEFUN THTAG FEXPR [L]
     (and (car L)
         (THPUSH THTREE (list 'THTAG (car L)))))
 
-(DEFUN THTAGF nil (THPOPT) nil)
+(DEFUN THTAGF [] (THPOPT) nil)
 
-(DEFUN THTAGT nil (THPOPT) THVALUE)
+(DEFUN THTAGT [] (THPOPT) THVALUE)
 
-(DEFUN THTRUE (X) true)
+(DEFUN THTRUE [X] true)
 
-(DEFUN THTRY1 nil                                           ;; TRIES NEXT RECOMMENDATION ON TREE FOR THGOAL
+(DEFUN THTRY1 []                                           ;; TRIES NEXT RECOMMENDATION ON TREE FOR THGOAL
     (let [THX nil THY nil THZ nil THW nil THEOREM nil]
         (SETQ THZ (car THTREE))                             ;; = (THGOAL PATTERN EXPANDED-RECOMMENDATIONS)
         (SETQ THY (cddr THZ))                               ;; = RECOMMENDATIONS
@@ -2390,7 +2390,7 @@ nil
                 (RETURN true))
             (:else (GO THTBF)))))
 
-(DEFUN THTRY (X)
+(DEFUN THTRY [X]
     ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
     ;; SO WHENEVER WE FAIL BACK TO A THGOAL, WE GO TO THE NEXT "THING TO DO".
     ;; X IS THE LIST OF RECOMMENDATIONS.
@@ -2416,7 +2416,7 @@ nil
             (list X))
         (:else (PRINT X) (THTRY (THERT UNCLEAR RECOMMENDATION - THTRY)))))
 
-(DEFUN THUNDOF nil
+(DEFUN THUNDOF []
     (COND ((nil? (caddar THTREE)) (THPOPT))
         (:else (SETQ THXX (cddar THTREE))
             (SETQ THALIST (caadr THXX))
@@ -2425,9 +2425,9 @@ nil
             (RPLACA THXX (cdar THXX))))
     nil)
 
-(DEFUN THUNDOT nil (THPOPT) true)
+(DEFUN THUNDOT [] (THPOPT) true)
 
-(DEFUN THUNIQUE FEXPR (THA)
+(DEFUN THUNIQUE FEXPR [THA]
     (SETQ THA (cons 'THUNIQUE (doall (map #'EVAL THA))))
     (let [X nil]
         (SETQ X THALIST)
@@ -2437,7 +2437,7 @@ nil
         (SETQ X (cdr X))
         (GO =>)))
 
-(DEFUN THV1 (X)
+(DEFUN THV1 [X]
     ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
     ;; $?X RETURNS ERROR MESSAGE IF X UNBOUND OR UNASSIGNED.
     (SETQ THXX X)
@@ -2446,11 +2446,11 @@ nil
             (THERT THUNASSIGNED - THV1))
         (:else X)))
 
-(DEFUN THV FEXPR (X)
+(DEFUN THV FEXPR [X]
     ;; (THV X) IS THE VALUE OF THE PLANNER VARIABLE $?X
     (THV1 (car X)))
 
-(DEFUN THVAL (THEXP THALIST)
+(DEFUN THVAL [THEXP THALIST]
     ;; CORRESPONDS TO LISP EVAL.
     ;; THEXP IS THE EXPRESSION TO BE THVALUATED.
     ;; THALIST IS THE VARIABLE BINDING LIST.
@@ -2541,11 +2541,11 @@ nil
         ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING
         (GO GO1))))
 
-(DEFUN THVAR (X)
+(DEFUN THVAR [X]
     ;; PREDICATE - IS ITS INPUT A PLANNER VARIABLE
     (MEMQ (car X) '(THV THNV)))
 
-(DEFUN THVARS2 (X)
+(DEFUN THVARS2 [X]
     ;; THIS IS THE WORKHORSE FOR THVARSUBST.
     ;; X IS A SINGLE ITEM FROM A PATTERN.
     (let [A nil]
@@ -2571,7 +2571,7 @@ nil
             ;; OTHERWISE THE ASSIGNMENT IS THE SECOND ELEMENT IN THE BINDING LIST.
             (:else (cadr A))))))
 
-(DEFUN THVARSUBST (THX THY)
+(DEFUN THVARSUBST [THX THY]
     ;; THX IS A GOAL OR ASSERTION PATTERN OR THEOREM NAME.
     ;; THIS FUNCTION RETURNS THE SAME PATTERN, EXCEPT IN PLACE OF ALL ASSIGNED VARIABLES
     ;; THERE WILL BE THE VALUES THEY ARE ASSIGNED TO.
@@ -2586,7 +2586,7 @@ nil
     ;; UNLESS THE ASSERTEE IS A THEOREM NAME, GO THROUGH IT PLACE BY PLACE WITH THVARS2.
     (COND ((ATOM THX) THX) (:else (doall (map #'THVARS2 THX)))))
 
-(DEFUN THVSETQ FEXPR (THA)
+(DEFUN THVSETQ FEXPR [THA]
     (let [A nil]
         (SETQ A THA)
     =>  (COND ((nil? A) (RETURN THVALUE))
@@ -2630,9 +2630,9 @@ nil
 (DEFPROP THREMBIND THREMBINDT THSUCCEED)
 (DEFPROP THREMBIND THREMBINDF THFAIL)
 
-(DEFUN THPRINT2 (X) (PRINC '\ ) (PRINC X))
+(DEFUN THPRINT2 [X] (PRINC '\ ) (PRINC X))
 
-(DEFUN THERT FEXPR (\0ERTA)
+(DEFUN THERT FEXPR [\0ERTA]
     ;; THERT IS THE BREAK FUNCTION, AND ALSO THE TOP LEVEL FUNCTION.
     ;; IT IS CALLED DIRECTLY BY LISP BEFORE LISP GOES INTO THE READ EVAL LOOP.
     ;; FOR HOW THIS IS DONE, SEE MAC-AI LISP DOCUMENTATION.
@@ -2655,7 +2655,7 @@ nil
             (:else (PRINT (THVAL \0LISTEN THALIST)))))       ;; THVAL LISTENING AT TOP LEVEL
         (GO =>)))
 
-(DEFUN THINIT FEXPR (L)
+(DEFUN THINIT FEXPR [L]
     (SETQ THGENAME 0)
     (SETQ THSTEP nil)
     (SETQ THSTEPD nil)
@@ -2678,7 +2678,7 @@ nil
 
 ;; FOR PLNR 159 AND GREATER, THPRINTC CAN BE ELIMINATED
 
-(DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '\ ))
+(DEFUN THPRINTC [X] (TERPRI) (PRINC X) (PRINC '\ ))
 
 ;; SYSTEM FUNCTIONS SUCH AS THGOAL, THASSERT, THERASE AND THEOREM
 ;; (ALL THMS) ARE TRACED IF THEY ARE ON 'THTRACE'.
@@ -2686,9 +2686,9 @@ nil
 
 ;; THTRACE IS INITIALLY SET TO NIL BY TS PLNR.
 
-(DEFUN THTRACE FEXPR (L) (dorun (map #'THTRACE1 L)))
+(DEFUN THTRACE FEXPR [L] (dorun (map #'THTRACE1 L)))
 
-(DEFUN THTRACE1 (X)
+(DEFUN THTRACE1 [X]
     (let [Y nil]
         ;; VARIETY OF POSSIBLE INPUT FORMATS TRANSFORMED TO STANDARD 3 ELEMENT LIST
         ;; (OBJECT-TO-BE-TRACED TRACE-CONDITION BREAK-CONDITION)
@@ -2712,7 +2712,7 @@ nil
 ;; THUNTRACE REMOVES ELEMENTS OF ITS ARG FROM THTRACE.
 ;; IF NOT GIVEN ANY ARGS, THUNTRACE SETS THTRACE TO NIL.
 
-(DEFUN THUNTRACE FEXPR (L)
+(DEFUN THUNTRACE FEXPR [L]
     (COND (L (SETQ THTRACE (doall (map #'(lambda (X)
                         (COND ((MEMQ (car X) L) (PRINT X) nil) ((list X))))
                     THTRACE))))
@@ -2724,7 +2724,7 @@ nil
 ;; IF THE PLANNER FUNCTION THGOAL ACTIVATED THTRACES.
 ;; THL = THE INSTANTIATED ARG OF THF. SEE DESC OF X ON NEXT PAGE.
 
-(DEFUN THTRACES (THF THL)
+(DEFUN THTRACES [THF THL]
     (let [THY nil THZ nil THB nil]
         (and
             ;; THY SET TO TRIPLET ON THTRACE. IF NOT THERE, NO TRACING
@@ -2825,11 +2825,11 @@ nil
 ;; ARE THVALED, THUS THSEL SERVES THE PURPOSE OF REFERENCING THE TRACE AND BREAK PREDICATES OF PARTICULAR
 ;; THMS ON THTRACE.
 
-(DEFUN THSEL (THF)
+(DEFUN THSEL [THF]
     (let [THX nil] (RETURN (and (SETQ THX (ASSQ THL THTRACE)) (SETQ THX (THF THX)) (THVAL THX THALIST)))))
 
 ;; MAKES A NAME WITH PREFIX X AND SUFFIX A UNIQUE NUMBER.
-(DEFUN THGENS FEXPR (X)
+(DEFUN THGENS FEXPR [X]
     (MAKNAM (concat (EXPLODE (car X)) (EXPLODE (SETQ THGENS (inc THGENS))))))
 
 (SETQ THGENS 0)
@@ -2842,7 +2842,7 @@ nil
 ;;
 ;; ##################################################################
 
-(DEFUN SHRDLU nil
+(DEFUN SHRDLU []
     (let [ERT-TIME nil END nil AMB nil TIMAMB nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil SENT nil PUNCT nil IGNORE nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil CURTIME nil STATE nil GLOBAL-MESSAGE nil LEVEL nil P-TIME nil SMN-TIME nil PLNR-TIME nil ANS-TIME nil ANS-PLNR-TIME nil SH-GCTIME nil]
         (CLEANOUT TSS EVX NODE ANS OSS RSS X)       ;; FLUSH OLD GENSYMS
     CATCH-LOOP
@@ -2897,9 +2897,9 @@ nil
         ABORT-PARSER)
         (GO CATCH-LOOP)))
 
-(DEFUN TIMER (T0 T1) (/ (- T1 T0) 1000000.0))
+(DEFUN TIMER [T0 T1] (/ (- T1 T0) 1000000.0))
 
-(DEFUN PARSEVAL (A)
+(DEFUN PARSEVAL [A]
     (let [P-TTIME nil P-GC nil SM-TIME nil MP-TIME nil RETURN-NODE nil]
         (SETQ P-GC (STATUS GCTIME)
               SM-TIME 0
@@ -2919,7 +2919,7 @@ nil
 ;;                         FANCY TIMING PACKAGE
 ;; ######################################################################
 
-(DEFUN SHRDLU-TIMER nil
+(DEFUN SHRDLU-TIMER []
     (or SH-PRINT-TIME (RETURN true))
     (TERPRI)
     (PRINC 'TOTAL\ TIME\ USED:\ )
@@ -2943,7 +2943,7 @@ nil
     (TERPRI)
     nil)
 
-(DEFUN TIME-ANSWER (REAL-CALL)
+(DEFUN TIME-ANSWER [REAL-CALL]
     (let [MP-TIME nil SM-TIME nil PLNR-TIME nil ANS-TTIME nil GC nil RESULT nil]
         (SETQ MP-TIME 0
               SM-TIME 0
@@ -2960,7 +2960,7 @@ nil
               SMN-TIME (+ SMN-TIME SM-TIME))
         (RETURN RESULT)))
 
-(DEFUN PARSE-STATISTICS nil
+(DEFUN PARSE-STATISTICS []
     (COND ((== PARSINGS 0)
             (PUTPROP 'PARSINGS 0 'WINS)))
         (and RE
@@ -2974,48 +2974,44 @@ nil
 ;;         (PRINT 'TIME-USED)
 ;;         (PRINC (DIFFERENCE (TIME-SINCE RUNTIME) ERT-TIME))))
 
-(DEFUN TIME-SINCE (X) (/ (- (RUNTIME) X) 1000000.0))
+(DEFUN TIME-SINCE [X] (/ (- (RUNTIME) X) 1000000.0))
 
 ;; ############################################################
 ;;         FUNCTIONS THAT EXTRACT INPUT FROM THE USER
 ;; ############################################################
 
-(DEFPROP DEFLIST
-    (lambda (LIST)
-        (dorun (map #'(lambda (A)
-                    (PUTPROP (car A) (cadr A) (car LIST)))
-                (cdr LIST)))
-        (car LIST))
-    FEXPR)
+(DEFUN DEFLIST FEXPR [LIST]
+    (dorun (map #'(lambda (A)
+                (PUTPROP (car A) (cadr A) (car LIST)))
+            (cdr LIST)))
+    (car LIST)))
 
 ;; ################################################################
 ;;            SPECIALIZED AND NOT SO, OUTPUT ROUTINES
 ;; ################################################################
 
-(DEFUN %SENT nil    ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
+(DEFUN %SENT []    ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
     (TERPRI)
     (dorun (map #'PRINT3 SENT))
     (PRINC PUNCT))
 
-(DEFUN DA (X)
+(DEFUN DA [X]
     (and
         (GET X 'THASSERTION)
         (DISP (APPLY #'concat (doall (map #'cddr (APPLY #'concat (doall (map #'cdr (cdr (GET X 'THASSERTION)))))))))))
 
-(DEFPROP DISP
-    (lambda (A)
-        (and (STATUS TTY) (TYO 12))
-        (TERPRI)
-        (and (cdr A)
-            (PRINC (car A))
-            (PRINC '\ >>\ )
-            (PRINC (cadr A))
-            (TERPRI))
-        (SPRINT (COND ((cdr A) (GET (car A) (cadr A))) ((eval (car A)))) LINEL 0)
-        *4)
-    FEXPR)
+(DEFUN DISP FEXPR [A]
+    (and (STATUS TTY) (TYO 12))
+    (TERPRI)
+    (and (cdr A)
+        (PRINC (car A))
+        (PRINC '\ >>\ )
+        (PRINC (cadr A))
+        (TERPRI))
+    (SPRINT (COND ((cdr A) (GET (car A) (cadr A))) ((eval (car A)))) LINEL 0)
+    *4))
 
-(DEFUN DP (X)
+(DEFUN DP [X]
     (let [PLIST nil]
         (TERPRI)
         (TERPRI)
@@ -3037,7 +3033,7 @@ nil
 ;;         FUNCTIONS FOR HAND-TAILORED GARBAGE COLLECTION
 ;; ################################################################
 
-(DEFUN FORGET nil
+(DEFUN FORGET []
     (SETQ LASTSENT nil LASTREL nil BACKREF nil BACKREF2 nil LASTTIME nil LASTPLACE nil)
     (SETQ LASTSENTNO 0)
     (dorun (map #'(lambda (PN)
@@ -3062,13 +3058,13 @@ nil
 ;; AND THE CALL WAS:
 ;;    (MAPC 'PLNRCLEAN EVENTLIST)
 
-(DEFUN CLEANOUT FEXPR (LIST)        ;; REMOB'S ALL GENSYMS OF THE MEMBERS OF LIST
+(DEFUN CLEANOUT FEXPR [LIST]        ;; REMOB'S ALL GENSYMS OF THE MEMBERS OF LIST
     (dorun (map #'(lambda (A)
             (CLEANX A 0 (GET A 'MAKESYM))
             (PUTPROP A 0 'MAKESYM))
         LIST)))
 
-(DEFUN CLEANX (A B C)
+(DEFUN CLEANX [A B C]
     ;; CLEANX REMOB'S GENSYMS OF THE SYMBOL "A" FROM B+1 UP TO AND INCLUDING C
     (let [SAVE nil I nil]
         (SETQ B (or B 0))
@@ -3085,17 +3081,17 @@ nil
 
 (DEFPROP THERT ERT FEXPR)
 
-(DEFUN ERT FEXPR (MESSAGE) (ERTEX MESSAGE nil true))       ;; ALWAYS STOPS, NEVER CAUSES ABORTION.  USED FOR GUARENTEED STOPS AS IN DEBUGGING OR ETAOIN.
+(DEFUN ERT FEXPR [MESSAGE] (ERTEX MESSAGE nil true))       ;; ALWAYS STOPS, NEVER CAUSES ABORTION.  USED FOR GUARENTEED STOPS AS IN DEBUGGING OR ETAOIN.
 
-(DEFUN ERTERR FEXPR (MESSAGE) (ERTEX MESSAGE true nil))    ;; USED FOR KNOWN WIERD STATES SUCH AS CHOP.  USES "NOSTOP" SWITCH, CAUSES ABORTION.
+(DEFUN ERTERR FEXPR [MESSAGE] (ERTEX MESSAGE true nil))    ;; USED FOR KNOWN WIERD STATES SUCH AS CHOP.  USES "NOSTOP" SWITCH, CAUSES ABORTION.
 
-(DEFUN BUG FEXPR (MESSAGE)
+(DEFUN BUG FEXPR [MESSAGE]
     (ERTEX (cons 'BUG!!!!!!!!!! MESSAGE) true nil))        ;; MARKES UNANTICIPATED WIERD STATES WHICH INDICATE MISTAKES IN THE CODE.
 
-(DEFUN GLOBAL-ERR FEXPR (MESSAGE)
+(DEFUN GLOBAL-ERR FEXPR [MESSAGE]
     (ERTEX (SETQ GLOBAL-MESSAGE MESSAGE) true nil))        ;; MARKES KNOWN INADEQUACIES OF THE SYSTEM.  SWITCHABLE STOP, CAUSES ABORTION.
 
-(DEFUN ERTEX (MESSAGE CAUSE-ABORTION IGNORE-NOSTOP-SWITCH?)
+(DEFUN ERTEX [MESSAGE CAUSE-ABORTION IGNORE-NOSTOP-SWITCH?]
     (let [ERT-TIME nil GLOP nil EXP nil ST-BUFFER nil BUILDING-ST-FORM nil ^W nil ^Q nil FIRSTWORD nil]
         (and NOSTOP
             (not IGNORE-NOSTOP-SWITCH?)
@@ -3146,7 +3142,7 @@ nil
             (:else (PRINT (eval EXP))))
         (GO PRINT)))
 
-(DEFUN COMBINATION? FEXPR (WORDS)
+(DEFUN COMBINATION? FEXPR [WORDS]
     ;; THIS FUNCTION CHECKS TO SEE IF THE WORDS PASSED AS ARGS FORM
     ;; A COMBINATION SUCH AS "STACK-UP" OR "ON-TOP-OF" COMBINATIONS
     ;; ARE IN THE DICTIONARY AS A SINGLE ATOM COMPOSED OF THE WORDS
@@ -3163,17 +3159,13 @@ nil
 
 (SETQ CONSO '(B C D F G H J K L M N P Q R S T V W X Z))
 
-(DEFPROP FINDB
-    (lambda (X Y)
-        (COND ((nil? X) nil) ((EQ Y (cdr X)) X) (:else (FINDB (cdr X) Y))))
-    EXPR)
+(DEFUN FINDB [X Y]
+    (COND ((nil? X) nil) ((EQ Y (cdr X)) X) (:else (FINDB (cdr X) Y)))))
 
-(DEFPROP FROM
-    (lambda (A B)
-        (COND ((or (not A) (EQ A B)) nil) (:else (cons (WORD A) (FROM (cdr A) B)))))
-    EXPR)
+(DEFUN FROM [A B]
+    (COND ((or (not A) (EQ A B)) nil) (:else (cons (WORD A) (FROM (cdr A) B))))))
 
-(DEFUN MAKESYM (A)
+(DEFUN MAKESYM [A]
     ;; FUNCTION MAKESYM MAKES UP A GENSYM OF ITS ARG
     (PUTPROP A (inc (or (GET A 'MAKESYM) 0)) 'MAKESYM)
     (SETQ A (MAKNAM (concat (or (GET A 'EXPLO)
@@ -3181,10 +3173,10 @@ nil
                 (EXPLODE (GET A 'MAKESYM)))))
     (COND (MAKEINTERN (INTERN A)) (A)))
 
-(DEFUN LIS2FY (X)
+(DEFUN LIS2FY [X]
     (COND ((ATOM X) (list (list X))) ((ATOM (car X)) (list X)) (X)))
 
-(DEFUN MEET (A MEET)
+(DEFUN MEET [A MEET]
     ;; MEET RETURNS THE INTERSECTION OF 2 LISTS TREATED AS SETS
     (let [SET nil]
     =>  (COND ((nil? A) (RETURN (reverse SET)))
@@ -3193,9 +3185,9 @@ nil
         (SETQ A (cdr A))
         (GO =>)))
 
-(DEFPROP MOD (lambda (A B) (UNION (SETDIF A (cadr B)) (car B))) EXPR)
+(DEFUN MOD [A B] (UNION (SETDIF A (cadr B)) (car B)))
 
-(DEFUN NTH (NUM LIST)
+(DEFUN NTH [NUM LIST]
     (COND ((ATOM LIST) (ERT NTH - ILLEGAL LIST))
         ((< NUM 1) (ERT NTH - ILLEGAL NUMBER)))
     (do
@@ -3206,53 +3198,47 @@ nil
             (:else (ERT NTH - LIST TOO SHORT)))
     nil))
 
-(DEFPROP PR1
-    (lambda (A)
-        (COND ((ATOM (H A)) (list (WORD (NB A)) (FE A)))
-            ((PR2 (SM A))
-                (list (FROM (NB A) (N A)) (FE A) (SM A) (COND ((ATOM (H A)) '\ ) ((MAPLIST #'PR1 (reverse (H A)))))))))
-    EXPR)
+(DEFUN PR1 [A]
+    (COND ((ATOM (H A)) (list (WORD (NB A)) (FE A)))
+        ((PR2 (SM A))
+            (list (FROM (NB A) (N A)) (FE A) (SM A) (COND ((ATOM (H A)) '\ ) ((MAPLIST #'PR1 (reverse (H A))))))))))
 
-(DEFPROP PR2
-    (lambda (A)
-        (or (ATOM A)
-            (dorun (map #'(lambda (B)
-                (and (GET B 'SM)
-                    (or (MEMQ B ALIST)
-                        (SETQ ALIST (cons (list B (GET B 'SM) (GET B 'REFER)) ALIST)))))
-                A))))
-    EXPR)
+(DEFUN PR2 [A]
+    (or (ATOM A)
+        (dorun (map #'(lambda (B)
+            (and (GET B 'SM)
+                (or (MEMQ B ALIST)
+                    (SETQ ALIST (cons (list B (GET B 'SM) (GET B 'REFER)) ALIST)))))
+            A)))))
 
-(DEFUN PRINT2 (X)
+(DEFUN PRINT2 [X]
     (COND ((> CHRCT (FLATSIZE X)) (PRINC '\ ))
         (:else (TERPRI)))
     (PRINC X))
 
-(DEFUN PRINT3 (X)
+(DEFUN PRINT3 [X]
     (PROG2 (or (> CHRCT (FLATSIZE X)) (TERPRI)) (PRINC X) (PRINC '\ )))
 
-(DEFUN PRINTEXT (TEXT)
+(DEFUN PRINTEXT [TEXT]
     (COND (TEXT
         (TERPRI)
         (eval (cons 'SAY (LISTIFY TEXT))))))
 
-(DEFPROP PRINTC
-    (lambda (L)
-        (let [TEST nil]
-            (TERPRI)
-        =>  (COND ((nil? L) (RETURN nil)))
-            (SETQ TEST (eval (car L)))
-            (COND ((EQ TEST '<TAB>))
-                (:else (PRINC TEST) (PRINC '\ )))
-            (SETQ L (cdr L))
-            (GO =>)))
-    FEXPR)
+(DEFUN PRINTC FEXPR [L]
+    (let [TEST nil]
+        (TERPRI)
+    =>  (COND ((nil? L) (RETURN nil)))
+        (SETQ TEST (eval (car L)))
+        (COND ((EQ TEST '<TAB>))
+            (:else (PRINC TEST) (PRINC '\ )))
+        (SETQ L (cdr L))
+        (GO =>))))
 
-(DEFUN QUOTIFY (X) (list 'quote X))
+(DEFUN QUOTIFY [X] (list 'quote X))
 
-(DEFPROP SAY (lambda (A) (dorun (map #'PRINT3 A))) FEXPR)
+(DEFUN SAY FEXPR [A] (dorun (map #'PRINT3 A)))
 
-(DEFUN SETDIF (A SETDIF)
+(DEFUN SETDIF [A SETDIF]
     (let [SET nil]
     =>  (COND ((nil? A) (RETURN (reverse SET)))
             ((MEMQ (car A) SETDIF))
@@ -3260,19 +3246,16 @@ nil
         (SETQ A (cdr A))
         (GO =>)))
 
-(DEFPROP STA
-    (lambda (A B)
-        (do
-        =>  (COND ((nil? B) (RETURN true))
-                ((nil? A))
-                ((EQ (car A) (car B))
-                    (SETQ A (cdr A))
-                    (SETQ B (cdr B))
-                    (GO =>)))
-        nil))
-    EXPR)
+(DEFUN STA [A B]
+=>  (COND ((nil? B) (RETURN true))
+        ((nil? A))
+        ((EQ (car A) (car B))
+            (SETQ A (cdr A))
+            (SETQ B (cdr B))
+            (GO =>)))
+    nil))
 
-(DEFUN UNION (A B)
+(DEFUN UNION [A B]
     (let [SET nil]
         (SETQ SET (reverse A))
     =>  (COND ((nil? B) (RETURN (reverse SET)))
@@ -3281,17 +3264,15 @@ nil
         (SETQ B (cdr B))
         (GO =>)))
 
-(DEFPROP WALLP
-    (lambda (A)
-        (let [ALIST nil LINEL nil]
-            (SETQ LINEL 72)
-            (and (STATUS TTY) (TYO 12))
-            (TERPRI)
-            (SPRINT (list (PR1 A) (reverse ALIST)) LINEL 0)
-            nil))
-    EXPR)
+(DEFUN WALLP [A]
+    (let [ALIST nil LINEL nil]
+        (SETQ LINEL 72)
+        (and (STATUS TTY) (TYO 12))
+        (TERPRI)
+        (SPRINT (list (PR1 A) (reverse ALIST)) LINEL 0)
+        nil)))
 
-(DEFUN DEFS FEXPR (L)
+(DEFUN DEFS FEXPR [L]
     (let [A nil]
         (and (nil? (cdr L)) (RETURN L))
         (SETQ A (car L))
@@ -3300,15 +3281,13 @@ nil
         (COND ((SETQ L (cddr L)) (GO =>)))
         (RETURN A)))
 
-(DEFPROP TAB
-    (lambda (N)
-        (let [P nil]
-            (COND ((> N LINEL) (RETURN '<TAB>)))
-        =>  (SETQ P (- LINEL CHRCT))
-            (COND ((not (> N P)) (RETURN '<TAB>)))
-            (PRINC '\ )
-            (GO =>)))
-    EXPR)
+(DEFUN TAB [N]
+    (let [P nil]
+        (COND ((> N LINEL) (RETURN '<TAB>)))
+    =>  (SETQ P (- LINEL CHRCT))
+        (COND ((not (> N P)) (RETURN '<TAB>)))
+        (PRINC '\ )
+        (GO =>))))
 
 #_(ns shrdlu.morpho)
 
@@ -3320,7 +3299,7 @@ nil
 ;;
 ;; ################################################################################
 
-(DEFUN ETAOIN nil
+(DEFUN ETAOIN []
     (let [WORD nil NEWWORD nil CHAR nil ALTN nil ALREADY-BLGING-NEWWRD nil WRD nil LAST nil NEXT nil Y nil WORD1 nil X nil RD nil POSS nil]
     THRU (SETQ SENT (SETQ WORD (SETQ PUNCT (SETQ POSS nil))))
         (PRINT 'READY)
@@ -3490,15 +3469,15 @@ nil
         (SETQ PUNCT nil WORD nil)
         (GO DO)))
 
-(DEFUN PROPNAME (X) (EQ (car (EXPLODE X)) '=))
+(DEFUN PROPNAME [X] (EQ (car (EXPLODE X)) '=))
 
-(DEFUN BUILDWORD (WORD FEATURES SEMANTICS ROOT)
+(DEFUN BUILDWORD [WORD FEATURES SEMANTICS ROOT]
     (PUTPROP WORD FEATURES 'FEATURES)
     (PUTPROP WORD (or SMN SEMANTICS) 'SEMANTICS)
     (and ROOT (PUTPROP WORD ROOT 'ROOT))
     WORD)
 
-(DEFUN BUILDWORDLIST FEXPR (A)
+(DEFUN BUILDWORDLIST FEXPR [A]
     (dorun (map #'(lambda (X)
         (PRINT (BUILDWORD (car X)
             (cadr X)
@@ -3514,15 +3493,13 @@ nil
 
 (SETQ LIQUID '(L R S Z V))
 
-(SETQ PUNCL '(\. ? : \; \" !))
+(SETQ PUNCL '(\. ? \: \; \" !))
 
 (SETQ RUBOUT (ASCII 127))
 
-(DEFPROP UNDEFINED
-    (lambda nil (PRINC (WORD N)) (ERT UNDEFINED))
-    EXPR)
+(DEFUN UNDEFINED [] (PRINC (WORD N)) (ERT UNDEFINED)))
 
-(DEFUN UPPERCASE-IFY-CHAR (CHAR) (COND ((> 123 CHAR 96) (- CHAR 32)) (:else CHAR)))
+(DEFUN UPPERCASE-IFY-CHAR [CHAR] (COND ((> 123 CHAR 96) (- CHAR 32)) (:else CHAR)))
 
 (SETQ VOWEL '(nil A E I O U Y))
 
@@ -3530,10 +3507,10 @@ nil
 
 ;; QUICKIES
 
-(DEFUN SHSTPO nil ;; "SH-STANDARD-PRINTOUT"
+(DEFUN SHSTPO [] ;; "SH-STANDARD-PRINTOUT"
     (PARSINGS))
 
-(DEFUN PARSINGS nil
+(DEFUN PARSINGS []
     (PRINTC '\ \ RATIO\ OF\ WINNING\ PARSES\ TO\ TOTAL\ )
     (PRINC (GET 'PARSINGS 'WINS))
     (PRINC '\/)
@@ -3551,9 +3528,9 @@ nil
 
 (DEFUN SMNBREAK OFF? (COND ((== (ARG nil) 1) (SETQ SMNBREAK nil)) (:else (SETQ SMNBREAK true))))
 
-(DEFUN LBK FEXPR (LABELS) (SETQ LABELBREAK LABELS))
+(DEFUN LBK FEXPR [LABELS] (SETQ LABELBREAK LABELS))
 
-(DEFUN LABELTRACE FEXPR (A)
+(DEFUN LABELTRACE FEXPR [A]
     (dorun (map #'(lambda (X)
         (let [BODY nil]
             (PRINT X)
@@ -3571,7 +3548,7 @@ nil
             nil))
         A)))
 
-(DEFUN PASSING (A)
+(DEFUN PASSING [A]
     (SETQ LASTLABEL A)
     (and (COND
             ((ATOM LABELTRACE) (and LABELTRACE (PRINT 'PASSING) (PRINC A)))
@@ -3584,7 +3561,7 @@ nil
 
 (SETQ LABELBREAK nil)
 
-(DEFUN UNLABELTRACE FEXPR (A)
+(DEFUN UNLABELTRACE FEXPR [A]
     (dorun (map #'(lambda (X)
         (let [BODY nil]
             (PRINT X)
@@ -3608,7 +3585,7 @@ nil
             '(ANY PLANNER GOAL PATTERN BEGINNING WITH THIS CONCEPT NAME CAN BE ACCEPTED BY THE SYSTEM AS NEW INFORMATION
             -- BEWARE OF INTERACTIONS WITH SPECIAL HACKS FOR LOCATION\, ETC\.))))))
 
-(DEFUN PEV (EV COL TOP)
+(DEFUN PEV [EV COL TOP]
     (TERPRI)
     (TAB COL)
     (PRINC EV)
@@ -3632,7 +3609,7 @@ nil
             (:else (dorun (map #'(lambda (Y) (and (EQ 'COMMAND (GET Y 'WHY)) (PEV Y 0 true)))
                 (reverse EVENTLIST)))))))
 
-(DEFUN ABBREVIATE FEXPR (A)
+(DEFUN ABBREVIATE FEXPR [A]
     (dorun (map #'(lambda (X)
         (PUTPROP (READLIST (doall (map #'(lambda (X Y) X) (EXPLODE X) '(true true)))) X 'ABBREV))
         A))
@@ -3641,7 +3618,7 @@ nil
 (ABBREVIATE
     SHOW TELL LISP PLANNER PARSING DEFINITIONS SCENE INPUT RUN SEMANTICS PROPERTY FUNCTION VALUE ASSERTIONS THEOREM SCENE ACTION NODE TREE LABEL ATTEMPT UNIT WORD MARKER ALL REST CURRENT STOP DO)
 
-(DEFUN SHOWSCENE (X)
+(DEFUN SHOWSCENE [X]
     (let [PLANNERSEE nil]
         (TERPRI)
         (TAB 16)
@@ -3667,11 +3644,11 @@ nil
             (:else 'NOTHING)))
         nil))
 
-(DEFUN TELLCHOICE (NODE) (SETQ NODE (car NODE)) (SHOWTELLCHOICE))
+(DEFUN TELLCHOICE [NODE] (SETQ NODE (car NODE)) (SHOWTELLCHOICE))
 
-(DEFUN SHOWCHOICE (NODE) (SETQ NODE (car NODE)) (SHOWTELLCHOICE))
+(DEFUN SHOWCHOICE [NODE] (SETQ NODE (car NODE)) (SHOWTELLCHOICE))
 
-(DEFUN SHOWTELL (A NODE SYSTEMS INFO ACTION)
+(DEFUN SHOWTELL [A NODE SYSTEMS INFO ACTION]
     (COND ((nil? A) (SHOWTELLCHOICE))
         ((GET (car A) ACTION)
             (APPLY (GET (car A) ACTION) (list A)))
@@ -3680,21 +3657,21 @@ nil
             (PRINT2 (car A))))
     '*)
 
-(DEFUN SHOWTELLCHOICE nil
+(DEFUN SHOWTELLCHOICE []
     (APPLY (GET (SETQ NODE (QUERY '(WHICH OPTION?)
                     (PRINT (GET NODE SYSTEMS))
                     (GET NODE INFO)))
         ACTION)
         (list (list NODE))))
 
-(DEFUN SUBLEAF (KID DAD)
+(DEFUN SUBLEAF [KID DAD]
     (CATCH (and (dorun (map #'SUBL2 (GET DAD SYSTEMS))) nil)))
 
-(DEFUN SUBL2 (X)
+(DEFUN SUBL2 [X]
     (COND ((EQ X KID) (THROW true))
         (:else (dorun (map #'SUBL2 (GET X SYSTEMS))))))
 
-(DEFUN QUERY (TEXT CHOICES HELP)
+(DEFUN QUERY [TEXT CHOICES HELP]
     (let [EXPL nil CH2 nil EX2 nil CH3 nil EX3 nil CHAR nil NOTINIT nil]
         (SETQ EXPL (doall (map #'EXPLODE (cons 'QUIT CHOICES))))
     TOP (SETQ CH2 (cons 'QUIT CHOICES) EX2 EXPL)
@@ -3724,7 +3701,7 @@ nil
         (PRINT CHOICES)
         (GO TOP)))
 
-(DEFUN REQUEST (TEXT HELP)
+(DEFUN REQUEST [TEXT HELP]
     (let [X nil]
     TOP (PRINTEXT TEXT)
     READ (COND
@@ -3735,7 +3712,7 @@ nil
             (:else (RETURN X)))
     nil))
 
-(DEFUN SHOWPROP (X)
+(DEFUN SHOWPROP [X]
     (COND ((nil? X)
             (SHOWPROP (cons
                 (REQUEST 'ATOM:
@@ -3745,10 +3722,10 @@ nil
         ((cdr X) (APPLY #'DISP X))
         (:else (let [DPSTOP nil] (DP (car X)) nil))))
 
-(DEFUN TELL FEXPR (A)
+(DEFUN TELL FEXPR [A]
     (SHOWTELL A 'CANTELL 'TELLTREE 'TELLINFO 'TELL))
 
-(DEFUN TREEPRINT (ROOT TR COL)
+(DEFUN TREEPRINT [ROOT TR COL]
     (TERPRI)
     (TAB COL)
     (PRINC ROOT)
@@ -3756,10 +3733,10 @@ nil
         (GET ROOT TR)))
     '*)
 
-(DEFUN CHARG (X TEXT HELP)
+(DEFUN CHARG [X TEXT HELP]
     (COND ((cdr X) (cadr X)) (:else (REQUEST TEXT HELP))))
 
-(DEFUN SHOW FEXPR (A)
+(DEFUN SHOW FEXPR [A]
     (SHOWTELL A 'CANSHOW 'SHOWTREE 'SHOWINFO 'SHOW))
 
 (DEFS CANSHOW
@@ -3991,20 +3968,20 @@ nil
             (TRACE CALLSM))
         (:else (UNTRACE PARSE)))))
 
-(DEFUN SHOWMOVE (X)
+(DEFUN SHOWMOVE [X]
     (SETQ SAVEPT PT)
     (APPLY #'MOVE-PT
         (LISTIFY (or X
             (REQUEST 'NODE-SPECIFICATION:
                 '(C MEANS CURRENT NODE -- H IS MOST RECENTLY PARSED FOR OTHER POSSIBILITIES\, SEE THESIS SECTION ON POINTER-MOVING COMMANDS))))))
 
-(DEFUN ONOFF (ARG HELP)
+(DEFUN ONOFF [ARG HELP]
     (COND
         ((EQ (cadr ARG) 'ON) true)
         ((EQ (cadr ARG) 'OFF) nil)
         ((EQ 'ON (QUERY '(ON OR OFF?) '(ON OFF) HELP)))))
 
-(DEFUN DEFINETHEOREM (X)
+(DEFUN DEFINETHEOREM [X]
     (PUTPROP (COND ((cdr X) (SETQ X (cadr X))) (:else (SETQ X (MAKESYM 'THEOREM))))
         (concat (list (QUERY '(WHICH THEOREM TYPE?)
                         '(THANTE THERASING THCONSE)
@@ -4044,7 +4021,7 @@ nil
 
 (DEFS SCENE SHOW SHOWSCENE)
 
-(DEFUN DEFINE FEXPR (A)
+(DEFUN DEFINE FEXPR [A]
     (let [FE nil TYPE nil MARK nil REST nil TR nil]
         (SETQ A (COND (A (car A)) (:else (REQUEST 'WORD: '(ENGLISH WORD TO BE DEFINED)))))
         (SETQ TYPE (QUERY '(NOUN OR VERB?) '(NOUN VERB) '(OTHER TYPES MUST BE DEFINED IN LISP)))
@@ -4079,14 +4056,14 @@ nil
             'SEMANTICS)
         (RETURN true))))
 
-(DEFUN HELP nil
+(DEFUN HELP []
     (COND ((EQ 'S (QUERY '(TYPE L FOR LONG FORM (85 LINES) S FOR SHORT (16 LINES)) '(S L) nil))
             (UREAD MINIH DOC DSK LANG))
         (:else (UREAD HELP DOC DSK LANG)))
     (THRUTEXT)
     '*)
 
-(DEFUN LIS2FY (X)
+(DEFUN LIS2FY [X]
     (COND ((ATOM X) (list (list X))) ((ATOM (car X)) (list X)) (X)))
 
 #_(ns shrdlu.setup)
@@ -4176,16 +4153,16 @@ nil
 
 ;; **********************************
 
-(DEFUN QUIETMODE nil
+(DEFUN QUIETMODE []
     (dorun (map #'(lambda (X) (SET X nil)) DISPLAYSWITCHES)))
 
-(DEFUN NOPAUSES nil
+(DEFUN NOPAUSES []
     (dorun (map #'(lambda (X) (SET X nil)) PAUSESWITCHES)))
 
-(DEFUN NORMALFEATUREMODE nil
+(DEFUN NORMALFEATUREMODE []
     (SETQ DISCOURSE true NOMEM nil IASUME true TIMID 200))
 
-(DEFUN USERMODE nil
+(DEFUN USERMODE []
     (QUIETMODE)
     (NORMALFEATUREMODE)
     (NOPAUSES)
@@ -4193,7 +4170,7 @@ nil
     (SETQ ^D nil)
     (SETQ SH-PRINT-TIME true))
 
-(DEFUN DEBUGMODE nil
+(DEFUN DEBUGMODE []
     (QUIETMODE)
     (NORMALFEATUREMODE)
     (NOPAUSES)
@@ -4206,7 +4183,7 @@ nil
 ;;
 ;; #################################################################
 
-(DEFUN INITIALSTUFF (VERSION DATE NOTE)
+(DEFUN INITIALSTUFF [VERSION DATE NOTE]
     (SUSPEND)
     (CURSORPOS 'C)
     (TERPRI)
@@ -4247,7 +4224,7 @@ nil
 ;;
 ;; #############################################################
 
-(DEFUN TOPLEVEL-LIST FEXPR (ELEMENTS)
+(DEFUN TOPLEVEL-LIST FEXPR [ELEMENTS]
     ;; ACTS LIKE LIST EXCEPT THAT IF ANY ELEMEMNT EVALUATES IN TO
     ;; MORE THAN A SINGLE ELEMENT (RETURNS A LIST WHOSE CAR IS
     ;; ALSO A LIST) THEN THE ELEMENTS OF THAT ELEMENT ARE ADDED
@@ -4257,7 +4234,7 @@ nil
             (COND ((ATOM (car ELEMENT)) (list ELEMENT)) (:else ELEMENT)))
         ELEMENTS)))
 
-(DEFUN PDEFINE FEXPR (MOBY)
+(DEFUN PDEFINE FEXPR [MOBY]
     (list 'DEFUN (car MOBY) 'nil
         (concat (list 'PROG
             (concat '(FE H ME NB C SM CUT NN T1 T2 T3 :RESULT) (cadr MOBY))
@@ -4274,7 +4251,7 @@ nil
                 '(SETQ MES ME)
                 '(RETURN (REBUILD (reverse FE) NB N H SM C))))))
 
-(DEFUN SPREAD FEXPR (LIST)
+(DEFUN SPREAD FEXPR [LIST]
     (doall (map #'(lambda (EXP)
         (let [PREDICATE nil T1 nil T2 nil T3 nil]
             (COND
@@ -4282,7 +4259,7 @@ nil
                     (RETURN (list EXP (list 'AND 'LABELTRACE (list 'PASSING (list 'quote EXP))))))
                 ((EQ (car EXP) 'GOCOND)
                     (RETURN (list (list 'COND (list 'NN (list 'GO (cadr EXP))) (list ':else (list 'GO (caddr EXP)))))))
-                ((EQ (car EXP) ':)
+                ((EQ (car EXP) '|)
                     (SETQ PREDICATE (cadr EXP) T1 (caddr EXP) T2 (cadddr EXP))
                 (and (cddddr EXP) (SETQ T3 (car (cddddr EXP))))
                     (RETURN (list
@@ -4310,7 +4287,7 @@ nil
             nil))
     LIST)))
 
-(DEFUN TAG-CHECK (TAG-EXP)
+(DEFUN TAG-CHECK [TAG-EXP]
     (COND ((ATOM TAG-EXP) (list (list 'GO TAG-EXP)))
         (:else (list (list 'M (car TAG-EXP)) (list 'GO 'FAIL)))))
 
@@ -4323,9 +4300,9 @@ nil
 ;;
 ;; ###########################################################
 
-(DEFUN RESTOREPT nil (SETQ PT SAVEPT))
+(DEFUN RESTOREPT [] (SETQ PT SAVEPT))
 
-(DEFUN SETMVB (PTR-MVB)
+(DEFUN SETMVB [PTR-MVB]
     (let [SAVE nil]
         (SETQ MVB PTR-MVB)                              ;; IF THERE ARE SEVERAL CLAUSES ACTIVE AT THE
         (SETQ SAVE PT)
@@ -4334,21 +4311,21 @@ nil
         (SETQ PT SAVE)
         (RETURN true)))
 
-(DEFUN ADD-F-PT (FEATURE PTR)
+(DEFUN ADD-F-PT [FEATURE PTR]
     (PUTPROP (car PTR) (cons FEATURE (FE PTR)) 'FEATURES)
     (and (EQ PTR C) (SETQ FE (FE PTR)))
     true)
 
-(DEFUN REMOVE-F-PT (FEATURE PTR)
+(DEFUN REMOVE-F-PT [FEATURE PTR]
     (PUTPROP (car PTR) (SETDIF (GET (car PTR) 'FEATURES) (list FEATURE)) 'FEATURES)
     (and (EQ PTR C) (SETQ FE (FE PTR)))
     true)
 
-(DEFUN ONE-WORD-LEFT nil (and (cdr NB) (not (cddr NB))))
+(DEFUN ONE-WORD-LEFT [] (and (cdr NB) (not (cddr NB))))
 
 (SETQ SMNBREAKS nil) ;; A LIST OF SMNFNS WHICH WILL BE BROKEN AT (BEFORE CALLING)
 
-(DEFUN CALLSM FEXPR (SEMANTIC-EXPRESSION)
+(DEFUN CALLSM FEXPR [SEMANTIC-EXPRESSION]
     (let [RESULT nil MPLNR-TIME nil SM-TTIME nil GC nil SMNFN nil]
         (SETQ SMNFN (car SEMANTIC-EXPRESSION))
         (and SMNTRACE
@@ -4372,7 +4349,7 @@ nil
         (COND ((or (EQ SMNBREAKS 'ALL) (MEMQ SMNFN SMNBREAKS)) (ERT)))
         (RETURN RESULT)))
 
-(DEFUN MOVE-PT FEXPR (L)
+(DEFUN MOVE-PT FEXPR [L]
     (let [XX nil YY nil L2 nil EXEC nil SAVE nil]
         (SETQ EXEC L)
         (SETQ SAVE PT)
@@ -4406,7 +4383,7 @@ nil
     FAIL (SETQ PT SAVE)
         (RETURN nil)))
 
-(DEFUN MOVE-PTW FEXPR (L)
+(DEFUN MOVE-PTW FEXPR [L]
     (let [EXEC nil SAVE nil XX nil]
         (SETQ SAVE PTW)
         (SETQ EXEC L)
@@ -4434,11 +4411,11 @@ nil
     FAIL (SETQ PTW SAVE)
         (RETURN nil)))
 
-(DEFUN APPLY-GRAMMAR (UNIT)
+(DEFUN APPLY-GRAMMAR [UNIT]
     (COND ((GET UNIT 'INTERPRET) (INTERPRET UNIT))
         (:else (eval (list UNIT)))))
 
-(DEFUN BUILDNODE (FEATURES FIRSTWORD WORDAFTER DAUGHTERS SEMANTICS)
+(DEFUN BUILDNODE [FEATURES FIRSTWORD WORDAFTER DAUGHTERS SEMANTICS]
     (let [NODE nil]
         (SETQ NODE (list (MAKESYM 'NODE)))
         (SETR 'FEATURES FEATURES NODE)
@@ -4448,80 +4425,76 @@ nil
         (SETR 'SEMANTICS SEMANTICS NODE)
         (RETURN NODE)))
 
-(DEFUN CQ FEXPR (FEATURE) (MEMQ (car FEATURE) FE))
+(DEFUN CQ FEXPR [FEATURE] (MEMQ (car FEATURE) FE))
 
-(DEFPROP CUT
-    (lambda (A)
-        (let [B nil C nil]
-            (SETQ B N)
-        =>  (COND
-                ((EQ A B) (SETQ CUT A) (SETQ NN (not (EQ CUT N))) (RETURN true))
-                ((EQ B END) (RETURN nil))
-                ((SETQ B (cdr B)) (GO =>))
-                ((nil? A) (SETQ CUT nil) (SETQ NN N) (RETURN true)))))
-    EXPR)
+(DEFUN CUT [A]
+    (let [B nil C nil]
+        (SETQ B N)
+    =>  (COND
+            ((EQ A B) (SETQ CUT A) (SETQ NN (not (EQ CUT N))) (RETURN true))
+            ((EQ B END) (RETURN nil))
+            ((SETQ B (cdr B)) (GO =>))
+            ((nil? A) (SETQ CUT nil) (SETQ NN N) (RETURN true))))))
 
-(DEFUN CUT-BACK-ONE nil (MOVE-PTW N PW) (POP) (CUT PTW))
+(DEFUN CUT-BACK-ONE [] (MOVE-PTW N PW) (POP) (CUT PTW))
 
-(DEFPROP F
-    (lambda (A)
-        (COND ((MEMBER A FE) true) ((SETR 'FEATURES (SETQ FE (cons A FE)) C))))
-    EXPR)
+(DEFUN F [A]
+    (COND ((MEMBER A FE) true) ((SETR 'FEATURES (SETQ FE (cons A FE)) C)))))
 
-(DEFUN FE (NODE) (GETR 'FEATURES NODE))
+(DEFUN FE [NODE] (GETR 'FEATURES NODE))
 
-(DEFUN FEATURE? (FEATURE) (MEMQ FEATURE FE))
+(DEFUN FEATURE? [FEATURE] (MEMQ FEATURE FE))
 
-(DEFUN FESET (NODE FEATURES) (SETR 'FEATURES FEATURES NODE))
+(DEFUN FESET [NODE FEATURES] (SETR 'FEATURES FEATURES NODE))
 
-(DEFUN FLUSHME nil
+(DEFUN FLUSHME []
     ;; IF YOU HAVEN'T REAHED THE CUT, FLUSHES THE NEXT WORD IN THE SENTENCE.  FAILS IF IT REACHES CUT POINT
     (and N NN (SETQ NN (not (EQ CUT (SETQ N (cdr N)))))))
 
-(DEFUN FOLLOWING (list MEMBER)
+(DEFUN FOLLOWING [LIST MEMBER]
     ;; GET THE ELEMENT OF LIST FOLLOWING MEMBER
     (and (MEMQ MEMBER LIST) (cdr (MEMQ MEMBER LIST))))
 
-(DEFUN FQ FEXPR (A)
+(DEFUN FQ FEXPR [A]
     (dorun (map #'(lambda (X) (or (MEMQ X FE) (SETQ FE (cons X FE)))) A))
     (SETR 'FEATURES FE C))
 
-(DEFUN GETR (REGISTER NODE)
+(DEFUN GETR [REGISTER NODE]
     ;; THIS FUNCTION RETRIEVES THE CONTENTS OF THE REGISTER ASSOCIATED WITH THE GIVEN NODE
     (GET (car NODE) REGISTER))
 
-(DEFUN H (NODE) (GETR 'DAUGHTERS NODE))
+(DEFUN H [NODE] (GETR 'DAUGHTERS NODE))
 
-(DEFPROP ISQ (lambda (A) (MEMQ (cadr A) (FE (eval (car A))))) FEXPR)
+(DEFUN ISQ FEXPR [A] (MEMQ (cadr A) (FE (eval (car A)))))
 
-(DEFUN ISX (A B) (MEMBER B (FE A)))
+(DEFUN ISX [A B] (MEMBER B (FE A)))
 
-(DEFPROP M (lambda (A) (SETQ ME (cons A ME))) EXPR)
+(DEFUN M [A] (SETQ ME (cons A ME)))
 
-(DEFPROP MP (lambda (A) (SETQ MESP A)) FEXPR)
+(DEFUN MP FEXPR [A] (SETQ MESP A))
 
-(DEFPROP MQ (lambda (A) (SETQ ME (cons A ME))) FEXPR)
+(DEFUN MQ FEXPR [A] (SETQ ME (cons A ME)))
 
-(DEFUN N (NODE) (GETR 'WORDAFTER NODE))
+(DEFUN N [NODE] (GETR 'WORDAFTER NODE))
 
-(DEFUN NB (NODE) (GETR 'FIRSTWORD NODE))
+(DEFUN NB [NODE] (GETR 'FIRSTWORD NODE))
 
-(DEFUN NEXTW FEXPR (A) (EQ (car N) (car A)))
+(DEFUN NEXTW FEXPR [A] (EQ (car N) (car A)))
 
-(DEFUN NEXTWORD nil (car N))                ;; RETURN THE NEXT WORD IN THE SENTENCE
+(DEFUN NEXTWORD [] (car N))                ;; RETURN THE NEXT WORD IN THE SENTENCE
 
-(DEFUN NEXTWORD? (A) (EQ (car N) A))
+(DEFUN NEXTWORD? [A] (EQ (car N) A))
 
-(DEFUN NQ FEXPR (A) (MEMQ (car A) (FE N)))
+(DEFUN NQ FEXPR [A] (MEMQ (car A) (FE N)))
 
-(DEFUN ONLY-ONE-WORD-LEFT nil (and N (not (cdr N))))
+(DEFUN ONLY-ONE-WORD-LEFT [] (and N (not (cdr N))))
 
-(DEFUN PARENT (NODE) (GETR 'PARENT NODE))
+(DEFUN PARENT [NODE] (GETR 'PARENT NODE))
 
-(DEFUN PARSE FEXPR (A)
+(DEFUN PARSE FEXPR [A]
     (COND ((MEMQ (car A) '(NG CLAUSE VG PREPG ADJG)) (PARSE2 A (MEMQ 'TOPLEVEL A))) ((PARSE3 A nil))))
 
-(DEFUN PARSE2 (REST P)
+(DEFUN PARSE2 [REST P]
     ;; THIS FUNCTION CALLS THE PROGRAMMAR FUNCTION INDICATED BY THE FIRST MEMBER OF REST - A FEATURE LIST.
     ;; THE PARAMETER P INDICATES WHETHER PARSE2 IS BEING CALLED FROM THE TOPLEVEL.
     ;; IF P IS TRUE, PARSE2 DOES NOT APPEND THE NODE JUST PARSED TO THE PARSING TREE.
@@ -4585,7 +4558,7 @@ nil
         (SETQ LEVEL (dec LEVEL))
         (RETURN RE)))
 
-(DEFUN PARSE3 (REST P)
+(DEFUN PARSE3 [REST P]
     ;; PARSE3 IS CALLED TO PARSE JUST THE NEXT WORD IN THE SENTENCE
     (let [XP nil LABL nil RE nil SPECIAL nil NBB nil NODE nil]
         (COND ((EQ (SETQ NBB N) CUT) (MQ CUT) (RETURN nil))
@@ -4624,7 +4597,7 @@ nil
         (PARSE-STATISTICS)
         (RETURN RE)))
 
-(DEFUN PARSEREL (A B NODE)
+(DEFUN PARSEREL [A B NODE]
 =>  (COND ((nil? A) (RETURN nil))
         ((not (ISX NODE (caar A))))
         ((eval (concat '(PARSE CLAUSE RSNG) (cdar A) B))
@@ -4632,7 +4605,7 @@ nil
     (SETQ A (cdr A))
     (GO =>))
 
-(DEFUN POP FEXPR (A)
+(DEFUN POP FEXPR [A]
     (COND ((or (nil? A) (nil? (car A)))
             (COND ((nil? H) nil)
                 ((SETQ N (NB H))
@@ -4651,7 +4624,7 @@ nil
                     true)))
         ((eval (cons 'POPTO A)) (POP))))
 
-(DEFUN POPTO FEXPR (A)
+(DEFUN POPTO FEXPR [A]
     (let [XX nil]
         (SETQ XX H)
     LOOP (COND ((eval (cons 'ISQ (cons 'XX A))))
@@ -4660,7 +4633,7 @@ nil
     EX  (COND ((EQ XX H) (RETURN C))
             ((POP) (GO EX)))))
 
-(DEFUN PREVIOUS (list MEMBER)
+(DEFUN PREVIOUS [LIST MEMBER]
     ;; GET THE ELEMENT OF LIST BEFORE MEMBER
     (let [GOODIE nil]
     =>  (COND ((nil? LIST) (RETURN nil))
@@ -4668,7 +4641,7 @@ nil
             (:else (SETQ GOODIE (car LIST)) (SETQ LIST (cdr LIST))))
         (GO =>)))
 
-(DEFUN PTFIND (X YY Z)
+(DEFUN PTFIND [X YY Z]
     (let [FOO nil]
         (SETQ FOO (car X))
     UP  (COND ((MOVE-PT U) (GO UP)) ((EQ (NB PT) X) (GO ON)))
@@ -4682,7 +4655,7 @@ nil
             ((MOVE-PT DF) (GO CHECK)))
     nil))
 
-(DEFUN REBUILD (FEATURES FIRSTWORD WORDAFTER DAUGHTERS SEMANTICS NODE)
+(DEFUN REBUILD [FEATURES FIRSTWORD WORDAFTER DAUGHTERS SEMANTICS NODE]
     (SETR 'FEATURES FEATURES NODE)
     (SETR 'FIRSTWORD FIRSTWORD NODE)
     (SETR 'WORDAFTER WORDAFTER NODE)
@@ -4690,43 +4663,41 @@ nil
     (SETR 'SEMANTICS SEMANTICS NODE)
     NODE)
 
-(DEFUN ROOT (X)
+(DEFUN ROOT [X]
     ;; INPUT= PIECE OF SENTENCE
     ;; OUTPUT= ROOT OF FIRST WORD IN THAT PIECE
     ;; IF WORD HAS NO ROOT PROPERTY, THE ROOT == WORD
     (or (GET (car X) 'ROOT) (car X)))
 
-(DEFUN RQ FEXPR (A) (SETR 'FEATURES (SETQ FE (SETDIF FE A)) C)) ;; REMOVE THE FEATURE A FROM FEATURE LIST OF THE CURRENT NODE
+(DEFUN RQ FEXPR [A] (SETR 'FEATURES (SETQ FE (SETDIF FE A)) C)) ;; REMOVE THE FEATURE A FROM FEATURE LIST OF THE CURRENT NODE
 
-(DEFUN SECONDWORD? (WORD) (and N (cdr N) (EQ (cadr N) WORD)))
+(DEFUN SECONDWORD? [WORD] (and N (cdr N) (EQ (cadr N) WORD)))
 
-(DEFUN SETR (REGISTER VALUE NODE)
+(DEFUN SETR [REGISTER VALUE NODE]
     ;; THIS FUNCTION ASSOCIATES THE GIVEN VALUE WITH THE GIVEN
     ;; NODE UNDER THE GIVEN INDICATOR, REGISTER
     (PUTPROP (car NODE) VALUE REGISTER))
 
-(DEFUN SM (NODE) (GETR 'SEMANTICS NODE))
+(DEFUN SM [NODE] (GETR 'SEMANTICS NODE))
 
-(DEFUN TRNSF FEXPR (A)
+(DEFUN TRNSF FEXPR [A]
     (SETR 'FEATURES
         (SETQ FE (UNION (MEET A (FE PT)) FE))
         C))
 
-(DEFUN UPREL (X)
+(DEFUN UPREL [X]
     (and (not (ATOM X))
         (or (MEMQ 'UPREL (FE X)) (UPREL (H X)) (UPREL (cdr X))))) ;; FIND NODE WITH UPREL FEATURE
 
-(DEFUN WORD (N) (car N))
+(DEFUN WORD [N] (car N))
 
-(DEFPROP UPCHECK
-    (lambda nil
-        (and (MOVE-PT C U (REL-NOT-FOUND))
-            (not (MEET (FE PT) '(OBJ1Q OBJ1REL OBJ2Q OBJ2REL LOBREL LOBQ)))))
-    EXPR)
+(DEFUN UPCHECK []
+    (and (MOVE-PT C U (REL-NOT-FOUND))
+        (not (MEET (FE PT) '(OBJ1Q OBJ1REL OBJ2Q OBJ2REL LOBREL LOBQ))))))
 
 #_(ns shrdlu.ginter)
 
-(DEFUN PDEFINE FEXPR (A)
+(DEFUN PDEFINE FEXPR [A]
     ;; THIS PDEFINE MERELY PUT THE PROGRAMMAR FUNCTION ON THE
     ;; PROPERTY LIST OF THE PARSE NAME UNDER THE INDICATOR
     ;; 'INTERPRET. IT ALSO ADDS THE TAGS FAIL AND RETURN. NOTE THAT
@@ -4736,7 +4707,7 @@ nil
         (concat (cdr A) (list 'FAIL '(RETURN 'FAIL) 'RETURN '(RETURN 'RETURN)))
         'INTERPRET))
 
-(DEFUN INTERPRET (UNIT)
+(DEFUN INTERPRET [UNIT]
     ;; INTERPRET IS THE FUNCTION WHICH 'CALLS' AN INTERPRETED PROGRAMMAR PROGRAM.
     ;; IT FIRST DECLARES AND INITIALIZES ALL THE RELAVENT VARIABLES, THEN
     ;; IT EXECUTES THE PROGRAMMAR BODY AS A PROG.  NOTE THE USE OF "RE":
@@ -4760,14 +4731,14 @@ nil
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN : FEXPR (BRANCH)
+(DEFUN | FEXPR [BRANCH]
     (COND ((eval (car BRANCH))                          ;; EVALUATE BRANCH CONDITION
             (COND ((and (nil? NN) (cdddr BRANCH))
                     (GOCHECK (cddr BRANCH)))            ;; IF TRUE AND NO MORE SENTENCE REMAINS
                 (:else (GOCHECK BRANCH))))                  ;; AND IF THIRD BRANCH GIVEN,THEN GO TO THIRD
         (:else (GOCHECK (cdr BRANCH)))))                    ;; BRANCH 2ND BRANCH
 
-(DEFUN GOCHECK (LABEL)
+(DEFUN GOCHECK [LABEL]
     ;; THE GOCHECK FUNCTION CHECKS THE BRANCHES OF THE PROGRAMMAR CONDITIONAL.
     ;; IF THE BRANCH IS NIL, GOCHECK MERELY RETURNS.
     ;; IF THE BRANCH IS NON-ATOMIC, IT IS TAKEN AS A FAILURE MESSAGE.
@@ -4779,7 +4750,7 @@ nil
         ((ATOM (cadr LABEL)) (GO (cadr LABEL)))
         (:else (M (cadr LABEL)) (GO FAIL))))
 
-(DEFUN GOCOND FEXPR (A)
+(DEFUN GOCOND FEXPR [A]
     ;; GOCOND GOES TO THE 1ST OR 2ND OF TWO TAGS DEPENDING IF THERE REMAINS
     ;; ANY MORE OF THE SENTENCE YET TO BE PARSED.
     (COND (NN (GO (car A))) (:else (GO (cadr A)))))
@@ -4790,18 +4761,18 @@ nil
 
     ENTERING-CLAUSE
         (SETR 'TIME (BUILD TSSNODE= (MAKESYM 'TSS)) C)
-        (: (CQ SIMP) SUBJ nil)
-        (: (CQ MAJOR) INIT SEC)
+        (| (CQ SIMP) SUBJ nil)
+        (| (CQ MAJOR) INIT SEC)
 
     INIT
         (SETQ LOCATIONMARKER N)
-        (: (and (NQ BINDER) (PARSE CLAUSE BOUND INIT)) nil MAJOR FIXIT)
+        (| (and (NQ BINDER) (PARSE CLAUSE BOUND INIT)) nil MAJOR FIXIT)
         (FQ BIND)
-        (: (CALLSM (SMBIND)) INIT nil)
+        (| (CALLSM (SMBIND)) INIT nil)
 
     FIXIT
         (SETQ PTW CUT)
-        (: (CUT (MOVE-PTW)) INIT MAJOR)
+        (| (CUT (MOVE-PTW)) INIT MAJOR)
 
     MAJOR
         (CUT END)
@@ -4813,7 +4784,7 @@ nil
         (FQ DECLAR)
 
     THEREINIT                                                       ;; CONSTRUCTIONS USING THE FUNCTION WORD "THERE"
-        (: (and (NEXTWORD? 'THERE)                                  ;; ARE CHECKED FOR EXPLICITLY AND PROCESSED BY A
+        (| (and (NEXTWORD? 'THERE)                                  ;; ARE CHECKED FOR EXPLICITLY AND PROCESSED BY A
                 (PARSE nil THERE)                                   ;; SPECIAL BLOCK OF CODE (SEE ABOVE)
                 (FQ DECLAR))
             THERE
@@ -4832,7 +4803,7 @@ nil
             (or (CALLSM (SMRELATE H)) (POP)))
         (PARSE NG TIME)
 
-        (: (EQ LOCATIONMARKER N) CLAUSETYPE INIT INPOP)
+        (| (EQ LOCATIONMARKER N) CLAUSETYPE INIT INPOP)
 
     ;; THE VARIABLE "LOCATIONMARKER" MARKS THE POSITION OF PTW AT THE TIME THAT IT WAS SET.
     ;; IF IT HAS NOT MOVED (IS STILL EQUAL TO N), THEN THAT INDICATES THAT NOTHING HAS BEEN
@@ -4842,7 +4813,7 @@ nil
     ;; IT WAS NOT, AND EVERYTHING IS POPPED OFF (BY THE "INPOP" CODE).
 
     INPOP
-        (: (MOVE-PT C DLC) nil (INPOP))                             ;; DOES ANYTHING REMAIN ON THE TREE?
+        (| (MOVE-PT C DLC) nil (INPOP))                             ;; DOES ANYTHING REMAIN ON THE TREE?
 
     BICUT
         (CUT-BACK-ONE)                                              ;; "CUT-BACK-ONE" IS THE NORMAL BACKINGUP
@@ -4854,12 +4825,12 @@ nil
     ;; RE-EXAMINE THE CLAUSETYPE, PARTICULARLY TO CHECK FOR VERB-INITIAL IMPERATIVES
 
     CLAUSETYPE
-        (: (CQ DECLAR) SUBJ nil)
-        (: (and (NQ VB) (NQ INF) (PARSE VG IMPER) (FQ IMPER))
+        (| (CQ DECLAR) SUBJ nil)
+        (| (and (NQ VB) (NQ INF) (PARSE VG IMPER) (FQ IMPER))
             VG1
             nil)                                                    ;; SEE THE NOTE UNDER IMPERATIVES BELOW
         (FQ DECLAR)
-        (: (CQ IMPER) (IMPER) nil)
+        (| (CQ IMPER) (IMPER) nil)
 
     ;; ###############################################################
     ;;         TRY TO PARSE A GRAMMATICLY ACCEPTABLE SUBJECT
@@ -4870,14 +4841,14 @@ nil
 
     SUBJ (CUT END)                                                  ;; RESET CUTPOINT INCASE IT WAS MODIFIED BY
     SUBJ3                                                           ;; PREVIOUS BACKUPS IF THE FIRST WORD INDICATES
-        (: (or (and (NEXTWORD? 'TO)                                 ;; THE POSSIBILITY OF A RANK-SHIFTED CLAUSE
+        (| (or (and (NEXTWORD? 'TO)                                 ;; THE POSSIBILITY OF A RANK-SHIFTED CLAUSE
                     (PARSE CLAUSE RSNG TO SUBJ))                    ;; SERVING AS THE SUBJECT, THEN TRY TO PARSE ONE
                 (and (PARSE CLAUSE RSNG ING SUBJ)))                 ;; AS SUCH FEATURE "SUBJ" INSURES A CHECK THAT ANY
             SUBREG                                                  ;; PRONOUNS FOUND ARE IN SUBJECTIVE CASE.
             nil
             SUBJ1)
     SUBJ4
-        (: (PARSE NG SUBJ) SUBREG nil SUBJ1)                        ;; IF PARSING THE SUBJ CAUSES THE CUT POINT TO BE
+        (| (PARSE NG SUBJ) SUBREG nil SUBJ1)                        ;; IF PARSING THE SUBJ CAUSES THE CUT POINT TO BE
                                                                     ;; REACHED, THEN JUMP TO "SUBJ1" TO SEE IF WE ARE
                                                                     ;; IN CONDITIONS WHERE THAT IS ALLOWED
 
@@ -4910,13 +4881,13 @@ nil
             ((GO FAIL)))                                            ;; PARSE A SUBJ AGAIN
 
     HEAD
-        (: (or (MOVE-PTW N PW (NOUN)) (MOVE-PTW N PW (PRON)))       ;; COME HERE (ONLY?) TO TRY TIME PHRASE AS SUBJECT
+        (| (or (MOVE-PTW N PW (NOUN)) (MOVE-PTW N PW (PRON)))       ;; COME HERE (ONLY?) TO TRY TIME PHRASE AS SUBJECT
             nil
             (HEAD))                                                 ;; MOVE PTW TO THE CLOSEST NOUN THEN SET THE CUT
 
     SUB2
-        (: (POP) nil FAIL)                                          ;; POINT TO IT AND ATTEMPT A NEW PARSING IF
-        (: (CUT PTW) INIT SUB2)                                     ;; NOTHING MORE TO POP, LOSE
+        (| (POP) nil FAIL)                                          ;; POINT TO IT AND ATTEMPT A NEW PARSING IF
+        (| (CUT PTW) INIT SUB2)                                     ;; NOTHING MORE TO POP, LOSE
 
     SUBJ1
         (COND ((ISQ H QUOTED)                                       ;; CIRCUMSTANCES UNDER WHICH IT IS ALLRIGHT TO
@@ -4941,7 +4912,7 @@ nil
                     (GO VBL))))
 
     SUBJ11
-        (: (CUT-BACK-ONE) SUBJ3 (SUBJ11))                           ;; IF WE CAN'T CUT BACK ANY FURTHER, THEN FAIL
+        (| (CUT-BACK-ONE) SUBJ3 (SUBJ11))                           ;; IF WE CAN'T CUT BACK ANY FURTHER, THEN FAIL
 
     SUBREG
         (SETR 'SUBJECT H C)                                         ;; THIS SETS THE "SUBJECT" REGISTER OF THE CURRENT
@@ -4958,10 +4929,10 @@ nil
     ;; ONCE ALL THE OBJECTS HAVE BEEN PARSED, THE PROGRAM JUMPS TO THE TAG "ONT", WHERE A SEMANTICS PROGRAM
     ;; IS CALLED TO MAKE SENSE OUT OF EVERYTHING.
 
-    VB  (: (PARSE ADJG ADV VBAD) VB nil (VB-ADJG))                  ;; PARSE ANY INITIAL MODIFIERS
+    VB  (| (PARSE ADJG ADV VBAD) VB nil (VB-ADJG))                  ;; PARSE ANY INITIAL MODIFIERS
         (RQ VBLOK)                                                  ;; ?????
 
-    VBL (: (PARSE VG) VBREG nil)                                    ;; ONCE THE VERB GROUP IS PARSED, SET THE REGISTER
+    VBL (| (PARSE VG) VBREG nil)                                    ;; ONCE THE VERB GROUP IS PARSED, SET THE REGISTER
 
     NOVERB
         (COND                                                       ;; WHAT TO DO IF THE VG CANNOT BE DIRECTLY PARSED?
@@ -4995,7 +4966,7 @@ nil
     ;; ###############################################################
 
     VG1 (CUT END)                                                   ;; RESET THE CUTPOINT IN CASE ANYONE CHANGED IT
-        (: (ISQ MVB BE) BE nil (BE))                                ;; JUMP TO "BE" PROCESSOR
+        (| (ISQ MVB BE) BE nil (BE))                                ;; JUMP TO "BE" PROCESSOR
 
         ;; There used to be a check here for a quoting MVB with a quoted subject.
         ;; It was deleted because it went to a tag that no longer exists and doesn't seem to have any modern analogs.
@@ -5007,23 +4978,23 @@ nil
         ;;    "PUT DOWN THE BLOCK."
         ;;    "PUT THE BLOCK DOWN."
 
-        (: (ISQ MVB VPRT) nil CHECKPASV CHECKPASV)
-        (: (and (NQ PRT) (PARSE PRT)) nil DPRT)                             ;; IF THE PARTICLE IS NOT THE WORD FOLLOWING THE VERB, THEN
+        (| (ISQ MVB VPRT) nil CHECKPASV CHECKPASV)
+        (| (and (NQ PRT) (PARSE PRT)) nil DPRT)                             ;; IF THE PARTICLE IS NOT THE WORD FOLLOWING THE VERB, THEN
         (FQ PRT)                                                            ;; IT IS SEARCHED FOR BY CODE AT "DPRT" (DISPLACED PARTICLE)
 
-        (: (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD (NB H))))            ;; IS THIS A LEGITIMATE COMBINATION OF VERB AND PARTICLE?
+        (| (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD (NB H))))            ;; IS THIS A LEGITIMATE COMBINATION OF VERB AND PARTICLE?
             CHECKPASV
             POPRT)
 
     DPRT
-        (: (ISQ H PASV) CHECKPASV nil)                                      ;; SEARCH FOR DISPLACED PARTICLE.  NO DISPLACED PARTICLES
-        (: (SETQ POSITION-OF-PRT (MOVE-PTW N NW (PRT))) nil FINDOBJ1)       ;; IN PASV'S IF NOT FOUND ASSUME THAT IT IS OPTIONAL AND
-        (: (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD POSITION-OF-PRT)))   ;; WE ARE DEALING WITH THE CASE WITHOUT THE PARTICLE
+        (| (ISQ H PASV) CHECKPASV nil)                                      ;; SEARCH FOR DISPLACED PARTICLE.  NO DISPLACED PARTICLES
+        (| (SETQ POSITION-OF-PRT (MOVE-PTW N NW (PRT))) nil FINDOBJ1)       ;; IN PASV'S IF NOT FOUND ASSUME THAT IT IS OPTIONAL AND
+        (| (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD POSITION-OF-PRT)))   ;; WE ARE DEALING WITH THE CASE WITHOUT THE PARTICLE
             nil
             POPRT)
-        (: (ISQ MVB TRANS) nil FINDOBJ1)
+        (| (ISQ MVB TRANS) nil FINDOBJ1)
         (CUT POSITION-OF-PRT)
-        (: (PARSE NG OBJ OBJ1)                                              ;; PARSE UP ANY NOUN GROUP YOU FIND
+        (| (PARSE NG OBJ OBJ1)                                              ;; PARSE UP ANY NOUN GROUP YOU FIND
             POPRT
             FINDOBJ1                                                        ;; IF THERE ARE MORE OR LESS NP'S THAN EXPECTED,
             nil)                                                            ;; THEN DON'T PARSE ANYTHING BUT GO TO NPRT
@@ -5038,7 +5009,7 @@ nil
         (GO FINDOBJ1)
 
     CHECKPASV                                                               ;; CHECK THE VERB FOR THE PASSIVE CONSTRUCTION
-        (: (and (ISQ H PASV) (FQ PASV) (SETR 'OBJ1 (GETR 'SUBJECT C) C))
+        (| (and (ISQ H PASV) (FQ PASV) (SETR 'OBJ1 (GETR 'SUBJECT C) C))
             FINDOBJ2
             nil
             FINDFAKE2)
@@ -5051,11 +5022,11 @@ nil
         (PARSE ADV VBAD)
 
     FINDOBJ1
-        (: (or (CANPARSE 1 '(ADJG COMP) 'INT) (CANPARSE 1 '(NG COMP) 'INT))
+        (| (or (CANPARSE 1 '(ADJG COMP) 'INT) (CANPARSE 1 '(NG COMP) 'INT))
             CHECKIT
             nil
             ONT)
-        (: (or (CANPARSE 1 '(PREPG COMP) 'INT)
+        (| (or (CANPARSE 1 '(PREPG COMP) 'INT)
                 (CANPARSE 1 '(CLAUSE RSNG ING) 'TRANS)
                 (CANPARSE 1 '(CLAUSE RSNG REPORT) 'TRANS)
                 (CANPARSE 1 '(CLAUSE RSNG TO) 'TRANS)
@@ -5063,20 +5034,20 @@ nil
                 (CANPARSE 1 '(ADV PLACE) 'ITRNSL))
             ONT
             nil)
-        (: (CANPARSE 1 '(NG) 'TRANS)
+        (| (CANPARSE 1 '(NG) 'TRANS)
             FINDOBJ2
             nil
             FINDFAKE2)
 
     FINDFAKE1
-        (: (MOVE-PT C U (REL-NOT-FOUND)) OBJ1REL nil)
-        (: (and (CANTAKE 1 '(PREPG LOC) 'ITRNSL)
+        (| (MOVE-PT C U (REL-NOT-FOUND)) OBJ1REL nil)
+        (| (and (CANTAKE 1 '(PREPG LOC) 'ITRNSL)
                 (MOVE-PT C U (QADJ))
                 (ISQ (GETR 'QADJ PT) PLACE)
                 (FQ ITRANSL))
             PUTLOBJ
             nil)
-        (: (CANPARSE 1 nil 'ITRNS) ONT nil)
+        (| (CANPARSE 1 nil 'ITRNS) ONT nil)
 
     GOOF1
         (or GLOBAL-MESSAGE (ERTERR NEW TRANSITIVITY - FIRST OBJ))
@@ -5088,22 +5059,22 @@ nil
         (FQ OBJ1REL)
 
     FINDOBJ2
-        (: (CANPARSE 2 '(CLAUSE RSNG TO) 'TRANS2)
+        (| (CANPARSE 2 '(CLAUSE RSNG TO) 'TRANS2)
             FIXSUBJECT
             nil)
-        (: (or (CANPARSE 2 '(ADV PLACE) 'TRANSL) (CANPARSE 2 '(PREPG LOC) 'TRANSL))
+        (| (or (CANPARSE 2 '(ADV PLACE) 'TRANSL) (CANPARSE 2 '(PREPG LOC) 'TRANSL))
             ONT
             nil)
-        (: (or (CANPARSE 2 '(ADJG COMP) 'TRANSINT) (CANPARSE 2 '(NG COMP) 'TRANSINT))
+        (| (or (CANPARSE 2 '(ADJG COMP) 'TRANSINT) (CANPARSE 2 '(NG COMP) 'TRANSINT))
             ONT
             nil)
-        (: (CANPARSE 2 '(NG) 'TRANS2) ONT nil)
+        (| (CANPARSE 2 '(NG) 'TRANS2) ONT nil)
 
     FINDFAKE2
-        (: (and (ISQ MVB TRANS2) (MOVE-PT C U (REL-NOT-FOUND)))
+        (| (and (ISQ MVB TRANS2) (MOVE-PT C U (REL-NOT-FOUND)))
             OBJ2REL
             nil)
-        (: (and (CANTAKE 2 '(PREPG LOC) 'TRANSL)
+        (| (and (CANTAKE 2 '(PREPG LOC) 'TRANSL)
                 (MOVE-PT C U (QADJ))
                 (ISQ (GETR 'QADJ PT) PLACE)
                 (FQ TRANSL))
@@ -5112,7 +5083,7 @@ nil
 
     OBJ2TO
         (PARSE ADV VBAD)
-        (: (COND ((and (NEXTWORD? 'TO)
+        (| (COND ((and (NEXTWORD? 'TO)
                     (ISQ MVB TO2)
                     (PARSE PREPG TO))                               ;; THE SECOND-OBJECT THAT WE HAVE BEEN LOOKING FOR
                 (SETR 'OBJ2 (GETR 'OBJ1 H) C)                       ;; MAY BE A PREPG AS IN "GIVE IT TO THE LIONS"
@@ -5125,7 +5096,7 @@ nil
                 (SETR 'OBJ2 (GETR 'OBJ1 PT) C))))                   ;; "TO WHOM DID YOU GIVE THE MEAT?"
             ONT
             nil)
-        (: (CANPARSE 2 nil 'TRANS) ONT FAIL)
+        (| (CANPARSE 2 nil 'TRANS) ONT FAIL)
 
     PUTLOBJ
         (SETR 'LOBJ PT C)
@@ -5145,10 +5116,10 @@ nil
         (GO ONT)
 
     CHECKIT                                                         ;; CHECK FOR THE POSSIBILITY THAT THE SUBJECT WAS
-        (: (EQ (WORD (NB (GETR 'SUBJECT C))) 'IT)                   ;; A DUMMY FUNCTION WORD ("IT"), AS IN "IT WAS NICE TO SEE HIM."
+        (| (EQ (WORD (NB (GETR 'SUBJECT C))) 'IT)                   ;; A DUMMY FUNCTION WORD ("IT"), AS IN "IT WAS NICE TO SEE HIM."
             nil
             ONT)                                                    ;; TO BE ADDED HERE: "JOHN WAS EAGER/EASY TO PLEASE."
-        (: (or (and (NEXTWORD? 'TO) (PARSE CLAUSE RSNG TO SUBJ))
+        (| (or (and (NEXTWORD? 'TO) (PARSE CLAUSE RSNG TO SUBJ))
                 (and (NQ ING) (PARSE CLAUSE RSNG ING SUBJ))
                 (PARSE CLAUSE REPORT))
             nil
@@ -5168,13 +5139,13 @@ nil
     ;; ###########################################################################################
 
     ONT
-        (: (CQ PASV) PONT nil)
+        (| (CQ PASV) PONT nil)
     ONT1
-        (: (CALLSM (SMCL1)) nil (SMCL1))
+        (| (CALLSM (SMCL1)) nil (SMCL1))
 
-        (: (not (CQ REL-NOT-FOUND)) TONT nil RETSM)                 ;; IF THE FEATURE "REL-NOT-FOUND" IS PRESENT AT
+        (| (not (CQ REL-NOT-FOUND)) TONT nil RETSM)                 ;; IF THE FEATURE "REL-NOT-FOUND" IS PRESENT AT
                                                                     ;; THIS POINT, IT INDICATES THAT WE ARE IN A
-        (: (ISQ (GETR 'HEAD (GETR 'RELHEAD C)) TIM1)                ;; RELATIVE CLAUSE AND MAY HAVE TO DO SOME
+        (| (ISQ (GETR 'HEAD (GETR 'RELHEAD C)) TIM1)                ;; RELATIVE CLAUSE AND MAY HAVE TO DO SOME
             nil                                                     ;; GYMNASTICS IF THE CLAUSE IS NOT TO FAIL
             PREPSHORT)                                              ;; MOVE BACK TO A QUESTION-NOUNGROUP, THEN DOWN
 
@@ -5184,9 +5155,9 @@ nil
         (GO TONT)
 
     PREPSHORT
-        (: (and (NQ PREP) (PARSE PREPG)) nil (ONT-SHORT-PREP))
-        (: (CALLSM (SMRELATE H)) nil (ONT: SMRELATE PREPQ))
-        (: (CQ REL-NOT-FOUND) PREPSHORT TONT (ONT-NOT-FOUND))       ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
+        (| (and (NQ PREP) (PARSE PREPG)) nil (ONT-SHORT-PREP))
+        (| (CALLSM (SMRELATE H)) nil (ONT: SMRELATE PREPQ))
+        (| (CQ REL-NOT-FOUND) PREPSHORT TONT (ONT-NOT-FOUND))       ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
                                                                     ;; AS ITS OBJECT. THE FEATURE REL-NOT-FOUND WILL
                                                                     ;; BE REMOVED IF THE PREPG DISCOVERS IT CAN'T FIND
 
@@ -5201,41 +5172,41 @@ nil
     ;;                    CHECK FOR ADDITIONAL MODIFYING PHRASES
     ;; ###################################################################################
 
-    TONT (: (SETQ POSITION-OF-PTW N) nil RETSM RETSM)               ;; WE ARE USING THE SAME TECHNIQUE HERE AS WITH THE INITIAL MODIFIERS.
+    TONT (| (SETQ POSITION-OF-PTW N) nil RETSM RETSM)               ;; WE ARE USING THE SAME TECHNIQUE HERE AS WITH THE INITIAL MODIFIERS.
                                                                     ;; IE. LOOP THROUGH THE POSSIBILITIES UNTIL YOU MAKE A PASS THAT ADDS
                                                                     ;; NOTHING NEW.
 
     NPASV
-        (: (and (NQ PREP) (PARSE PREPG) (CALLSM (SMRELATE H)))                                  ;; PREPG
+        (| (and (NQ PREP) (PARSE PREPG) (CALLSM (SMRELATE H)))                                  ;; PREPG
             nil
             nil
             RETSM)
-        (: (and (NQ TIMW) (PARSE ADV TIMW) (or (CALLSM (SMTIME)) (GO FAIL)))                    ;; TIMW
+        (| (and (NQ TIMW) (PARSE ADV TIMW) (or (CALLSM (SMTIME)) (GO FAIL)))                    ;; TIMW
             nil
             nil
             RETSM)
-        (: (and (not (CQ BE)) (PARSE ADJG ADV) (or (CALLSM (SMRELATE H)) (GO FAIL)))            ;; ADV
+        (| (and (not (CQ BE)) (PARSE ADJG ADV) (or (CALLSM (SMRELATE H)) (GO FAIL)))            ;; ADV
             nil
             nil
             RETSM)
-        (: (and (PARSE NG TIME) (or (CALLSM (SMTIME)) (GO FAIL)))                               ;; TIME NOUN GROUP
+        (| (and (PARSE NG TIME) (or (CALLSM (SMTIME)) (GO FAIL)))                               ;; TIME NOUN GROUP
             nil
             nil
             RETSM)
-        (: (and (NQ PLACE) (PARSE ADV PLACE) (or (CALLSM (SMPLACE)) (GO FAIL)))                 ;; PLACE
+        (| (and (NQ PLACE) (PARSE ADV PLACE) (or (CALLSM (SMPLACE)) (GO FAIL)))                 ;; PLACE
             nil
             nil
             RETSM)
-        (: (and (NQ BINDER) (PARSE CLAUSE BOUND) (or (CALLSM (SMBIND)) (GO FAIL)))              ;; BINDER
+        (| (and (NQ BINDER) (PARSE CLAUSE BOUND) (or (CALLSM (SMBIND)) (GO FAIL)))              ;; BINDER
             nil
             nil
             RETSM)
-        (: (and (NEXTWORD? 'TO) (PARSE CLAUSE TO ADJUNCT) (or (CALLSM (SMTOADJ)) (GO FAIL)))    ;; TO CLAUSE (ADJUNCT)
+        (| (and (NEXTWORD? 'TO) (PARSE CLAUSE TO ADJUNCT) (or (CALLSM (SMTOADJ)) (GO FAIL)))    ;; TO CLAUSE (ADJUNCT)
             nil
             nil
             RETSM)
-        (: (EQ N POSITION-OF-PTW) nil TONT RETSM)                   ;; LOOP UNTIL NOTHING ELSE CAN BE PARSED.
-        (: (or (not (CQ TOPLEVEL)) (NQ SPECIAL)) RETSM nil)         ;; SPECIAL WORD (E.G. COMMA AND) COULD INDICATE
+        (| (EQ N POSITION-OF-PTW) nil TONT RETSM)                   ;; LOOP UNTIL NOTHING ELSE CAN BE PARSED.
+        (| (or (not (CQ TOPLEVEL)) (NQ SPECIAL)) RETSM nil)         ;; SPECIAL WORD (E.G. COMMA AND) COULD INDICATE
         (ERT CLAUSE: SOMETHING LEFT OVER AT TOP LEVEL)              ;; A CONJUNCTION OR A BINDER.
         (GO FAIL)
 
@@ -5247,30 +5218,30 @@ nil
     THERE
         (FQ THERE)
         (CUT END)
-        (: (PARSE ADV TIMW) nil nil (THERE))                        ;; "THERE IS A BIRD.."
-        (: (and (PARSE VG) (ISQ MVB BE)) THEF NOTHE (THERE))
+        (| (PARSE ADV TIMW) nil nil (THERE))                        ;; "THERE IS A BIRD.."
+        (| (and (PARSE VG) (ISQ MVB BE)) THEF NOTHE (THERE))
 
     THERQ
-        (: (ISQ (MOVE-PT H PV (QAUX)) BE) THERQ2 nil)               ;; IF THIS FAILS, THE THERE IS CONSIDERED TO BE
-        (: (and (NQ TIMW) (PARSE ADV TIMW)) nil nil (THEREQ))
-        (: (and (PARSE VG) (ISQ MVB BE)) THERQ2 nil)
+        (| (ISQ (MOVE-PT H PV (QAUX)) BE) THERQ2 nil)               ;; IF THIS FAILS, THE THERE IS CONSIDERED TO BE
+        (| (and (NQ TIMW) (PARSE ADV TIMW)) nil nil (THEREQ))
+        (| (and (PARSE VG) (ISQ MVB BE)) THERQ2 nil)
         (RQ POLR2)
         (GO NOTHE)
 
     THERQ2
         (FQ SUBJTQ) (FQ THERE)
         ;; THIS MAY NOT INTERFACE PROPERLY WITH THE SEMANTIC ROUTINES FOR BE
-        (: (CQ POLAR) THEF ONT)
+        (| (CQ POLAR) THEF ONT)
 
     THEF
-        (: (and (NQ ADV) (PARSE ADV TIMW)) nil nil (THEF))
-        (: (PARSE NG SUBJ SUBJT) nil THERREL)
+        (| (and (NQ ADV) (PARSE ADV TIMW)) nil nil (THEF))
+        (| (PARSE NG SUBJ SUBJT) nil THERREL)
         (FQ THERE)
         (SETR 'SUBJECT H C)
         (GO ONT)
 
     THERREL
-        (: (MOVE-PT C U (REL-NOT-FOUND)) nil NOTHE)
+        (| (MOVE-PT C U (REL-NOT-FOUND)) nil NOTHE)
         (SETR 'SUBJECT (GETR 'RELHEAD PT) C)
         (REMOVE-F-PT 'REL-NOT-FOUND PT)
         (GO ONT)
@@ -5286,17 +5257,17 @@ nil
     ;; ####################################################################
 
     IMPER
-        (: (PARSE NG TIME) nil nil IMPOP)                           ;; MODIFIERS WHICH MAY PRECEED THE VERB
-        (: (and (NQ ADV) (PARSE ADJG ADV VBAD)) nil nil IMPOP)
-        (: (and (NQ ADV) (PARSE ADV TIMW)) nil nil IMPOP)
+        (| (PARSE NG TIME) nil nil IMPOP)                           ;; MODIFIERS WHICH MAY PRECEED THE VERB
+        (| (and (NQ ADV) (PARSE ADJG ADV VBAD)) nil nil IMPOP)
+        (| (and (NQ ADV) (PARSE ADV TIMW)) nil nil IMPOP)
 
     IMPE
-        (: (PARSE VG IMPER) nil IMPOP)
+        (| (PARSE VG IMPER) nil IMPOP)
         (FQ IMPER)
         (GO VG1)
 
     IMPOP
-        (: (POP nil) IMPE (IMPOP))
+        (| (POP nil) IMPE (IMPOP))
 
     ;; ####################################################################
     ;;                             QUESTIONS
@@ -5304,16 +5275,16 @@ nil
 
     QUEST ;; PREP QUESTION
         (FQ QUEST)
-        (: (NQ PREP) nil NGQUES)
-        (: (PARSE PREPG) nil NGQUES (PREPQ-INCOMPLETE))             ;; "ON WHICH BLOCK DID YOU PUT IT?"
-        (: (ISQ H QUEST) nil QUEST)                                 ;; IF THE PREPG ISN'T THE QUESTION, TRY AGAIN "ON
+        (| (NQ PREP) nil NGQUES)
+        (| (PARSE PREPG) nil NGQUES (PREPQ-INCOMPLETE))             ;; "ON WHICH BLOCK DID YOU PUT IT?"
+        (| (ISQ H QUEST) nil QUEST)                                 ;; IF THE PREPG ISN'T THE QUESTION, TRY AGAIN "ON
         (SETR 'QADJ H C)                                            ;; THAT DAY, WHERE DID YOU GO?" -- MAYBE WE COULD
                                                                     ;; MAKE USE OF THE COMMA CLUE. PREPQ IS HANDLED
         (GO POLAR)                                                  ;; MUCH LIKE QADJS LIKE WHEN AND WHERE THE REST OF
                                                                     ;; THE QUESTION HAS THE SAME SYNTAX AS A POLAR (YES-NO).
     NGQUES ;; NOUN GROUP QUESTION
-        (: (PARSE NG QUEST) NGQST nil)                              ;; "WHICH ONE IS THE MURDURER?"
-        (: (or (and (NEXTWORD? 'HOW)
+        (| (PARSE NG QUEST) NGQST nil)                              ;; "WHICH ONE IS THE MURDURER?"
+        (| (or (and (NEXTWORD? 'HOW)
                 (PARSE ADJG QUEST)
                 (SETR 'RELHEAD H C))                                ;; "HOW BIG...."
             (and (NQ QADJ)
@@ -5371,12 +5342,12 @@ nil
                 (GO NGQUES)))                                       ;; POP BACK AND START FIGURING OUT THE QUESTION
 
     QUEST2                                                          ;; ALL OVER AGAIN
-        (: (and (NEXTWORD? 'THERE) (PARSE nil THERE))
+        (| (and (NEXTWORD? 'THERE) (PARSE nil THERE))
             THERQ
             SUBF)                                                   ;; "ARE THERE....?"
 
     SUBF
-        (: (PARSE NG SUBJ)                                          ;; PARSE THE SUBJECT OF ANYTHING LIKE: "DID THE
+        (| (PARSE NG SUBJ)                                          ;; PARSE THE SUBJECT OF ANYTHING LIKE: "DID THE
                                                                     ;; WOMAN GET THE JOB?" IF SUCCESSFUL, CONTINUE AT
                                                                     ;; "SUBREG" IN THE NORMAL PART OF THE CLAUSE
                                                                     ;; PROGRAM (RESETTING THE SUBJECT REGISTER)  (THE
@@ -5387,7 +5358,7 @@ nil
         (GO BE)
 
     POLAR
-        (: (and (NQ VB) (PARSE VB AUX (QAUX)) (SETR 'QAUX H C) (CALLSM (SMVAUX)) (SETMVB H))
+        (| (and (NQ VB) (PARSE VB AUX (QAUX)) (SETR 'QAUX H C) (CALLSM (SMVAUX)) (SETMVB H))
             nil
             QCHOP)
         (or (CQ QADJ) (GETR 'RELHEAD C) (FQ POLAR))
@@ -5396,7 +5367,7 @@ nil
 
     QCHOP
         (ERT CLAUSE: QCHOP)
-        (: (POPTO CLAUSE BOUND) BICUT (QCHOP))
+        (| (POPTO CLAUSE BOUND) BICUT (QCHOP))
 
     ;; ##############################################################################
     ;;                              SECONDARY CLAUSES
@@ -5427,13 +5398,13 @@ nil
             (:else (MQ RSNG-TYPE) (GO FAIL)))
 
     BOUND ;; BINDER
-        (: (PARSE BINDER) nil (BOUND) (BINDER))
+        (| (PARSE BINDER) nil (BOUND) (BINDER))
         (SETQ LOCATIONMARKER N)                                     ;; DO THIS TO ACT LIKE MAJOR DECLARATIVE CLAUSE
         (GO FDEC)                                                   ;; "FDEC" IS NEAR THE TOP OF THE MAJOR CLAUSE
 
     RSQ
         (SETR 'RELHEAD (MOVE-PT C U (NG)) C)
-        (: (CQ PREPREL) nil RSQ2)
+        (| (CQ PREPREL) nil RSQ2)
         (PARSE PREPG PRONREL)                                       ;; THIS CALL IS BASED ON INFORMATION PASSED FROM
         (SETR 'QADJ H C)                                            ;; FAR AWAY AND EXPLAINED IN DETAIL IN THE CODE
         (GO REPORT)                                                 ;; FOR PREPOSITION GROUPS
@@ -5457,7 +5428,7 @@ nil
 
     REL
         (SETR 'SUBJECT (GETR 'RELHEAD C) C)
-        (: (PARSE VG) VG1 nil)                                      ;; OUR FIRST HYPOTHESIS, THAT THE SUBJECT WAS THE
+        (| (PARSE VG) VG1 nil)                                      ;; OUR FIRST HYPOTHESIS, THAT THE SUBJECT WAS THE
                                                                     ;; RELWORD, WAS JUST PROVEN WRONG SINCE WE CANNOT
                                                                     ;; PARSE THE VG NEXT. SO WE REVISE OUR FEATURES
         (FQ REL-NOT-FOUND)                                          ;; AND JUMP TO PARSE A REAL FULL SUBJECT AS IN
@@ -5465,23 +5436,23 @@ nil
                                                                     ;; OPPOSED TO "...WHICH WAS CHAUVANISTIC"
 
     TO
-        (: (and (CQ COMPONENT) (PARSE VG TO TODEL)) VG1 nil)        ;; "I WANTED TO DANCE AND SING"
-        (: (NEXTWORD? 'FOR) nil TO1)                                ;; THIS IS EXPERIMENTAL
+        (| (and (CQ COMPONENT) (PARSE VG TO TODEL)) VG1 nil)        ;; "I WANTED TO DANCE AND SING"
+        (| (NEXTWORD? 'FOR) nil TO1)                                ;; THIS IS EXPERIMENTAL
         (PARSE nil FOR)                                             ;; PLEASE CHECK OUT ANY FOR-CLAUSES YOU CAN THINK OF
         (FQ FOR)
         (PARSE NG SUBJ TOSUBJ)
         (SETR 'SUBJECT H C)
 
     TO1
-        (: (PARSE VG TO) VG1 (TO))
+        (| (PARSE VG TO) VG1 (TO))
 
     ING
-        (: (MOVE-PTW N NW (ING)) nil FAIL)
-        (: (or (NQ ING) (CQ OBJ2) (and (PARSE NG SUBJ INGSUBJ) (SETR 'SUBJECT H C) (FQ SUBING) (RQ ING)))
+        (| (MOVE-PTW N NW (ING)) nil FAIL)
+        (| (or (NQ ING) (CQ OBJ2) (and (PARSE NG SUBJ INGSUBJ) (SETR 'SUBJECT H C) (FQ SUBING) (RQ ING)))
             nil
             nil
             (ING))
-        (: (PARSE VG ING) VG1 (ING))
+        (| (PARSE VG ING) VG1 (ING))
 
     REPORT
         (and (NEXTWORD? 'THAT) (PARSE nil THAT) (FQ THAT))
@@ -5532,21 +5503,21 @@ nil
     PROPN
         (PARSE PROPN)
         (FQ DEF PROPNG)
-        (: (ISQ H POSS) PROPS nil)
-        (: (and NN (NQ PROPN)) PROPN nil)
+        (| (ISQ H POSS) PROPS nil)
+        (| (and NN (NQ PROPN)) PROPN nil)
 
     PROPS
         (or (CALLSM (SMPROP)) (GO FAIL))                            ;; EXAMINE ITS SEMANTICS
-        (: (ISQ H POSS) POSS PRAG)
+        (| (ISQ H POSS) POSS PRAG)
 
     ;; -------------- PRONOUNS ---------------
 
     PRON
-        (: (PARSE PRON POSS) POSS nil RED2)                         ;; IS IT POSSESSIVE?
+        (| (PARSE PRON POSS) POSS nil RED2)                         ;; IS IT POSSESSIVE?
 
     PRON2
-        (: (CQ NPRON) (NPRON) nil)
-        (: (or (and (CQ SUBJ) (PARSE PRON SUBJ))                    ;; CHECK SUBJECTIVE OR OBJECTIVE CASE
+        (| (CQ NPRON) (NPRON) nil)
+        (| (or (and (CQ SUBJ) (PARSE PRON SUBJ))                    ;; CHECK SUBJECTIVE OR OBJECTIVE CASE
                 (and (or (CQ OBJ) (CQ TOSUBJ) (CQ INGSUBJ)) (PARSE PRON OBJ))
                 (CQ INGSUBJ))
             nil
@@ -5554,7 +5525,7 @@ nil
         (FQ PRONG DEF)
 
     PRON3
-        (: (CALLSM (SMPRON H)) nil FAIL)                            ;; EXAMINE SEMANTICS OF PN
+        (| (CALLSM (SMPRON H)) nil FAIL)                            ;; EXAMINE SEMANTICS OF PN
 
     PRAG
         (SETR 'HEAD H C)
@@ -5576,14 +5547,14 @@ nil
     ;; ----------- WHATEVER, WHENEVER, WHOEVER, ... -----------
 
     EVERPRON
-        (: (and (PARSE PRON EVERPRON) (CALLSM (SMPRON H)))
+        (| (and (PARSE PRON EVERPRON) (CALLSM (SMPRON H)))
             nil
             FAIL)
-        (: (and (PARSE CLAUSE RSQ NOREL) (CALLSM (SMRELATE H)))
+        (| (and (PARSE CLAUSE RSQ NOREL) (CALLSM (SMRELATE H)))
             RETSM
             FAIL)
 
-    AS  (: (and (PARSE nil AS) (PARSE NUMD NUMDAS) NN (PARSE nil AS))
+    AS  (| (and (PARSE nil AS) (PARSE NUMD NUMDAS) NN (PARSE nil AS))
             NUMD2
             (AS)
             (AS))
@@ -5591,27 +5562,27 @@ nil
     ;; -------------- AT + NUM ---------------
 
     AT
-        (: (and (PARSE nil AT) (PARSE NUMD NUMDAT)) nil (AT) (AT))
+        (| (and (PARSE nil AT) (PARSE NUMD NUMDAT)) nil (AT) (AT))
     NUMD2
-        (: (and (PARSE NUM) (FQ NUM NUMD)) DET1 (NUMD2) INCOM)
+        (| (and (PARSE NUM) (FQ NUM NUMD)) DET1 (NUMD2) INCOM)
 
     ;; -------------- OTHER NUMBER WORDS ---------------
 
     NUMD
-        (: (PARSE NUMD NUMDAN) nil ND3 INCOM)
-        (: (PARSE nil THAN) NUMD2 INCOM POPCOM)
+        (| (PARSE NUMD NUMDAN) nil ND3 INCOM)
+        (| (PARSE nil THAN) NUMD2 INCOM POPCOM)
     ND3
-        (: (PARSE NUMD NUMDALONE) NUMD2 (NUMD) (NUMD))
+        (| (PARSE NUMD NUMDALONE) NUMD2 (NUMD) (NUMD))
 
     ;; -------------- TIME WORDS ---------------
 
     TIME
-        (: (and (NQ TIME) (PARSE NOUN TIME)) RETSM nil)
-        (: (MOVE-PTW N NW (TIM1)) LOOK (TIME))
+        (| (and (NQ TIME) (PARSE NOUN TIME)) RETSM nil)
+        (| (MOVE-PTW N NW (TIM1)) LOOK (TIME))
 
     TIMORD
-        (: (PARSE ORD TIMORD) nil FAIL)
-        (: (and (PARSE NOUN TIM1) (FQ DET DEF) (CALLSM (SMNGTIME)))
+        (| (PARSE ORD TIMORD) nil FAIL)
+        (| (and (PARSE NOUN TIM1) (FQ DET DEF) (CALLSM (SMNGTIME)))
             RETURN
             FAIL)
 
@@ -5625,7 +5596,7 @@ nil
         (PARSE DET)
         (FQ DET)
         (MOVE-PT H)                                                 ;; SHIFT PTR TO THE DETERMINER
-        (: (TRNSF NPL NS PART DEF INDEF ANY NEG QNTFR)
+        (| (TRNSF NPL NS PART DEF INDEF ANY NEG QNTFR)
             IND
             (BUG)
             INCOM)
@@ -5633,30 +5604,30 @@ nil
     ;; -------------- INDETERMINATE ---------------
 
     IND
-        (: (and (EQ (WORD (NB H)) 'ALL) (EQ (WORD N) 'THE) (PARSE DET) (FQ DEF))
+        (| (and (EQ (WORD (NB H)) 'ALL) (EQ (WORD N) 'THE) (PARSE DET) (FQ DEF))
             NUM
             nil
             (THE))
-        (: (and (ISQ H QNTFR) (FQ QNTFR)) QNUM nil)
+        (| (and (ISQ H QNTFR) (FQ QNTFR)) QNUM nil)
 
     ;; -------------- ORDINALS AND NUMBERS ---------------
 
     ORD
-        (: (and (PARSE ORD) (FQ ORD)) nil NUM INCOM)
-        (: (and (NEXTWORD? 'OF)                                     ;; TWELTH OF OCTOBER...
+        (| (and (PARSE ORD) (FQ ORD)) nil NUM INCOM)
+        (| (and (NEXTWORD? 'OF)                                     ;; TWELTH OF OCTOBER...
                 (ISQ (MOVE-PTW N NW) MONTH)
                 (PARSE nil OF)
                 (PARSE NOUN MONTH)
                 (FQ DATE))                                          ;; REMEMBER THAT FEATURES ARE DESIGNED AS AIDS TO
             RETSM                                                   ;; SEMANTIC COMPREHENSION AS WELL AS SYNTACTIC PARSING.
             nil)
-        (: (CQ DEF) nil ADJ)
+        (| (CQ DEF) nil ADJ)
 
     NUM
-        (: (PARSE NUM) nil ADJ)                                     ;; LARGE JUMP IF FALSE
+        (| (PARSE NUM) nil ADJ)                                     ;; LARGE JUMP IF FALSE
         (FQ NUM)
-        (: (CQ DET) nil DET1)
-        (: (COND ((and (ISQ H NS) (CQ NS)) (RQ NPL PART)) ((CQ NPL) (RQ NS PART)))
+        (| (CQ DET) nil DET1)
+        (| (COND ((and (ISQ H NS) (CQ NS)) (RQ NPL PART)) ((CQ NPL) (RQ NS PART)))
             ADJ
             (NUM)
             INCOM)
@@ -5667,39 +5638,39 @@ nil
 
     NUMBER
         (FQ DET)
-        (: (NQ OF) OF ADJ)
+        (| (NQ OF) OF ADJ)
 
     QNUM
-        (: (ISQ H NONUM) OF nil)
-        (: (and (PARSE NUM) (FQ NUM)) nil OF)
-        (: (COND ((EQ (SM H) 1) (and (CQ NS) (RQ NPL))) ((CQ NPL) (RQ NS))) ;; EXPLICIT CHECT FOR THE VALUE 1
+        (| (ISQ H NONUM) OF nil)
+        (| (and (PARSE NUM) (FQ NUM)) nil OF)
+        (| (COND ((EQ (SM H) 1) (and (CQ NS) (RQ NPL))) ((CQ NPL) (RQ NS))) ;; EXPLICIT CHECT FOR THE VALUE 1
             nil
             (NUMD)
             INCOM)
-        (: (EQ (WORD (NB H)) 'NO) ADJ nil)                          ;; CHECKS FOR WORD "NO"
+        (| (EQ (WORD (NB H)) 'NO) ADJ nil)                          ;; CHECKS FOR WORD "NO"
 
     ;; -------------- PREPG WITH "OF" ---------------
 
-    OF  (: (and (NQ OF) (PARSE PREPG OF)) SMOF NONE)                ;; "FIVE OF THE BLOCKS"
+    OF  (| (and (NQ OF) (PARSE PREPG OF)) SMOF NONE)                ;; "FIVE OF THE BLOCKS"
 
     SMOF
         (FQ OF)
-        (: (or (CALLSM (SMNGOF)) (not (POP))) RETSM INCOM)
+        (| (or (CALLSM (SMNGOF)) (not (POP))) RETSM INCOM)
 
     NONE
-        (: (EQ (WORD (NB H)) 'NONE) INCOM ADJ)
+        (| (EQ (WORD (NB H)) 'NONE) INCOM ADJ)
 
     ;; ----------- PARSE ALL THE ADJECTIVES -----------
 
     ADJ
-        (: (PARSE ADJ) nil EPR INCOM)
+        (| (PARSE ADJ) nil EPR INCOM)
         (and (ISQ H COMPAR)
             (FQ COMPARATIVE-MODIFIER)
             (SETR 'COMPARATIVE-MODIFIER H C))
         (GO ADJ)
 
     EPR
-        (: (or (ISQ H SUP) (ISQ H COMPAR)) nil CLASF INCOM)         ;; WE PARSED AN ADJ AND RAN OUT OF WORDS
+        (| (or (ISQ H SUP) (ISQ H COMPAR)) nil CLASF INCOM)         ;; WE PARSED AN ADJ AND RAN OUT OF WORDS
         (FQ ADJ)
         (and (NEXTWORD? 'OF)
             (PARSE PREPG OF)
@@ -5710,7 +5681,7 @@ nil
     ;; -------------- PARSE ALL THE CLASIFIERS ---------------
 
     CLASF
-        (: (or (PARSE VB ING (CLASF))                               ;; TRIES TO PARSE THE LARGEST POSSIBLE NG FIRST
+        (| (or (PARSE VB ING (CLASF))                               ;; TRIES TO PARSE THE LARGEST POSSIBLE NG FIRST
                 (PARSE VB EN (CLASF))
                 (PARSE CLASF))
             CLASF
@@ -5720,9 +5691,9 @@ nil
     ;; -------------- AND FINALLY - THE NOUN ---------------
 
     NOUN
-        (: (PARSE NOUN) nil RED2)
+        (| (PARSE NOUN) nil RED2)
 
-        (: (and (CQ TIME) (not (ISQ H TIM1))) RED1 nil)
+        (| (and (CQ TIME) (not (ISQ H TIM1))) RED1 nil)
 
     ;; -------------- MODIFY FEATURES FOR NUMBER AND SUCH --------------
 
@@ -5734,9 +5705,9 @@ nil
         (COND ((and (not (CQ DET)) (not (CQ NUMD)))
             (MOVE-PT H)
             (TRNSF NPL MASS)))
-        (: (MEET FE '(NS NPL PART MASS)) nil RED0)
+        (| (MEET FE '(NS NPL PART MASS)) nil RED0)
 
-        (: (NEXTWORD? 'THAN) nil SMNG)                              ;; "...A BIGGER BLOCK THAN..."
+        (| (NEXTWORD? 'THAN) nil SMNG)                              ;; "...A BIGGER BLOCK THAN..."
         (FQ THAN)                                                   ;; THE PRESENCE OF THIS FEATURE IS NOTED BELOW AND IN ADJG
 
     ;; AT THIS POINT SMNG1 IS CALLED FOR PRELIMINARY CHECKS AND ANALYSIS BEFORE CHECKING QUALIFIERS
@@ -5744,25 +5715,25 @@ nil
     SMNG
         (SETR 'HEAD H C)                                            ;; SET HEAD REGISTER TO THE NOUN
 
-        (: (and (CQ OBOFJ) (not (CQ DEF))) FAIL nil)                ;; JUST PARSED
+        (| (and (CQ OBOFJ) (not (CQ DEF))) FAIL nil)                ;; JUST PARSED
         (or (CALLSM (SMNG1)) (GO FAIL))
-        (: (not (ISQ H POSS)) nil POSS RETSM)                       ;; CHECK FOR POSSIVE
+        (| (not (ISQ H POSS)) nil POSS RETSM)                       ;; CHECK FOR POSSIVE
 
     ;; #################################################
     ;;               POSSIBLE QUALIFIERS
     ;; #################################################
 
-        (: (and (CQ THAN) (PARSE ADJG)) nil RSQ-TO)                 ;; "...A BIGGER BLOCK THAN..."
-        (: (CALLSM (SMRELATE H)) RETSM FAIL)
+        (| (and (CQ THAN) (PARSE ADJG)) nil RSQ-TO)                 ;; "...A BIGGER BLOCK THAN..."
+        (| (CALLSM (SMRELATE H)) RETSM FAIL)
 
     RSQ-TO
-        (: (and (NEXTWORD? 'TO) (MEET FE '(COMP SUBJ)) (PARSE CLAUSE RSQ TO) (or (CALLSM (SMRELATE H)) (GO POPRET)))
+        (| (and (NEXTWORD? 'TO) (MEET FE '(COMP SUBJ)) (PARSE CLAUSE RSQ TO) (or (CALLSM (SMRELATE H)) (GO POPRET)))
             RETSM
             nil)
 
     ;; -------------- AS OR COMPARATIVE ---------------
 
-        (: (and (or (NEXTWORD? 'AS) (NQ COMPAR)) (PARSE ADJG THANNEED))
+        (| (and (or (NEXTWORD? 'AS) (NQ COMPAR)) (PARSE ADJG THANNEED))
             nil
             PREPNG)                                                 ;; WHAT IS THE REASON FOR THE EXISTANCE OF THIS
         (and (nil? N)                                               ;; STRANGE ANIMAL (ALSO THE ONEBELOW) -- CHECK
@@ -5770,14 +5741,14 @@ nil
             (ISQ (MOVE-PT C PV) AUX)
             (ISQ PT BE)
             (GO POPRET))                                            ;; AVOIDS ATTACHING MODIFIER WHEN IT GOBBLES TO
-        (: (CALLSM (SMRELATE H)) RSQ-TO POPRET RETSM)               ;; MUCH E.G. IS THE BLOCK ON THE TABLE? DOESN'T
+        (| (CALLSM (SMRELATE H)) RSQ-TO POPRET RETSM)               ;; MUCH E.G. IS THE BLOCK ON THE TABLE? DOESN'T
                                                                     ;; WANT "THE BLOCK ON THE TABLE" AS A CONSTITUENT.
                                                                     ;; I ADMIT ITS A HACK.
 
     ;; -------------- ANY SORT OR PREPOSITION GROUP --------------
 
     PREPNG
-        (: (and (NQ PREP)
+        (| (and (NQ PREP)
                 (not (or (and (NQ PLACE) (CQ NOLOC))
                     (and (CQ OBJ1)
                         (ISQ MVB TRANSL)
@@ -5791,23 +5762,23 @@ nil
             (ISQ PT BE)
             (not (ISQ (MOVE-PT U) NGQ))
             (GO POPRET))
-        (: (CALLSM (SMRELATE H)) RSQ-TO POPRET RETSM)
+        (| (CALLSM (SMRELATE H)) RSQ-TO POPRET RETSM)
 
     ;; CHECK FOR DISGUISED RSQ CLAUSES BY READING THE FAILURE MESSAGES SENT UP FROM PREPG.
 
     DISGRSQ
-        (: (EQ (car MES) 'PREP-WHICH) nil RSQ)
+        (| (EQ (car MES) 'PREP-WHICH) nil RSQ)
         (SETQ MES (cdr MES))
-        (: (PARSE CLAUSE RSQ PREPREL) PREPNG (RSQ-PREPREL) RETSM)
+        (| (PARSE CLAUSE RSQ PREPREL) PREPNG (RSQ-PREPREL) RETSM)
 
     ;; -------------- ANY OTHER RSQ ---------------
 
     RSQ
-        (: (and (ISQ (MOVE-PT C U) POLR2) (CQ SUBJ) (NQ VB) (not (CQ SUBJT)) (not (ISQ PT QADJ)))
+        (| (and (ISQ (MOVE-PT C U) POLR2) (CQ SUBJ) (NQ VB) (not (CQ SUBJT)) (not (ISQ PT QADJ)))
             RETSM
             nil)
-        (: (PARSE CLAUSE RSQ) nil RETSM)
-        (: (CALLSM (SMRELATE H)) RETSM POPRET)
+        (| (PARSE CLAUSE RSQ) nil RETSM)
+        (| (CALLSM (SMRELATE H)) RETSM POPRET)
 
     ;; -------------------------------------------------
     ;; THE ENTIRE NG SHOULD HAVE BEEN PROCESSED BY THIS POINT
@@ -5834,7 +5805,7 @@ nil
 
     REDUC
         (POP)
-        (: (and (nil? H) (NQ PROPN)) PROPN NOUN)
+        (| (and (nil? H) (NQ PROPN)) PROPN NOUN)
 
     POPCOM
         (POP)
@@ -5843,10 +5814,10 @@ nil
 
     INCOM
         (FQ INCOM)
-        (: (and (ISQ H DET) (ISQ H INCOM) (CALLSM (SMINCOM)))
+        (| (and (ISQ H DET) (ISQ H INCOM) (CALLSM (SMINCOM)))
             RETURN
             nil)
-        (: (and (nil? CUT) (CQ NUM)) SMNG nil)
+        (| (and (nil? CUT) (CQ NUM)) SMNG nil)
 
     QDETCHECK
         (COND ((and (ISQ H QDET) (ISQ (NB H) QPRON))
@@ -5865,14 +5836,14 @@ nil
         (or (CALLSM (SMNG2)) (GO FAIL))
 
     POSS2
-        (: (CQ INGSUBJ) RETSM nil)
+        (| (CQ INGSUBJ) RETSM nil)
         ;; IF POSSESSIVE, ALL PREVIOUS MODIFIERS MODIFY THE POSSESSIVE NOUN, NOT THE NG HEAD
         (SETQ H (BUILDNODE (reverse (cons 'POSS (SETDIF FE '(COMPONENT)))) NB N H SM))
         (SETQ BACKREF (concat H (cdr BACKREF)))
-        (: (SETR 'FEATURES (SETQ FE (concat '(POSES DET DEF NS NPL) (reverse REST))) C)
+        (| (SETR 'FEATURES (SETQ FE (concat '(POSES DET DEF NS NPL) (reverse REST))) C)
             nil
             (BUG))
-        (: (or (not NN) (ISQ H DEFPOSS)) nil ORD)
+        (| (or (not NN) (ISQ H DEFPOSS)) nil ORD)
 
     POSSDEF ;; THE PLACEMENT OF THIS TAG IS A GUESS. THE ORIGINAL IS LOST, ASSUMING THAT IT EVER EXISTED
         (RQ POSES DET DEF)
@@ -5881,22 +5852,22 @@ nil
     ;; -------------- RELATIVES---------------
 
     QUEST
-        (: (PARSE nil HOW) nil QDET FAIL)
-        (: (PARSE nil MANY) nil FAIL INCOM)
+        (| (PARSE nil HOW) nil QDET FAIL)
+        (| (PARSE nil MANY) nil FAIL INCOM)
         (FQ DET NPL INDEF HOWMANY)
         (GO OF)
 
     QDET
-        (: (and (PARSE DET QDET) (FQ DET NPL QDET NS))
+        (| (and (PARSE DET QDET) (FQ DET NPL QDET NS))
             QNUM
             nil
             INCOM)
 
     QPRON
-        (: (PARSE PRON QPRON) PRON3 FAIL)
+        (| (PARSE PRON QPRON) PRON3 FAIL)
 
     RELWD
-        (: (and (PARSE PRONREL)
+        (| (and (PARSE PRONREL)
                 (CALLSM (SMSET (SM (MOVE-PT C U U (NG))))))         ;; SET SM TO THE NOUNGROUP DIRECTLY UPSTAIRS
             RETURN
             nil)
@@ -5915,12 +5886,12 @@ nil
     ;; -------------- YOU PROBABLY GOOFED, CUT AND TRY AGAIN. --------------
 
     TRYA
-        (: (ISQ H NOUN) nil (TRYA))
+        (| (ISQ H NOUN) nil (TRYA))
         (POP)
         (CUT N)
 
     UP
-        (: (POP) UP nil)                                            ;; POP EVERYTHING OFF
+        (| (POP) UP nil)                                            ;; POP EVERYTHING OFF
         (SETQ FE (reverse REST))
         (SMSET nil)
         (GO NGSTART))
@@ -5960,8 +5931,8 @@ nil
 
     TO
         (FQ NAGR)                                                   ;; "NAGR" MARKS THAT SUBJECT AND MAIN VERB NEED
-        (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))            ;; NOT AGREE IN NUMBER AND PERSON AND INSURES THAT
-        (: (or (PARSE nil TO) (CQ TODEL)) nil (TO) (TO))            ;; THE AGREEMENT CHECKER AT THE END OF THE PROGRAM
+        (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))            ;; NOT AGREE IN NUMBER AND PERSON AND INSURES THAT
+        (| (or (PARSE nil TO) (CQ TODEL)) nil (TO) (TO))            ;; THE AGREEMENT CHECKER AT THE END OF THE PROGRAM
                                                                     ;; ("REV") WILL NOT BE APPLIED "TODEL" MUST BE
         (SETQ TENSE '(INFINITIVE))                                  ;; GIVEN AS AN INITIAL FEATURE OR ELSE THIS
         (GO MODAL2)                                                 ;; STATEMENT FAILS TENSE IS USED TO HOLD THE TENSE
@@ -5969,22 +5940,22 @@ nil
 
     EN
         (FQ NAGR)
-        (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
+        (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
         (SETQ TENSE '(PAST))
-        (: (and (PARSE VB EN (MVB)) (SETMVB H) (FQ PASV)) RETSM FAIL) ;; DONE AT "EN2"
+        (| (and (PARSE VB EN (MVB)) (SETMVB H) (FQ PASV)) RETSM FAIL) ;; DONE AT "EN2"
 
     ING
         (FQ NAGR)
-        (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
+        (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
 
     INGADV
-        (: (or (PARSE ADV TIMW) (PARSE ADV VBAD)) INGADV nil)
+        (| (or (PARSE ADV TIMW) (PARSE ADV VBAD)) INGADV nil)
         (SETQ TENSE '(PRESENT))
         (GO BE2)
 
     IMPER
-        (: (and (PARSE VB DO NEG INF) (FQ NEG)) nil nil (DONT))
-        (: (and (PARSE VB (MVB) INF) (SETMVB H) (CALLSM (SMVG)))
+        (| (and (PARSE VB DO NEG INF) (FQ NEG)) nil nil (DONT))
+        (| (and (PARSE VB (MVB) INF) (SETMVB H) (CALLSM (SMVG)))
             RETURN
             (IMPER))                                                ;; MVB IS BOUND BY CLAUSE
 
@@ -6013,11 +5984,11 @@ nil
                                                                     ;; REMAIN BEFORE THE CUT POINT, AND TO THE SECOND
                                                                     ;; TAG IF THERE ARE NONE
 
-    DO2 (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
+    DO2 (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
 
     ADV2
-        (: (or (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV2 nil (ADV))
-        (: (PARSE VB (MVB) INF) nil MVB)                            ;; "MVB" ARRANGES FOR A CHECK TO INSURE THAT THE
+        (| (or (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV2 nil (ADV))
+        (| (PARSE VB (MVB) INF) nil MVB)                            ;; "MVB" ARRANGES FOR A CHECK TO INSURE THAT THE
         (GO REV)                                                    ;; VERB BEING PARSED CAN BE A MAIN VERB
 
     MODAL
@@ -6026,10 +5997,10 @@ nil
         (GOCOND MODAL2 INCOMP)
 
     MODAL2
-        (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
+        (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
 
     ADV3
-        (: (or (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV3 nil (ADV))
+        (| (or (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV3 nil (ADV))
         (COND ((PARSE VB BE INF) (GOCOND BE2 MVB))                  ;; DISPATCH TABLE FOR THE NEXT VERB
             ((PARSE VB HAVE INF) (GOCOND HAV2 MVB))
             ((PARSE VB INF (MVB)) (GO REV))
@@ -6048,10 +6019,10 @@ nil
         (GOCOND BE2 MVB)
 
     BE2
-        (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
+        (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))
 
     ADV4
-        (: (or (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV4 nil (ADV))
+        (| (or (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV4 nil (ADV))
         (COND ((and (NEXTWORD? 'GOING) (PARSE VB)) (GO GOING))      ;; "...WILL BE GOING TO..."
             ((and (NQ BE) (PARSE VB ING))                           ;; "BE BEING"
                 (SETQ TENSE (cons 'PRESENT TENSE))
@@ -6067,7 +6038,7 @@ nil
                                                                     ;; DIFFERENTLY
 
     EN2
-        (: (PARSE VB EN (MVB)) nil MVBE)                            ;; THIS ASKS -DO WE HAVE A VERB IN ITS EN FORM
+        (| (PARSE VB EN (MVB)) nil MVBE)                            ;; THIS ASKS -DO WE HAVE A VERB IN ITS EN FORM
                                                                     ;; WHICH CAN ACT AS A MAIN VERB (IN WHICH CASE IT
         (FQ PASV)                                                   ;; IS MARKED AS PASSIVE AND WE RETURN)OTHERWISE
         (GO REV)                                                    ;; CHECK IF THE VERB BEING POINTED AT IS A
@@ -6075,8 +6046,8 @@ nil
                                                                     ;; - WHICH IS DONE AT "MVBE"
 
     GOING
-        (: (PARSE nil TO) nil GOI)
-        (: (NQ INF) GOING2 nil nil)
+        (| (PARSE nil TO) nil GOI)
+        (| (NQ INF) GOING2 nil nil)
         (POP)
 
     GOI
@@ -6090,8 +6061,8 @@ nil
                                                                     ;; "MODAL2" TO DETERMINE HOW TO CONTINUE
 
     MVBE
-        (: (ISQ (MOVE-PT H PV (VB)) AUX) nil MVB)                   ;; MOVE TO EARLIER AND EARLIER DAUGHTERS  UNTILL
-        (: (ISQ PT BE) nil (MVBE))                                  ;; YOU REACH A VERB WHICH IS A "QAUX" - IF THERE
+        (| (ISQ (MOVE-PT H PV (VB)) AUX) nil MVB)                   ;; MOVE TO EARLIER AND EARLIER DAUGHTERS  UNTILL
+        (| (ISQ PT BE) nil (MVBE))                                  ;; YOU REACH A VERB WHICH IS A "QAUX" - IF THERE
                                                                     ;; ARE NONE THEN CONTINUE AT "MVB" IF WHAT YOU ARE
                                                                     ;; POINTING TO (THE "QAUX") IS NOT A FORM OF "BE",
         (SETMVB PT)                                                 ;; THEN FAIL BECAUSE OF THE UNGRAMATICALITY OF THE
@@ -6105,16 +6076,16 @@ nil
         (GOCOND HAV2 MVB)                                           ;; HAV2 WILL CATCH "HAVE HAD", OR "HAVE BEEN ..."
 
     HAV2
-        (: (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))            ;; OR "HAVE KISSED"
+        (| (and (PARSE nil NOT) (FQ NEG)) nil nil (NOT))            ;; OR "HAVE KISSED"
 
     ADV5
-        (: (PARSE ADV) ADV5 nil (ADV))
-        (: (PARSE VB BE EN) nil HAV3)
+        (| (PARSE ADV) ADV5 nil (ADV))
+        (| (PARSE VB BE EN) nil HAV3)
         (SETQ TENSE (cons 'PAST TENSE))                             ;; "HAVE BEEN ..."
         (GOCOND BE2 MVB)
 
     HAV3
-        (: (PARSE VB (MVB) EN) nil MVB)
+        (| (PARSE VB (MVB) EN) nil MVB)
         (SETQ TENSE (cons 'PAST TENSE))                             ;; "HAVE KISSED"
         (GO REV)
 
@@ -6123,9 +6094,9 @@ nil
         (GO FAIL)
 
     MVB
-        (: (EQ (FE MVB) (FE H)) MVB2 nil)
+        (| (EQ (FE MVB) (FE H)) MVB2 nil)
         (POP VB)                                                    ;; POP OFF EVERY THING UNTILL YOU REACH A VERB
-        (: (PARSE VB (MVB)) nil (MVB))
+        (| (PARSE VB (MVB)) nil (MVB))
 
     MVB2
         (GO REV)
@@ -6164,7 +6135,7 @@ nil
                 (FESET PT (SETDIF (FE PT) '(PART NPL))))))
 
     NAGR
-        (: (or T3
+        (| (or T3
             (and (EQUAL '(PAST-PRESENT) TENSE)                      ;; NOTES WHETHER VERB AND SUBJECT WERE FOUND TO
                 (SETQ TENSE '(PAST))))                              ;; AGREE AND FAILS UNLESS A SPECIAL CONDITION
             nil                                                     ;; EXISTS AS NOTED DIRECTLY ABOVE
@@ -6172,7 +6143,7 @@ nil
 
     NAUX
         (SETMVB (or (MOVE-PT H PV (MVB)) MVB))
-        (: (and (CQ NAUX) (ISQ (MOVE-PT H PV (VB)) AUX) (not (MOVE-PT PV PV (VB))))
+        (| (and (CQ NAUX) (ISQ (MOVE-PT H PV (VB)) AUX) (not (MOVE-PT PV PV (VB))))
             (NAUX)
             RETSM)                                                  ;; THE VB MAY HAVE THE FEATURE "NAUX" WHICH
                                                                     ;; INDICATES THAT IT CAN NEVER SERVE AS THE
@@ -6190,15 +6161,15 @@ nil
     ;; -------------------------------------------------
 
     RETSM
-        (: (CALLSM (SMVG)) RETURN FAIL))
+        (| (CALLSM (SMVG)) RETURN FAIL))
 
 (PDEFINE PREPG nil
 
     ENTERING-PREPG
 
     ADV
-        (: (and (NQ PREPADV) (PARSE ADV PREPADV)) ADV nil (PREPADV)) ;; CHECK FOR ANY INITIAL MODIFING ADVERBS
-        (: (COND ((CQ AGENT) (NEXTWORD? 'BY))                       ;; EXAMINE THE INITIAL FEATURES OF THE PREPG TO
+        (| (and (NQ PREPADV) (PARSE ADV PREPADV)) ADV nil (PREPADV)) ;; CHECK FOR ANY INITIAL MODIFING ADVERBS
+        (| (COND ((CQ AGENT) (NEXTWORD? 'BY))                       ;; EXAMINE THE INITIAL FEATURES OF THE PREPG TO
             ((CQ LOC) (NQ PLACE))                                   ;; CHECK FOR CONSTRAINTS ON THE PREPOSITION
             ((CQ Q) (not (NQ MOTOR)))
             (true))
@@ -6207,7 +6178,7 @@ nil
 
         ;; PARSE THE PREPOSITION
 
-        (: (PARSE PREP) nil (PREP))
+        (| (PARSE PREP) nil (PREP))
         (MOVE-PT H)
         (TRNSF PLACE TIME)                                          ;; THIS IS NOT EXACTLY RIGHT, SINCE "ON WHAT DAY" IS NOT "PLACE"
 
@@ -6225,7 +6196,7 @@ nil
                     (PARSE PREP2)))
             (SETQ T1 (BUILDNODE (FE T1) NB N 'WORD (SM T1)))        ;; CREATE NODE FOR THE COMPOUND WORD
             (SETR 'PARENT C T1))
-        (: (ISQ H NEED2) (NEED2) nil)                               ;; FAIL IF LAST PARSED NEEDS ANOTHER WORD
+        (| (ISQ H NEED2) (NEED2) nil)                               ;; FAIL IF LAST PARSED NEEDS ANOTHER WORD
 
                                                                     ;; GIVE IT A PARENT
         (SETR 'HEAD T1 C)                                           ;; SET THE REGESTER "PREP" TO THE CONSTITUENT JUST
@@ -6243,19 +6214,19 @@ nil
     ;; ###################################
 
     QUEST
-        (: (CQ QUEST) nil NG)
+        (| (CQ QUEST) nil NG)
                                                                     ;; CERTAIN RESTRICTIONS PLACED ON THE POSSIBLE
                                                                     ;; NOUN GROUPS THAT IT CAN TAKE - HENSE THE
                                                                     ;; SPECIAL CALL TO PARSE AS ABOVE, IF THE PREPG IS
-        (: (PARSE NG QUEST OBJ) OBJR (PREPQUEST))                   ;; MARKED WITH THE FEATURE "QUEST" (INDICATING
-        (: (and (CQ OF) (PARSE NG OFOBJ)) OBJR nil)                 ;; THAT IT SHOULD CONTAIN THE QUESTION ELEMENT OF
+        (| (PARSE NG QUEST OBJ) OBJR (PREPQUEST))                   ;; MARKED WITH THE FEATURE "QUEST" (INDICATING
+        (| (and (CQ OF) (PARSE NG OFOBJ)) OBJR nil)                 ;; THAT IT SHOULD CONTAIN THE QUESTION ELEMENT OF
 
     NG
-        (: (PARSE NG OBJ) OBJR nil)                                 ;; THE CLAUSE) THEN WE PARSE IT SPECIALLY SIMPLE
+        (| (PARSE NG OBJ) OBJR nil)                                 ;; THE CLAUSE) THEN WE PARSE IT SPECIALLY SIMPLE
 
     REL
-        (: (NEXTWORD? 'WHICH) nil REST)                             ;; NOUN GROUP - NO RESTRICTIONS
-        (: (ISQ (MOVE-PT U) CLAUSE) nil (PREP-WHICH))               ;; IF THE NEXT WORD IS A RELWORD, SUCH AS "WHICH"
+        (| (NEXTWORD? 'WHICH) nil REST)                             ;; NOUN GROUP - NO RESTRICTIONS
+        (| (ISQ (MOVE-PT U) CLAUSE) nil (PREP-WHICH))               ;; IF THE NEXT WORD IS A RELWORD, SUCH AS "WHICH"
                                                                     ;; OR "WHOM", THEN A FAIRLY STRICT SET OF
                                                                     ;; CONSTRAINTS APPLY. THE PREPG IS REQUIRED TO BE
                                                                     ;; WITHIN A RANK-SHIFTED-QUALIFIER CLAUSE (RSQ)
@@ -6273,7 +6244,7 @@ nil
                                                                     ;; PREPG FAILS WITH THE MESSAGE "PREP-WHICH" IF IT
                                                                     ;; IS NOT EXPLICITLY WITHIN AN RSQ. THE FAILURE
                                                                     ;; MESSAGE IS READ BY THE NG PROGRAM WHICH THEN
-        (: (ISQ PT PRONREL) nil PRONREL)                            ;; CHANGES ITS REQUEST FROM (PARSE PREPG Q)  TO
+        (| (ISQ PT PRONREL) nil PRONREL)                            ;; CHANGES ITS REQUEST FROM (PARSE PREPG Q)  TO
         (SETQ MES (cdr MES))                                        ;; (PARSE CLAUSE RSQ PREPREL), WHICH SHOULD PICK
                                                                     ;; UP THE BOTHERSOME PREPG AS AN INITIAL MODIFIER
                                                                     ;; TO THE CLAUSE AND DEAL WITH IT APPROPRIATELY
@@ -6292,14 +6263,14 @@ nil
         (GO RETT)                                                   ;; SECTION OF CLAUSE AND BY THE APPROPRIATE
 
     REST
-        (: (PARSE CLAUSE RSNG ING) OBJR SHORT)                      ;; SEMANTIC SPECIALIST "HEAD" IS HERE THE HEAD OF
+        (| (PARSE CLAUSE RSNG ING) OBJR SHORT)                      ;; SEMANTIC SPECIALIST "HEAD" IS HERE THE HEAD OF
 
     OBJR
         (SETR 'OBJ1 H C)                                            ;; THE HIGHER NOUNGROUP
         (GO RETT)
 
     SHORT
-        (: (MEET FE '(NOSHORT Q)) (SHORT) nil)
+        (| (MEET FE '(NOSHORT Q)) (SHORT) nil)
         (or (ISQ (MOVE-PT C U) REL-NOT-FOUND)
             (ISQ (GETR 'QUESTION-ELEMENT PT) QADJ)
             (GO FAIL))
@@ -6323,14 +6294,14 @@ nil
             (and (ISQ H COMPOUND)                                   ;; IF THE NOUN GROUP IS COUMPOUND, CHECK EACH
                 (MOVE-PT H H PV (QUEST))))                          ;; COMPONENT FOR THE FEATURE "QUEST"
             (FQ QUEST))
-        (: (CALLSM (SMADJG-PREPG)) RETURN FAIL))
+        (| (CALLSM (SMADJG-PREPG)) RETURN FAIL))
 
 (PDEFINE ADJG nil
 
     ENTERING-ADJG                                                   ;; THIS LABEL IS MARKED BY DEBUGGING ROUTINES AND
 
     COMPCHECK                                                       ;; IS USEFUL FOR FOLLOWING THE FLOW OF CONTROL
-        (: (and (MOVE-PT C U (BE)) (not (CQ COMP))) FAIL nil)       ;; CONDITIONS WHICH MUST BE MET BY ANY ADJECTIVE
+        (| (and (MOVE-PT C U (BE)) (not (CQ COMP))) FAIL nil)       ;; CONDITIONS WHICH MUST BE MET BY ANY ADJECTIVE
                                                                     ;; GROUP IF THERE IS A FORM OF "BE" IN THE HIGHER
                                                                     ;; CLAUSE, THEN THE ADJG SHOULD HAVE BEEN CALLED
                                                                     ;; WITH THE FEATURE "COMP" FOR COMPLIMENT
@@ -6340,34 +6311,34 @@ nil
         ;; CLUES AND CONSTRAINTS TO THE STRUCTURE TRYING TO BE PARSED
         ;; AND DIRECT JUMPS TO THE APPROPRIATE SECTIONS OF CODE
 
-        (: (ISQ (MOVE-PT C U) THAN) nil DISP)                       ;; THE WORD "THAN" WAS DETECTED BY THE IMMEDIATELY
+        (| (ISQ (MOVE-PT C U) THAN) nil DISP)                       ;; THE WORD "THAN" WAS DETECTED BY THE IMMEDIATELY
                                                                     ;; UPSTAIRS NG AS FOLLOWING THE HEAD NOUN
         (SETR 'HEAD (GETR 'COMPARATIVE-MODIFIER PT) C)              ;; INDICATING A STURCTURE SUCH AS "... A BIGGER
         (GO THAN)                                                   ;; BLOCK THAN THAT ONE ..." "HEAD REFERS TO THE
                                                                     ;; ADJG'S HEAD ADJECTIVE
 
     DISP
-        (: (and (NQ AS) (PARSE nil AS)) AS nil (AS))
-        (: (and (NQ AS) (PARSE nil AS)) AS nil (AS))
-        (: (NEXTWORD? 'HOW) HOW ADV)
+        (| (and (NQ AS) (PARSE nil AS)) AS nil (AS))
+        (| (and (NQ AS) (PARSE nil AS)) AS nil (AS))
+        (| (NEXTWORD? 'HOW) HOW ADV)
 
     ;; --------------- HOW + ADJG ----------------
 
     HOW
-        (: (and (PARSE nil HOW) (FQ QUEST)) nil FAIL FAIL)
-        (: (and (PARSE ADJ) (FQ ADJ) (SETR 'HEAD H C)) RETSM nil)
-        (: (and (PARSE ADV VBAD) (FQ VBAD) (SETR 'HEAD H C)) RETSM FAIL)
+        (| (and (PARSE nil HOW) (FQ QUEST)) nil FAIL FAIL)
+        (| (and (PARSE ADJ) (FQ ADJ) (SETR 'HEAD H C)) RETSM nil)
+        (| (and (PARSE ADV VBAD) (FQ VBAD) (SETR 'HEAD H C)) RETSM FAIL)
 
     ADV
-        (: (PARSE ADV ADVADV) ADV nil POPAD)                        ;; THIS LOOPS UNTILL ALL CONTIG- UOUS ADVERBS HAVE
-        (: (PARSE nil MORE) nil ADJ)                                ;; BEEN PARSED "MORE" IS EXPLICITLY CHECKED FOR
+        (| (PARSE ADV ADVADV) ADV nil POPAD)                        ;; THIS LOOPS UNTILL ALL CONTIG- UOUS ADVERBS HAVE
+        (| (PARSE nil MORE) nil ADJ)                                ;; BEEN PARSED "MORE" IS EXPLICITLY CHECKED FOR
         (FQ COMPAR)                                                 ;; SINCE IT SIGNALS THE FEATURE, COMPARATIVE
 
     ADJ
-        (: (COND ((CQ ADV) (PARSE ADV VBAD)) (:else (PARSE ADJ)))
+        (| (COND ((CQ ADV) (PARSE ADV VBAD)) (:else (PARSE ADJ)))
             nil
             (ADJ))                                                  ;; IF THE CUT POINT WAS REACHED THEN NO MORE
-        (: (SETR 'HEAD H C) nil nil RETSM)                          ;; PROCESSING (SUCH AS COMPAR BELOW) IS POSSIBLE.
+        (| (SETR 'HEAD H C) nil nil RETSM)                          ;; PROCESSING (SUCH AS COMPAR BELOW) IS POSSIBLE.
 
     ;; -------------------------------------------
     ;;               COMPARATIVES
@@ -6376,15 +6347,15 @@ nil
     ;; IF THE FEATURE "COMPAR" IS ALREADY ON THE LIST, OR IF THE JUST PARSED ADJECTIVE CAN HAVE THAT FEATURE, THEN
     ;; ATTEMPT TO PARSE SOME SORT OF COMPARATIVE CONSTRUCTION (ASSUMING THAT THEREARE ANY MORE WORDS BEFORE THE CUT POINT.)
 
-        (: (or (CQ COMPAR) (ISQ H COMPAR)) nil RETSM)
+        (| (or (CQ COMPAR) (ISQ H COMPAR)) nil RETSM)
         (FQ COMPAR)
-        (: NN nil RETSM)                                            ;; IF THERE ARE UNPARSED WORDS LEFT BEFORE THE CUT
+        (| NN nil RETSM)                                            ;; IF THERE ARE UNPARSED WORDS LEFT BEFORE THE CUT
                                                                     ;; POINT THEN THE POSSIBILITY OF MORE COMPLICATED
                                                                     ;; FORMS IS CHECKED FOR
 
     THAN
         (COND ((not NN) (GO RETSM)))
-        (: (PARSE nil THAN) nil RETSM (THAN))
+        (| (PARSE nil THAN) nil RETSM (THAN))
         (RQ THANNEED)                                               ;; THE FEATURE "THANNEEED" MARKS THAT THE WORD
         (FQ THAN)                                                   ;; "THAN" IS EXPLICITLY  REQUIRED IN THE PHRASE.
         (GO SUBJ)
@@ -6392,17 +6363,17 @@ nil
     AS
         (FQ AS)
         (RQ THANNEED)
-        (: (and (PARSE ADJ) (SETR 'HEAD H C)) nil (ADJ) RETSM)
-        (: (PARSE nil AS) SUBJ RETSM (AS))
+        (| (and (PARSE ADJ) (SETR 'HEAD H C)) nil (ADJ) RETSM)
+        (| (PARSE nil AS) SUBJ RETSM (AS))
 
     ;; FIND A SUBJECT FOR THE COMPARATIVE
     ;; IE.  "AS BIG AS ..." , "BIGGER THAN ..."
 
     SUBJ
-        (: (PARSE NG SUBJ COMPAR) nil (THAN))
-        (: (SETR 'OBJ1 H C) nil nil RETSM)
-        (: (and (ONE-WORD-LEFT) (PARSE VB AUX)) nil RETSM)
-        (: (CHECK-AGREEMENT H (cdr H))                              ;; CHECKS FOR AGREEMENT IN NUMBER AND PERSON
+        (| (PARSE NG SUBJ COMPAR) nil (THAN))
+        (| (SETR 'OBJ1 H C) nil nil RETSM)
+        (| (and (ONE-WORD-LEFT) (PARSE VB AUX)) nil RETSM)
+        (| (CHECK-AGREEMENT H (cdr H))                              ;; CHECKS FOR AGREEMENT IN NUMBER AND PERSON
             RETSM                                                   ;; BETWEEN THE NG PARSED AS SUBJ AND THE
             nil)                                                    ;; JUST-PARSED VERB
         (POP)
@@ -6427,17 +6398,17 @@ nil
     ;; FINAL CHECKS ON COMPARATIVES (SEMANTIC AND OTHERWISE)
 
     RETSM
-        (: (CQ THANNEED) (THANNEED) nil)                            ;; IF ONE OF THE WORDS PARSED REQUIRED A "THAN",
-        (: (CALLSM (SMADJG-PREPG)) RETURN (SMADJ)))                 ;; FAIL IF ONE WAS NOT FOUND.
+        (| (CQ THANNEED) (THANNEED) nil)                            ;; IF ONE OF THE WORDS PARSED REQUIRED A "THAN",
+        (| (CALLSM (SMADJG-PREPG)) RETURN (SMADJ)))                 ;; FAIL IF ONE WAS NOT FOUND.
 
-(DEFUN CONJ nil
+(DEFUN CONJ []
     (let [END nil GOODIE nil]
         (SETQ END CUT)
         (COND ((SETQ GOODIE (APPLY-GRAMMAR 'CONJOIN))
                 (RETURN (SETQ RE GOODIE)))
             (:else (RETURN nil)))))
 
-(DEFUN COMMA nil
+(DEFUN COMMA []
     (COND ((SECONDWORD? '\") (FLUSHME) true)                           ;; IF " FOLLOWS, FLUSH COMMA AND CONTINUE
         ((CONJ))                                                    ;; IF COMMA IS PART OF CONJOINED STRUCTURE, GREAT
         ((ISQ RE INIT) (FLUSHME) true)))                               ;; IF COMMA FOLLOWS INITIAL-TYPE PHRASE, FLUSH IT AND CONTINUE DIRECT ADDRESS JAZZ
@@ -6471,7 +6442,7 @@ nil
             (NEXTWORD? 'NOT)                                        ;; CHECK FOR BUT-NOT COMBINATION
             (or (FLUSHME) (GO LOSE2))
             (FQ NEGBUT))
-        (: (COND ((MEMQ (car REST) '(ADJ NUM NOUN PREP VB ADV))
+        (| (COND ((MEMQ (car REST) '(ADJ NUM NOUN PREP VB ADV))
                 (PARSE3 (concat REST '(COMPONENT)) nil))
             ((MEMQ (car REST) '(NG PREPG ADJG))
                 (and (not (CQ OFOBJ)) (PARSE2 (concat REST '(COMPONENT)) nil)))
@@ -6503,10 +6474,10 @@ nil
                     (:else (GO LISTA)))))
 
     LOSE2
-        (: (CQ LISTA) LISTA nil)
+        (| (CQ LISTA) LISTA nil)
 
     LIST
-        (: (and (EQ PREV '\,)                                       ;; COME HERE FOR ABORTED LIST AND CHECK FOR APPOSITIVE
+        (| (and (EQ PREV '\,)                                       ;; COME HERE FOR ABORTED LIST AND CHECK FOR APPOSITIVE
                 (== (count H) 2)
                 (ISQ H NG)
                 (not (or (ISQ H PRONG) (ISQ (cdr H) PRONG)))
@@ -6534,9 +6505,9 @@ nil
                     H)
                     nil)
                 (FESET (UNION COMMON (FE C)) C)))
-        (: (CALLSM (SMCONJ)) RETURN (CONJOIN: SMCONJ)))             ;; THEN MARK AS A LIST
+        (| (CALLSM (SMCONJ)) RETURN (CONJOIN: SMCONJ)))             ;; THEN MARK AS A LIST
 
-(DEFUN BOTH FEXPR (A)
+(DEFUN BOTH FEXPR [A]
     ;; HANDLES (BOTH AND) (EITHER OR) (NEITHER NOR) COMBINATIONS
     ;; THE CONJOIN PROGRAM DOES SPECIAL THINGS WHEN BOTH IS SET
     (let [END nil]
@@ -6556,9 +6527,9 @@ nil
             (SETQ N NBB)
             (RETURN nil)))))
 
-(DEFUN DOUBLEQUOTER nil (APPLY-GRAMMAR 'PARSEQUOTED))
+(DEFUN DOUBLEQUOTER [] (APPLY-GRAMMAR 'PARSEQUOTED))
 
-(DEFUN CANTAKE (NUM TYPE FEATURE)
+(DEFUN CANTAKE [NUM TYPE FEATURE]
     (let [VBFEAT nil]
         (SETQ VBFEAT (FE MVB))
         (RETURN (COND
@@ -6577,7 +6548,7 @@ nil
                 (:else (MEMQ 'TRANS2 VBFEAT))))
             (:else (MEMQ FEATURE VBFEAT))))))
 
-(DEFUN CANPARSE (NUM TYPE FEATURE)
+(DEFUN CANPARSE [NUM TYPE FEATURE]
     (let [REG nil]
         (and (CANTAKE NUM TYPE FEATURE)
             (or (nil? TYPE)
@@ -6646,10 +6617,10 @@ nil
     FEATURES (INT AUX VB BE INF)
     SEMANTICS ((VB ((THERE (#BETHERE)) (INT (#BEINT))))))
 
-(DEFUN #BETHERE nil
+(DEFUN #BETHERE []
     (RELATION (RESTRICTIONS: (((#THING) (EQ (QUANTIFIER? SMSUB) 'INDEF))) PROCEDURE: nil)))
 
-(DEFUN #BEINT nil
+(DEFUN #BEINT []
     (COND
         ((RELATION
             (RESTRICTIONS: (((#PHYSOB)) (SMCOMP (#PROPERTY)))
@@ -7257,7 +7228,7 @@ nil
 
 (DEFS THANK FEATURES (B-SPECIAL) SEMANTICS  (THANK)B-SPECIAL (THANK))
 
-(DEFUN THANK nil
+(DEFUN THANK []
     (COND ((EQ (cadr N) 'YOU)
         (SAY YOU'RE WELCOME)
         (FLUSHME)
@@ -7903,22 +7874,22 @@ nil
 ;;
 ;; ############################################################
 
-(DEFUN SMTIME nil (ERT SMTIME NOT WRITTEN YET))
+(DEFUN SMTIME [] (ERT SMTIME NOT WRITTEN YET))
 
-(DEFUN SMTIME2 nil (ERT SMTIME2 NOT WRITTEN YET))
+(DEFUN SMTIME2 [] (ERT SMTIME2 NOT WRITTEN YET))
 
-(DEFUN SMNEWNOUN nil
+(DEFUN SMNEWNOUN []
     (OBJECT (MARKERS: (#NEWNOUN) PROCEDURE: ((#NEWWORD)))))
 
-(DEFUN SMNEWPROPN nil (SMSET (list (NEWCOPY 'NAME-OSS))))
+(DEFUN SMNEWPROPN [] (SMSET (list (NEWCOPY 'NAME-OSS))))
 
-(DEFUN SMCONJ nil
+(DEFUN SMCONJ []
     ;; FOR ALL CONJOINED THINGS -- IT CURRENTLY ONLY HANDLES THINGS
     ;; WHICH HAVE AN OSS OR RSS STRUCTURE AS THEIR SEMANTICS.  THIS
     ;; DOES NOT INCLUDE SINGLE WORDS OF MOST TYPES.  IT USES RECURSION
     (let [%SM nil] (SMCONJ2 nil H) (RETURN (SMSET %SM))))
 
-(DEFUN SMCONJ2 (INTERPLIST RESTLIST)
+(DEFUN SMCONJ2 [INTERPLIST RESTLIST]
     ;; INTERPLIST IS THE LIST OF INTERPRETATIONS FOR THE CONJUNCTS
     ;; HANDLED SO FAR -- THIS FUNCTION WILL BE CALLED ONCE FOR EACH
     ;; POSSIBLE COMBINATION.  THE MARKERS FOR THE CONJOINED
@@ -7943,7 +7914,7 @@ nil
         ;; THIS WORKS BECAUSE THE CLAUSE CONTAINING IT CAN NEVER GET CALLED EXCEPT BY RECURSION,
         (dorun (map #'(lambda (INTERP) (SMCONJ2 (cons INTERP INTERPLIST) (cdr RESTLIST))) (SM RESTLIST)))))
 
-(DEFUN SMVG nil ;; CALLED INSIDE ANY VG
+(DEFUN SMVG [] ;; CALLED INSIDE ANY VG
     (let [TSS nil TENSE nil]
         (SETQ TSS (GETR 'TIME (MOVE-PT C U (CLAUSE))))
         (and (CQ NEG) (ADD-F-PT 'NEG PT))                           ;; NEG IS TRANSFERRED FROM THE VG TO THE CLAUSE IN WHICH IT IS EMBEDDED.
@@ -7961,25 +7932,25 @@ nil
         (PUTPROP TSS TENSE 'TENSE=)
         (RETURN true)))
 
-(DEFUN SMADJGQSHORT nil (ERT SMADJQSHORT NOT WRITTEN YET))
+(DEFUN SMADJGQSHORT [] (ERT SMADJQSHORT NOT WRITTEN YET))
 
-(DEFUN SMPRON (NODE)
+(DEFUN SMPRON [NODE]
     (eval (SM NODE))
     (COND ((nil? SM)
         (SETQ GLOBAL-MESSAGE (concat '(I DON\'T KNOW WHAT \") (FROM (NB H) (N H)) '(\" REFERS TO))))) ;; "sic!
     SM)
 
-(DEFUN SMVAUX nil
+(DEFUN SMVAUX []
     (COND ((ISQ H NEG) (FQ NEG)) (:else true))
     (PUTPROP (GETR 'TIME C) (or (MEET (FE H) '(PRESENT PAST MODAL)) (ERTERR SMVAUX -- FUNNY TENSE)) 'TENSE=))
 
-(DEFUN SMADV nil (ERT SMADV NOT WRITTEN YET))
+(DEFUN SMADV [] (ERT SMADV NOT WRITTEN YET))
 
-(DEFUN SMPLACE nil (ERT SMPLACE NOT WRITTEN YET))
+(DEFUN SMPLACE [] (ERT SMPLACE NOT WRITTEN YET))
 
-(DEFUN SMTOADJ nil (ERT SMTOADJ (UNCT) NOT WRITTEN YET))
+(DEFUN SMTOADJ [] (ERT SMTOADJ (UNCT) NOT WRITTEN YET))
 
-(DEFUN SMPROP nil
+(DEFUN SMPROP []
     ;; THIS IS THE SEMANTICS FOR PROPER NOUNS.  IT PRODUCES TWO
     ;; INTERPRETATIONS.  ONE IS THE OPAQUE REFERENCE TO THE NAME
     ;; ITSELF, AS IN "CALL IT SAM".  THE OTHER IS THE TRANSPARENT
@@ -8000,7 +7971,7 @@ nil
             RELATIONS= (list (list '#NAME OSSNODE= (WORD (NB H)))))))
     (SMNG2))
 
-(DEFUN SMADJ (WORD-BEING-INTERPRETED)
+(DEFUN SMADJ [WORD-BEING-INTERPRETED]
     ;; THIS FUNCTION TAKES AS INPUT THE PARSE NODE FOR AN
     ;; ADJECTIVE - NOT COMPARATIVE OR SUPERLATIVE.  IT JUST EVAL'S
     ;; THE DEFINITION.  THAT DEFINITION (WHICH SHOULD BE AN NMEANS)
@@ -8016,7 +7987,7 @@ nil
 
 ;; --------------------------------------------
 
-(DEFUN SMADJG-PREPG nil
+(DEFUN SMADJG-PREPG []
     ;; HANDLES ADJECTIVE GROUPS AND PREPGS BOTH AS COMPLEMENTS AND QUALIFIERS.
     ;; DO NOTHING FOR "BY" PHRASES IN PASSIVE CLAUSES OR "OF" PHRASES LIKE IN "THREE OF THE BLOCKS".
     ;; SEMANTIC SUBJECT IS THE SUBJECT OF AN INTENSIVE OR THE NG TO WHICH THE GROUP IS A QUALIFIER,
@@ -8058,7 +8029,7 @@ nil
 
 ;; -------------------------------------------
 
-(DEFUN SMIT (PRONOUN)
+(DEFUN SMIT [PRONOUN]
     ;; PRONOUN IS (IT THEY ONE) A NODE LIST OF POSSIBLE REFERENTS.
     ;; IS THIS A "DO IT!" COMMAND?  IF SO, RETURN THE LAST EVENT MENTIONED.
     ;; IF THIS PRONOUN HAS BEEN USED BEFORE IN THIS SENTENCE, THEN USE THE SAME CANDIDATES.
@@ -8106,7 +8077,7 @@ nil
         (or (cdr SM) (REMPROP (car SM) 'AMBIGUITIES=))
         (RETURN SM)))
 
-(DEFUN SMIT2 (NODE PLAUSIBILITY)
+(DEFUN SMIT2 [NODE PLAUSIBILITY]
     ;; MAKE SURE NODE IS REALLY THERE.
     ;; QUEST NODES (SUCH AS "WHAT") OR OTHER NODES WITHOUT HEAD NOUNS ARE NOT SUITABLE FOR REFERENTS.
     ;; MAKE SURE THAT NODE HASN'T ALREADY BEEN USED AS REFERENT.
@@ -8137,7 +8108,7 @@ nil
                 (SM NODE)))
             SM))))
 
-(DEFUN SMNGOF nil
+(DEFUN SMNGOF []
     ;; MAP DOWN THE LIST OF "OF" OBJECT INTERPRETATIONS.
     ;; USED TO PROCESS NOUN GROUPS LIKE "THREE OF THE BLOCKS", "BOTH OF THEM".
     ;; SINCE THE OBJECT OF THE "OF" MUST BE DEFINITE (SYNTACTICALLY) AND HAS ALREADY BEEN PROCESSED,
@@ -8159,7 +8130,7 @@ nil
 
 ;; ============================================================
 
-(DEFUN SMNG1 nil
+(DEFUN SMNG1 []
     ;; SMNG1 IS CALLED AS SOON AS THE HEAD OF A NOUN GROUP IS
     ;; PARSED.  IT FIRST BUILDS A SKELETON OSS CONTAINING ONLY THE
     ;; DETERMINERS AND ORDINALS.  IT THEN EVAL'S THE DICTIONARY
@@ -8219,7 +8190,7 @@ nil
 
 ;; ============================================================
 
-(DEFUN SMNG2 nil
+(DEFUN SMNG2 []
     ;; CALLED FROM NG WHEN ALL QUALIFIERS HAVE BEEN FOUND.
     ;; BASICALLY, IT SAVES THE NG ON THE BACKREF(ERENCE) LIST, AND CALLS SMNG3
     ;; (ON EACH POSSIBLE NG INTERPRETATION) TO EVAL ANY DEFINITE NOUN GROUPS, EG. "THE RED BLOCK".
@@ -8235,7 +8206,7 @@ nil
         (SETQ BACKREF (cons (car C) BACKREF)))
     (SMSET (MAPBLAND #'SMNG3 SM)))
 
-(DEFUN SMNG3 (OSS)
+(DEFUN SMNG3 [OSS]
     ;; TAKES AN OSS AS ARGUMENT AND TRIES TO FIND ITS REFERENCE IF THE NOUN GROUP IS DEFINITE.
     ;; EXPECT FOR SPECIAL "ONLY DEFINITE" DEFINITES SUCH AS "THE RIGHT" AND "THE THING".
     (let [FINDER nil MUNG nil INTER nil LIST nil CANDIDATES nil UNBOUND nil]
@@ -8283,7 +8254,7 @@ nil
         (SETQ MUNG nil)
         (GO UP)))
 
-(DEFUN SMONE nil
+(DEFUN SMONE []
     (let [CONTRAST nil X nil]
         (SETQ X H) ;; SET X TO DAUGHTERS OF CURRENT NODE
     GO  (COND ((SETQ CONTRAST (GET (ROOT (NB X)) 'CONTRAST))
@@ -8299,7 +8270,7 @@ nil
             (ERT SMONE= CAN\'T FIND REFERENT FOR "ONE"))
         (RETURN SM)))
 
-(DEFUN SMONE2 (X)
+(DEFUN SMONE2 [X]
     ;; SMONE2 TAKES IN A LIST OF NOUN GROUP NODES AND TRIES TO SEE
     ;; IF ANY OF THOSE NOUN GROUPS COULD BE THE REFERENT FOR "ONE".
     (let [WORD-BEING-INTERPRETED nil]
@@ -8323,7 +8294,7 @@ nil
             (GO GO))
         (RETURN SM)))
 
-(DEFUN SMONE3 (ONENG)
+(DEFUN SMONE3 [ONENG]
     ;; SMONE3 TAKES AN NG WHICH IS A POSSIBLE REFERENT FOR "ONE".
     ;; IT FIRST CUTS THE NG TO BE ONLY (NOUN ADJ ... ADJ ETC) I.E.
     ;; IT STRIPS OF QUALIFYING PHRASES.  IF THERE IS NO CONTRAST,
@@ -8344,12 +8315,12 @@ nil
             ((SETQ X (cdr X)) (GO LOOK))
             (:else (RETURN nil)))))                                  ;; FAIL, IF NO WORD SUPPLIES CONTRAST
 
-(DEFUN SMPOSS nil
+(DEFUN SMPOSS []
     (let [X nil]
         (RETURN (and (SETQ X (SMPOSS2 C (MOVE-PT H PV (POSS))))
             (SMRELATE X)))))
 
-(DEFUN SMPOSS2 (HEADNODE MODNODE)
+(DEFUN SMPOSS2 [HEADNODE MODNODE]
     (let [X nil SM nil SMSUB nil SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST nil]
         (SETQ SMRUB (SM MODNODE))
         (SETQ RELLIST (RETQ AMOB1 (SM HEADNODE)))
@@ -8363,7 +8334,7 @@ nil
 ;; WHICH HAS ALREADY BEEN SEMANTICALLY PROCESSED.  ITS SM CONTAINS THE OSS'S FOR WHOSE DOING THE POSSESSING.
 ;; THE SM CURRENTLY ACTIVE IS THE THING BEING POSSESSED.
 
-(DEFUN SMRELATE (NODE)
+(DEFUN SMRELATE [NODE]
     ;; RELATES A DESCRIPTIVE RSS TO ANOTHER RSS OR OSS ADDING IT
     ;; TO THE LIST OF RELATIONS.  IT TAKES THE LIST OF SS IN SM,
     ;; AND REPLACES SM WITH THE NEW LIST OF MODIFIED SS'S.  THE
@@ -8391,7 +8362,7 @@ nil
 
 ;; -----------------------------------------------------
 
-(DEFUN SMCL1 nil
+(DEFUN SMCL1 []
     (let [SMSUB nil SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST nil]
         ;; SET UP GLOBAL VARIABLES WHICH CONSIST OF POINTERS TO THE SEMANTIC DEFINITIONS
         ;; OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB
@@ -8454,14 +8425,14 @@ nil
         ;; ANYTHING ELSE THAT WOULD BE APPROPRIATE THE VALUE OF SMCL1 IS NON-NIL ONLY IF SOME
         ;; REASONABLE MEANING HAS BEEN FOUND FOR THE CLAUSE
 
-(DEFUN SMCL2 nil
+(DEFUN SMCL2 []
     ;; THERE USED TO BE A CALL TO SMPREPREL AT THIS POINT, BUT IT
     ;; HAS GONE AWAY PENDING FURTHER THOUGHT.
     (MAP #'SMCL-MODIFIERS H))
     ;; AS IN SMCL1, WE NEED TO SCAN THE CONSTITUENTS OF
     ;; THE CLAUSE AND ALLOW THEM TO MAKE WHATEVER MODIFICATION ARE APPROPRIATE
 
-(DEFUN SMCL-MODIFIERS (WORD-BEING-INTERPRETED)
+(DEFUN SMCL-MODIFIERS [WORD-BEING-INTERPRETED]
     ;; AS IN CONSTITUENT, THIS PROCEDURE IS BASICLY ONE LARGE DISPATCH TABLE WHICH
     ;; ARRANGES THAT THE PROPER KIND OF PROCESSING HAPPEN TO THE APPROPRIATE CONSTITUENT.
     ;; SOME SHOULD BE IGNORED SINCE THEY HAVE ALREADY BEEN DEALT WITH AND OTHERS SHOULD
@@ -8503,7 +8474,7 @@ nil
     ((ISQ WORD-BEING-INTERPRETED CLAUSE))
     ((ERT SMCL-MODIFIERS ATTEMPTED TO PROCESS AN UNEXPECTED TYPE OF CONSTITUENT))))
 
-(DEFUN SMBIND nil
+(DEFUN SMBIND []
     (let [TSS nil EVENT nil START nil END nil]
         ;; DOES THE SM HAVE MORE THAN ONE VALUE???
         (and (cdr (SM H))
@@ -8522,7 +8493,7 @@ nil
             (RETURN true)))
         nil))
 
-(DEFUN SMBINDER (START-EV END-EV)
+(DEFUN SMBINDER [START-EV END-EV]
     ;; CALLED FOR A ABINDER - THE FIRST ARGUMENT GIVES THE BEGINNING, SECOND THE END.
     ;; A TYPICAL USE IS THE DEFINITION OF "AFTER", WHICH IS (SMBINDER END NIL) I.E.
     ;; THE EVENT STARTS AFTER THE END OF THE BOUND EVENT, WITH NO SPECIFICATION ON WHEN IT ENDS.
@@ -8537,9 +8508,9 @@ nil
 ;;
 ;; ############################################################
 
-(DEFUN ATOMIFY (X) (COND ((ATOM X) X) ((cdr X) X) (:else (car X))))
+(DEFUN ATOMIFY [X] (COND ((ATOM X) X) ((cdr X) X) (:else (car X))))
 
-(DEFUN ISTENSE (NODE ARG)
+(DEFUN ISTENSE [NODE ARG]
     ;; CHECKS VARIOUS THINGS ABOUT TENSE.
     (let [X nil]
         (or (SETQ X (GETR 'TIME NODE)) (ERT ISTENSE -- NO TIME REGISTER))
@@ -8551,12 +8522,12 @@ nil
             ((EQ ARG 'IMPERF) (and (cdr X) (EQ (car X) 'PRESENT)))
             (:else (ERT ISTENSE -- FUNNY ARG))))))
 
-(DEFUN IMPERF? (TSS)
+(DEFUN IMPERF? [TSS]
     (and (cdr (SETQ X (TENSE? X))) (EQ (car X) 'PRESENT)))
 
-(DEFUN IMPERF nil (ISTENSE C 'IMPERF))
+(DEFUN IMPERF [] (ISTENSE C 'IMPERF))
 
-(DEFUN BUILD FEXPR (%L)
+(DEFUN BUILD FEXPR [%L]
     ;; BUILD CONSTRUCTS AN OSS OR AN RSS FROM ITS ARGUMENTS.
     ;;
     ;; INPUTS:
@@ -8594,7 +8565,7 @@ nil
         (and BUILD-SEE ((lambda (DPSTOP) (DP NODE=)) SMN-STOP))
         (RETURN NODE=)))
 
-(DEFUN NEWCOPY (OSS)
+(DEFUN NEWCOPY [OSS]
     (let [OLD nil NEW nil]
         (SETQ NEW (MAKESYM 'OSS))
         (SETQ OLD (cdr OSS))
@@ -8607,7 +8578,7 @@ nil
         (SETQ OLD (cddr OLD))
         (GO =>)))
 
-(DEFUN RELATION FEXPR (%DEFL)
+(DEFUN RELATION FEXPR [%DEFL]
     ;; CONSTRUCTS RSS'S FOR GARDEN VARIETY VERBS.  USED IN DEFINITION OF SAME.
     ;;
     ;; INPUTS:
@@ -8710,7 +8681,7 @@ nil
             (RETURN %NEWRSS)))
     %DEFL SMSUB SMOB1 SMOB2 SMOBL SMCOMP))
 
-(DEFUN DOBACKREF (ANSWER)
+(DEFUN DOBACKREF [ANSWER]
     ;; CALLED WHEN THE PROCESSING OF A SENTENCE IS COMPLETED.
     ;; SETS UP VARIABLES SO THAT NEXT SENTENCE MAY REFER TO GOODIES IN THIS SENTENCE.
     ;; DOES THE FOLLOWING:
@@ -8751,7 +8722,7 @@ nil
         ;; A FEW MISSING PIECES GO HERE
         nil))
 
-(DEFUN EVALCHECK (L)
+(DEFUN EVALCHECK [L]
     ;; EVALCHECK CHECKS FOR THE PRESENCE OF (#EVAL (MUMBLE ...) ...) IN THE INPUT S-EXPRESSION L.
     ;; IF IT FINDS ONE THEN THE EXPRESSION MUMBLE IS EVALUATED AND REPACES (#EVAL ...), OTHERWISE
     ;; L IS RETURNED JUST THE WAY IT WAS.  HENCE THIS FUNCTION IS THE INVERSE OF QUOTE.
@@ -8759,7 +8730,7 @@ nil
         ((EQ (car L) '#EVAL) (eval (cadr L)))
         (L)))
 
-(DEFUN ITERATE FEXPR (%L)
+(DEFUN ITERATE FEXPR [%L]
     ;; GENERALIZED MAPPING FUNCTION.
     ;;  APPLIES FUNCTION TO THE CARTESIAN PRODUCT OF N LISTS GIVEN AS ARGUMENTS.
     ;;
@@ -8778,7 +8749,7 @@ nil
     ;; THIS SHOULD BECOME A MACRO SO THAT ITERATE TAILORS A MAPPING FUNCTION
     ;; FOR EACH APPLICATION WHICH IS THEN COMPILED
 
-(DEFUN ITERATEX (F L)
+(DEFUN ITERATEX [F L]
     ;; EXPANDS CALL ON ITERATE INTO A TAILORED SET OF MAPBLAND
     ;; CALLS WHICH DO THE APPROPRIATE COMPUTATION WHEN EVALUATED.
     ;; INPUTS:
@@ -8800,7 +8771,7 @@ nil
                 (ITERATEX F (cdr L))))
             (or (car L) '(nil))))))
 
-(DEFUN MAPBLAND (FN L)
+(DEFUN MAPBLAND [FN L]
     ;; THIS IS THE INSTAMATIC CAMERA FUNCTION.  NO MATTER WHAT YOU
     ;; PUT INTO THE FUNCTION, IT AUTOMATICALLY ADJUSTS INTERNALLY TO
     ;; THE AVAILABLE LIGHT SO THAT WHAT COMES OUT THE END ALWAYS
@@ -8825,7 +8796,7 @@ nil
         (RETURN ANS)
         (GO =>)))
 
-(DEFUN MAPC2 (FN L)
+(DEFUN MAPC2 [FN L]
     ;; MAPPING FUNCTION FOR GOING 2 AT A TIME THROUGH A LIST.
     ;; INPUTS:
     ;;     FN   -   FUNCTION OF TWO ARGUMENTS
@@ -8841,7 +8812,7 @@ nil
         (SETQ L (cddr L))
         (GO =>)))
 
-(DEFUN MUMBLE (X)
+(DEFUN MUMBLE [X]
     ;; MUMBLE IS THE PLANNER FILTER FOR LOOKING AT ASSERTIONS TO
     ;; SEE WHEN THEY WERE MENTIONED IN THE DIALOG. IT USES THE FREE
     ;; VARIABLE "WHO" TO DECIDE WHAT TO LOOK FOR. WHO IS EITHER NIL
@@ -8854,7 +8825,7 @@ nil
         ((EQ WHO 'HE) (GET X 'WHO))
         ((SETQ X (GET X 'WHO)) (not (or (< X (car WHO)) (> X (cadr WHO)))))))
 
-(DEFUN OBJECT FEXPR (%DEFL)
+(DEFUN OBJECT FEXPR [%DEFL]
     ;; %DEFL IS THE LIST OF DEFINITION SENSES.
     ;; CONSTRUCTS OSS FOR GARDEN VARIETY NOUNS AND ADJECTIVES.
     ;; USED IN DEFINITIONS.
@@ -8912,7 +8883,7 @@ nil
 ;;
 ;; ######################################################
 
-(DEFUN PLNR-JUNKIFY (CODE)
+(DEFUN PLNR-JUNKIFY [CODE]
     ;; PUTS DISCOURSE STUFF INTO CODE
     (COND
         ((ATOM CODE) CODE)
@@ -8921,7 +8892,7 @@ nil
         ((or (EQ (car CODE) 'THAND) (EQ (car CODE) 'THPROG)) (doall (map #'PLNR-JUNKIFY2 CODE)))
         ((doall (map #'PLNR-JUNKIFY CODE)))))
 
-(DEFUN PLNR-JUNKIFY2 (CODE)
+(DEFUN PLNR-JUNKIFY2 [CODE]
     ;; PUTS DISCOURSE STUFF INTO CODE
     (COND
         ((ATOM CODE) (list CODE))
@@ -8930,9 +8901,9 @@ nil
         ((or (EQ (car CODE) 'THAND) (EQ (car CODE) 'THPROG)) (list (doall (map #'PLNR-JUNKIFY2 CODE))))
         ((list (doall (map #'PLNR-JUNKIFY CODE))))))
 
-(DEFUN VALUEPUT nil (PUTPROP THVALUE SENTNO 'WHO))
+(DEFUN VALUEPUT [] (PUTPROP THVALUE SENTNO 'WHO))
 
-(DEFUN PLNR-THCONSIFY (VARLIST EXP BODY)
+(DEFUN PLNR-THCONSIFY [VARLIST EXP BODY]
     ;; GENERATES A CONSEQUENT THEOREM.
     (let [TH nil]
         (SETQ TH (MAKESYM 'THEOREM))
@@ -8943,7 +8914,7 @@ nil
             'THEOREM)
         (RETURN TH)))
 
-(DEFUN PLNR-FINDIFY (MODE VARIABLE VARLIST BODY)
+(DEFUN PLNR-FINDIFY [MODE VARIABLE VARLIST BODY]
     ;; GENERATES A THFIND STATEMENT FOR THE NOUN GROUP DESCRIBED IN THE OSS.
     ;; IT (CURRENTLY) ASSUMES THAT THE PLNRCODE PROPERTY OF THE OSS IS A LIST
     ;; OF PATERNS OF THGOAL STATEMENTS.  MODE IS DEFINED TO BE <MODE> IN THE
@@ -8957,7 +8928,7 @@ nil
     ;; BODY = <VARIABLE DECLARATIONS>
     (concat (list 'THFIND MODE (PLNR-VAR VARIABLE) VARLIST) BODY))
 
-(DEFUN PLNR-FINDSPEC (X)
+(DEFUN PLNR-FINDSPEC [X]
     ;; GENERATES PAMETER FOR THFIND FROM THE NOTATION USED IN THE DETERMINER?
     (COND
         ((number? X) X)
@@ -8967,7 +8938,7 @@ nil
         ((EQ (car X) '<) (list 0 (cadr X) nil))
         ((ERTERR PLNR-FINDSPEC -- FUNNY SPECIFICATION))))
 
-(DEFUN PLNR-GOALIFY (PLNRPHRASE)
+(DEFUN PLNR-GOALIFY [PLNRPHRASE]
     ;; TAKES A PLNRPHRASE AND MAKES A THGOAL STATEMENT OUT OF IT UNLESS
     ;; IT ISN'T SUPPOSED TO BE ONE.  ALSO CALLS PLNR-NOTIFY IF APPROPRIATE.
     ;; PRESENT TENSE TIME MARKERS ARE REMOVED TO SIMPLIFY THE MOST COMMON EXPRESSIONS.
@@ -8975,7 +8946,7 @@ nil
     (COND ((GET (car PLNRPHRASE) 'NOGOAL) PLNRPHRASE)
         ((concat (list 'THGOAL PLNRPHRASE '(THDBF MUMBLE)) (PLNR-RECOMMENDIFY PLNRPHRASE)))))
 
-(DEFUN PLNR-MUNG (FINDEXPR CANDIDATES)
+(DEFUN PLNR-MUNG [FINDEXPR CANDIDATES]
     ;; DOES A HORRIBLE THING: MUNGS A THFIND EXPRESSION WHICH FINDS A NOUN GROUP REFERENCE.
     ;; IT PUTS A THAMONG EXPRESSION AS THE FIRST STATEMENT OF THE THFIND.  IF THERE IS ALREADY
     ;; A THAMONG EXPRESSION IN THE THFIND, THEN MUNG JUST CLOBBERS THE LIST IN THAT THAMONG.
@@ -8987,15 +8958,15 @@ nil
                         (COND ((EQ (caaddr (cdr FINDEXPR)) 'THFIND) (cddddr (cdr FINDEXPR)))
                             (:else (cddddr FINDEXPR)))))))))
 
-(DEFUN PLNR-NOTIFY (NEG? %PLNRPHRASE)
+(DEFUN PLNR-NOTIFY [NEG? %PLNRPHRASE]
     ;; PUTS IN THNOT, BUT ELIMINATE DOUBLE NEGATIVES.
     (COND ((not NEG?) %PLNRPHRASE)
         ((EQ (car %PLNRPHRASE) 'THNOT) (cadr %PLNRPHRASE))
         ((list 'THNOT %PLNRPHRASE))))
 
-(DEFUN PLNR-NEWBODY (X) (SETQ NEWBODY (cons X NEWBODY)))
+(DEFUN PLNR-NEWBODY [X] (SETQ NEWBODY (cons X NEWBODY)))
 
-(DEFUN PLNR-PROGIFY (VARLIST BODY)
+(DEFUN PLNR-PROGIFY [VARLIST BODY]
     ;; SETS UP A THPROG OR THE SIMPLEST EQUIVALENT EXPRESSION FOR
     ;; THE PARTICULAR CASE.  BODY IS A LIST OF EXPRESSIONS
     (let [NEWBODY nil]
@@ -9013,12 +8984,12 @@ nil
             ((cdr NEWBODY) (cons 'THAND (reverse NEWBODY)))
             ((car NEWBODY))))))
 
-(DEFUN PLNR-NUMREL (OSS)
+(DEFUN PLNR-NUMREL [OSS]
     ;; THIS IS USED BY PLNR-NUMSUB TO HAVE THE VARIABLE NAME SUBSTITUTED
     ;; FOR THE OSS WHICH IS THE REL OF A PARTICULAR EXPRESSION.
     (COND ((MEMQ OSS RELLIST) (SETQ REL: OSS)) (OSS)))
 
-(DEFUN PLNR-NUMSUB (%ME %PLNRPHRASE)
+(DEFUN PLNR-NUMSUB [%ME %PLNRPHRASE]
     ;; FUNCTION WHICH SUBSTITUTES THE PROPER PARSE TIME VARIABLES
     ;; FOR #1, #2, #3, AND *** IN THE PLANNER SHCEMAS FROM DICTIONARY DEFINITIONS.
     ;;
@@ -9042,7 +9013,7 @@ nil
                 (%ELEMENT)))
         (EVALCHECK %PLNRPHRASE))))
 
-(DEFUN PLNR-RECOMMENDIFY (%PLNRPHRASE)
+(DEFUN PLNR-RECOMMENDIFY [%PLNRPHRASE]
     ;; LOOKS UP IN THE DICTIONARY A RECOMMENDED THEOREM TO USE IN
     ;; PROCESSING A PLNRPHRASE BY THGOAL.  IF IT FINDS ONE IT TACKS
     ;; IT ON AS A RECOMENDATION.
@@ -9059,7 +9030,7 @@ nil
                     ((number? (caar %ELEMENT)) (cadr (or (ASSQ (count %PLNRPHRASE) %ELEMENT) '(nil nil))))
                     (%ELEMENT)))))))
 
-(DEFUN PLNR-REMTIME (EXP)
+(DEFUN PLNR-REMTIME [EXP]
     ;; REMOVES ALL PRESENT TENSE TIME STRUCTURES
     ((lambda (Y)
         ;; Y IS BOUND TO A UNIQUE POINTER SO IT CAN'T POSSIBLY SCREW ANYTHING
@@ -9072,11 +9043,11 @@ nil
             EXP))))
         '(T)))
 
-(DEFUN PLNR-VAR (X)
+(DEFUN PLNR-VAR [X]
     ;; GENERATES SYNTAX FOR VARIABLE NAMES IN PLANNER
     (list 'THV X))
 
-(DEFUN COMPARE-BUILD (NODE DEGREE)
+(DEFUN COMPARE-BUILD [NODE DEGREE]
     ;; USED BY SMADJG-PREPG TO BUILD A PSUEDO VERB FOR THE COMPARATIVE.  SMCL1 IS THEN CALLED.
     (let [RESTRICTIONS: nil DIMENSION: nil DIRECTION: nil]
         ;; THESE ARE THE POSSIBLE PARTS OF A MEASURE.
@@ -9091,13 +9062,13 @@ nil
             'SEMANTICS)
         (RETURN '(COMPARE-PSEUDO-VERB))))
 
-(DEFUN FINDMEASURE (NODE)
+(DEFUN FINDMEASURE [NODE]
     ;; GETS THE MEASURE DEFINITION
     (COND
         ((SETQ X (ASSOC 'MEASURE (GET (ROOT (NB NODE)) 'SEMANTICS))) (cadr X))
         ((GLOBAL-ERR (concat '(I DON\'T KNOW HOW TO COMPARE THINGS WITH RESPECT TO) (list (ROOT (NB NODE))))))))
 
-(DEFUN MEASURE FEXPR (MEAS)
+(DEFUN MEASURE FEXPR [MEAS]
     ;; USED TO GENERATE ORDINALS -- IT IS CALLED WHEN A MEASURE DEFINITION IS EVALLED
     (APPLY #'OBJECT
         (list (list 'MARKERS:
@@ -9105,7 +9076,7 @@ nil
             'PROCEDURE:
             (list (list '*ORDINAL* MEAS))))))
 
-(DEFUN PLNR-DESCRIBE (EXPS VAR FREEVARS)
+(DEFUN PLNR-DESCRIBE [EXPS VAR FREEVARS]
     ;; BUILDS THE PLANNER DESCRIPTION, IGNORING THE QUANTIFIER ACOUNTS FOR ORDINALS, SUBSTS, ETC.
     (let [ORDINAL nil BODY nil X nil]
     =>  (COND
@@ -9118,7 +9089,7 @@ nil
         (SETQ EXPS (cdr EXPS))
         (GO =>)))
 
-(DEFUN RELFIND (NODE)
+(DEFUN RELFIND [NODE]
     ;; LOOKS FOR THE REL OF A POLAR
     (let [REL nil]
         (ERRSET
@@ -9132,7 +9103,7 @@ nil
         (or REL (and (CQ PASV) (not (CQ AGENT)) (SETQ REL '(FAKE-AGENT))))
         (RETURN (and REL (SM REL)))))
 
-(DEFUN ORDMAKE (ORDINAL VAR BODY)
+(DEFUN ORDMAKE [ORDINAL VAR BODY]
     ;; MAKES THE LOGICAL FORM FOR SUPERLATIVES.
     ;; ORDINAL GIVES THE THING BEING COMPARED IN MEASURE FORM.
     (let [NEWVAR nil]
@@ -9141,12 +9112,12 @@ nil
             (concat BODY (list (PLNR-NOTIFY true
                 (PLNR-PROGIFY (list NEWVAR) (concat (SUBST NEWVAR VAR BODY) (list (PLNR-GOALIFY (COMPARE-PROC VAR NEWVAR ORDINAL))))))))))))
 
-(DEFUN COMPARE-PROC (VAR NEWVAR ORDINAL)
+(DEFUN COMPARE-PROC [VAR NEWVAR ORDINAL]
     (let [RESTRICTIONS: nil DIRECTION: nil DIMENSION: nil]
         (SETQQCHECK nil ORDINAL '(RESTRICTIONS: DIRECTION: DIMENSION:) 'MEASURE)
         (RETURN (list '#MORE DIMENSION: (PLNR-VAR (COND (DIRECTION: NEWVAR) (VAR))) (PLNR-VAR (COND (DIRECTION: VAR) (NEWVAR)))))))
 
-(DEFUN EXPAND (EXP EVENT)
+(DEFUN EXPAND [EXP EVENT]
     ;; THE HEART OF THE PLANNER BUILDER.
     ;; EXPANDS AN EXPRESSION WORRYING ABOUT THE QUANTIFIERS AND CONNECTIVES OF ITS CONSTITUENTS.
     ;; IT DOESN'T REALLY HANDLE EXPRESSIONS WITH MORE THAN ONE QUANTIFIED SS UNLESS ONE OF THEM IS THE REL.
@@ -9208,13 +9179,13 @@ nil
                     (PLNR-NOTIFY (MEMQ QUANTIFIER '(ALL NO))
                         (PLNR-PROGIFY (and VAR (list VAR)) (cons BODY (list (PLNR-NOTIFY (EQ QUANTIFIER 'ALL) (PLNR-GOALIFY EXP)))))))))))))
 
-(DEFUN ERQSET (X)
+(DEFUN ERQSET [X]
     ;; USED BY EXPAND TO MAKE SURE IT ISN'T GETTING CONFUSED BY TOO
     ;; MANY CONNECTIVES AND QUANTIFIERS IN THE SAME EXPRESSION.
     (COND (QUANTIFIER (GLOBAL-ERR '(I CAN\'T HANDLE COMBINATIONS OF QUANTIFIERS AND CONNECTIVES WHICH ARE SO COMPLICATED)))
         ((SETQ QUANTIFIER X))))
 
-(DEFUN SETQQCHECK (%EVALFLAG %LIST %CHECKLIST %NAME)
+(DEFUN SETQQCHECK [%EVALFLAG %LIST %CHECKLIST %NAME]
     ;; SETQQCHECK IS LIKE SETQQ (OR LIKE SETQ DEPENDING ON EVALFLAG) BUT IT CHECKS TO MAKE SURE
     ;; THE VARIABLE NAME IS A MEMBER OF THE %CHECKLIST, AND IF NOT PRINTS AN ERROR MESSAGE.
     (let [%X nil]
@@ -9235,7 +9206,7 @@ nil
                 (GO UP))
             ((SETQ %LIST (cons %X (cdr %LIST))) (GO GO)))))
 
-(DEFUN THVAL2 (WHO AA)
+(DEFUN THVAL2 [WHO AA]
     (let [RESULT nil X nil MPLNR-TTIME nil M-GC nil]
         (SETQ THLEVEL '(true))
         (SETQ X (SETQ RESULT '(nil)))
@@ -9249,14 +9220,14 @@ nil
             (SETQ MPLNR-TIME (- MPLNR-TIME (TIMER M-GC (STATUS GCTIME))) GC (STATUS GCTIME)))
         (RETURN RESULT)))
 
-(DEFUN WHO (X)
+(DEFUN WHO [X]
     (COND ((nil? WHO))
         ((ATOM X))
         ((not (SETQ X (GET X 'WHO))) nil)
         ((EQ WHO 'HE))
         ((< (car WHO) X LASTSENTNO))))
 
-(DEFUN CHECK (NEW-MARKERS MARKERS SYSTEMS)
+(DEFUN CHECK [NEW-MARKERS MARKERS SYSTEMS]
     ;; TAKES A LIST OF NEW MARKERS AND CHECKS FOR COMPATIBILITY WITH THE EXISTING
     ;; MARKERS AND SYSTEMS (AS GIVEN BY ARGS MARKERS AND SYSTEMS).  IF COMPATIBLE,
     ;; RETURNS A TWO-LIST OF THE NEW MARKERS AND SYSTEMS, ELSE RETURNS NIL.
@@ -9265,7 +9236,7 @@ nil
         ((CHECKAMARKER (car NEW-MARKERS)) (SETQ NEW-MARKERS (cdr NEW-MARKERS)) (GO =>))
         (:else (RETURN nil)))) ;; FAIL IF CHECKAMARKER FAILS
 
-(DEFUN CHECKAMARKER (MARKER)
+(DEFUN CHECKAMARKER [MARKER]
     ;; CHECKS A SINGLE MARKER FOR COMPATIBILITY
     ;; USES FREE VARIABLES:
     ;;    SYSTEMS - THE SYSTEM LIST SO FAR
@@ -9283,7 +9254,7 @@ nil
                 (GO =>))
             (:else (RETURN nil)))))
 
-(DEFUN FINDEVENTS (RSS)
+(DEFUN FINDEVENTS [RSS]
     ;; FINDS ALL THE EVENTS FITTING THE RSS DESCRIPTION
     (PUTPROP (VARIABLE? RSS) true 'USED)
     (THVAL2 nil
@@ -9294,7 +9265,7 @@ nil
                 (VARIABLE? RSS)
                 (list (VARIABLE? RSS))))))
 
-(DEFUN CHECKREL (OSS)
+(DEFUN CHECKREL [OSS]
     ;; CHECKS FOR POSSIBLE RELATIVE, EITHER BECAUSE OSS IS ON THE RELLIST,
     ;; OR BECAUSE RSS INVOLVES INSIDE IT AN OSS ON THE RELLIST.
     ;; IT RETURNS EITHER NIL OR A LIST OF WHICH THE FIRST ELEMENT IS THE REAL RELATIVE.
@@ -9311,127 +9282,127 @@ nil
 ;;
 ;; ################################################################
 
-(DEFUN ACTION? (X)
+(DEFUN ACTION? [X]
     ;; THE WORKING PART OF AN ANSWER -- TELLS WHAT TO DO IF THE ANSWER IS THE ONE TO BE GIVEN.
     ;; MIGHT INCLUDE ACTIONS ON THE DISPLAY, AS WELL AS THINGS TO BE PRINTED AND VARIABLES TO BE SET, ETC.
     ;; THE WHOLE THING IS EVAL-LISTED.
     (GET X 'ACTION=))
 
-(DEFUN AMBIGUITIES? (X)
+(DEFUN AMBIGUITIES? [X]
     ;; LIST OF POSSIBLE AMBIGUITIES FOR A SEMANTIC STRUCTURE.
     (GET X 'AMBIGUITIES=))
 
-(DEFUN AND? (X)
+(DEFUN AND? [X]
     ;; FIND THE CONJUNCTION LIST OF A CONJOINED SEMANTIC STRUCTURE.
     ;; NIL IF THERE IS NONE.
     (GET X 'AND=))
 
-(DEFUN ANSRSS? (X)
+(DEFUN ANSRSS? [X]
     ;; THE RSS CORRESPONDING TO AN ANSWER NODE (A PROPERTY OF THE ANSNODE)
     (GET X 'ANSRSS=))
 
-(DEFUN DETERMINER? (X)
+(DEFUN DETERMINER? [X]
     ;; ACCESS FUNCTION.  GETS DET OF AN OSS.
     (GET X 'DETERMINER=))
 
-(DEFUN END? (TSS)
+(DEFUN END? [TSS]
     ;; END TIME FOR TSS.
     (GET TSS 'END=))
 
-(DEFUN MARKERS? (%SENSE)
+(DEFUN MARKERS? [%SENSE]
     ;; ACCESS FUNCTION USED TO GET MARKERS FROM OSS OR RSS.
     (GET %SENSE 'MARKERS=))
 
-(DEFUN MODIFIERS? (%XSS)
+(DEFUN MODIFIERS? [%XSS]
     ;; ACCESS FUNCTION FOR GETTING THE PLANNER CODE SCHEMA OF AN OSS OR RSS.
     (GET %XSS 'MODIFIERS=))
 
-(DEFUN NEGATIVE? (%XSS)
+(DEFUN NEGATIVE? [%XSS]
     ;; ACCESS FUNCTION FOR OSS.
     (GET %XSS 'NEGATIVE=))
 
-(DEFUN NUMBER? (OSS)
+(DEFUN NUMBER? [OSS]
     ;; GETS THE NUMBER FIELD OF AN OSS.
     (car (GET OSS 'DETERMINER=)))
 
-(DEFUN OR? (X)
+(DEFUN OR? [X]
     ;; ACCESS FOR LIST OF CONSTITUENTS IN DISJOINED SEMANTIC STRUCTURE.
     ;; NIL IF IT ISN'T.
     (GET X 'OR=))
 
-(DEFUN OSS? (X)
+(DEFUN OSS? [X]
     ;; CHECKS TO SEE IF X IS AN OSS.
     (GET X 'OSSNODE=))
 
-(DEFUN PARENT? (NODE) (GETR 'PARENT NODE))
+(DEFUN PARENT? [NODE] (GETR 'PARENT NODE))
 
-(DEFUN PARSENODE? (X) (GET X 'PARSENODE=))
+(DEFUN PARSENODE? [X] (GET X 'PARSENODE=))
 
 ;; THE PARSE NODE ASSOCIATED WITH THE SEMANTIC STRUCTURE.
 
-(DEFUN PLAUSIBILITY? (%XSS)
+(DEFUN PLAUSIBILITY? [%XSS]
     ;; ACCESS FUNCTION FOR GETTING PLAUSIBILITY OF AN OSS OR RSS.
     (or (GET %XSS 'PLAUSIBILITY=) 0))
 
-(DEFUN PLNRCODE? (X) (GET X 'PLNRCODE=))
+(DEFUN PLNRCODE? [X] (GET X 'PLNRCODE=))
 
 ;; THE PLANNERCODE GENERATED WHEN AN OBJECT IS ACTUALLY LOOKED FOR IN THE DATA BASE.
 ;; IT IS NOT USED AGAIN, BUT IS LEFT SITTING AROUND FOR PEOPLE TO LOOK AT.
 
-(DEFUN QTYPE? (X) (caddr (GET X 'DETERMINER=)))
+(DEFUN QTYPE? [X] (caddr (GET X 'DETERMINER=)))
 
 ;; QUESTION TYPE FOR QUESTION OSS.
 
-(DEFUN QUANTIFIER? (OSS)
+(DEFUN QUANTIFIER? [OSS]
     ;; GETS THE DETERMINER FIELD OF AN OSS.
     (cadr (GET OSS 'DETERMINER=)))
 
-(DEFUN REFER? (%XSS)
+(DEFUN REFER? [%XSS]
     ;; ACCESS FUNCTION FOR REFER OF OSS OR RSS.
     (GET %XSS 'REFER=))
 
-(DEFUN REL? (X) (GET X 'REL=))
+(DEFUN REL? [X] (GET X 'REL=))
 
 ;; THE OBJECT TO WHICH THIS DESCRIPTION IS TO BE RELATED.
 
-(DEFUN RELATIONS? (X)
+(DEFUN RELATIONS? [X]
     ;; THE MATERIAL THAT WILL BECOME PLANNER CODE.
     (GET X 'RELATIONS=))
 
-(DEFUN RELMARKERS? (X)
+(DEFUN RELMARKERS? [X]
     ;; MARKERS HELD BY A RELATIVE CLAUSE PRODUCED BY ITS SELECTION
     ;; RESTRICTIONS, TO BE ATTACHED TO THE OBJECT DESCRIPTION.
     (GET X 'RELMARKERS=))
 
-(DEFUN RSS? (X)
+(DEFUN RSS? [X]
     ;; CHECKS TO SEE IF X IS AN RSS.
     (GET X 'RSSNODE=))
 
-(DEFUN RSSVAR? (X)
+(DEFUN RSSVAR? [X]
     ;; A VARIABLE OF THE TYPE USED FOR RSS'S -- I.E. EVX3, ETC.
     (GET X 'RSSVAR))
 
-(DEFUN START? (TSS)
+(DEFUN START? [TSS]
     ;; START TIME FOR TSS.
     (GET TSS 'START=))
 
-(DEFUN SYSTEMS? (%SENSE)
+(DEFUN SYSTEMS? [%SENSE]
     ;; ACCESS FUNCTION FOR GETTING THE SYSTEMS OF AN OSS OR RSS.
     (GET %SENSE 'SYSTEMS=))
 
-(DEFUN TENSE? (X)
+(DEFUN TENSE? [X]
     ;; FOR A TSS.
     (GET X 'TENSE=))
 
-(DEFUN TSS? (X) (GET X 'TSSNODE=))
+(DEFUN TSS? [X] (GET X 'TSSNODE=))
 
 ;; ASSOCIATED WITH EVERY TIME SEMANTIC STRUCTURE.
 
-(DEFUN VARIABLE? (X)
+(DEFUN VARIABLE? [X]
     ;; ACCESS FUNCTION FOR GETTING THE VARIABLE NAME ASSOCIATED WITH AN OSS OR RSS.
     (GET X 'VARIABLE=))
 
-(DEFUN SMSET (X) (SETR 'SEMANTICS X C) (SETQ SM X))
+(DEFUN SMSET [X] (SETR 'SEMANTICS X C) (SETQ SM X))
 
 #_(ns shrdlu.newans)
 
@@ -9441,7 +9412,7 @@ nil
 ;;
 ;; ################################################################
 
-(DEFUN ANSWER (NODE)
+(DEFUN ANSWER [NODE]
     ;; THE TOP LEVEL ANSWER FUNCTION CALLED TO CARRY OUT THE RESULTS OF ANY INPUT SENTENCE,
     ;; WHETHER COMMAND, QUESTION, OR STATEMENT.
     (let [ANSLIST nil AMBIG nil]
@@ -9472,16 +9443,16 @@ nil
         (DOBACKREF (car ANSLIST))
         (RETURN true)))
 
-(DEFUN AMBPUT (CODE)
+(DEFUN AMBPUT [CODE]
     ;; PUTS IN THE JUNK FOR DISCOURSE IF THERE IS NO AMBIGUITY, SO THERE IS
     ;; NO NEED TO EVALUATE THE CODE A SECOND TIME WHEN GIVING THE ANSWER.
     (COND (AMBIG CODE) (:else (PLNR-JUNKIFY CODE))))
 
-(DEFUN ANSAY (X)
+(DEFUN ANSAY [X]
     ;; GENERATES THE SYNTAX FOR ANSWER ACTIONS FROM A PHRASE.
     (list (cons 'SAY X)))
 
-(DEFUN ANSBUILD (PLAUS ACTION REDEDUCE)
+(DEFUN ANSBUILD [PLAUS ACTION REDEDUCE]
     ;; BUILDS AN ANSWER NODE.
     ;; IF REDEDUCE IS NON-NIL, IT ADDS A REDEDUCTION OF THE ANSWER,
     ;; ADDING THE DISCOURSE JUNK TO THE ACTION.
@@ -9496,7 +9467,7 @@ nil
                         (:else ACTION))
                     (and (REL? RSS) (not (CQ DECLAR)) (list (list 'PUTPROP (QUOTIFY (REL? RSS)) (QUOTIFY ANS) (QUOTIFY 'REFER=)))))))
 
-(DEFUN ANSCOMMAND (RSS)
+(DEFUN ANSCOMMAND [RSS]
     ;; ANSCOMMAND RESPONDS TO IMPERATIVES.
     (let [EXP nil ANS nil SUCCESS nil PLAN nil PLAN2 nil]
         ;; PLNR-ANDORIFY COMBINES ANDS AND ORS INTO APPROPRIATE PLANNER THANDS AND THORS.
@@ -9518,7 +9489,7 @@ nil
                 (COND (SUCCESS (concat (reverse PLAN2) '((SAY OK)))) (:else '((SAY I CAN\'T))))
                 true))))
 
-(DEFUN ANSDECLARE (RSS)
+(DEFUN ANSDECLARE [RSS]
     ;; FOR DECLARATIVES.
     (COND
         ((OR? RSS)
@@ -9539,7 +9510,7 @@ nil
             (cons '(SAY I UNDERSTAND) (doall (map #'(lambda (X) (list 'THADD (QUOTIFY (ANSTHM X)) nil)) (RELATIONS? RSS))))
             nil))))
 
-(DEFUN ANSELIMINATE (ANSLIST)
+(DEFUN ANSELIMINATE [ANSLIST]
     ;; ELIMINATES ANSWERS FROM LIST BY ASKING PERSON TO CLEAR UP THE AMBIGUITIES.
     (let [AMB nil POSSIBILITIES nil XX nil]
         (or (SETQ AMB (AMBIGUITIES? (ANSRSS? (car ANSLIST))))
@@ -9583,7 +9554,7 @@ nil
                 (COND ((or (not (SETQ XX (PARSE-ASSOC (caar AMB) (AMBIGUITIES? (ANSRSS? ANS))))) (EQUAL XX POSSIBILITIES)) ANS)))
             ANSLIST))))
 
-(DEFUN PARSE-ASSOC (OSS AMBIG-LIST)
+(DEFUN PARSE-ASSOC [OSS AMBIG-LIST]
     ;; PARSE-ASSOC GOES THRU AMBIG-LIST LOOKING FOR AN INTERPRETATION WITH THE SAME PARSE NODE
     (let [ASS nil]
         (SETQ ASS (car (PARSENODE? OSS)))
@@ -9593,7 +9564,7 @@ nil
         (SETQ AMBIG-LIST (cdr AMBIG-LIST))
         (GO =>)))
 
-(DEFUN ANSGEN (RSS)
+(DEFUN ANSGEN [RSS]
     ;; ANSGEN GENERATES AN ANSWER FOR A SINGLE INTERPRETATION.
     (COND
         ((or (CQ IMPER) (and (CQ QUEST) (ISTENSE (PARSENODE? RSS) 'FUTURE))) ;; FUTURE QUESTIONS ARE TREATED LIKE COMMANDS.
@@ -9609,7 +9580,7 @@ nil
         ((CQ QUEST) (ANSQUEST RSS))
         ((BUG ANSGEN -- WHAT KIND OF SENTENCE IS THIS?))))
 
-(DEFUN ANSNAME (PHRASE)
+(DEFUN ANSNAME [PHRASE]
     ;; THIS IS THE FUNCTION WHICH PARSES THE NAME PHRASES GENERATED BY THE ANSWER ROUTINES
     ;; SO THAT THEY CAN BE USED AS REFERENTS FOR PRONOUNS (IT THEY ONE).  ITS INPUT IS A TWO-LIST.
     ;; THE SECOND MEMBER IS THE ACTUAL REFERENT OF THE PHRASE.  THE FIRST IS A LIST OF COMMANDS
@@ -9638,7 +9609,7 @@ nil
         (PUTPROP (car (SM ANSNODE)) (cadr PHRASE) 'REFER=)          ;; PUT THE REFERENT ON AS THE GUY GIVEN BY ANSWER
         nil))
 
-(DEFUN ANSNOREL (RSS)
+(DEFUN ANSNOREL [RSS]
     ;; FOR QUESTIONS WITH NO RELATIVE, LIKE "DID YOU PICK UP THE BLOCK?" OR "WHY DID YOU DO THAT?"
     (let [ANS nil TYPE nil CODE nil NODE nil VAR nil]
         (SETQ NODE (PARSENODE? RSS))
@@ -9669,7 +9640,7 @@ nil
                         ((concat (and (EQ TYPE 'POLAR) '((SAY YES))) (list (list 'EVLIS (list 'DESCRIBEVENT (QUOTIFY (cadr ANS)) (QUOTIFY TYPE)))))))
                     true))))))
 
-(DEFUN ANSORDER (LIST)
+(DEFUN ANSORDER [LIST]
     ;; ORDERS A LIST BY PLAUSIBILITY HIGHEST FIRST.
     (let [X nil Y nil]
     GO  (SETQ X LIST)
@@ -9681,7 +9652,7 @@ nil
                 (GO GO))
             ((SETQ X (cdr X)) (GO UP)))))
 
-(DEFUN ANSQUEST (RSS)
+(DEFUN ANSQUEST [RSS]
     ;; ANSQUEST ANSWERS ALL TYPES OF QUESTIONS BY SENDING THEM OUT
     ;; TO ANSREL OR ANSNOREL DEPENDING ON WHETHER THERE IS A REL.
     (COND
@@ -9703,7 +9674,7 @@ nil
         ((REL? RSS) (ANSREL RSS))
         (:else (ANSNOREL RSS))))
 
-(DEFUN ANSREL (RSS)
+(DEFUN ANSREL [RSS]
     ;; ANSREL HANDLES ALL QUESTIONS WITH A RELATIVE NG OF ANY TYPE.
     (let [TYPE nil REL nil CODE nil PLAUS nil ANS nil PHRASE nil LENGTH nil NUM nil]
         (or (SETQ REL (REL? RSS)) (BUG ANSREL -- NO REL))
@@ -9781,7 +9752,7 @@ nil
                     true))
             ((ERT ANSREL-- FUNNY TYPE))))))
 
-(DEFUN ANSTHM (EXP)
+(DEFUN ANSTHM [EXP]
     ;; GENRATES A THEOREM OR ASSERTION FOR AN EXPRESSION.
     (let [NEG nil VARLIST nil BODY nil]
         (COND
@@ -9799,14 +9770,14 @@ nil
                         (PLNR-THCONSIFY VARLIST EXP (COND (NEG (PLNR-PROGIFY nil (list BODY '(THFAIL THEOREM)))) (:else BODY))))))))
         nil))
 
-(DEFUN ANSTHMADD (OSS)
+(DEFUN ANSTHMADD [OSS]
     (SETQ VARLIST (cons (VARIABLE? OSS) VARLIST))
     (SETQ BODY (COND
         (BODY (PLNR-PROGIFY nil (list BODY (PLNR-DESCRIBE (RELATIONS? OSS) (VARIABLE? OSS) (list (VARIABLE? OSS))))))
         (:else (PLNR-DESCRIBE (RELATIONS? OSS) (VARIABLE? OSS) (list (VARIABLE? OSS))))))
     (PLNR-VAR (VARIABLE? OSS)))
 
-(DEFUN ANSTHMELEMENT (X)
+(DEFUN ANSTHMELEMENT [X]
     (COND ((not (ATOM X)) X)
         ((TSS? X) (NOTELL))
         ((RSS? X) (NOTELL))
@@ -9819,7 +9790,7 @@ nil
         ((ISQ (PARSENODE? X) ANY) (ANSTHMADD X))
         (:else (GLOBAL-ERR YOU HAVE TO TELL ME WHICH))))
 
-(DEFUN ANSUNIQUE (LIST)
+(DEFUN ANSUNIQUE [LIST]
     ;; THIS FUNCTION SHOULD ELIMINATE ANSWERS WHICH GIVE THE SAME
     ;; RESULT EVEN THHOUGH THEY INVOLVE DIFFERENT INTERPRETATIONS.
     ;; IT NEEDS TO CHECK FOR SIGNIFICANT DIFFERENCES, E.G. IN WHAT
@@ -9832,13 +9803,13 @@ nil
 
 (SETQ ANS-TEST? nil)
 
-(DEFUN ATOMIFY (X) (COND ((ATOM X) X) ((cdr X) X) ((car X))))
+(DEFUN ATOMIFY [X] (COND ((ATOM X) X) ((cdr X) X) ((car X))))
 
-(DEFUN CUTOFF (X)
+(DEFUN CUTOFF [X]
     ;; FOR CUTTING # OFF OF CONCEPT NAMES TO GET ENGLISH WORDS.
     (READLIST (cdr (EXPLODE X))))
 
-(DEFUN DESCRIBEVENT (EVENT TYPE)
+(DEFUN DESCRIBEVENT [EVENT TYPE]
     (let [ANS nil]
         (SETQ EVENT (car EVENT))
         (RETURN (COND
@@ -9861,11 +9832,11 @@ nil
                     (:else (cons '(SAY WHILE) (NAMEACTION 'PRES-PAST (TOPLEVEL EVENT))))))
             ((BUG DESCRIBEVENT -- FUNNY TYPE))))))
 
-(DEFUN DISPUT (ASSERTION)
+(DEFUN DISPUT [ASSERTION]
     ;; PUT THE SENTENCE NUMBER ON THE ASSERTION AS A WHO PROPERTY
     (or (not DISCOURSE) (PUTPROP ASSERTION SENTNO 'WHO)))
 
-(DEFUN ELIZA (NODE)
+(DEFUN ELIZA [NODE]
     ;; DOES THE OBVIOUS THING.
     (let [XX nil NUM nil]
         (SETQ NUM (count (N NODE)))
@@ -9884,22 +9855,22 @@ nil
                         ((list (car WORD)))))                       ;; THE PARSE NODE. WORDS OTHER THAN THE SPECIAL
                     (NB NODE))))))                                  ;; ONES GO THROUGH DIRECTLY.
 
-(DEFUN ENOUGH-BETTER (ANS1 ANS2)
+(DEFUN ENOUGH-BETTER [ANS1 ANS2]
     (> (PLAUSIBILITY? ANS1) (+ (PLAUSIBILITY? ANS2) TIMID)))
 
-(DEFUN FINDMOTHER (WORD NODE)
+(DEFUN FINDMOTHER [WORD NODE]
     ;; FINDMOTHER TAKES A PLACE IN THE SENTENCE AND A GRAMMAR NODE
     ;; (BOTH ARE ACTUALLY LISTS) AND FINDS THE SINGLE-WORD
     ;; CONSTITUTENT BEGINNING AT THAT PLACE IN THE SENTENCE.
     (COND ((and (EQ WORD (NB NODE)) (EQ (cdr WORD) (N NODE))) NODE)
         (:else (APPLY #'concat (MAPLIST #'(lambda (NOD) (FINDMOTHER WORD NOD)) (H NODE))))))
 
-(DEFUN HEADPART (NODE)
+(DEFUN HEADPART [NODE]
     ;; EVERYTHING UP TO THE NOUN, FOR EXAMPLE "THE RED BLOCK" IN "THE RED BLOCK WHICH ..."
     ;; NOTE THAT NODE IS ACTUALLY A LIST OF NODE (A PROPER GRAMMAR POINTER).
     (and (SETQ PT NODE) (MOVE-PT DLC PV (NOUN)) (FROM (NB NODE) (N PT))))
 
-(DEFUN LISTNAMES (PHRASE SPEC NAMES)
+(DEFUN LISTNAMES [PHRASE SPEC NAMES]
     ;; PHRASE IS THE INITIAL THING TO COMPARE FOR USING "ONE", SPEC IS EITHER DEF OR INDEF, AND THE NAMES ARE OF DATA-BASE OBJECTS.
     ;; LISTNAMES PUTS OUT AN ACTION LIST, AS WELL AS PUTTING THINGS ONTO THE BACKREF.
     ;; IT IS CALLED AFTER THE ANSWER HAS BEEN DECIDED ON.
@@ -9935,7 +9906,7 @@ nil
             ((SETQ ANS (concat ANS (and COMMA? '((PRINC '\,))) '((SAY AND)) (car RES)))))
         (GO OUTPUT)))
 
-(DEFUN NAMEACTION (TENSE EVENT)
+(DEFUN NAMEACTION [TENSE EVENT]
     ;; THIS FUNCTION SETS UP A LIST OF S-EXPRESSIONS WHICH ARE RETURNED TO DESCRIBEVENT AND WHICH
     ;; WHEN EVALUATED WILL PRINT OUT AN ENGLISH DESCRIPTION OF THE SINGLE, SIMPLE EVENT IMBEDDED
     ;; IN THE LIST "THASSERTION" WITH THE TENSE SPECIFIED.
@@ -9964,14 +9935,14 @@ nil
             (:else (BUG NAMEACTION - I DON\'T KNOW WHAT TO DO WITH THE VERB I GOT))))
         (RETURN FOOBAR)))
 
-(DEFUN NAMELIST (ONE SPEC LISTX)
+(DEFUN NAMELIST [ONE SPEC LISTX]
     ;; GENERATES A LIST OF EXPRESSIONS TO BE EVALUATED WHICH WILL CAUSE THE APPROPRIATE NAMELIST TO BE PRINTED OUT.
     ;; THE ARGUMENTS ARE JUST THOSE TO LISTNAMES.
     (list (list 'EVLIS (list 'LISTNAMES (QUOTIFY ONE) (QUOTIFY SPEC) (QUOTIFY LISTX)))))
     ;; A TYPICAL CALL WOULD RESULT IN A VALUE OF ((EVLIS (LISTNAMES '(A RED BLOCK) 'INDEF '(:B1 :B7)))) WHICH WOULD BE EVALUATED LATER.
     ;; NOTE THAT LISTNAMES WILL IN TURN PRODUCE A LIST OF EXPRESSIONS TO BE EVALUATED, WHICH WILL BE CAUGHT BY THE EVLIS.  CONFUSING?
 
-(DEFUN NAMELIST-EVALED (ONE SPEC LISTX)
+(DEFUN NAMELIST-EVALED [ONE SPEC LISTX]
     (let [F nil]
         (SETQ F (list 'LISTNAMES
             (QUOTIFY ONE)
@@ -9979,12 +9950,12 @@ nil
             (QUOTIFY LISTX)))
         (RETURN (list (eval F)))))
 
-(DEFUN NAMENUM (X)
+(DEFUN NAMENUM [X]
     ;; GENERATES NUMBER NAMES.
     (or (NTH (inc X) '(NONE ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN))
         (GLOBAL-ERR I CAN\'T COUNT THAT HIGH)))
 
-(DEFUN NAMEOBJ (ITEM SPEC)
+(DEFUN NAMEOBJ [ITEM SPEC]
     ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF
     (let [TYPE: nil TYPELIST nil TYPE nil NAME: nil COLOR: nil COLORLIST nil SIZE: nil SIZELIST nil CUBE nil NAME nil X nil]
         (and (SETQ X (ASSOC ITEM '((:SHRDLU I) (:FRIEND YOU))))
@@ -10059,12 +10030,12 @@ nil
                 (THFAIL))))
     THEOREM)
 
-(DEFUN NAMESIZE (X)
+(DEFUN NAMESIZE [X]
     ;; ACCEPTS EITHER SINGLE NUMBER OR LIST OF DIMENSIONS.
     (or (number? X) (SETQ X (reduce #'+ X)))
     (COND ((> X 383) 'LARGE) (:else 'SMALL)))
 
-(DEFUN NAMESUGAR (NUM OSS)
+(DEFUN NAMESUGAR [NUM OSS]
     ;; GENERATES PHRASES LIKE "THREE OF THEM".
     (let [VAGUE nil]
         ;; VAGUE IS FOR WORDS LIKE "ANYTHING", "SOMETHING", "NOTHING" TO AVOID SAYING "OF THEM" WHEN IT ISN'T APPROPRIATE.
@@ -10075,10 +10046,10 @@ nil
                     (COND (VAGUE (COND ((== NUM 1) '(THING)) ('(THINGS))))
                         ('(OF THEM)))))))))))
 
-(DEFUN NOTELL nil
+(DEFUN NOTELL []
     (GLOBAL-ERR THAT ISN 'T THE KIND OF THING I CAN BE TOLD))
 
-(DEFUN ONECHECK (ITEM)
+(DEFUN ONECHECK [ITEM]
     ;; CHECKS TO SEE IF A SUBSTITUTE "ONE" CAN BE USED.
     ;; ITEM IS A SINGLE "SAY" PHRASE.
     ;; "PHRASE" IS A FREE VARIABLE IN LISTNAMES.
@@ -10102,14 +10073,14 @@ nil
                 (cdr ITEM)))))
         (GO LOOP)))
 
-(DEFUN ORDNAME (NUM)
+(DEFUN ORDNAME [NUM]
     ;; NAME AN ORDINAL
     (COND ((== NUM 1) 'ONCE) ((== NUM 2) 'TWICE)
         ((READLIST (concat (EXPLODE (NAMENUM NUM)) '(\ T I M E S))))))
 
 (DEFLIST PAST (PUT PUT))
 
-(DEFUN PLNR-ANDORIFY (RSS)
+(DEFUN PLNR-ANDORIFY [RSS]
     ;; TURNS AN RSS INTO A COLLECTION OF PLANNER CODE FOR A COMMAND
     (COND ((AND? RSS)
             (PLNR-PROGIFY nil (doall (map #'PLNR-ANDORIFY (AND? RSS)))))
@@ -10118,12 +10089,12 @@ nil
             (ERT SORRY, PLNR-ORIFY NOT WRITTEN))
         ((PLNR-PROGIFY nil (doall (map #'PLNR-GOALIFY (RELATIONS? RSS)))))))
 
-(DEFUN PREPPUT (X)
+(DEFUN PREPPUT [X]
     (COND ((and (REL? RSS) (SETQ PT (PARSENODE? (REL? RSS))) (ISQ (MOVE-PT U) PREPG))
             (cons (cons 'SAY (FROM (NB PT) (NB (MOVE-PT DLC)))) X))
         (:else X)))
 
-(DEFUN PLURALIZE (ITEM NUM)
+(DEFUN PLURALIZE [ITEM NUM]
     ;; CONVERTS A SINGULAR NOUNPHRASE OR "ONCE" STATEMENT INTO PLURAL.
     (COND ((> 2 NUM) ITEM)
         (:else (COND ((MEMQ 'A (car ITEM))
@@ -10132,7 +10103,7 @@ nil
                 (cons (SUBST (ORDNAME NUM) 'ONCE (car ITEM)) (cdr ITEM)))
             ((BUG PLURALIZE -- FUNNY ITEM))))))
 
-(DEFUN PLURALMAKE (PHRASE)
+(DEFUN PLURALMAKE [PHRASE]
     ;; CONVERTS SINGULAR PHRASE TO PLURAL.
     (let [SING nil PLURAL nil]
         (or (ISQ (SETQ SING (LAST PHRASE)) NOUN)
@@ -10142,7 +10113,7 @@ nil
             (BUILDWORD PLURAL '(NOUN NPL) (SM SING) (car SING)))
         (RETURN (SUBST PLURAL (car SING) PHRASE))))
 
-(DEFUN PRON-PRT (PARTICLE NG)
+(DEFUN PRON-PRT [PARTICLE NG]
     ;; THIS IS EVENTUALLY SUPPOSED TO BE THE PLACE FOR THE PRONOUN-PARTICLE-INTERACTION MAGIC
     ;; TO HAPPEN, IE. "CLEAR OFF THE BLOCK." VS. "CLEAR IT OFF" SINCE "CLEAR OFF IT." IS
     ;; UNGRAMMATICAL AND "CLEAR THE BLOCK OFF." WOULD NOT BE APPROPRIATE IN CASES OF HEAVY-NP'S.
@@ -10152,10 +10123,10 @@ nil
     (cons (list 'SAY PARTICLE)
         (NAMELIST-EVALED '(nil) 'DEF NG)))
 
-(DEFUN SAYIFY FEXPR (EXP-LIST)
+(DEFUN SAYIFY FEXPR [EXP-LIST]
     (cons 'SAY (doall (map #'(lambda (Y) (eval Y)) EXP-LIST))))
 
-(DEFUN THVAL-MULT (CODE)
+(DEFUN THVAL-MULT [CODE]
     ;; DOES A THVAL WITH DIFFERENT VALUES OF WHO (I.E. NIL (EVERYTHING I KNOW),
     ;; 'HE (EVERYTHING HE KNOWS), AND THE PREVIOUS SENTENCE) USED TO TELL IF AN
     ;; ANSWER COULD HAVE BEEN GENERATED WITH HIS KNOWLEDGE TO SEE WHETHER HE REALLY
@@ -10171,12 +10142,12 @@ nil
         ;; 128 IF HE COULD ANSWER IT BUT NOT WITH RECENT INFO.
         (RETURN (COND ((EQUAL ANS (THVAL2 (list (*DIF SENTNO 2) (inc SENTNO)) CODE)) (list 0 ANS)) ((list 128 ANS))))))
 
-(DEFUN TOPLEVEL (EVENT)
+(DEFUN TOPLEVEL [EVENT]
     ;; FINDS THE TOP LEVEL EVENT GOING ON AT THE TIME
     (COND ((EQ (GET EVENT 'WHY) 'COMMAND) EVENT)
         (:else (TOPLEVEL (GET EVENT 'WHY)))))
 
-(DEFUN FINDCHOOSE (OSS X ANS2)
+(DEFUN FINDCHOOSE [OSS X ANS2]
     (let [HAVE nil NEED nil XX nil ANS nil PLNRCODE nil LOOP nil]
         (and (REFER? OSS) (RETURN (ATOMIFY (REFER? OSS))))
         (COND
@@ -10236,7 +10207,7 @@ nil
             (PUTPROP (VARIABLE? OSS) (reverse ANS) 'BIND))
         (RETURN (ATOMIFY (reverse ANS)))))
 
-(DEFUN FINDNUM (X)
+(DEFUN FINDNUM [X]
     (COND ((number? X) X)
         ((EQ (car X) 'EXACTLY) (list (cadr X) (inc (cadr X)) nil))
         ((EQ (car X) '>) (inc (cadr X)))
@@ -10245,31 +10216,30 @@ nil
         ((EQ X 'NPL) 2)
         ((ERT FINDNUM))))
 
-(DEFUN FINDREDUCE (X Y)
+(DEFUN FINDREDUCE [X Y]
 =>  (SETQ X (cdr X))
     (COND ((zero? (SETQ Y (dec Y))) (RETURN X)) ((GO =>))))
 
-(DEFPROP IASS
-    (lambda (X)
-        (let [XX nil]
-            (or (SETQ XX (cadr (SASSQ X (cadr (cadddr ANS)) #'SASS)))
-                (RETURN true))
-            (SAY \
+(DEFUN IASS [X]
+    (let [XX nil]
+        (or (SETQ XX (cadr (SASSQ X (cadr (cadddr ANS)) #'SASS)))
+            (RETURN true))
+        (SAY \
 BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"THEY\") ('\"THEM\")))
-            (SAY , I ASSUME YOU)
-            (PRINC 'MEAN)
-            (dorun (map #'PRINT2 (PARAP XX)))
-            (RETURN (PRINC '\.\
-))))   EXPR)
+        (SAY , I ASSUME YOU)
+        (PRINC 'MEAN)
+        (dorun (map #'PRINT2 (PARAP XX)))
+        (RETURN (PRINC '\.\
+))))
 
-(DEFUN MUNG (list MUNG)
+(DEFUN MUNG [LIST MUNG]
     (SETQ MUNG (list 'quote MUNG))
     (and DISCOURSE (SETQ LIST (caddr LIST)))
     (COND ((EQ (caar (cdddr LIST)) 'THAMONG)
             (RPLACD (cdar (cddddr LIST)) MUNG))
         ((RPLACD (cdddr LIST) (cons (list 'THAMONG (list 'THV (cadr (caddr LIST))) MUNG) (cddddr LIST))))))
 
-(DEFUN NAMEVENT (EVENT TYPE)
+(DEFUN NAMEVENT [EVENT TYPE]
     (let [THALIST nil EV nil SUBJ nil OBJ1 nil OBJ2 nil]
         (or (SETQ EV (GET (GET EVENT 'TYPE) 'NAMEVENT))
             (ERT NAMEVENT))
@@ -10296,11 +10266,11 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
             (COND ((EQ TYPE 'PAST) SUBJ) ((EQ TYPE 'TO) '(TO)))
             (eval (cadr EV))))))
 
-(DEFUN PARAP nil (ERT YOU LOSE, PARAP IS FLUSHED UNTIL IT CAN BE FIGURED OUT))
+(DEFUN PARAP [] (ERT YOU LOSE, PARAP IS FLUSHED UNTIL IT CAN BE FIGURED OUT))
 
-(DEFUN PRTPUT (X Y) (COND ((cdr Y) (cons X Y)) ((concat Y (list X)))))
+(DEFUN PRTPUT [X Y] (COND ((cdr Y) (cons X Y)) ((concat Y (list X)))))
 
-(DEFUN VBFIX (X PP)
+(DEFUN VBFIX [X PP]
     (COND
         ((EQ TENSE 'ING)
             (SETQ X (reverse (EXPLODE X)))
@@ -10312,7 +10282,7 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
         ((EQ TENSE 'INFINITIVE) X)
         (:else (BUG VBFIX - WHAT DO I DO WITH THIS TENSE?))))
 
-(DEFUN VBFIX2 (X) (and PP (MEMQ (car X) CONSO) (MEMQ (cadr X) VOWEL) (list (car X))))
+(DEFUN VBFIX2 [X] (and PP (MEMQ (car X) CONSO) (MEMQ (cadr X) VOWEL) (list (car X))))
 
 #_(ns shrdlu.cgram)
 
@@ -10322,7 +10292,7 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
 ;;
 ;; #################################################################
 
-(DEFUN CLAUSE nil
+(DEFUN CLAUSE []
     (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil POSITION-OF-PRTMVB nil LOCATIONMARKER nil SUBJ-VB-BACKUP-TYPE1 nil POSITION-OF-PTW nil]
         (SETQ NN true)
         (SETQ CUT END)
@@ -10850,7 +10820,7 @@ RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN NG nil
+(DEFUN NG []
     (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil]
         (SETQ NN true)
         (SETQ CUT END)
@@ -11212,7 +11182,7 @@ RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN VG nil
+(DEFUN VG []
     (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil TENSE nil]
         (SETQ NN true)
         (SETQ CUT END)
@@ -11449,7 +11419,7 @@ RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN PREPG nil
+(DEFUN PREPG []
     (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil]
         (SETQ NN true)
         (SETQ CUT END)
@@ -11538,7 +11508,7 @@ RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN ADJG nil
+(DEFUN ADJG []
     (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil]
         (SETQ NN true)
         (SETQ CUT END)
@@ -11634,15 +11604,15 @@ RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN CONJ nil
+(DEFUN CONJ []
     (let [END nil GOODIE nil]
         (SETQ END CUT)
         (COND ((SETQ GOODIE (APPLY-GRAMMAR 'CONJOIN)) (RETURN (SETQ RE GOODIE))) (:else (RETURN nil)))))
 
-(DEFUN COMMA nil
+(DEFUN COMMA []
     (COND ((SECONDWORD? '\") (FLUSHME) true) ((CONJ)) ((ISQ RE INIT) (FLUSHME) true)))
 
-(DEFUN CONJOIN nil
+(DEFUN CONJOIN []
     (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil PREV nil]
         (SETQ NN true)
         (SETQ CUT END)
@@ -11708,7 +11678,7 @@ RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
-(DEFUN BOTH FEXPR (A)
+(DEFUN BOTH FEXPR [A]
     (let [END nil]
         (SETQ END CUT)
         (RETURN (let [CUT nil NBB nil BOTH nil]
@@ -11724,9 +11694,9 @@ RETURN
             (SETQ N NBB)
             (RETURN nil)))))
 
-(DEFUN DOUBLEQUOTER nil (APPLY-GRAMMAR 'PARSEQUOTED))
+(DEFUN DOUBLEQUOTER [] (APPLY-GRAMMAR 'PARSEQUOTED))
 
-(DEFUN CANTAKE (NUM TYPE FEATURE)
+(DEFUN CANTAKE [NUM TYPE FEATURE]
     (let [VBFEAT nil]
         (SETQ VBFEAT (FE MVB))
         (RETURN (COND
@@ -11743,7 +11713,7 @@ RETURN
                     (:else (MEMQ 'TRANS2 VBFEAT))))
             (:else (MEMQ FEATURE VBFEAT))))))
 
-(DEFUN CANPARSE (NUM TYPE FEATURE)
+(DEFUN CANPARSE [NUM TYPE FEATURE]
     (let [REG nil]
         (and (CANTAKE NUM TYPE FEATURE)
             (or (nil? TYPE)
@@ -11764,12 +11734,12 @@ RETURN
 ;; IF ANY ERRORS OCCUR DURING READIN, THEY ARE PROTECTED BY AN "ERRSET" AND LOADING CONTINUES.
 ;; NOTE IF AN UNBOUND PAREN CAUSES THE FILE TO BE TERMINATED TOO SOON, YOU'LL NEVER NOTICE.
 
-(DEFUN LOADER (*!?KEY)
+(DEFUN LOADER [*!?KEY]
     (or (ERRSET (eval (list 'UREAD *!?KEY '> 'DSK 'SHRDLU)) nil)
         (and (PRINT *!?KEY) (PRINC 'NOT-FOUND) (RETURN nil)))
     (LOADX))
 
-(DEFUN LOADX nil
+(DEFUN LOADX []
     (let [*!?H nil *!?F nil *!?EOF nil]
         (SETQ *!?EOF (GENSYM))
         (PRINT 'READING)
@@ -11780,7 +11750,7 @@ RETURN
             (do (PRINT 'ERROR-IN-FILE) (PRINT *!?H)))
         (GO =>)))
 
-(DEFUN LOADSHRDLU nil
+(DEFUN LOADSHRDLU []
     (dorun (map #'LOADER '(PLNR THTRAC)))
     (THINIT)
     (SETQ THINF nil THTREE nil THLEVEL nil)
