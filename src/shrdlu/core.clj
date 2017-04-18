@@ -140,7 +140,7 @@
 (defn- setr [node register value] (putprop! (car node) register value))
 (defn- getr [node register] (getprop (car node) register))
 
-(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 THASS1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES THSEL %sent DA DISP DP forget ert bug global-err ERTEX combination? findb from meet mod setdif sta union TAB uppercase-ify-char ETAOIN propname buildword undefined passing pev TELLCHOICE SHOWCHOICE SHOWTELL QUERY onoff request treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN smnewpropn SMCONJ SMCONJ2 SMVG smpron smvaux smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 smone3 smposs smposs2 smrelate SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce FINDCHOOSE vbfix CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
+(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 THASS1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES THSEL %sent DA DISP DP forget ert bug global-err ERTEX combination? findb from meet mod setdif sta union TAB uppercase-ify-char ETAOIN propname buildword undefined passing pev TELLCHOICE SHOWCHOICE SHOWTELL QUERY onoff request treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN smnewpropn SMCONJ SMCONJ2 SMVG smpron smvaux smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 smone3 smposs smposs2 smrelate SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
 
 #_(ns shrdlu.plnr)
 
@@ -1719,7 +1719,7 @@
             ((THASVAL ($? x))
                 (or (not discourse?)
                     (thputprop (variable? ($? x)) 'NG ($? x)))
-                (THSETQ ($_ y) (FINDCHOOSE ($? x) ($? z) nil)))
+                (THSETQ ($_ y) (findchoose ($? x) ($? z) nil)))
         ((THGOAL (!MANIP ($? y))) (THNOT (THGOAL (!SUPPORT ($? y) ?)))))))
 
 (putprop! 'TC-CHOOSEPLACE 'THEOREM
@@ -3516,10 +3516,10 @@
         :else (list e)))
 
 (§ defq- PDEFINE [a]
-    (list 'DEFUN (car a) 'nil
+    (list 'defn- (car a) '[]
         (concat
-            (list 'PROG
-                (concat '(*fe* *h* *me* *nb* *c* *sm* *cut* *nn* *tmp*) (cadr a))
+            (list 'binding
+                (into '[*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil] (cadr a))
                 '(set! *nn* true)
                 '(set! *cut* *end*)
                 '(set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
@@ -3531,11 +3531,11 @@
                 '(RETURN nil)
                 'RETURN
                 '(set! *mes* *me*)
-                '(RETURN (rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*))))))
+                '(rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*)))))
 
 #_(ns shrdlu.gramar)
 
-(§ PDEFINE CLAUSE (*position-of-prt* *mvb* *locationmarker* *subj-vb-backup-type1* *position-of-ptw*)
+(§ PDEFINE CLAUSE [*position-of-prt* nil *mvb* nil *locationmarker* nil *subj-vb-backup-type1* nil *position-of-ptw* nil]
 
     ENTERING-CLAUSE
         (setr *c* 'TIME (BUILD TSSNODE= (gensym 'TSS)))
@@ -3926,7 +3926,7 @@
 
     PREPSHORT
         (| (and (nq 'PREP) (parse 'PREPG)) nil (ONT-SHORT-PREP))
-        (| (smrelate *h*) nil (ONTß SMRELATE PREPQ))
+        (| (smrelate *h*) nil (ONTß))
         (| (cq 'REL-NOT-FOUND) PREPSHORT TONT (ONT-NOT-FOUND))       ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
                                                                     ;; AS ITS OBJECT. THE FEATURE REL-NOT-FOUND WILL
                                                                     ;; BE REMOVED IF THE PREPG DISCOVERS IT CAN'T FIND
@@ -4651,7 +4651,7 @@
         (smset nil)
         (GO NGSTART))
 
-(§ PDEFINE VG (*tense*)
+(§ PDEFINE VG [*tense* nil]
 
     ;; ##################################################################
     ;; CHECK INITIAL FEATURES TO SEE IF SOME SPECIAL TYPE OF VG IS WANTED
@@ -5163,7 +5163,7 @@
             (cond ? ?                                                    ;; IF COMMA IS PART OF CONJOINED STRUCTURE, GREAT
                 (isq *re* 'INIT) (do (flushme) true)))))                    ;; IF COMMA FOLLOWS INITIAL-TYPE PHRASE, FLUSH IT AND CONTINUE DIRECT ADDRESS JAZZ
 
-(§ PDEFINE CONJOIN (*prev*)
+(§ PDEFINE CONJOIN [*prev* nil]
 
     ;; THIS PROGRAM IS CALLED TO PARSE A CONJOINED STRUCTURE THE
     ;; FIRST MEMBER OF THE SUPPOSED STRUCTURE HAS ALREADY BEEN
@@ -6929,16 +6929,17 @@
             (semantics node)))))
 
 (§ defn- SMCL1 []
-    (let [SMSUB nil SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST nil]
+    (let [SMSUB (getr *c* 'LOGICAL-SUBJECT) SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST nil]
         ;; SET UP GLOBAL VARIABLES WHICH CONSIST OF POINTERS TO THE SEMANTIC DEFINITIONS
         ;; OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB.
-        (SETQ SMSUB (COND
-            ((SETQ SMSUB (getr *c* 'LOGICAL-SUBJECT)) (semantics SMSUB))
-            ((cq 'IMPER) '(SHRDLU-OSS))
-            ((not (cq 'PASV)) (semantics (or (getr *c* 'SUBJECT) (bug "SMCL1 -- NO SUBJECT"))))
-            ((cq 'AGENT) (bug "SMCL1 -- AGENT MISSING"))
-            ('(UNKNOWN-OSS-BY))))
-        (SETQ SMOB1 (semantics (COND ((cq 'PASV) (getr *c* 'SUBJECT)) ((getr *c* 'OBJ1)))))
+        (SETQ SMSUB
+            (cond
+                SMSUB (semantics SMSUB)
+                (cq 'IMPER) '(SHRDLU-OSS)
+                (not (cq 'PASV)) (semantics (or (getr *c* 'SUBJECT) (bug "SMCL1 -- NO SUBJECT")))
+                (cq 'AGENT) (bug "SMCL1 -- AGENT MISSING")
+                :else '(UNKNOWN-OSS-BY)))
+        (SETQ SMOB1 (semantics (getr *c* (if (cq 'PASV) 'SUBJECT 'OBJ1))))
         (SETQ SMOB2 (semantics (getr *c* 'OBJ2)))
         (SETQ SMOBL (semantics (getr *c* 'LOBJ)))
         (SETQ SMCOMP (semantics (getr *c* 'COMP)))
@@ -6946,46 +6947,41 @@
         ;; ARE NIL AT THIS POINT IN THE PROCEDURE.  THE FOLLOWING CHECKS ARE PRIMARILY FOR DEBUGGING PURPOSES
         ;; (HENCE THE "ERT") TO INSURE THAT THE NON-NIL REGISTERS AND THE TRANSITIVITY OF THE VERB ARE
         ;; BEING MATCHED IN EVERY CASE.
-        (or SMSUB (and (meet '(THERE ITRNS) *fe*) (GO CHECK)))
-        (or SMOB1 (and (or (cq 'TRANS) (not (cq 'CLAUSE))) (GO CHECK)))
-        (or (and SMOB1 SMOB2) (and (cq 'TRANS2) (GO CHECK)))
-        (or (and SMOB1 SMOBL) (and (cq 'TRANSL) (GO CHECK)))
-        (or SMCOMP (and (cq 'INT) (GO CHECK)))
-        (GO REL)
-    CHECK (ert "BUG: SMCL1 TRANSITIVITY")
-    REL (SETQ RELLIST
-            (semantics (COND
-                ((cq 'RSQ) (getr *c* 'RELHEAD))
-                ((or (cq 'PREPG) (cq 'ADJG)) (getr *c* 'LOGICAL-SUBJECT))
-                ((cq 'QUEST) (getr *c* 'RELHEAD)))))
+        (or SMSUB (and (meet '(THERE ITRNS) *fe*) (bug "SMCL1 TRANSITIVITY")))
+        (or SMOB1 (and (or (cq 'TRANS) (not (cq 'CLAUSE))) (bug "SMCL1 TRANSITIVITY")))
+        (or (and SMOB1 SMOB2) (and (cq 'TRANS2) (bug "SMCL1 TRANSITIVITY")))
+        (or (and SMOB1 SMOBL) (and (cq 'TRANSL) (bug "SMCL1 TRANSITIVITY")))
+        (or SMCOMP (and (cq 'INT) (bug "SMCL1 TRANSITIVITY")))
+        (SETQ RELLIST
+            (semantics (cond (cq 'RSQ) (getr *c* 'RELHEAD) (or (cq 'PREPG) (cq 'ADJG)) (getr *c* 'LOGICAL-SUBJECT) (cq 'QUEST) (getr *c* 'RELHEAD))))
         (and (not RELLIST)
             (or (cq 'POLAR) (cq 'DECLAR))
-            (SETQ X (RELFIND *c*))
+            (SETQ x (RELFIND *c*))
             ;; FIND RELATIVE ELEMENT FOR POLAR CLAUSES WHICH CONTAIN INDEFINITE.
             ;; APPLIES TO TOPLEVEL CLAUSES SINCE ONLY THEY CAN HAVE FEATURES POLAR OR DECLAR.
-            (or (= X SMSUB)
-                (= X SMOB1)
-                (= X SMOB2)
-                (= X SMOBL)
-                (= X SMCOMP)
+            (or (= x SMSUB)
+                (= x SMOB1)
+                (= x SMOB2)
+                (= x SMOBL)
+                (= x SMCOMP)
                 (bug "SMCL1 -- POLAR REL DOESN'T MATCH"))
-            (SETQ RELLIST X))
+            (SETQ RELLIST x))
         (SETQ TIME (getr (MOVE-PT 'C 'U '(CLAUSE)) 'TIME))
         ;; THIS REFERS TO THE SEMANTIC SENSE OF THE VERB WHICH WILL PROBABLY VARY WITH ITS TRANSITIVITY.
         ;; THE VALUE THAT IS FINALLY DETERMINED REPRESENTS ALL POSSIBLE SENSES OF THE MEANING OF THE WORD
         ;; THAT ARE APPROPRIATE TO THE TRANSITIVITY FIGURED OUT BY THE SYNTACTIC PROGRAMS
         (SETQ SENSE-OF-VERB
-            (COND
-                ((cq 'PREPG) (semantics (SETQ WORD-BEING-INTERPRETED (getr *c* 'HEAD))))
-                ((cq 'ADJG) (semantics (SETQ WORD-BEING-INTERPRETED (getr *c* 'ADJGHEAD))))
-                ((cadr (assq (car (meet *fe* '(ITRNS TRANS INT TRANSL TRANS2 THERE ITRNSL))) (semantics (SETQ WORD-BEING-INTERPRETED (getr *c* 'MVB))))))))
+            (cond
+                (cq 'PREPG) (semantics (SETQ WORD-BEING-INTERPRETED (getr *c* 'HEAD)))
+                (cq 'ADJG) (semantics (SETQ WORD-BEING-INTERPRETED (getr *c* 'ADJGHEAD)))
+                :else (cadr (assq (car (meet *fe* '(ITRNS TRANS INT TRANSL TRANS2 THERE ITRNSL))) (semantics (SETQ WORD-BEING-INTERPRETED (getr *c* 'MVB)))))))
         (smset (eval SENSE-OF-VERB))
         ;; THIS DETERMINES THE APPROPRIATE SEMANTIC INTERPRETATION(S) FOR THE CLAUSE BY CHECKING
         ;; THE RESTRICTIONS OF EACH DEFINITION AGAINST THE MARKERS OF THE VARIOUS CANDIDATES FOR SMSUB,
         ;; SMOB1, ETC.  THE VALUE OF THE EVALUATION IS A LIST OF RELATION-SEMANTIC-STRUCTURES, ONE FOR
         ;; EACH PLAUSIBLE INTERPRETATION
         (MAP #'SMCL-MODIFIERS *h*) ;; SMCL-MODIFIERS WILL EXAMINE
-        (RETURN *sm*)))
+        *sm*))
         ;; ALL OF THE CONSTITUENTS OF THE CLAUSE THAT WERE NOT INVOLVED IN THE BUILDRSS AND WILL EVALUATE
         ;; THE MEANINGS OF EACH IN TURN FOR THEIR EFFECT ON THE ESTABLISHED SM, THE PARSING TREE, OR
         ;; ANYTHING ELSE THAT WOULD BE APPROPRIATE THE VALUE OF SMCL1 IS NON-NIL ONLY IF SOME
@@ -7019,11 +7015,9 @@
     ((meet *fe* '(THERE LOBJ COMP PRT SUBJ OBJ1 OBJ2)))
     ((isq WORD-BEING-INTERPRETED 'NG)
         (and (COND ((isq WORD-BEING-INTERPRETED 'TIM))
-            ((and (cq 'REL-NOT-FOUND)
-                (isq WORD-BEING-INTERPRETED 'QUEST)
-                (isq (daughters WORD-BEING-INTERPRETED) 'TIM1))
-            (rq 'REL-NOT-FOUND)
-            (fq! 'TIMEQ)))
+            ((and (cq 'REL-NOT-FOUND) (isq WORD-BEING-INTERPRETED 'QUEST) (isq (daughters WORD-BEING-INTERPRETED) 'TIM1))
+                (rq 'REL-NOT-FOUND)
+                (fq! 'TIMEQ)))
         (smtime)))
     ;; IN WHICH CASE IT WAS ALREADY PROCESSED MIGHT GO AWAY IN A FEW DAYS
     ;; BUG CHATCHER MIGHT WANT TO CHANGE THAT THE REST ARE HOOKS FOR WHEN
@@ -7182,8 +7176,7 @@
                     ;; IN THE PROGRAM WHOSE MARKERS MUST BE COMPATIBLE WITH %MARKL AS CHECKED BELOW.
                     ;; %NUM IS THE NUMBER WHICH WILL BE USED TO SUBSTITUTE IN THE DICTIONARY EXPRESSION.
                     (doall (map (lambda [%RESTRICTNAM %MARKL %NUM]
-                        ((lambda [x] (SET %NUM (eval (car x))) x)
-                            (COND ((term? (car %MARKL)) %MARKL) ((cons %RESTRICTNAM %MARKL)))))
+                            (let [x (if (term? (car %MARKL)) %MARKL (cons %RESTRICTNAM %MARKL))] (SET %NUM (eval (car x))) x))
                         '(SMSUB SMOB1 SMOB2)
                         RESTRICTIONSß
                         '(!1 !2 !3))))
@@ -7198,12 +7191,12 @@
                         (dorun (map (lambda [%MARKL]
                             (let [OSS (eval (car %MARKL)) x (checkrel OSS) CHECK nil]
                                 (and x (SETQ RELß (car x)))
-                                (COND
-                                    ((not (and (or (nil? (cddr %MARKL)) (eval (caddr %MARKL)))
+                                (cond
+                                    (not (and (or (nil? (cddr %MARKL)) (eval (caddr %MARKL)))
                                             (SETQ CHECK (check-markers (cadr %MARKL) (markers? OSS) (systems? OSS)))))
-                                        (ERR nil))
-                                    ((= OSS RELß)
-                                        (SETQ RELMARKERSß CHECK)))
+                                        (ERR nil)
+                                    (= OSS RELß)
+                                        (SETQ RELMARKERSß CHECK))
                                 nil))
                             RESTRICTIONSß)))
                         ;; SUBJECT RESTRICTION MARKERS USED IN THE DEFINITION AND THE REGISTERS OF THE SAME NAME REFERENCED
@@ -8564,64 +8557,40 @@ GO  (let [x l]
 (defn- findreduce [x y]
     (let [x (cdr x) y (dec y)] (if (zero? y) x (recur x y))))
 
-(§ defn- FINDCHOOSE [oss x ANS2]
-    (let [HAVE nil NEED nil xx nil ANS nil PLNRCODE nil LOOP nil]
-        (and (refer? oss) (RETURN (atomify (refer? oss))))
+(dynamic- *ans2*)
+
+(defn- findchoose [oss x ans2']
+    (binding [*ans2* ans2']
         (cond
-            (and? oss)
-                (RETURN (MAPBLAND (lambda [oss]
-                    (let [y (FINDCHOOSE oss x ANS2)]
-                        (SETQ ANS2 (concat y ANS2))
-                        (RETURN y)))
-                    (and? oss)))
-            (or? oss)
-                (do (SETQ LOOP (or? oss))
-                    (RETURN (let [y nil]
-                    GO  (COND
-                        ((SETQ y (FINDCHOOSE (car LOOP) x ANS2)) (RETURN y))
-                        ((SETQ LOOP (cdr LOOP)) (GO GO)))))))
-        (SETQ PLNRCODE (PLNR-DESCRIBE (relations? oss) (variable? oss) (list (variable? oss))))
-        (putprop! oss 'PLNRCODE= PLNRCODE)
-        (cond
-            (= (quantifier? oss) 'ALL)
-                (RETURN (atomify (THVAL (PLNR-FINDIFY 'ALL (variable? oss) (list (variable? oss)) PLNRCODE) nil)))
-            (or (and? oss) (or? oss)) (GO CONJ))
-        (when-not (term? (SETQ NEED (num? oss)))
-            (SETQ NEED (cadr NEED)))
-        (when (= NEED 'NS) (SETQ NEED 1))
-        (SETQ HAVE 0)
-    GO  (cond
-            (or (= HAVE NEED)
-                (and (> HAVE NEED)
-                    (SETQ ANS (findreduce ANS (- HAVE NEED)))))
-                (GO DONE)
-            (= x 'NOMORE) (RETURN nil)
-            (SETQ HAVE (count
-                (SETQ ANS (concat
-                    (THVAL (PLNR-FINDIFY
-                        (list 1 (- NEED HAVE) true)
-                        (variable? oss)
-                        (list (variable? oss))
-                        (plnr-progify nil
-                            (concat (list PLNRCODE)
-                                (SUBST (variable? oss) '*** '((not (or (memq (THV ***) ANS) (memq (THV ***) ANS2)))))
-                                (and x (SUBST (variable? oss) '* (car x))))))
-                        *thalist*)
-                    ANS))))
-                (do (SETQ x (COND (x (cdr x)) ('NOMORE)))
-                    (GO GO)))
-    CONJ (SETQ LOOP (or (and? RSS) (or? RSS)))
-    UP  (cond (getprop (car LOOP) 'REFER)
-                (SETQ ANS (concat (getprop (car LOOP) 'REFER) ANS))
-            (SETQ xx (FINDCHOOSE (car LOOP) x (concat ANS2 ANS)))
-                (SETQ ANS (concat xx ANS)))
-        (COND ((and ANS (or? oss)))
-            ((SETQ LOOP (cdr LOOP)) (GO UP))
-            (ANS)
-            ((RETURN nil)))
-    DONE (when (term? (variable? oss))
-            (putprop! (variable? oss) 'BIND (reverse ANS)))
-        (atomify (reverse ANS))))
+            (refer? oss) (atomify (refer? oss))
+            (and? oss) (MAPBLAND #(let [_ (findchoose % x *ans2*)] (set! *ans2* (concat _ *ans2*)) _) (and? oss))
+            (or? oss) (loop-when [a (or? oss)] a (or (findchoose (car a) x *ans2*) (recur (cdr a))))
+            :else
+                (let [bind- #(let [_ (reverse %)] (when (term? (variable? oss)) (putprop! (variable? oss) 'BIND _)) (atomify _))
+                    plnrcode (PLNR-DESCRIBE (relations? oss) (variable? oss) (list (variable? oss)))]
+                    (putprop! oss 'PLNRCODE= plnrcode)
+                    (cond
+                        (= (quantifier? oss) 'ALL)
+                            (atomify (THVAL (PLNR-FINDIFY 'ALL (variable? oss) (list (variable? oss)) plnrcode) nil))
+                        (or (and? oss) (or? oss))
+                            (let [ans (loop-when [ans nil a (or (and? RSS) (or? RSS))] a => ans
+                                        (let [_ (getprop (car a) 'REFER)
+                                              ans (if _ (concat _ ans) (let [_ (findchoose (car a) x (concat *ans2* ans))] (if _ (concat _ ans) ans)))]
+                                            (if (and ans (or? oss)) ans (recur ans (cdr a)))))]
+                                (when ans (bind- ans)))
+                        :else
+                            (let [need (num? oss) need (if (term? need) need (cadr need)) need (if (= need 'NS) 1 need)]
+                                (loop [ans nil have 0 x x]
+                                    (let [[? ans] (if (= have need) [true ans] (if (> have need) (let [ans (findreduce ans (- have need))] [ans ans]) [false ans]))]
+                                        (cond ? (bind- ans)
+                                            (not= x 'NOMORE)
+                                                (let [? (PLNR-FINDIFY (list 1 (- need have) true) (variable? oss) (list (variable? oss))
+                                                            (plnr-progify nil
+                                                                (concat (list plnrcode)
+                                                                    (SUBST (variable? oss) '*** '((not (or (memq (THV ***) ans) (memq (THV ***) *ans2*)))))
+                                                                    (and x (SUBST (variable? oss) '* (car x))))))
+                                                    ans (concat (THVAL ? *thalist*) ans)]
+                                                    (recur ans (count ans) (if x (cdr x) 'NOMORE))))))))))))
 
 (defn- vbfix [x tense pp]
     (let [fix- #(when (and pp (memq (car %) CONSO) (memq (cadr %) VOWEL)) (list (car %)))]
@@ -8640,7 +8609,7 @@ GO  (let [x l]
 ;; #################################################################
 
 (§ defn- CLAUSE []
-    (let [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil *position-of-prt* nil *mvb* nil *locationmarker* nil *subj-vb-backup-type1* nil *position-of-ptw* nil]
+    (binding [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil *position-of-prt* nil *mvb* nil *locationmarker* nil *subj-vb-backup-type1* nil *position-of-ptw* nil]
         (set! *nn* true)
         (set! *cut* *end*)
         (set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
@@ -9046,7 +9015,7 @@ RETURN
         (rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*)))
 
 (§ defn- NG []
-    (let [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil]
+    (binding [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil]
         (set! *nn* true)
         (set! *cut* *end*)
         (set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
@@ -9337,7 +9306,7 @@ RETURN
         (rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*)))
 
 (§ defn- VG []
-    (let [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil *tense* nil]
+    (binding [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil *tense* nil]
         (set! *nn* true)
         (set! *cut* *end*)
         (set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
@@ -9544,7 +9513,7 @@ RETURN
         (rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*)))
 
 (§ defn- PREPG []
-    (let [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil]
+    (binding [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil]
         (set! *nn* true)
         (set! *cut* *end*)
         (set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
@@ -9619,7 +9588,7 @@ RETURN
         (rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*)))
 
 (§ defn- ADJG []
-    (let [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil]
+    (binding [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil]
         (set! *nn* true)
         (set! *cut* *end*)
         (set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
@@ -9692,7 +9661,7 @@ RETURN
         (rebuild *c* (reverse *fe*) *nb* *n* *h* *sm*)))
 
 (§ defn- CONJOIN []
-    (let [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil *prev* nil]
+    (binding [*fe* nil *h* nil *me* nil *nb* nil *c* nil *sm* nil *cut* nil *nn* nil *tmp* nil *prev* nil]
         (set! *nn* true)
         (set! *cut* *end*)
         (set! *c* (buildnode (set! *fe* (reverse *rest*)) (set! *nb* (or (firstword *re*) *n*)) *n* (set! *h* *re*) nil))
