@@ -2324,109 +2324,111 @@
 (defn- uppercase-ify-char [c] (if (< 96 c 123) (- c 32) c))
 
 (dynamic- *word*)
+(dynamic- *wrd*)
+(dynamic- *rd*)
+(dynamic- *poss*)
 
 (§ defn- ETAOIN []
-    (binding [*word* nil] (set! *sent* (set! *punct* nil))
-        (let [wrd nil rd nil poss nil]
-        DO  (terpri)
-            (print "READY")
-            (terpri)
-            (when (or *sent* *word*)
-                (dorun (map -print (reverse *sent*)))
-                (print \space)
-                (dorun (map print (reverse *word*))))
-        CHAR (loop []
-                (let [c (ascii (uppercase-ify-char (TYI)))]
-                    (cond (or (= c \space) (= c (ascii 13))) (GO WORD)
-                        (= c (ascii 127))
-                            (cond *word* (do (print (car *word*)) (set! *word* (cdr *word*)))
-                                  *sent* (do (print (car *sent*)) (set! *sent* (cdr *sent*))))
-                        (memq c PUNCL)
-                            (do (set! *punct* c)
-                                (if *word* (GO WORD) (GO PUNC)))
-                        (or (number? c) (and (= c '=) (nil? *word*)) (memq c VOWEL) (memq c CONSO))
-                            (set! *word* (cons c *word*)))
-                    (recur)))
-        WORD (cond (nil? *word*) (GO CHAR)
-                (and (SETQ wrd (ERRSET (READLIST (reverse *word*)))) (number? (SETQ wrd (car wrd))))
-                    (do (set! *sent* (cons wrd *sent*))
-                        (buildword wrd (or (and (zero? (dec wrd)) '(NUM NS)) '(NUM)) (list 'NUM wrd) nil)) ;; NO ROOT FOR NUMBERS
-                (nil? wrd) (do (SETQ wrd (reverse *word*)) (GO NO))
-                :else
-                    (or (getprop wrd 'FEATURES)     ;; IF A WORD HAS FEATURES, IT'S PROPERTIES ARE ALL SET UP IN THE DICTIONARY
-                        (let [x (getprop wrd 'IRREGULAR)]
-                            (cond x
-                                    (buildword wrd (mod (getprop (car x) 'FEATURES) (cdr x)) (semantics x) (car x))
-                                (= (last *word*) '=)
-                                    (buildword wrd (if (memq '\" *word*) '(PROPN NS POSS) '(PROPN NS)) '((PROPN T)) nil) ;; "sic!
-                                :else (GO CUT)))))
-            (GO WRD)
-        CUT (cond
-                (sta *word* '(T \' N)) (do (SETQ rd (cdddr *word*)) (set! *word* (cons '* *word*)) (GO TRY))
-                (sta *word* '(S \')) (do (set! *word* (cddr *word*)) (SETQ poss wrd) (GO WORD))
-                (sta *word* '(\')) (do (set! *word* (cdr *word*)) (SETQ poss wrd) (GO WORD))
-                (sta *word* '(Y L)) (do (SETQ rd (cddr *word*)) (GO LY))
-                (sta *word* '(G N I)) (SETQ rd (cdddr *word*))
-                (sta *word* '(D E)) (SETQ rd (cddr *word*))
-                (sta *word* '(N E)) (SETQ rd (cddr *word*))
-                (sta *word* '(R E)) (SETQ rd (cddr *word*))
-                (sta *word* '(T S E)) (SETQ rd (cdddr *word*))
-                (sta *word* '(S)) (do (SETQ rd (cdr *word*)) (GO SIB))
-                :else (GO NO))
-            (let [lst (car rd) nxt (cadr rd)]
-                (cond (and (memq lst CONSO) (not (memq lst LRSZV)) (= lst nxt)) (SETQ rd (cdr rd))
-                    (= lst 'I) (SETQ rd (cons 'Y (cdr rd)))
-                    (or (and (memq lst CONSO) (memq nxt VOWEL) (not (= nxt 'E)) (memq (caddr rd) CONSO))
-                        (and (memq lst LRSZV) (memq nxt CONSO) (not (memq nxt LRSZV)))
-                        (and (= lst 'H) (= nxt 'T))
-                        (and (memq lst CGSJVZ) (or (memq nxt LRSZV) (and (memq nxt VOWEL) (memq (caddr rd) VOWEL)))))
-                            (SETQ rd (cons 'E rd))))
-            (GO TRY)
-        LY  (when (and (memq (car rd) VOWEL) (not (= (car rd) 'E)) (memq (cadr rd) CONSO))
-                (SETQ rd (cons 'E rd)))
-            (SETQ ROOT (READLIST (reverse rd)))
-            (when (memq 'ADJ (getprop ROOT 'FEATURES))
-                ;; TEMP NIL SEMANTICS ;; ROOT IS THE ADJECTIVE
-                (buildword wrd '(ADV VBAD) nil ROOT)
-                (GO WRD))
-            (GO NO)
-        SIB (let [lst (car rd) nxt (cadr rd)]
-                (cond (not= lst 'E) true
-                    (= nxt 'I) (SETQ rd (cons 'Y (cddr rd)))
-                    (= nxt 'X) (SETQ rd (cdr rd))
-                    (and (= nxt 'H) (not (= (caddr rd) 'T))) (SETQ rd (cdr rd))
-                    (and (memq nxt '(S Z)) (= nxt (caddr rd))) (SETQ rd (cddr rd))))
-        TRY (SETQ ROOT (READLIST (reverse rd)))
-            (let [features (getprop ROOT 'FEATURES)]
-                (cond (or features (let [x (getprop ROOT 'IRREGULAR)] (and x (SETQ features (mod (getprop (SETQ ROOT (car x)) 'FEATURES) (cdr x))))))
-                        (buildword wrd (mod features (getprop (car *word*) 'MOD)) (getprop ROOT 'SEMANTICS) ROOT)
-                    (= (car rd) 'E) (do (SETQ rd (cdr rd)) (GO TRY))
-                    :else (GO NO)))
-        WRD (set! *sent*
-                (if poss
-                    (let [features (getprop wrd 'FEATURES)]
-                        (if (or (memq 'NOUN features) (memq 'PROPN features))
-                            ;; IF IT'S A NOUN OR A PROPER NOUN, MARK IT AS POSSESSIVE
-                            (do (buildword poss (concat (meet features (getprop 'POSS 'ELIM)) '(POSS)) (getprop wrd 'SEMANTICS) ROOT)
-                                (cons poss *sent*))
-                            ;; CAN WE GENERALIZE IT???
-                            (do (buildword "'S" '(VB BE V3PS PRES) (getprop 'BE 'SEMANTICS) 'BE)
-                                (cons "'S" (cons wrd *sent*)))))
-                    (cons wrd *sent*)))
-        PUNC (when *punct*
-                (if (memq *punct* FINAL)
-                    (RETURN (reverse *sent*)) ;; RETURN POINT !!!!!!!!!!!!!
-                    (set! *sent* (cons *punct* *sent*)))
-                (set! *punct* nil))
-            (set! *word* (SETQ poss nil))
-            (GO CHAR)
-        NO  (terpri)
-            (print (str "SORRY, I DON'T KNOW THE WORD \"" wrd "\"."))
-            (terpri)
-            (print "PLEASE TYPE <LF> AND CONTINUE THE SENTENCE.")
-            (while (!= (TYI) 10) nil)
-            (set! *word* (set! *punct* nil))
-            (GO DO))))
+    (binding [*word* nil *wrd* nil *rd* nil *poss* nil] (set! *sent* (set! *punct* nil))
+    DO  (terpri)
+        (print "READY")
+        (terpri)
+        (when (or *sent* *word*)
+            (dorun (map -print (reverse *sent*)))
+            (print \space)
+            (dorun (map print (reverse *word*))))
+    CHAR (loop []
+            (let [c (ascii (uppercase-ify-char (TYI)))]
+                (cond (or (= c \space) (= c (ascii 13))) (GO WORD)
+                    (= c (ascii 127))
+                        (cond *word* (do (print (car *word*)) (set! *word* (cdr *word*)))
+                                *sent* (do (print (car *sent*)) (set! *sent* (cdr *sent*))))
+                    (memq c PUNCL)
+                        (do (set! *punct* c)
+                            (if *word* (GO WORD) (GO PUNC)))
+                    (or (number? c) (and (= c '=) (nil? *word*)) (memq c VOWEL) (memq c CONSO))
+                        (set! *word* (cons c *word*)))
+                (recur)))
+    WORD (cond (nil? *word*) (GO CHAR)
+            (and (set! *wrd* (ERRSET (READLIST (reverse *word*)))) (number? (set! *wrd* (car *wrd*))))
+                (do (set! *sent* (cons *wrd* *sent*))
+                    (buildword *wrd* (or (and (zero? (dec *wrd*)) ['NUM 'NS]) ['NUM]) [['NUM *wrd*]] nil)) ;; NO ROOT FOR NUMBERS
+            (nil? *wrd*) (do (set! *wrd* (reverse *word*)) (GO NO))
+            :else
+                (or (getprop *wrd* 'FEATURES)     ;; IF A WORD HAS FEATURES, IT'S PROPERTIES ARE ALL SET UP IN THE DICTIONARY
+                    (let [x (getprop *wrd* 'IRREGULAR)]
+                        (cond x
+                                (buildword *wrd* (mod (getprop (car x) 'FEATURES) (cdr x)) (semantics x) (car x))
+                            (= (last *word*) '=)
+                                (buildword *wrd* (if (memq '\" *word*) ['PROPN 'NS 'POSS] ['PROPN 'NS]) [['PROPN true]] nil) ;; "sic!
+                            :else (GO CUT)))))
+        (GO WRD)
+    CUT (cond
+            (sta *word* '(T \' N)) (do (set! *rd* (cdddr *word*)) (set! *word* (cons '* *word*)) (GO TRY))
+            (sta *word* '(S \')) (do (set! *word* (cddr *word*)) (set! *poss* *wrd*) (GO WORD))
+            (sta *word* '(\')) (do (set! *word* (cdr *word*)) (set! *poss* *wrd*) (GO WORD))
+            (sta *word* '(Y L)) (do (set! *rd* (cddr *word*)) (GO LY))
+            (sta *word* '(G N I)) (set! *rd* (cdddr *word*))
+            (sta *word* '(D E)) (set! *rd* (cddr *word*))
+            (sta *word* '(N E)) (set! *rd* (cddr *word*))
+            (sta *word* '(R E)) (set! *rd* (cddr *word*))
+            (sta *word* '(T S E)) (set! *rd* (cdddr *word*))
+            (sta *word* '(S)) (do (set! *rd* (cdr *word*)) (GO SIB))
+            :else (GO NO))
+        (let [lst (car *rd*) nxt (cadr *rd*)]
+            (cond (and (memq lst CONSO) (not (memq lst LRSZV)) (= lst nxt)) (set! *rd* (cdr *rd*))
+                (= lst 'I) (set! *rd* (cons 'Y (cdr *rd*)))
+                (or (and (memq lst CONSO) (memq nxt VOWEL) (not (= nxt 'E)) (memq (caddr *rd*) CONSO))
+                    (and (memq lst LRSZV) (memq nxt CONSO) (not (memq nxt LRSZV)))
+                    (and (= lst 'H) (= nxt 'T))
+                    (and (memq lst CGSJVZ) (or (memq nxt LRSZV) (and (memq nxt VOWEL) (memq (caddr *rd*) VOWEL)))))
+                        (set! *rd* (cons 'E *rd*))))
+        (GO TRY)
+    LY  (when (and (memq (car *rd*) VOWEL) (not (= (car *rd*) 'E)) (memq (cadr *rd*) CONSO))
+            (set! *rd* (cons 'E *rd*)))
+        (SETQ ROOT (READLIST (reverse *rd*)))
+        (when (memq 'ADJ (getprop ROOT 'FEATURES))
+            ;; TEMP NIL SEMANTICS ;; ROOT IS THE ADJECTIVE
+            (buildword *wrd* ['ADV 'VBAD] nil ROOT)
+            (GO WRD))
+        (GO NO)
+    SIB (let [lst (car *rd*) nxt (cadr *rd*)]
+            (cond (not= lst 'E) true
+                (= nxt 'I) (set! *rd* (cons 'Y (cddr *rd*)))
+                (= nxt 'X) (set! *rd* (cdr *rd*))
+                (and (= nxt 'H) (not (= (caddr *rd*) 'T))) (set! *rd* (cdr *rd*))
+                (and (memq nxt '(S Z)) (= nxt (caddr *rd*))) (set! *rd* (cddr *rd*))))
+    TRY (SETQ ROOT (READLIST (reverse *rd*)))
+        (let [features (getprop ROOT 'FEATURES)]
+            (cond (or features (let [x (getprop ROOT 'IRREGULAR)] (and x (SETQ features (mod (getprop (SETQ ROOT (car x)) 'FEATURES) (cdr x))))))
+                    (buildword *wrd* (mod features (getprop (car *word*) 'MOD)) (getprop ROOT 'SEMANTICS) ROOT)
+                (= (car *rd*) 'E) (do (set! *rd* (cdr *rd*)) (GO TRY))
+                :else (GO NO)))
+    WRD (set! *sent*
+            (if *poss*
+                (let [features (getprop *wrd* 'FEATURES)]
+                    (if (or (memq 'NOUN features) (memq 'PROPN features))
+                        ;; IF IT'S A NOUN OR A PROPER NOUN, MARK IT AS POSSESSIVE
+                        (do (buildword *poss* (conj (meet features (getprop 'POSS 'ELIM)) 'POSS) (getprop *wrd* 'SEMANTICS) ROOT)
+                            (cons *poss* *sent*))
+                        ;; CAN WE GENERALIZE IT???
+                        (do (buildword "'S" ['VB 'BE 'V3PS 'PRES] (getprop 'BE 'SEMANTICS) 'BE)
+                            (cons "'S" (cons *wrd* *sent*)))))
+                (cons *wrd* *sent*)))
+    PUNC (when *punct*
+            (if (memq *punct* FINAL)
+                (RETURN (reverse *sent*)) ;; RETURN POINT !!!!!!!!!!!!!
+                (set! *sent* (cons *punct* *sent*)))
+            (set! *punct* nil))
+        (set! *word* (set! *poss* nil))
+        (GO CHAR)
+    NO  (terpri)
+        (print (str "SORRY, I DON'T KNOW THE WORD \"" *wrd* "\"."))
+        (terpri)
+        (print "PLEASE TYPE <LF> AND CONTINUE THE SENTENCE.")
+        (while (!= (TYI) 10) nil)
+        (set! *word* (set! *punct* nil))
+        (GO DO)))
 
 (defn- propname [x] (= (car (name x)) \=))
 
@@ -4483,55 +4485,55 @@
 ;;
 ;; ###########################################################
 
-(putprop! '\, 'FEATURES #{'SPECIAL})
+(putprop! '\, 'FEATURES ['SPECIAL])
 (putprop! '\, 'SPECIAL '(comma))
 
-(putprop! 'A 'FEATURES #{'DET 'NS 'INDEF})
-(putprop! 'A 'SEMANTICS '[[DET true]])
+(putprop! 'A 'FEATURES ['DET 'NS 'INDEF])
+(putprop! 'A 'SEMANTICS [['DET true]])
 
-(putprop! 'ABOVE 'FEATURES #{'PREP 'PLACE})
-(putprop! 'ABOVE 'SEMANTICS '[[PREP (!loc '!ABOVE true)]])
+(putprop! 'ABOVE 'FEATURES ['PREP 'PLACE])
+(putprop! 'ABOVE 'SEMANTICS [['PREP '(!loc '!ABOVE true)]])
 
-(putprop! 'AFTER 'FEATURES #{'BINDER 'TIME})
-(putprop! 'AFTER 'SEMANTICS '[[BINDER (smbinder *tss* *end* nil)]])
+(putprop! 'AFTER 'FEATURES ['BINDER 'TIME])
+(putprop! 'AFTER 'SEMANTICS [['BINDER '(smbinder *tss* *end* nil)]])
 
-(putprop! 'ALL 'FEATURES #{'DET 'NPL 'QNTFR})
-(putprop! 'ALL 'SEMANTICS '[[DET (cond (cq 'OF) 'ALL (meet '(NUM DEF) *fe*) 'DEF :else 'NDET)]])
+(putprop! 'ALL 'FEATURES ['DET 'NPL 'QNTFR])
+(putprop! 'ALL 'SEMANTICS [['DET '(cond (cq 'OF) 'ALL (meet '(NUM DEF) *fe*) 'DEF :else 'NDET)]])
 
 (putprop! 'AN 'IRREGULAR '(A nil nil))
 
-(putprop! 'AND 'FEATURES #{'SPECIAL})
+(putprop! 'AND 'FEATURES ['SPECIAL])
 (putprop! 'AND 'SEMANTICS true)
 (putprop! 'AND 'SPECIAL '(conjo))
 
-(putprop! 'ANY 'FEATURES #{'DET 'ANY 'NS 'NPL 'QNTFR})
-(putprop! 'ANY 'SEMANTICS '[[DET 'INDEF]])
+(putprop! 'ANY 'FEATURES ['DET 'ANY 'NS 'NPL 'QNTFR])
+(putprop! 'ANY 'SEMANTICS [['DET 'INDEF]])
 
-(putprop! 'ANYTHING 'FEATURES #{'TPRON 'ANY 'NS})
-(putprop! 'ANYTHING 'SEMANTICS '[[TPRON 'INDEF]])
+(putprop! 'ANYTHING 'FEATURES ['TPRON 'ANY 'NS])
+(putprop! 'ANYTHING 'SEMANTICS [['TPRON 'INDEF]])
 
 (putprop! 'ARE 'IRREGULAR '(BE (VPL PRESENT) (INF)))
 
-(putprop! 'AS 'FEATURES #{'AS})
-(putprop! 'AS 'SEMANTICS '[[nil? true]])
+(putprop! 'AS 'FEATURES ['AS])
+(putprop! 'AS 'SEMANTICS [['NULL true]])
 
-(putprop! 'ASK 'FEATURES #{'VB 'TRANS 'INF 'SUBTOB})
-(putprop! 'ASK 'SEMANTICS '[[VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!WANT *!1* *!2* *TIME))])))]])
+(putprop! 'ASK 'FEATURES ['VB 'TRANS 'INF 'SUBTOB])
+(putprop! 'ASK 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!WANT *!1* *!2* *TIME))])]]]])
 
-(putprop! 'AT 'FEATURES #{'AT})
-(putprop! 'AT 'SEMANTICS '[[NUMD true]])
+(putprop! 'AT 'FEATURES ['AT])
+(putprop! 'AT 'SEMANTICS [['NUMD true]])
 
-(putprop! 'AWAY 'FEATURES #{'PRT})
-(putprop! 'AWAY 'SEMANTICS '[[PRT true]])
+(putprop! 'AWAY 'FEATURES ['PRT])
+(putprop! 'AWAY 'SEMANTICS [['PRT true]])
 
-(putprop! 'BACK 'FEATURES #{'NOUN 'NS 'PREP2})
-(putprop! 'BACK 'SEMANTICS '[[PREP2 true] [NOUN true]])
+(putprop! 'BACK 'FEATURES ['NOUN 'NS 'PREP2])
+(putprop! 'BACK 'SEMANTICS [['PREP2 true] ['NOUN true]])
 
-(putprop! 'BALL 'FEATURES #{'NOUN 'NS})
-(putprop! 'BALL 'SEMANTICS '[[NOUN (object [:markers '(!MANIP !ROUND) :procedure '((!IS *** !BALL))])]])
+(putprop! 'BALL 'FEATURES ['NOUN 'NS])
+(putprop! 'BALL 'SEMANTICS [['NOUN '(object [:markers '(!MANIP !ROUND) :procedure '((!IS *** !BALL))])]])
 
-(putprop! 'BE 'FEATURES #{'INT 'AUX 'VB 'BE 'INF})
-(putprop! 'BE 'SEMANTICS '[[VB ((THERE (!bethere)) (INT (!beint)))]])
+(putprop! 'BE 'FEATURES ['INT 'AUX 'VB 'BE 'INF])
+(putprop! 'BE 'SEMANTICS [['VB [['THERE '(!bethere)] ['INT '(!beint)]]]])
 
 (defn- !bethere []
     (relation [:restrictions '(((!THING) (= (quantifier? *smsub*) 'INDEF))) :procedure nil]))
@@ -4546,42 +4548,42 @@
                 :procedure '((!EVAL (list 'thamong '*!1* (list 'quote (refer? *!2*)))))])
         (oops! "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT.")))
 
-(putprop! 'BEFORE 'FEATURES #{'BINDER 'TIME})
-(putprop! 'BEFORE 'SEMANTICS '[[BINDER (smbinder *tss* nil *start*)]])
+(putprop! 'BEFORE 'FEATURES ['BINDER 'TIME])
+(putprop! 'BEFORE 'SEMANTICS [['BINDER '(smbinder *tss* nil *start*)]])
 
-(putprop! 'BEGIN 'FEATURES #{'VB 'TRANS 'INF 'TOOB 'INGOB 'ITRNS})
-(putprop! 'BEGIN 'SEMANTICS '[[VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!START *!2* *TIME))]))
-                                   (ITRNS (relation [:restrictions '(((!ANIMATE))) :markers '(!EVENT) :procedure '((!START EE *TIME))])))]])
+(putprop! 'BEGIN 'FEATURES ['VB 'TRANS 'INF 'TOOB 'INGOB 'ITRNS])
+(putprop! 'BEGIN 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!START *!2* *TIME))])]
+                                   ['ITRNS '(relation [:restrictions '(((!ANIMATE))) :markers '(!EVENT) :procedure '((!START EE *TIME))])]]]])
 
 (putprop! 'BEGAN 'IRREGULAR '(BEGIN (PAST) (INF)))
 
-(putprop! 'BEHIND 'FEATURES #{'PREP 'PLACE})
-(putprop! 'BEHIND 'SEMANTICS '[[PREP (!loc '!BEHIND true)]])
+(putprop! 'BEHIND 'FEATURES ['PREP 'PLACE])
+(putprop! 'BEHIND 'SEMANTICS [['PREP '(!loc '!BEHIND true)]])
 
-(putprop! 'BELOW 'FEATURES #{'PREP 'PLACE})
-(putprop! 'BELOW 'SEMANTICS '[[PREP (!loc '!ABOVE false)]])
+(putprop! 'BELOW 'FEATURES ['PREP 'PLACE])
+(putprop! 'BELOW 'SEMANTICS [['PREP '(!loc '!ABOVE false)]])
 
-(putprop! 'BENEATH 'FEATURES #{'PREP 'PLACE})
-(putprop! 'BENEATH 'SEMANTICS '[[PREP (!loc '!ABOVE false)]])
+(putprop! 'BENEATH 'FEATURES ['PREP 'PLACE])
+(putprop! 'BENEATH 'SEMANTICS [['PREP '(!loc '!ABOVE false)]])
 
-(putprop! 'BESIDE 'FEATURES #{'PREP 'PLACE})
-(putprop! 'BESIDE 'SEMANTICS '[[PREP (relation [:restrictions '(((!PHYSOB)) ((!PHYSOB))) :procedure '((!NEXTO *!1* *!2* *TIME))])]])
+(putprop! 'BESIDE 'FEATURES ['PREP 'PLACE])
+(putprop! 'BESIDE 'SEMANTICS [['PREP '(relation [:restrictions '(((!PHYSOB)) ((!PHYSOB))) :procedure '((!NEXTO *!1* *!2* *TIME))])]])
 
-(putprop! 'BIG 'FEATURES #{'ADJ})
-(putprop! 'BIG 'SEMANTICS '[[MEASURE (measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction true)]
-                            [ADJ (object [:markers '(!PHYSOB !BIG) :procedure '((!MORE !SIZE *** (128 128 128)))])]])
+(putprop! 'BIG 'FEATURES ['ADJ])
+(putprop! 'BIG 'SEMANTICS [['MEASURE '(measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction true)]
+                            ['ADJ '(object [:markers '(!PHYSOB !BIG) :procedure '((!MORE !SIZE *** (128 128 128)))])]])
 
-(putprop! 'BLACK 'FEATURES #{'ADJ})
-(putprop! 'BLACK 'SEMANTICS '[[ADJ (!color '!BLACK)]])
+(putprop! 'BLACK 'FEATURES ['ADJ])
+(putprop! 'BLACK 'SEMANTICS [['ADJ '(!color '!BLACK)]])
 
-(putprop! 'BLOCK 'FEATURES #{'NOUN 'NS})
-(putprop! 'BLOCK 'SEMANTICS '[[NOUN (object [:markers '(!MANIP !RECTANGULAR) :procedure '((!IS *** !BLOCK))])]])
+(putprop! 'BLOCK 'FEATURES ['NOUN 'NS])
+(putprop! 'BLOCK 'SEMANTICS [['NOUN '(object [:markers '(!MANIP !RECTANGULAR) :procedure '((!IS *** !BLOCK))])]])
 
-(putprop! 'BLUE 'FEATURES #{'ADJ})
-(putprop! 'BLUE 'SEMANTICS '[[ADJ (!color '!BLUE)]])
+(putprop! 'BLUE 'FEATURES ['ADJ])
+(putprop! 'BLUE 'SEMANTICS [['ADJ '(!color '!BLUE)]])
 
-(putprop! 'BOTH 'FEATURES #{'B-SPECIAL 'QNTFR 'DET 'DEF 'NPL 'BOTH})
-(putprop! 'BOTH 'SEMANTICS '[[DET 'DEF]])
+(putprop! 'BOTH 'FEATURES ['B-SPECIAL 'QNTFR 'DET 'DEF 'NPL 'BOTH])
+(putprop! 'BOTH 'SEMANTICS [['DET 'DEF]])
 (putprop! 'BOTH 'B-SPECIAL '(both 'AND))
 
 (defn- both [& a]
@@ -4599,373 +4601,373 @@
             (set! *special* 'SKIP)
             (do (set! *re* nil) (set! *n* nbb) nil)))))
 
-(putprop! 'BOX 'FEATURES #{'NOUN 'NS})
-(putprop! 'BOX 'SEMANTICS '((NOUN (object [:markers '(!BOX) :procedure '((!IS *** !BOX))]))))
+(putprop! 'BOX 'FEATURES ['NOUN 'NS])
+(putprop! 'BOX 'SEMANTICS [['NOUN '(object [:markers '(!BOX) :procedure '((!IS *** !BOX))])]])
 
-(putprop! 'BRICK 'FEATURES #{'NOUN 'NS})
+(putprop! 'BRICK 'FEATURES ['NOUN 'NS])
 
-(putprop! 'BUILD 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'BUILD 'SEMANTICS '((VB ((TRANS (!build))))))
+(putprop! 'BUILD 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'BUILD 'SEMANTICS [['VB [['TRANS '(!build)]]]])
 
-(putprop! 'BUT 'FEATURES #{'SPECIAL})
+(putprop! 'BUT 'FEATURES ['SPECIAL])
 (putprop! 'BUT 'SEMANTICS true)
 (putprop! 'BUT 'SPECIAL '(conjo))
 
-(putprop! 'BY 'FEATURES #{'PREP})
-(putprop! 'BY 'SEMANTICS '((PREP (relation [:restrictions '(((!PHYSOB)) ((!PHYSOB))) :procedure '((!NEXTO *!1* *!2* *TIME))]))))
+(putprop! 'BY 'FEATURES ['PREP])
+(putprop! 'BY 'SEMANTICS [['PREP '(relation [:restrictions '(((!PHYSOB)) ((!PHYSOB))) :procedure '((!NEXTO *!1* *!2* *TIME))])]])
 
-(putprop! 'CALL 'FEATURES #{'VB 'INF 'TRANS2})
-(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (relation [:restrictions '(((!ANIMATE)) ((!THING)) ((!name))) :procedure '((!CALL *!2* *!3* *TIME))]))))))
+(putprop! 'CALL 'FEATURES ['VB 'INF 'TRANS2])
+(putprop! 'CALL 'SEMANTICS [['VB [['TRANS2 '(relation [:restrictions '(((!ANIMATE)) ((!THING)) ((!name))) :procedure '((!CALL *!2* *!3* *TIME))])]]]])
 
-(putprop! 'CAN 'FEATURES #{'V3PS 'VFS 'VPL 'VB 'MODAL 'AUX})
-(putprop! 'CAN 'SEMANTICS '((VB true)))
+(putprop! 'CAN 'FEATURES ['V3PS 'VFS 'VPL 'VB 'MODAL 'AUX])
+(putprop! 'CAN 'SEMANTICS [['VB true]])
 
-(putprop! 'CHOOSE 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'CHOOSE 'SEMANTICS '((VB ((TRANS (!notice))))))
+(putprop! 'CHOOSE 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'CHOOSE 'SEMANTICS [['VB [['TRANS '(!notice)]]]])
 
-(putprop! 'CLEAN 'FEATURES #{'VB 'INF 'VPRT 'TRANS})
-(putprop! 'CLEAN 'SEMANTICS '((VB true)))
+(putprop! 'CLEAN 'FEATURES ['VB 'INF 'VPRT 'TRANS])
+(putprop! 'CLEAN 'SEMANTICS [['VB true]])
 
 (putprop! 'CLEAN-OFF 'ROOT '(CLEAN OFF))
-(putprop! 'CLEAN-OFF 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'CLEAN-OFF 'SEMANTICS '((TRANS (!cleanoff))))
+(putprop! 'CLEAN-OFF 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'CLEAN-OFF 'SEMANTICS [['TRANS '(!cleanoff)]])
 
 (putprop! 'CLEAN-OUT 'ROOT '(CLEAN OUT))
-(putprop! 'CLEAN-OUT 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'CLEAN-OUT 'SEMANTICS '((TRANS (!cleanoff))))
+(putprop! 'CLEAN-OUT 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'CLEAN-OUT 'SEMANTICS [['TRANS '(!cleanoff)]])
 
 (putprop! 'CLEAN-UP 'ROOT '(CLEAN UP))
-(putprop! 'CLEAN-UP 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'CLEAN-UP 'SEMANTICS '((TRANS (!cleanoff))))
+(putprop! 'CLEAN-UP 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'CLEAN-UP 'SEMANTICS [['TRANS '(!cleanoff)]])
 
-(putprop! 'CLEAR 'FEATURES #{'VB 'INF 'VPRT 'TRANS})
-(putprop! 'CLEAR 'SEMANTICS '((VB true)))
+(putprop! 'CLEAR 'FEATURES ['VB 'INF 'VPRT 'TRANS])
+(putprop! 'CLEAR 'SEMANTICS [['VB true]])
 
 (putprop! 'CLEAR-OFF 'ROOT '(CLEAR OFF))
-(putprop! 'CLEAR-OFF 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'CLEAR-OFF 'SEMANTICS '((TRANS (!cleanoff))))
+(putprop! 'CLEAR-OFF 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'CLEAR-OFF 'SEMANTICS [['TRANS '(!cleanoff)]])
 
 (putprop! 'CLEAR-OUT 'ROOT '(CLEAR OUT))
-(putprop! 'CLEAR-OUT 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'CLEAR-OUT 'SEMANTICS '((TRANS (!cleanoff))))
+(putprop! 'CLEAR-OUT 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'CLEAR-OUT 'SEMANTICS [['TRANS '(!cleanoff)]])
 
-(putprop! 'COLOR 'FEATURES #{'NOUN 'NS})
-(putprop! 'COLOR 'SEMANTICS '((NOUN (object [:markers '(!COLOR) :procedure '((!IS *** !COLOR))]))))
+(putprop! 'COLOR 'FEATURES ['NOUN 'NS])
+(putprop! 'COLOR 'SEMANTICS [['NOUN '(object [:markers '(!COLOR) :procedure '((!IS *** !COLOR))])]])
 
-(putprop! 'CONSTRUCT 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'CONSTRUCT 'SEMANTICS '((VB ((TRANS (!build))))))
+(putprop! 'CONSTRUCT 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'CONSTRUCT 'SEMANTICS [['VB [['TRANS '(!build)]]]])
 
-(putprop! 'CONTAIN 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'CONTAIN 'SEMANTICS '((VB ((TRANS
-    (relation
+(putprop! 'CONTAIN 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'CONTAIN 'SEMANTICS [['VB [['TRANS
+    '(relation
         [:restrictions '(((!BOX)) ((!PHYSOB))) :procedure '((!CONTAIN *!1* *!2* *TIME))]
-        [:restrictions '(((!CONSTRUCT)) ((!THING))) :procedure '((!PART *!2* *!1* *TIME))]))))))
+        [:restrictions '(((!CONSTRUCT)) ((!THING))) :procedure '((!PART *!2* *!1* *TIME))])]]]])
 
-(putprop! 'CONTAINER 'FEATURES #{'NOUN 'NS})
-(putprop! 'CONTAINER 'SEMANTICS '((NOUN (object [:markers '(!BOX) :procedure '((!IS *** !BOX))]))))
+(putprop! 'CONTAINER 'FEATURES ['NOUN 'NS])
+(putprop! 'CONTAINER 'SEMANTICS [['NOUN '(object [:markers '(!BOX) :procedure '((!IS *** !BOX))])]])
 
-(putprop! 'CORNER 'FEATURES #{'NOUN 'NS})
+(putprop! 'CORNER 'FEATURES ['NOUN 'NS])
 
-(putprop! 'CUBE 'FEATURES #{'NOUN 'NS})
-(putprop! 'CUBE 'SEMANTICS '((NOUN (object [:markers '(!MANIP !RECTANGULAR) :procedure '((!IS *** !BLOCK) (!eqdim ***))]))))
+(putprop! 'CUBE 'FEATURES ['NOUN 'NS])
+(putprop! 'CUBE 'SEMANTICS [['NOUN '(object [:markers '(!MANIP !RECTANGULAR) :procedure '((!IS *** !BLOCK) (!eqdim ***))])]])
 
 (putprop! 'DID 'IRREGULAR '(DO (PAST V3PS) (INF PRESENT)))
 
-(putprop! 'DO 'FEATURES #{'TRANS 'VFS 'PRESENT 'VPL 'VB 'AUX 'DO 'INF})
-(putprop! 'DO 'SEMANTICS '((VB ((TRANS
-    (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '(!EVAL (or (getprop MAP2 'REFER) (bug! 'do "DEFINITION")))]))))))
+(putprop! 'DO 'FEATURES ['TRANS 'VFS 'PRESENT 'VPL 'VB 'AUX 'DO 'INF])
+(putprop! 'DO 'SEMANTICS [['VB [['TRANS
+    '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '(!EVAL (or (getprop MAP2 'REFER) (bug! 'do "DEFINITION")))])]]]])
 
 (putprop! 'DOES 'IRREGULAR '(DO (V3PS) (VFS VPL INF)))
 
-(putprop! 'DOWN 'FEATURES #{'PRT})
-(putprop! 'DOWN 'SEMANTICS '((PRT true)))
+(putprop! 'DOWN 'FEATURES ['PRT])
+(putprop! 'DOWN 'SEMANTICS [['PRT true]])
 
-(putprop! 'DROP 'FEATURES #{'TRANSL 'TRANSL2 'VB 'INF 'TRANS})
-(putprop! 'DROP 'SEMANTICS '((VB
-    ((TRANSL (relation [:restrictions '(((!ANIMATE)) ((!MANIP)) (*smobl* (!PLACE *TIME))) :procedure '((!DROP *!1* *!2* *!3*)) :markers '((!MOTION))]))
-     (TRANS (relation [:restrictions '(((!ANIMATE)) ((!PHYSOB))) :markers '(!EVENT) :procedure '((!DROP *!1* *!2* PLACE *TIME)) :markers '((!MOTION))]))))))
+(putprop! 'DROP 'FEATURES ['TRANSL 'TRANSL2 'VB 'INF 'TRANS])
+(putprop! 'DROP 'SEMANTICS [['VB
+    [['TRANSL '(relation [:restrictions '(((!ANIMATE)) ((!MANIP)) (*smobl* (!PLACE *TIME))) :procedure '((!DROP *!1* *!2* *!3*)) :markers '((!MOTION))])]
+     ['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!PHYSOB))) :markers '(!EVENT) :procedure '((!DROP *!1* *!2* PLACE *TIME)) :markers '((!MOTION))])]]]])
 
-(putprop! 'EACH 'FEATURES #{'DET 'NS 'QNTFR})
-(putprop! 'EACH 'SEMANTICS '((DET 'ALL)))
+(putprop! 'EACH 'FEATURES ['DET 'NS 'QNTFR])
+(putprop! 'EACH 'SEMANTICS [['DET 'ALL]])
 
-(putprop! 'EITHER 'FEATURES #{'B-SPECIAL})
+(putprop! 'EITHER 'FEATURES ['B-SPECIAL])
 (putprop! 'EITHER 'SEMANTICS true)
 (putprop! 'EITHER 'B-SPECIAL '(both 'OR))
 
-(putprop! 'EVERY 'FEATURES #{'DET 'NS 'QNTFR})
-(putprop! 'EVERY 'SEMANTICS '((DET 'ALL)))
+(putprop! 'EVERY 'FEATURES ['DET 'NS 'QNTFR])
+(putprop! 'EVERY 'SEMANTICS [['DET 'ALL]])
 
-(putprop! 'EVERYTHING 'FEATURES #{'TPRON 'NS})
-(putprop! 'EVERYTHING 'SEMANTICS '((TPRON 'ALL)))
+(putprop! 'EVERYTHING 'FEATURES ['TPRON 'NS])
+(putprop! 'EVERYTHING 'SEMANTICS [['TPRON 'ALL]])
 
-(putprop! 'EXACTLY 'FEATURES #{'NUMD 'NUMDALONE})
-(putprop! 'EXACTLY 'SEMANTICS '((NUMD (list 'EXACTLY *num*))))
+(putprop! 'EXACTLY 'FEATURES ['NUMD 'NUMDALONE])
+(putprop! 'EXACTLY 'SEMANTICS [['NUMD '(list 'EXACTLY *num*)]])
 
-(putprop! 'FEW 'FEATURES #{'NUMD 'NUMDAS})
-(putprop! 'FEW 'SEMANTICS '((NUMD (list '< (inc *num*)))))
+(putprop! 'FEW 'FEATURES ['NUMD 'NUMDAS])
+(putprop! 'FEW 'SEMANTICS [['NUMD '(list '< (inc *num*))]])
 
-(putprop! 'FEWER 'FEATURES #{'NUMD 'NUMDAN})
-(putprop! 'FEWER 'SEMANTICS '((NUMD (list '< *num*))))
+(putprop! 'FEWER 'FEATURES ['NUMD 'NUMDAN])
+(putprop! 'FEWER 'SEMANTICS [['NUMD '(list '< *num*)]])
 
-(putprop! 'FIND 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'FIND 'SEMANTICS '((VB ((TRANS (!notice))))))
+(putprop! 'FIND 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'FIND 'SEMANTICS [['VB [['TRANS '(!notice)]]]])
 
-(putprop! 'FINISH 'FEATURES #{'VB 'INF 'TRANS 'INFOB})
-(putprop! 'FINISH 'SEMANTICS '((VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!END *!2* *TIME))]))))))
+(putprop! 'FINISH 'FEATURES ['VB 'INF 'TRANS 'INFOB])
+(putprop! 'FINISH 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!END *!2* *TIME))])]]]])
 
-(putprop! 'FIVE 'FEATURES #{'NUM})
-(putprop! 'FIVE 'SEMANTICS '((NUM 5)))
+(putprop! 'FIVE 'FEATURES ['NUM])
+(putprop! 'FIVE 'SEMANTICS [['NUM 5]])
 
-(putprop! 'FOUR 'FEATURES #{'NUM})
-(putprop! 'FOUR 'SEMANTICS '((NUM 4)))
+(putprop! 'FOUR 'FEATURES ['NUM])
+(putprop! 'FOUR 'SEMANTICS [['NUM 4]])
 
-(putprop! 'FRIEND 'FEATURES #{'NOUN 'NS})
+(putprop! 'FRIEND 'FEATURES ['NOUN 'NS])
 (putprop! 'FRIEND 'REFER 'ßFRIEND)
 
-(putprop! 'FROM 'FEATURES #{'PREP})
+(putprop! 'FROM 'FEATURES ['PREP])
 
-(putprop! 'FRONT 'FEATURES #{'NOUN 'NS 'PREP2})
-(putprop! 'FRONT 'SEMANTICS '((NOUN true) (PREP2 true)))
+(putprop! 'FRONT 'FEATURES ['NOUN 'NS 'PREP2])
+(putprop! 'FRONT 'SEMANTICS [['NOUN true] ['PREP2 true]])
 
 (putprop! 'GAVE 'IRREGULAR '(GIVE (PAST) (INF)))
 
-(putprop! 'GIVE 'FEATURES #{'VB 'INF 'TRANS2})
-(putprop! 'GIVE 'SEMANTICS '((VB ((TRANS2 (relation [:restrictions '(((!ANIMATE)) ((!ANIMATE)) ((!PHYSOB))) :markers '(!EVENT) :procedure '((!GIVE *!1* *!2* *!3* *TIME))]))))))
+(putprop! 'GIVE 'FEATURES ['VB 'INF 'TRANS2])
+(putprop! 'GIVE 'SEMANTICS [['VB [['TRANS2 '(relation [:restrictions '(((!ANIMATE)) ((!ANIMATE)) ((!PHYSOB))) :markers '(!EVENT) :procedure '((!GIVE *!1* *!2* *!3* *TIME))])]]]])
 
-(putprop! 'GO 'FEATURES #{'ITRNS 'VB 'INF})
+(putprop! 'GO 'FEATURES ['ITRNS 'VB 'INF])
 
-(putprop! 'GOING 'FEATURES #{'VB 'ITRNS 'ING})
+(putprop! 'GOING 'FEATURES ['VB 'ITRNS 'ING])
 
-(putprop! 'GRAB 'FEATURES #{'VB 'TRANS 'INF})
-(putprop! 'GRAB 'SEMANTICS '((VB ((TRANS (!grasp))))))
+(putprop! 'GRAB 'FEATURES ['VB 'TRANS 'INF])
+(putprop! 'GRAB 'SEMANTICS [['VB [['TRANS '(!grasp)]]]])
 
-(putprop! 'GRASP 'FEATURES #{'VB 'TRANS 'INF})
-(putprop! 'GRASP 'SEMANTICS '((VB ((TRANS (!grasp))))))
+(putprop! 'GRASP 'FEATURES ['VB 'TRANS 'INF])
+(putprop! 'GRASP 'SEMANTICS [['VB [['TRANS '(!grasp)]]]])
 
-(putprop! 'GREATER 'FEATURES #{'NUMD 'NUMDAN})
-(putprop! 'GREATER 'SEMANTICS '((NUMD (list '> *num*))))
+(putprop! 'GREATER 'FEATURES ['NUMD 'NUMDAN])
+(putprop! 'GREATER 'SEMANTICS [['NUMD '(list '> *num*)]])
 
-(putprop! 'GREEN 'FEATURES #{'ADJ})
-(putprop! 'GREEN 'SEMANTICS '((ADJ (!color '!GREEN))))
+(putprop! 'GREEN 'FEATURES ['ADJ])
+(putprop! 'GREEN 'SEMANTICS [['ADJ '(!color '!GREEN)]])
 
 (putprop! 'HAD 'IRREGULAR '(HAVE (PAST) (INF)))
 
-(putprop! 'HAND 'FEATURES #{'NOUN 'NS})
-(putprop! 'HAND 'SEMANTICS '((NOUN (object [:markers '(!HAND) :procedure '((!IS *** !HAND))]))))
+(putprop! 'HAND 'FEATURES ['NOUN 'NS])
+(putprop! 'HAND 'SEMANTICS [['NOUN '(object [:markers '(!HAND) :procedure '((!IS *** !HAND))])]])
 
-(putprop! 'HANDLE 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'HANDLE 'SEMANTICS '((VB ((TRANS (!grasp))))))
+(putprop! 'HANDLE 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'HANDLE 'SEMANTICS [['VB [['TRANS '(!grasp)]]]])
 
 (putprop! 'HAS 'IRREGULAR '(HAVE (V3PS PRESENT) (INF)))
 
-(putprop! 'HAVE 'FEATURES #{'HAVE 'VB 'AUX 'INF 'TRANS})
-(putprop! 'HAVE 'SEMANTICS '((VB ((TRANS (!have))))))
+(putprop! 'HAVE 'FEATURES ['HAVE 'VB 'AUX 'INF 'TRANS])
+(putprop! 'HAVE 'SEMANTICS [['VB [['TRANS '(!have)]]]])
 
-(putprop! 'HIGH 'FEATURES #{'ADJ})
-(putprop! 'HIGH 'SEMANTICS '((MEASURE (measure :dimension '!HEIGHT :restrictions '(!PHYSOB) :direction true))
-                             (ADJ (object [:markers '(!PHYSOB) :procedure '((!HIGH ***))]))))
+(putprop! 'HIGH 'FEATURES ['ADJ])
+(putprop! 'HIGH 'SEMANTICS [['MEASURE '(measure :dimension '!HEIGHT :restrictions '(!PHYSOB) :direction true)]
+                             ['ADJ '(object [:markers '(!PHYSOB) :procedure '((!HIGH ***))])]])
 
-(putprop! 'HOLD 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'HOLD 'SEMANTICS '((VB ((TRANS
-    (relation
+(putprop! 'HOLD 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'HOLD 'SEMANTICS [['VB [['TRANS
+    '(relation
         [:restrictions '(((!HAND)) ((!MANIP))) :procedure '((!GRASPING *!2* *TIME))]
-        [:restrictions '(((!ANIMATE)) ((!MANIP))) :procedure '((!GRASPING *!2* *TIME))]))))))
+        [:restrictions '(((!ANIMATE)) ((!MANIP))) :procedure '((!GRASPING *!2* *TIME))])]]]])
 
-(putprop! 'HE 'FEATURES #{'PRON 'NS 'SUBJ})
+(putprop! 'HE 'FEATURES ['PRON 'NS 'SUBJ])
 
 (putprop! 'HER 'IRREGULAR '(SHE (OBJ POSS) (SUBJ)))
 
 (putprop! 'HIM 'IRREGULAR '(HE (OBJ) (SUBJ)))
 
-(putprop! 'HIS 'FEATURES #{'PRON 'POSS})
+(putprop! 'HIS 'FEATURES ['PRON 'POSS])
 
-(putprop! 'HOW 'FEATURES #{'QADJ})
-(putprop! 'HOW 'SEMANTICS '((QADJ true)))
+(putprop! 'HOW 'FEATURES ['QADJ])
+(putprop! 'HOW 'SEMANTICS [['QADJ true]])
 
-(putprop! 'HOWEVER 'FEATURES #{'PRON 'EVERPRON})
+(putprop! 'HOWEVER 'FEATURES ['PRON 'EVERPRON])
 
-(putprop! 'I 'FEATURES #{'SUBJ 'PRON 'NFS})
-(putprop! 'I 'SEMANTICS '((PRON (smset (list (newcopy 'FRIEND-OSS))))))
+(putprop! 'I 'FEATURES ['SUBJ 'PRON 'NFS])
+(putprop! 'I 'SEMANTICS [['PRON '(smset (list (newcopy 'FRIEND-OSS)))]])
 
-(putprop! 'IF 'FEATURES #{'BINDER})
+(putprop! 'IF 'FEATURES ['BINDER])
 
-(putprop! 'IN 'FEATURES #{'ADV 'PLACE 'PREP 'PLACE})
-(putprop! 'IN 'SEMANTICS '((PREP (!in))))
+(putprop! 'IN 'FEATURES ['ADV 'PLACE 'PREP 'PLACE])
+(putprop! 'IN 'SEMANTICS [['PREP '(!in)]])
 
 (putprop! 'IN-BACK-OF 'ROOT '(IN BACK OF))
-(putprop! 'IN-BACK-OF 'FEATURES #{'PREP 'COMBINATION})
-(putprop! 'IN-BACK-OF 'SEMANTICS '(!loc '!BEHIND true))
+(putprop! 'IN-BACK-OF 'FEATURES ['PREP 'COMBINATION])
+(putprop! 'IN-BACK-OF 'SEMANTICS '(!loc '!BEHIND true))
 
 (putprop! 'IN-FRONT-OF 'ROOT '(IN FRONT OF))
-(putprop! 'IN-FRONT-OF 'FEATURES #{'PREP 'COMBINATION})
-(putprop! 'IN-FRONT-OF 'SEMANTICS '(!loc '!BEHIND false))
+(putprop! 'IN-FRONT-OF 'FEATURES ['PREP 'COMBINATION])
+(putprop! 'IN-FRONT-OF 'SEMANTICS '(!loc '!BEHIND false))
 
-(putprop! 'INSIDE 'FEATURES #{'PREP 'PLACE})
-(putprop! 'INSIDE 'SEMANTICS '((PREP (!in))))
+(putprop! 'INSIDE 'FEATURES ['PREP 'PLACE])
+(putprop! 'INSIDE 'SEMANTICS [['PREP '(!in)]])
 
 (putprop! 'INSIDE-OF 'ROOT '(INSIDE OF))
-(putprop! 'INSIDE-OF 'FEATURES #{'PREP 'COMBINATION})
-(putprop! 'INSIDE-OF 'SEMANTICS '(!in))
+(putprop! 'INSIDE-OF 'FEATURES ['PREP 'COMBINATION])
+(putprop! 'INSIDE-OF 'SEMANTICS '(!in))
 
-(putprop! 'INTO 'FEATURES #{'PREP 'PLACE})
-(putprop! 'INTO 'SEMANTICS '((PREP (!in))))
+(putprop! 'INTO 'FEATURES ['PREP 'PLACE])
+(putprop! 'INTO 'SEMANTICS [['PREP '(!in)]])
 
 (putprop! 'IS 'IRREGULAR '(BE (V3PS PRESENT) (INF)))
 
-(putprop! 'IT 'FEATURES #{'PRON 'NS 'SUBJ 'OBJ})
-(putprop! 'IT 'SEMANTICS '((PRON (smit 'IT))))
+(putprop! 'IT 'FEATURES ['PRON 'NS 'SUBJ 'OBJ])
+(putprop! 'IT 'SEMANTICS [['PRON '(smit 'IT)]])
 
 (putprop! 'ITS 'IRREGULAR '(IT (POSS) nil))
 
-(putprop! 'KNOW 'FEATURES #{'VB 'INF 'TRANS 'REPOB})
+(putprop! 'KNOW 'FEATURES ['VB 'INF 'TRANS 'REPOB])
 
-(putprop! 'LARGE 'FEATURES #{'ADJ})
-(putprop! 'LARGE 'SEMANTICS '((MEASURE (measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction true))
-                              (ADJ (object [:markers '(!PHYSOB !BIG) :procedure '((!MORE !SIZE *** (128 128 128)))]))))
+(putprop! 'LARGE 'FEATURES ['ADJ])
+(putprop! 'LARGE 'SEMANTICS [['MEASURE '(measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction true)]
+                              ['ADJ '(object [:markers '(!PHYSOB !BIG) :procedure '((!MORE !SIZE *** (128 128 128)))])]])
 
-(putprop! 'LEAST 'FEATURES #{'NUMD 'NUMDAT})
-(putprop! 'LEAST 'SEMANTICS '((NUMD (list '> (dec *num*)))))
+(putprop! 'LEAST 'FEATURES ['NUMD 'NUMDAT])
+(putprop! 'LEAST 'SEMANTICS [['NUMD '(list '> (dec *num*))]])
 
-(putprop! 'LEFT 'FEATURES #{'NOUN 'NS})
-(putprop! 'LEFT 'SEMANTICS '((NOUN (object [:markers '(!DIRECTION) :procedure '((!DIRECTION !RIGHT nil))]))))
+(putprop! 'LEFT 'FEATURES ['NOUN 'NS])
+(putprop! 'LEFT 'SEMANTICS [['NOUN '(object [:markers '(!DIRECTION) :procedure '((!DIRECTION !RIGHT nil))])]])
 
-(putprop! 'LESS 'FEATURES #{'NUMD 'NUMDAN})
-(putprop! 'LESS 'SEMANTICS '((NUMD (list '< *num*))))
+(putprop! 'LESS 'FEATURES ['NUMD 'NUMDAN])
+(putprop! 'LESS 'SEMANTICS [['NUMD '(list '< *num*)]])
 
-(putprop! 'LIKE 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'LIKE 'SEMANTICS '((VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!THING))) :procedure '((!LIKE *!1* *!2*))]))))))
+(putprop! 'LIKE 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'LIKE 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!THING))) :procedure '((!LIKE *!1* *!2*))])]]]])
 
-(putprop! 'LIST 'FEATURES #{'VB 'VO 'TRANS})
-(putprop! 'LIST 'SEMANTICS '((VB ((TRANS (!name))))))
+(putprop! 'LIST 'FEATURES ['VB 'VO 'TRANS])
+(putprop! 'LIST 'SEMANTICS [['VB [['TRANS '(!name)]]]])
 
-(putprop! 'LITTLE 'FEATURES #{'ADJ})
-(putprop! 'LITTLE 'SEMANTICS '((MEASURE (measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction nil))
-                               (ADJ (object [:markers '(!PHYSOB !LITTLE) :procedure '((!MORE !SIZE (128 128 128) ***))]))))
+(putprop! 'LITTLE 'FEATURES ['ADJ])
+(putprop! 'LITTLE 'SEMANTICS [['MEASURE '(measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction nil)]
+                               ['ADJ '(object [:markers '(!PHYSOB !LITTLE) :procedure '((!MORE !SIZE (128 128 128) ***))])]])
 
-(putprop! 'LONG 'FEATURES #{'ADJ})
-(putprop! 'LONG 'SEMANTICS '((MEASURE (measure :dimension '!LENGTH :restrictions '(!PHYSOB) :direction true))
-                             (ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !LENGTH *** (128 128 128)))]))))
+(putprop! 'LONG 'FEATURES ['ADJ])
+(putprop! 'LONG 'SEMANTICS [['MEASURE '(measure :dimension '!LENGTH :restrictions '(!PHYSOB) :direction true)]
+                             ['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !LENGTH *** (128 128 128)))])]])
 
-(putprop! 'MAKE 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'MAKE 'SEMANTICS '((VB ((TRANS (!build))))))
+(putprop! 'MAKE 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'MAKE 'SEMANTICS [['VB [['TRANS '(!build)]]]])
 
-(putprop! 'MANY 'FEATURES #{'DET 'QNTFR 'NPL 'NONUM 'NUMD 'NUMDAS})
-(putprop! 'MANY 'SEMANTICS '((NUMD (list '> (dec *num*))) (DET true)))
+(putprop! 'MANY 'FEATURES ['DET 'QNTFR 'NPL 'NONUM 'NUMD 'NUMDAS])
+(putprop! 'MANY 'SEMANTICS [['NUMD '(list '> (dec *num*))] ['DET true]])
 
 (putprop! 'ME 'IRREGULAR '(I (OBJ) (SUBJ)))
 
-(putprop! 'MORE 'FEATURES #{'NUMD 'NUMDAN})
-(putprop! 'MORE 'SEMANTICS '((NUMD (list '> *num*))))
+(putprop! 'MORE 'FEATURES ['NUMD 'NUMDAN])
+(putprop! 'MORE 'SEMANTICS [['NUMD '(list '> *num*)]])
 
-(putprop! 'MOST 'FEATURES #{'NUMD 'NUMDAT 'DET 'QNTFR 'NPL 'NONUM})
-(putprop! 'MOST 'SEMANTICS '((NUMD (list '< (inc *num*)))))
+(putprop! 'MOST 'FEATURES ['NUMD 'NUMDAT 'DET 'QNTFR 'NPL 'NONUM])
+(putprop! 'MOST 'SEMANTICS [['NUMD '(list '< (inc *num*))]])
 
-(putprop! 'MOVE 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'MOVE 'SEMANTICS '((VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!PHYSOB))) :procedure '((!PUT *!2* PLACE *TIME)) :markers '((!MOTION))]))))))
+(putprop! 'MOVE 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'MOVE 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!PHYSOB))) :procedure '((!PUT *!2* PLACE *TIME)) :markers '((!MOTION))])]]]])
 
 (putprop! 'MY 'IRREGULAR '(I (POSS) (SUBJ)))
 
-(putprop! 'NAME 'FEATURES #{'NOUN 'NS 'VB 'INF 'TRANS})
-(putprop! 'NAME 'SEMANTICS '((NOUN (object ['(!NAME !ROLE) '((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL *!2* *!1*)))]))
-                             (VB ((TRANS (!name))))))
+(putprop! 'NAME 'FEATURES ['NOUN 'NS 'VB 'INF 'TRANS])
+(putprop! 'NAME 'SEMANTICS [['NOUN '(object ['(!NAME !ROLE) '((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL *!2* *!1*)))])]
+                             ['VB [['TRANS '(!name)]]]])
 
-(putprop! 'NARROW 'FEATURES #{'ADJ})
-(putprop! 'NARROW 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !WIDTH (128 0 0) ***))]))
-                               (MEASURE (measure :dimension '!WIDTH :restrictions '(!PHSYOB) :direction nil))))
+(putprop! 'NARROW 'FEATURES ['ADJ])
+(putprop! 'NARROW 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !WIDTH (128 0 0) ***))])]
+                               ['MEASURE '(measure :dimension '!WIDTH :restrictions '(!PHSYOB) :direction nil)]])
 
-(putprop! 'NEITHER 'FEATURES #{'B-SPECIAL})
+(putprop! 'NEITHER 'FEATURES ['B-SPECIAL])
 (putprop! 'NEITHER 'SEMANTICS true)
 (putprop! 'NEITHER 'B-SPECIAL '(both 'NOR))
 
-(putprop! 'NICE 'FEATURES #{'ADJ})
-(putprop! 'NICE 'SEMANTICS '((ADJ (object [:markers '(!THING) :procedure '((!LIKE ßFRIEND ***))]))))
+(putprop! 'NICE 'FEATURES ['ADJ])
+(putprop! 'NICE 'SEMANTICS [['ADJ '(object [:markers '(!THING) :procedure '((!LIKE ßFRIEND ***))])]])
 
-(putprop! 'NO 'FEATURES #{'DET 'QNTFR 'NS 'NPL})
-(putprop! 'NO 'SEMANTICS '((DET 'NO)))
+(putprop! 'NO 'FEATURES ['DET 'QNTFR 'NS 'NPL])
+(putprop! 'NO 'SEMANTICS [['DET 'NO]])
 
-(putprop! 'NONE 'FEATURES #{'DET 'QNTFR 'NPL 'NS 'NONUM})
-(putprop! 'NONE 'SEMANTICS '((DET 'NO)))
+(putprop! 'NONE 'FEATURES ['DET 'QNTFR 'NPL 'NS 'NONUM])
+(putprop! 'NONE 'SEMANTICS [['DET 'NO]])
 
-(putprop! 'NOR 'FEATURES #{'SPECIAL})
+(putprop! 'NOR 'FEATURES ['SPECIAL])
 (putprop! 'NOR 'SEMANTICS true)
 (putprop! 'NOR 'SPECIAL '(conjo))
 
-(putprop! 'NOT 'FEATURES #{'ADV 'NEG})
-(putprop! 'NOT 'SEMANTICS '((ADV true)))
+(putprop! 'NOT 'FEATURES ['ADV 'NEG])
+(putprop! 'NOT 'SEMANTICS [['ADV true]])
 
-(putprop! 'NOTHING 'FEATURES #{'TPRON 'NEG 'NS})
-(putprop! 'NOTHING 'SEMANTICS '((TPRON 'NO)))
+(putprop! 'NOTHING 'FEATURES ['TPRON 'NEG 'NS])
+(putprop! 'NOTHING 'SEMANTICS [['TPRON 'NO]])
 
-(putprop! 'NOW 'FEATURES #{'ADV 'TIMW})
-(putprop! 'NOW 'SEMANTICS '((ADV (or (= (cadr (assq 'TIME *fe*)) 'ßNOW) (bug! 'now "DEFINITION")))))
+(putprop! 'NOW 'FEATURES ['ADV 'TIMW])
+(putprop! 'NOW 'SEMANTICS [['ADV '(or (= (cadr (assq 'TIME *fe*)) 'ßNOW) (bug! 'now "DEFINITION"))]])
 
-(putprop! 'OBJECT 'FEATURES #{'NOUN 'NS})
-(putprop! 'OBJECT 'SEMANTICS '((NOUN (object [:markers '(!PHYSOB !VAGUE) :procedure '((!PHYSOB ***))]))))
+(putprop! 'OBJECT 'FEATURES ['NOUN 'NS])
+(putprop! 'OBJECT 'SEMANTICS [['NOUN '(object [:markers '(!PHYSOB !VAGUE) :procedure '((!PHYSOB ***))])]])
 
-(putprop! 'OF 'FEATURES #{'PREP 'PREP2 'OF})
-(putprop! 'OF 'SEMANTICS '((PREP (and (cq 'NG)
+(putprop! 'OF 'FEATURES ['PREP 'PREP2 'OF])
+(putprop! 'OF 'SEMANTICS [['PREP '(and (cq 'NG)
                                 (relation
                                     [:restrictions '(((!DIRECTION)) ((!PHYSOB)))
                                         :procedure '((!EVAL (list '!DIRECTION
                                                         (cadr (SETQ XX (or (assq '!DIRECTION (cddaar (INTERP MAP1))) (bug! 'of "DEFINITION"))))
-                                                        (if (caddr XX) '*OF '*!2*) (if (caddr XX) '*!2* '*OF) '*TIME)))])))
-                           (PREP2 true)))
+                                                        (if (caddr XX) '*OF '*!2*) (if (caddr XX) '*!2* '*OF) '*TIME)))]))]
+                           ['PREP2 true]])
 
-(putprop! 'OFF 'FEATURES #{'PRT})
-(putprop! 'OFF 'SEMANTICS '((PRT true)))
+(putprop! 'OFF 'FEATURES ['PRT])
+(putprop! 'OFF 'SEMANTICS [['PRT true]])
 
-(putprop! 'ON 'FEATURES #{'PREP 'PLACE})
-(putprop! 'ON 'SEMANTICS '((PREP (!on))))
+(putprop! 'ON 'FEATURES ['PREP 'PLACE])
+(putprop! 'ON 'SEMANTICS [['PREP '(!on)]])
 
 (putprop! 'ON-TOP-OF 'ROOT '(ON TOP OF))
-(putprop! 'ON-TOP-OF 'FEATURES #{'PREP 'COMBINATION})
-(putprop! 'ON-TOP-OF 'SEMANTICS '(!on))
+(putprop! 'ON-TOP-OF 'FEATURES ['PREP 'COMBINATION])
+(putprop! 'ON-TOP-OF 'SEMANTICS '(!on))
 
-(putprop! 'ONE 'FEATURES #{'NUM 'NOUN 'NS})
-(putprop! 'ONE 'SEMANTICS '((NOUN (smone)) (NUM 1)))
+(putprop! 'ONE 'FEATURES ['NUM 'NOUN 'NS])
+(putprop! 'ONE 'SEMANTICS [['NOUN '(smone)] ['NUM 1]])
 
-(putprop! 'ONLY 'FEATURES #{'NUMD 'NUMDALONE})
-(putprop! 'ONLY 'SEMANTICS '((NUMD (list 'EXACTLY *num*))))
+(putprop! 'ONLY 'FEATURES ['NUMD 'NUMDALONE])
+(putprop! 'ONLY 'SEMANTICS [['NUMD '(list 'EXACTLY *num*)]])
 
-(putprop! 'ONTO 'FEATURES #{'PREP 'PLACE})
-(putprop! 'ONTO 'SEMANTICS '((PREP (!on))))
+(putprop! 'ONTO 'FEATURES ['PREP 'PLACE])
+(putprop! 'ONTO 'SEMANTICS [['PREP '(!on)]])
 
-(putprop! 'OR 'FEATURES #{'SPECIAL})
+(putprop! 'OR 'FEATURES ['SPECIAL])
 (putprop! 'OR 'SEMANTICS true)
 (putprop! 'OR 'SPECIAL '(conjo))
 
-(putprop! 'OUT 'FEATURES #{'PRT})
-(putprop! 'OUT 'SEMANTICS '((PRT true)))
+(putprop! 'OUT 'FEATURES ['PRT])
+(putprop! 'OUT 'SEMANTICS [['PRT true]])
 
 (putprop! 'OUT-OF 'ROOT '(OUT OF))
-(putprop! 'OUT-OF 'FEATURES #{'PREP 'COMBINATION})
-(putprop! 'OUT-OF 'SEMANTICS '(!OUTOF))
+(putprop! 'OUT-OF 'FEATURES ['PREP 'COMBINATION])
+(putprop! 'OUT-OF 'SEMANTICS '(!OUTOF))
 
-(putprop! 'OVER 'FEATURES #{'PREP 'PLACE})
-(putprop! 'OVER 'SEMANTICS '((PREP (!loc '!ABOVE true))))
+(putprop! 'OVER 'FEATURES ['PREP 'PLACE])
+(putprop! 'OVER 'SEMANTICS [['PREP '(!loc '!ABOVE true)]])
 
-(putprop! 'PICK 'FEATURES #{'VPRT 'VB 'INF 'TRANS})
-(putprop! 'PICK 'SEMANTICS '((VB ((TRANS (!notice))))))
+(putprop! 'PICK 'FEATURES ['VPRT 'VB 'INF 'TRANS])
+(putprop! 'PICK 'SEMANTICS [['VB [['TRANS '(!notice)]]]])
 
 (putprop! 'PICK-UP 'ROOT '(PICK UP))
-(putprop! 'PICK-UP 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'PICK-UP 'SEMANTICS '((TRANS
-    (relation
+(putprop! 'PICK-UP 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'PICK-UP 'SEMANTICS [['TRANS
+    '(relation
         [:restrictions '(((!ANIMATE)) ((!MANIP)))
             :markers '(!EVENT)
-            :procedure '((!EVAL (if (memq (num? *smob1*) '(1 NS)) '(!PICKUP *!2* *TIME) '(!PUTIN *!2* ßBOX *TIME))))]))))
+            :procedure '((!EVAL (if (memq (num? *smob1*) '(1 NS)) '(!PICKUP *!2* *TIME) '(!PUTIN *!2* ßBOX *TIME))))])]])
 
-(putprop! 'PLEASE 'FEATURES #{'B-SPECIAL})
+(putprop! 'PLEASE 'FEATURES ['B-SPECIAL])
 (putprop! 'PLEASE 'SEMANTICS true)
 (putprop! 'PLEASE 'B-SPECIAL '(flushme))
 
-(putprop! 'POINTED 'FEATURES #{'ADJ})
-(putprop! 'POINTED 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB !POINTED) :procedure '((!SHAPE *** !POINTED))]))))
+(putprop! 'POINTED 'FEATURES ['ADJ])
+(putprop! 'POINTED 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB !POINTED) :procedure '((!SHAPE *** !POINTED))])]])
 
 (putprop! 'PUT 'PAST 'PUT)
-(putprop! 'PUT 'FEATURES #{'INF 'PAST 'VB 'TRANSL 'VPRT})
-(putprop! 'PUT 'SEMANTICS '((VB ((TRANSL
-    (relation
+(putprop! 'PUT 'FEATURES ['INF 'PAST 'VB 'TRANSL 'VPRT])
+(putprop! 'PUT 'SEMANTICS [['VB [['TRANSL
+    '(relation
         [:restrictions '(((!ANIMATE)) ((!PHYSOB)) (*smobl* (!PLACE)))
             :markers '(!EVENT)
             :procedure '(!EVAL
@@ -4973,117 +4975,117 @@
                                 '!ON (list '!PUTON '*!2* (cadr %) '*TIME)
                                 '!IN (list '!PUTIN '*!2* (cadr %) '*TIME)
                                 (bug! 'put "DEFINITION"))
-                    (relations? *smobl*))))]))))))
+                    (relations? *smobl*))))])]]]])
 
 (putprop! 'PUT-AWAY 'ROOT '(PUT AWAY))
-(putprop! 'PUT-AWAY 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'PUT-AWAY 'SEMANTICS '((TRANS (relation [:restrictions '(((!ANIMATE)) ((!MANIP))) :markers '(!EVENT) :procedure '((!PUTIN *!2* ßBOX *TIME))]))))
+(putprop! 'PUT-AWAY 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'PUT-AWAY 'SEMANTICS [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!MANIP))) :markers '(!EVENT) :procedure '((!PUTIN *!2* ßBOX *TIME))])]])
 
 (putprop! 'PUT-DOWN 'ROOT '(PUT DOWN))
-(putprop! 'PUT-DOWN 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'PUT-DOWN 'SEMANTICS '((TRANS (relation [:restrictions '(((!ANIMATE)) ((!MANIP))) :markers '(!EVENT) :procedure '((!PUTON *!2* ßTABLE *TIME))]))))
+(putprop! 'PUT-DOWN 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'PUT-DOWN 'SEMANTICS [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!MANIP))) :markers '(!EVENT) :procedure '((!PUTON *!2* ßTABLE *TIME))])]])
 
 (putprop! 'PUT-TOGETHER 'ROOT '(PUT TOGETHER))
-(putprop! 'PUT-TOGETHER 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'PUT-TOGETHER 'SEMANTICS '((TRANS (!build))))
+(putprop! 'PUT-TOGETHER 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'PUT-TOGETHER 'SEMANTICS [['TRANS '(!build)]])
 
-(putprop! 'PYRAMID 'FEATURES #{'NOUN 'NS})
-(putprop! 'PYRAMID 'SEMANTICS '((NOUN (object [:markers '(!PHYSOB !POINTED) :procedure '((!IS *** !PYRAMID))]))))
+(putprop! 'PYRAMID 'FEATURES ['NOUN 'NS])
+(putprop! 'PYRAMID 'SEMANTICS [['NOUN '(object [:markers '(!PHYSOB !POINTED) :procedure '((!IS *** !PYRAMID))])]])
 
-(putprop! 'RED 'FEATURES #{'ADJ})
-(putprop! 'RED 'SEMANTICS '((ADJ (!color '!RED))))
+(putprop! 'RED 'FEATURES ['ADJ])
+(putprop! 'RED 'SEMANTICS [['ADJ '(!color '!RED)]])
 
-(putprop! 'RELEASE 'FEATURES #{'VB 'TRANS 'INF})
+(putprop! 'RELEASE 'FEATURES ['VB 'TRANS 'INF])
 
-(putprop! 'RIGHT 'FEATURES #{'NOUN 'NS})
-(putprop! 'RIGHT 'SEMANTICS '((NOUN (object [:markers '(!DIRECTION) :procedure '((!DIRECTION !RIGHT true))]))))
+(putprop! 'RIGHT 'FEATURES ['NOUN 'NS])
+(putprop! 'RIGHT 'SEMANTICS [['NOUN '(object [:markers '(!DIRECTION) :procedure '((!DIRECTION !RIGHT true))])]])
 
-(putprop! 'ROUND 'FEATURES #{'ADJ})
-(putprop! 'ROUND 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB !ROUND) :procedure '((!SHAPE *** !ROUND))]))))
+(putprop! 'ROUND 'FEATURES ['ADJ])
+(putprop! 'ROUND 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB !ROUND) :procedure '((!SHAPE *** !ROUND))])]])
 
 (putprop! 'SAW 'IRREGULAR '(SEE (PAST) (INF)))
 
-(putprop! 'SEE 'FEATURES #{'VB 'INF 'TRANS})
+(putprop! 'SEE 'FEATURES ['VB 'INF 'TRANS])
 
-(putprop! 'SET 'FEATURES #{'VB 'INF})
-(putprop! 'SET 'SEMANTICS '((VB true)))
+(putprop! 'SET 'FEATURES ['VB 'INF])
+(putprop! 'SET 'SEMANTICS [['VB true]])
 
 (putprop! 'SET-DOWN 'ROOT '(SET DOWN))
-(putprop! 'SET-DOWN 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'SET-DOWN 'SEMANTICS '((TRANS (relation [:restrictions '(((!ANIMATE)) ((!MANIP))) :markers '(!EVENT) :procedure '((!PUTON *!2* ßTABLE *TIME))]))))
+(putprop! 'SET-DOWN 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'SET-DOWN 'SEMANTICS [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!MANIP))) :markers '(!EVENT) :procedure '((!PUTON *!2* ßTABLE *TIME))])]])
 
-(putprop! 'SHAPE 'FEATURES #{'NOUN 'NS})
-(putprop! 'SHAPE 'SEMANTICS '((NOUN (object [:markers '(!SHAPE) :procedure '((!IS *** !SHAPE))]))))
+(putprop! 'SHAPE 'FEATURES ['NOUN 'NS])
+(putprop! 'SHAPE 'SEMANTICS [['NOUN '(object [:markers '(!SHAPE) :procedure '((!IS *** !SHAPE))])]])
 
-(putprop! 'SHE 'FEATURES #{'PRON 'SUBJ 'NS})
+(putprop! 'SHE 'FEATURES ['PRON 'SUBJ 'NS])
 
-(putprop! 'SHORT 'FEATURES #{'ADJ})
-(putprop! 'SHORT 'SEMANTICS '((MEASURE (measure :dimension '!HEIGHT :restrictions '(!PHYSOB) :direction nil))
-                              (ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !HEIGHT (128 0 0) ***))]))))
+(putprop! 'SHORT 'FEATURES ['ADJ])
+(putprop! 'SHORT 'SEMANTICS [['MEASURE '(measure :dimension '!HEIGHT :restrictions '(!PHYSOB) :direction nil)]
+                              ['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !HEIGHT (128 0 0) ***))])]])
 
 (putprop! 'SHRDLU 'REFER 'ßSHRDLU)
 
-(putprop! 'SINCE 'FEATURES #{'BINDER 'TIME})
-(putprop! 'SINCE 'SEMANTICS '((BINDER (smbinder *tss* *end* nil))))
+(putprop! 'SINCE 'FEATURES ['BINDER 'TIME])
+(putprop! 'SINCE 'SEMANTICS [['BINDER '(smbinder *tss* *end* nil)]])
 
-(putprop! 'SIT 'FEATURES #{'VB 'INF 'ITRNSL})
-(putprop! 'SIT 'SEMANTICS '((VB ((ITRNSL
-    (relation
+(putprop! 'SIT 'FEATURES ['VB 'INF 'ITRNSL])
+(putprop! 'SIT 'SEMANTICS [['VB [['ITRNSL
+    '(relation
         [:restrictions '(((!PHYSOB)) (*smobl* (!PLACE)))
             :procedure '(!EVAL
                 (doall (map #(if (memq (car %) '(!ON !IN)) (list '!SUPPORT (cadr %) '*!1* '*TIME) (bug! 'sit "DEFINITION"))
-                    (relations? *smobl*))))]))))))
+                    (relations? *smobl*))))])]]]])
 
-(putprop! 'SIZE 'FEATURES #{'NOUN 'NS})
-(putprop! 'SIZE 'SEMANTICS '((NOUN (object [:markers '(!SIZE) :procedure '((!IS *** !SIZE))]))))
+(putprop! 'SIZE 'FEATURES ['NOUN 'NS])
+(putprop! 'SIZE 'SEMANTICS [['NOUN '(object [:markers '(!SIZE) :procedure '((!IS *** !SIZE))])]])
 
-(putprop! 'SMALL 'FEATURES #{'ADJ})
-(putprop! 'SMALL 'SEMANTICS '((MEASURE (measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction nil))
-                              (ADJ (object [:markers '(!PHYSOB !LITTLE) :procedure '((!MORE !SIZE (128 128 128) ***))]))))
+(putprop! 'SMALL 'FEATURES ['ADJ])
+(putprop! 'SMALL 'SEMANTICS [['MEASURE '(measure :dimension '!SIZE :restrictions '(!PHYSOB) :direction nil)]
+                              ['ADJ '(object [:markers '(!PHYSOB !LITTLE) :procedure '((!MORE !SIZE (128 128 128) ***))])]])
 
-(putprop! 'SOME 'FEATURES #{'DET 'QNTFR 'NS 'NPL 'NONUM})
-(putprop! 'SOME 'SEMANTICS '((DET 'INDEF)))
+(putprop! 'SOME 'FEATURES ['DET 'QNTFR 'NS 'NPL 'NONUM])
+(putprop! 'SOME 'SEMANTICS [['DET 'INDEF]])
 
-(putprop! 'SOMETHING 'FEATURES #{'TPRON 'NS})
-(putprop! 'SOMETHING 'SEMANTICS '((TPRON 'INDEF)))
+(putprop! 'SOMETHING 'FEATURES ['TPRON 'NS])
+(putprop! 'SOMETHING 'SEMANTICS [['TPRON 'INDEF]])
 
-(putprop! 'SPHERE 'FEATURES #{'NOUN 'NS})
+(putprop! 'SPHERE 'FEATURES ['NOUN 'NS])
 
-(putprop! 'SQUARE 'FEATURES #{'ADJ})
-(putprop! 'SQUARE 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB !RECTANGULAR) :procedure '((!SHAPE ** !RECTANGULAR))]))))
+(putprop! 'SQUARE 'FEATURES ['ADJ])
+(putprop! 'SQUARE 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB !RECTANGULAR) :procedure '((!SHAPE ** !RECTANGULAR))])]])
 
-(putprop! 'STACK 'FEATURES #{'NOUN 'NS 'VB 'INF 'VPRT 'TRANS})
-(putprop! 'STACK 'SEMANTICS '((NOUN (object [:markers '(!STACK) :procedure '((!IS *** !STACK))]))
-                              (VB ((TRANS (!stackup))))))
+(putprop! 'STACK 'FEATURES ['NOUN 'NS 'VB 'INF 'VPRT 'TRANS])
+(putprop! 'STACK 'SEMANTICS [['NOUN '(object [:markers '(!STACK) :procedure '((!IS *** !STACK))])]
+                              ['VB [['TRANS '(!stackup)]]]])
 
 (putprop! 'STACK-UP 'ROOT '(STACK UP))
-(putprop! 'STACK-UP 'FEATURES #{'COMBINATION 'TRANS})
-(putprop! 'STACK-UP 'SEMANTICS '((TRANS (!stackup))))
+(putprop! 'STACK-UP 'FEATURES ['COMBINATION 'TRANS])
+(putprop! 'STACK-UP 'SEMANTICS [['TRANS '(!stackup)]])
 
-(putprop! 'START 'FEATURES #{'VB 'INF 'TRANS 'INGOB1 'TOOB1})
-(putprop! 'START 'SEMANTICS '((VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!START *!2* *TIME))]))))))
+(putprop! 'START 'FEATURES ['VB 'INF 'TRANS 'INGOB1 'TOOB1])
+(putprop! 'START 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!START *!2* *TIME))])]]]])
 
-(putprop! 'SUPPORT 'FEATURES #{'VB 'INF 'TRANS 'IMPERF 'NOUN 'NS})
-(putprop! 'SUPPORT 'SEMANTICS '((NOUN (object [:markers '(!PHYSOB !ROLE) :procedure '((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT *!1* *!2*)))]))
-                                (VB ((TRANS (relation [:restrictions '(((!PHYSOB)) ((!MANIP))) :procedure '((!SUPPORT *!1* *!2* *TIME))]))))))
+(putprop! 'SUPPORT 'FEATURES ['VB 'INF 'TRANS 'IMPERF 'NOUN 'NS])
+(putprop! 'SUPPORT 'SEMANTICS [['NOUN '(object [:markers '(!PHYSOB !ROLE) :procedure '((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT *!1* *!2*)))])]
+                                ['VB [['TRANS '(relation [:restrictions '(((!PHYSOB)) ((!MANIP))) :procedure '((!SUPPORT *!1* *!2* *TIME))])]]]])
 
-(putprop! 'TABLE 'FEATURES #{'NOUN 'NS})
-(putprop! 'TABLE 'SEMANTICS '((NOUN (object [:markers '(!TABLE) :procedure '((!IS *** !TABLE))]))))
+(putprop! 'TABLE 'FEATURES ['NOUN 'NS])
+(putprop! 'TABLE 'SEMANTICS [['NOUN (object [:markers '(!TABLE) :procedure '((!IS *** !TABLE))])]])
 
-(putprop! 'TAKE 'FEATURES #{'VB 'INF 'TRANSL 'TRANS})
+(putprop! 'TAKE 'FEATURES ['VB 'INF 'TRANSL 'TRANS])
 
-(putprop! 'TALL 'FEATURES #{'ADJ})
-(putprop! 'TALL 'SEMANTICS '((MEASURE (measure :dimension '!HEIGHT :restrictions '(!PHYSOB) :direction true))
-                             (ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !HEIGHT *** (128 0 0)))]))))
+(putprop! 'TALL 'FEATURES ['ADJ])
+(putprop! 'TALL 'SEMANTICS [['MEASURE (measure :dimension '!HEIGHT :restrictions '(!PHYSOB) :direction true)]
+                             ['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !HEIGHT *** (128 0 0)))])]])
 
-(putprop! 'TELL 'FEATURES #{'VB 'INF 'TRANS2 'TOOB2})
-(putprop! 'TELL 'SEMANTICS '((VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!WANT *!1* *!2* *TIME))]))))))
+(putprop! 'TELL 'FEATURES ['VB 'INF 'TRANS2 'TOOB2])
+(putprop! 'TELL 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!WANT *!1* *!2* *TIME))])]]]])
 
-(putprop! 'THAN 'FEATURES #{'THAN})
-(putprop! 'THAN 'SEMANTICS '((nil? true)))
+(putprop! 'THAN 'FEATURES ['THAN])
+(putprop! 'THAN 'SEMANTICS [['NULL true]])
 
-(putprop! 'THANK 'FEATURES #{'B-SPECIAL})
-(putprop! 'THANK 'SEMANTICS '(thank))
+(putprop! 'THANK 'FEATURES ['B-SPECIAL])
+(putprop! 'THANK 'SEMANTICS '(thank))
 (putprop! 'THANK 'B-SPECIAL '(thank))
 
 (defn- thank []
@@ -5094,11 +5096,11 @@
         (when-not *nn* (ß_G))
         (set! *special* 'DONE)))
 
-(putprop! 'THAT 'FEATURES #{'NS 'THAT 'DET 'DEM 'DEF 'PRONREL 'INCOM})
-(putprop! 'THAT 'SEMANTICS '((PRONREL true) (DET (SMTHAT)) (nil? true)))
+(putprop! 'THAT 'FEATURES ['NS 'THAT 'DET 'DEM 'DEF 'PRONREL 'INCOM])
+(putprop! 'THAT 'SEMANTICS [['PRONREL true] ['DET '(smthat)] ['NULL true]])
 
-(putprop! 'THE 'FEATURES #{'DET 'NPL 'NS 'DEF})
-(putprop! 'THE 'SEMANTICS '((DET true)))
+(putprop! 'THE 'FEATURES ['DET 'NPL 'NS 'DEF])
+(putprop! 'THE 'SEMANTICS [['DET true]])
 
 (putprop! 'THEIR 'IRREGULAR '(THEY (POSS) nil))
 
@@ -5106,131 +5108,131 @@
 
 (def- lastime nil)
 
-(putprop! 'THEN 'FEATURES #{'ADV 'TIMW})
-(putprop! 'THEN 'SEMANTICS '((ADV
-    (and lastime
+(putprop! 'THEN 'FEATURES ['ADV 'TIMW])
+(putprop! 'THEN 'SEMANTICS [['ADV
+    '(and lastime
         (RPLACD (cddadr (or (let [x (assq 'TIME *fe*)] (and x (not (term? (cadr x))) x)) '(TIME (!TIME (PAST) nil))))
-            (list (or (cadddr lastime) (car (cddddr lastime))) (or (car (cddddr lastime)) (cadddr lastime))))))))
+            (list (or (cadddr lastime) (car (cddddr lastime))) (or (car (cddddr lastime)) (cadddr lastime)))))]])
 
-(putprop! 'THERE 'FEATURES #{'ADV 'PLACE})
-(putprop! 'THERE 'SEMANTICS '((ADV true)))
+(putprop! 'THERE 'FEATURES ['ADV 'PLACE])
+(putprop! 'THERE 'SEMANTICS [['ADV true]])
 
-(putprop! 'THEY 'FEATURES #{'PRON 'SUBJ 'NPL})
-(putprop! 'THEY 'SEMANTICS '((PRON (smit 'THEY))))
+(putprop! 'THEY 'FEATURES ['PRON 'SUBJ 'NPL])
+(putprop! 'THEY 'SEMANTICS [['PRON '(smit 'THEY)]])
 
-(putprop! 'THICK 'FEATURES #{'ADJ})
-(putprop! 'THICK 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !THICKNESS *** (0 128 0)))]))
-                              (MEASURE (measure :dimension '!THICKNESS :restrictions '(!PHYSOB) :direction true))))
+(putprop! 'THICK 'FEATURES ['ADJ])
+(putprop! 'THICK 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !THICKNESS *** (0 128 0)))])]
+                              ['MEASURE '(measure :dimension '!THICKNESS :restrictions '(!PHYSOB) :direction true)]])
 
-(putprop! 'THIN 'FEATURES #{'ADJ})
-(putprop! 'THIN 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !THICKNESS (0 128 0) ***))]))
-                             (MEASURE (measure :dimension '!THICKNESS :restrictions '(!PHYSOB) :direction nil))))
+(putprop! 'THIN 'FEATURES ['ADJ])
+(putprop! 'THIN 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !THICKNESS (0 128 0) ***))])]
+                             ['MEASURE '(measure :dimension '!THICKNESS :restrictions '(!PHYSOB) :direction nil)]])
 
-(putprop! 'THING 'FEATURES #{'NOUN 'NS})
-(putprop! 'THING 'SEMANTICS '((NOUN (object [:markers '(!THING !VAGUE !PHYSOB) :procedure '((!PHYSOB  *** ))]))))
+(putprop! 'THING 'FEATURES ['NOUN 'NS])
+(putprop! 'THING 'SEMANTICS [['NOUN '(object [:markers '(!THING !VAGUE !PHYSOB) :procedure '((!PHYSOB  *** ))])]])
 
-(putprop! 'THIS 'FEATURES #{'NS 'DET 'DEM 'DEF})
+(putprop! 'THIS 'FEATURES ['NS 'DET 'DEM 'DEF])
 
-(putprop! 'THREE 'FEATURES #{'NUM})
-(putprop! 'THREE 'SEMANTICS '((NUM 3)))
+(putprop! 'THREE 'FEATURES ['NUM])
+(putprop! 'THREE 'SEMANTICS [['NUM 3]])
 
-(putprop! 'TIME 'FEATURES #{'NOUN 'NS 'TIM1})
+(putprop! 'TIME 'FEATURES ['NOUN 'NS 'TIM1])
 
-(putprop! 'TO 'FEATURES #{'PREP})
-(putprop! 'TO 'SEMANTICS '((PREP (relation [:restrictions '(((!PHYSOB)) ((!DIRECTION))) :procedure '((!EVAL (SUBTOP '*!1* '*OF (REFERENCE? *smob1*))))]))))
+(putprop! 'TO 'FEATURES ['PREP])
+(putprop! 'TO 'SEMANTICS [['PREP '(relation [:restrictions '(((!PHYSOB)) ((!DIRECTION))) :procedure '((!EVAL (SUBTOP '*!1* '*OF (REFERENCE? *smob1*))))])]])
 
-(putprop! 'TOGETHER 'FEATURES #{'PRT})
-(putprop! 'TOGETHER 'SEMANTICS '((PRT true)))
+(putprop! 'TOGETHER 'FEATURES ['PRT])
+(putprop! 'TOGETHER 'SEMANTICS [['PRT true]])
 
 (putprop! 'TOLD 'IRREGULAR '(TELL (PAST) (INF)))
 
-(putprop! 'TOP 'FEATURES #{'PREP2})
-(putprop! 'TOP 'SEMANTICS '((PREP2 true)))
+(putprop! 'TOP 'FEATURES ['PREP2])
+(putprop! 'TOP 'SEMANTICS [['PREP2 true]])
 
-(putprop! 'TOUCH 'FEATURES #{'VB 'INF 'TRANS})
-(putprop! 'TOUCH 'SEMANTICS '((VB ((TRANS (!grasp))))))
+(putprop! 'TOUCH 'FEATURES ['VB 'INF 'TRANS])
+(putprop! 'TOUCH 'SEMANTICS [['VB [['TRANS '(!grasp)]]]])
 
-(putprop! 'TOY 'FEATURES #{'NOUN 'NS})
-(putprop! 'TOY 'SEMANTICS '((NOUN (object [:markers '(!PHYSOB) :procedure '((!MANIP ***))]))))
+(putprop! 'TOY 'FEATURES ['NOUN 'NS])
+(putprop! 'TOY 'SEMANTICS [['NOUN '(object [:markers '(!PHYSOB) :procedure '((!MANIP ***))])]])
 
-(putprop! 'TWO 'FEATURES #{'NUM})
-(putprop! 'TWO 'SEMANTICS '((NUM 2)))
+(putprop! 'TWO 'FEATURES ['NUM])
+(putprop! 'TWO 'SEMANTICS [['NUM 2]])
 
-(putprop! 'UNDER 'FEATURES #{'PREP 'PLACE})
-(putprop! 'UNDER 'SEMANTICS '((PREP (!loc '!ABOVE false))))
+(putprop! 'UNDER 'FEATURES ['PREP 'PLACE])
+(putprop! 'UNDER 'SEMANTICS [['PREP '(!loc '!ABOVE false)]])
 
-(putprop! 'UNDERNEATH 'FEATURES #{'PREP 'PLACE})
-(putprop! 'UNDERNEATH 'SEMANTICS '((PREP ((!loc '!ABOVE false)))))
+(putprop! 'UNDERNEATH 'FEATURES ['PREP 'PLACE])
+(putprop! 'UNDERNEATH 'SEMANTICS [['PREP '(!loc '!ABOVE false)]])
 
-(putprop! 'UP 'FEATURES #{'PRT})
-(putprop! 'UP 'SEMANTICS '((PRT true)))
+(putprop! 'UP 'FEATURES ['PRT])
+(putprop! 'UP 'SEMANTICS [['PRT true]])
 
 (putprop! 'US 'IRREGULAR '(WE (OBJ) (SUBJ)))
 
-(putprop! 'WANT 'FEATURES #{'VB 'INF 'TRANS 'TOOB 'SUBTOB})
-(putprop! 'WANT 'SEMANTICS '((VB ((TRANS (relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!WANT *!1* *!2* *TIME))]))))))
+(putprop! 'WANT 'FEATURES ['VB 'INF 'TRANS 'TOOB 'SUBTOB])
+(putprop! 'WANT 'SEMANTICS [['VB [['TRANS '(relation [:restrictions '(((!ANIMATE)) ((!EVENT))) :markers '(!EVENT) :procedure '((!WANT *!1* *!2* *TIME))])]]]])
 
 (putprop! 'WAS 'IRREGULAR '(BE (V3PS VFS PAST) (INF)))
 
-(putprop! 'WE 'FEATURES #{'PRON 'NPL 'SUBJ})
-(putprop! 'WE 'SEMANTICS '((PRON (smset (list (newcopy 'WE-OSS))))))
+(putprop! 'WE 'FEATURES ['PRON 'NPL 'SUBJ])
+(putprop! 'WE 'SEMANTICS [['PRON '(smset (list (newcopy 'WE-OSS)))]])
 
 (putprop! 'WERE 'IRREGULAR '(BE (VPL PAST) (INF)))
 
-(putprop! 'WHAT 'FEATURES #{'QDET 'DET 'NPL 'PRON 'QPRON 'NS})
-(putprop! 'WHAT 'SEMANTICS '((DET true) (PRON (smset (list (newcopy 'UNKNOWN-OSS))))))
+(putprop! 'WHAT 'FEATURES ['QDET 'DET 'NPL 'PRON 'QPRON 'NS])
+(putprop! 'WHAT 'SEMANTICS [['DET true] ['PRON '(smset (list (newcopy 'UNKNOWN-OSS)))]])
 
-(putprop! 'WHATEVER 'FEATURES #{'PRON 'EVERPRON 'NS})
+(putprop! 'WHATEVER 'FEATURES ['PRON 'EVERPRON 'NS])
 
 (putprop! 'WE 'REFER '(ßSHRDLU ßFRIEND))
 
-(putprop! 'WHERE 'FEATURES #{'QADJ 'PLACE})
-(putprop! 'WHERE 'SEMANTICS '((QADJ (fq! 'WHERE))))
+(putprop! 'WHERE 'FEATURES ['QADJ 'PLACE])
+(putprop! 'WHERE 'SEMANTICS [['QADJ '(fq! 'WHERE)]])
 
-(putprop! 'WHEREVER 'FEATURES #{'PRON 'EVERPRON 'NS})
+(putprop! 'WHEREVER 'FEATURES ['PRON 'EVERPRON 'NS])
 
-(putprop! 'WHEN 'FEATURES #{'QADJ 'BINDER 'TIME})
-(putprop! 'WHEN 'SEMANTICS '((BINDER (smbinder *tss* *start* *end*)) (QADJ (fq! 'WHEN))))
+(putprop! 'WHEN 'FEATURES ['QADJ 'BINDER 'TIME])
+(putprop! 'WHEN 'SEMANTICS [['BINDER '(smbinder *tss* *start* *end*)] ['QADJ '(fq! 'WHEN)]])
 
-(putprop! 'WHENEVER 'FEATURES #{'BINDER})
+(putprop! 'WHENEVER 'FEATURES ['BINDER])
 
-(putprop! 'WHICH 'FEATURES #{'QDET 'DET 'PRONREL 'NS 'NPL})
-(putprop! 'WHICH 'SEMANTICS '((PRONREL true) (DET true)))
+(putprop! 'WHICH 'FEATURES ['QDET 'DET 'PRONREL 'NS 'NPL])
+(putprop! 'WHICH 'SEMANTICS [['PRONREL true] ['DET true]])
 
-(putprop! 'WHICHEVER 'FEATURES #{'DET 'RSQDET 'NS 'NPL})
+(putprop! 'WHICHEVER 'FEATURES ['DET 'RSQDET 'NS 'NPL])
 
-(putprop! 'WHILE 'FEATURES #{'BINDER 'TIME})
-(putprop! 'WHILE 'SEMANTICS '((BINDER (smbinder *tss* *start* *end*))))
+(putprop! 'WHILE 'FEATURES ['BINDER 'TIME])
+(putprop! 'WHILE 'SEMANTICS [['BINDER '(smbinder *tss* *start* *end*)]])
 
-(putprop! 'WHITE 'FEATURES #{'ADJ})
-(putprop! 'WHITE 'SEMANTICS '((ADJ (!color '!WHITE))))
+(putprop! 'WHITE 'FEATURES ['ADJ])
+(putprop! 'WHITE 'SEMANTICS [['ADJ '(!color '!WHITE)]])
 
-(putprop! 'WHO 'FEATURES #{'PRONREL 'QPRON 'PRON 'NS})
-(putprop! 'WHO 'SEMANTICS '((PRONREL true) (PRON (smset (list (newcopy ANIMATE-OSS))))))
+(putprop! 'WHO 'FEATURES ['PRONREL 'QPRON 'PRON 'NS])
+(putprop! 'WHO 'SEMANTICS [['PRONREL true] ['PRON '(smset (list (newcopy ANIMATE-OSS)))]])
 
-(putprop! 'WHOEVER 'FEATURES #{'PRON 'EVERPRON 'NS})
+(putprop! 'WHOEVER 'FEATURES ['PRON 'EVERPRON 'NS])
 
-(putprop! 'WHOSE 'FEATURES #{'DET 'QDET 'NPL 'NS})
+(putprop! 'WHOSE 'FEATURES ['DET 'QDET 'NPL 'NS])
 
-(putprop! 'WHY 'FEATURES #{'QADJ})
-(putprop! 'WHY 'SEMANTICS '((QADJ (fq! 'WHY))))
+(putprop! 'WHY 'FEATURES ['QADJ])
+(putprop! 'WHY 'SEMANTICS [['QADJ '(fq! 'WHY)]])
 
-(putprop! 'WHYEVER 'FEATURES #{'PRON 'EVERPRON 'NS})
+(putprop! 'WHYEVER 'FEATURES ['PRON 'EVERPRON 'NS])
 
-(putprop! 'WIDE 'FEATURES #{'ADJ})
-(putprop! 'WIDE 'SEMANTICS '((ADJ (object [:markers '(!PHYSOB) :procedure '((!MORE !WIDTH *** (0 128 0)))]))
-                             (MEASURE (measure :dimension '!WIDTH :restrictions '(!PHYSOB) :direction true))))
+(putprop! 'WIDE 'FEATURES ['ADJ])
+(putprop! 'WIDE 'SEMANTICS [['ADJ '(object [:markers '(!PHYSOB) :procedure '((!MORE !WIDTH *** (0 128 0)))])]
+                             ['MEASURE '(measure :dimension '!WIDTH :restrictions '(!PHYSOB) :direction true)]])
 
-(putprop! 'WILL 'FEATURES #{'VB 'AUX 'WILL 'MODAL 'V3PS 'VFS 'VPL})
-(putprop! 'WILL 'SEMANTICS '((VB true)))
+(putprop! 'WILL 'FEATURES ['VB 'AUX 'WILL 'MODAL 'V3PS 'VFS 'VPL])
+(putprop! 'WILL 'SEMANTICS [['VB true]])
 
-(putprop! 'WITH 'FEATURES #{'PREP})
+(putprop! 'WITH 'FEATURES ['PREP])
 
-(putprop! 'WOULD 'FEATURES #{'VB 'AUX 'MODAL})
-(putprop! 'WOULD 'SEMANTICS '((VB true)))
+(putprop! 'WOULD 'FEATURES ['VB 'AUX 'MODAL])
+(putprop! 'WOULD 'SEMANTICS [['VB true]])
 
-(putprop! 'YOU 'FEATURES #{'PRON 'NPL 'NS 'SUBJ 'OBJ})
-(putprop! 'YOU 'SEMANTICS '((PRON (smset (list (newcopy 'SHRDLU-OSS))))))
+(putprop! 'YOU 'FEATURES ['PRON 'NPL 'NS 'SUBJ 'OBJ])
+(putprop! 'YOU 'SEMANTICS [['PRON '(smset (list (newcopy 'SHRDLU-OSS)))]])
 
 (putprop! 'YOUR 'IRREGULAR '(YOU (POSS) nil))
 
@@ -5411,8 +5413,8 @@
 (putprop! '!PHYSOB 'THMLIST '((2 '((THUSE TC-PHYSOB)))))
 
 (defn- !propdefine [x]
-    (putprop! x 'FEATURES #{'PROPN 'NS})               ;; CHANGED TO FEATURES FROM 'WORD' IN THE OLD DICTIONARY
-    (putprop! x 'SEMANTICS '((PROPN T))))
+    (putprop! x 'FEATURES ['PROPN 'NS])               ;; CHANGED TO FEATURES FROM 'WORD' IN THE OLD DICTIONARY
+    (putprop! x 'SEMANTICS [['PROPN true]]))
 
 (putprop! '!PROPERTY 'SYSTEM '(!COLOR !SIZE !SHAPE))
 (putprop! '!PROPERTY 'SYS '(!THING))
@@ -5476,24 +5478,24 @@
 ;;
 ;; ############################################################
 
-(putprop! 'ADJ 'ELIM #{'ADJ 'SUP 'COMPAR})
-(putprop! 'ADV 'ELIM #{'ADV 'PREPADV 'TIMW 'TIM2 'ADVADV 'VBAD 'PLACE 'LOBJ})
-(putprop! 'BINDER 'ELIM #{'BINDER 'TIME})
-(putprop! 'CLASF 'ELIM #{'CLASF})
-(putprop! 'DET 'ELIM #{'DET 'NPL 'NS 'PART 'DEF 'INDEF 'NEG 'DEM 'INCOM 'OFD 'QNTFR 'NONUM 'QDET})
-(putprop! 'NOUN 'ELIM #{'NOUN 'POSS 'MASS 'NPL 'NS 'TIM1 'TIME 'MONTH})
-(putprop! 'NUM 'ELIM #{'NUM 'NPL 'NS})
-(putprop! 'NUMD 'ELIM #{'NUMD 'NUMDAN 'NUMDAT 'NUMDALONE})
-(putprop! 'ORD 'ELIM #{'ORD 'TIMORD})
-(putprop! 'POSS 'ELIM #{'NOUN 'NPL 'NS 'MASS 'NFS 'PRON})
-(putprop! 'PREP 'ELIM #{'PREP 'MOTOR 'PLACE 'NEED2})
-(putprop! 'PREP2 'ELIM #{'PREP2})
-(putprop! 'PRON 'ELIM #{'PRON 'QPRON 'EVERPRON 'POSS 'SUBJ 'OBJ 'NS 'NPL 'NFS 'NEG 'DEFPOSS})
-(putprop! 'PRT 'ELIM #{'PRT})
-(putprop! 'QADJ 'ELIM #{'PLACE 'QADJ})
-(putprop! 'PROPN 'ELIM #{'PROPN 'POSS 'NS 'NPL})
-(putprop! 'TPRON 'ELIM #{'TPRON 'NS 'NPL 'NEG 'ANY})
-(putprop! 'VB 'ELIM #{'VB 'MVB 'AUX 'QAUX 'MODAL 'WILL 'BE 'DO 'HAVE 'ING 'EN 'INF 'V3PS 'QUOTING 'VFS 'VPL 'PAST 'PRESENT 'NEG 'ITRNS 'TRANS 'TRANSL 'TRANS2 'TRANSL2 'INT 'ITRNSL 'INGOB 'TOOB 'SUBTOB 'REPOB 'INGOB2 'TOOB2 'SUBTOB2 'REPOB2 'VPRT 'TO2 'TRANSINT 'TOOB1 'INGOB1 'REPOB1})
+(putprop! 'ADJ 'ELIM ['ADJ 'SUP 'COMPAR])
+(putprop! 'ADV 'ELIM ['ADV 'PREPADV 'TIMW 'TIM2 'ADVADV 'VBAD 'PLACE 'LOBJ])
+(putprop! 'BINDER 'ELIM ['BINDER 'TIME])
+(putprop! 'CLASF 'ELIM ['CLASF])
+(putprop! 'DET 'ELIM ['DET 'NPL 'NS 'PART 'DEF 'INDEF 'NEG 'DEM 'INCOM 'OFD 'QNTFR 'NONUM 'QDET])
+(putprop! 'NOUN 'ELIM ['NOUN 'POSS 'MASS 'NPL 'NS 'TIM1 'TIME 'MONTH])
+(putprop! 'NUM 'ELIM ['NUM 'NPL 'NS])
+(putprop! 'NUMD 'ELIM ['NUMD 'NUMDAN 'NUMDAT 'NUMDALONE])
+(putprop! 'ORD 'ELIM ['ORD 'TIMORD])
+(putprop! 'POSS 'ELIM ['NOUN 'NPL 'NS 'MASS 'NFS 'PRON])
+(putprop! 'PREP 'ELIM ['PREP 'MOTOR 'PLACE 'NEED2])
+(putprop! 'PREP2 'ELIM ['PREP2])
+(putprop! 'PRON 'ELIM ['PRON 'QPRON 'EVERPRON 'POSS 'SUBJ 'OBJ 'NS 'NPL 'NFS 'NEG 'DEFPOSS])
+(putprop! 'PRT 'ELIM ['PRT])
+(putprop! 'QADJ 'ELIM ['PLACE 'QADJ])
+(putprop! 'PROPN 'ELIM ['PROPN 'POSS 'NS 'NPL])
+(putprop! 'TPRON 'ELIM ['TPRON 'NS 'NPL 'NEG 'ANY])
+(putprop! 'VB 'ELIM ['VB 'MVB 'AUX 'QAUX 'MODAL 'WILL 'BE 'DO 'HAVE 'ING 'EN 'INF 'V3PS 'QUOTING 'VFS 'VPL 'PAST 'PRESENT 'NEG 'ITRNS 'TRANS 'TRANSL 'TRANS2 'TRANSL2 'INT 'ITRNSL 'INGOB 'TOOB 'SUBTOB 'REPOB 'INGOB2 'TOOB2 'SUBTOB2 'REPOB2 'VPRT 'TO2 'TRANSINT 'TOOB1 'INGOB1 'REPOB1])
 
 ;; ############################################################
 ;;
@@ -5531,15 +5533,15 @@
 (putprop! 'ANIMATE-OSS 'DETERMINER= '(SG-PL INDEF WHICH))
 (putprop! 'ANIMATE-OSS 'VARIABLE= 'ANIM)
 
-(putprop! 'FAKE-AGENT 'FEATURES #{'NG 'INDEF 'SG-PL})
-(putprop! 'FAKE-AGENT 'SEMANTICS '(UNKNOWN-OSS-BY))
+(putprop! 'FAKE-AGENT 'FEATURES ['NG 'INDEF 'SG-PL])
+(putprop! 'FAKE-AGENT 'SEMANTICS '(UNKNOWN-OSS-BY))
 (putprop! 'FAKE-AGENT 'PARENT '(FAKE-BY-PHRASE))
 
-(putprop! 'FAKE-BY-PHRASE 'FEATURES #{'PREPG 'AGENT})
+(putprop! 'FAKE-BY-PHRASE 'FEATURES ['PREPG 'AGENT])
 (putprop! 'FAKE-BY-PHRASE 'FIRSTWORD '(BY))
 (putprop! 'FAKE-BY-PHRASE 'DAUGHTERS '(FAKE-AGENT FAKE-BY))
 
-(putprop! 'FAKE-BY 'FEATURES #{'PREP 'BY})
+(putprop! 'FAKE-BY 'FEATURES ['PREP 'BY])
 (putprop! 'FAKE-BY 'FIRSTWORD '(BY))
 (putprop! 'FAKE-BY 'DAUGHTERS 'WORD)
 
@@ -5644,6 +5646,8 @@
 ;; ############################################################
 
 (defn- smtime [] (bug! 'smtime "NOT WRITTEN YET"))
+
+(defn- smthat [] (bug! 'smthat "NOT WRITTEN YET"))
 
 (defn- smconj [node]
     ;; FOR ALL CONJOINED THINGS -- IT CURRENTLY ONLY HANDLES THINGS WHICH HAVE AN OSS OR RSS STRUCTURE AS THEIR SEMANTICS.
@@ -6669,7 +6673,7 @@
     ;; USED BY SMADJG-PREPG TO BUILD A PSUEDO VERB FOR THE COMPARATIVE.  SMCL1 IS THEN CALLED.
     (let [{:keys [restrictions dimension direction]} (cdr (findmeasure node))]
         (putprop! 'COMPARE-PSEUDO-VERB 'SEMANTICS
-            (list 'relation
+            (list 'relation
                 (vector :restrictions (list (list restrictions) (list restrictions))
                         :procedure (list (list degree dimension (if direction '*!1* '*!2*) (if direction '*!2* '*!1*))))))
         '(COMPARE-PSEUDO-VERB)))
@@ -7571,7 +7575,7 @@
     (let-when [sing (LAST phrase)] (isq sing 'NOUN) => (bug! 'pluralmake "NO NOUN")
         (let [plural (MAKNAM (concat (EXPLODE (car sing)) '(S)))]
             (when-not (getprop plural 'FEATURES)
-                (buildword plural '(NOUN NPL) (semantics sing) (car sing)))
+                (buildword plural ['NOUN 'NPL] (semantics sing) (car sing)))
             (SUBST plural (car sing) phrase))))
 
 (defn- thval-mult [code]
