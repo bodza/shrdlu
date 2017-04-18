@@ -753,12 +753,6 @@ nil
     (SETQ A (cdr A))
     (GO =>))
 
-(§ SETQ ß_W nil)
-
-'(COMMANDS "ARE:" !CLEARTOP !GET-RID-OF !GRASP !PACK !PICKUP !PUTIN !PUTON !RAISEHAND !STACKUP !UNGRASP)
-
-'(PREDICATES "ARE:" !LOC !SUPPORT !ON !PHYSOB)
-
 #_(ns shrdlu.blockl)
 
 ;; ################################################################
@@ -1164,8 +1158,6 @@ nil
 (§ dorun (map #'(lambda (X Y) (PUTPROP X (list Y) 'COLOR))
     '(:B1 :B2 :B3 :B4 :B5 :B6 :B7 :B10)
     '(CB1 CB2 CB3 CB4 CB5 CB6 CB7 CB10)))
-
-(§ SETQ ß_W nil)
 
 #_(ns shrdlu.plnr)
 
@@ -2632,27 +2624,27 @@ nil
 
 (§ DEFUN THPRINT2 [X] (PRINC \space) (PRINC X))
 
-(§ DEFUN THERT FEXPR [_ERTA]
+(§ DEFUN THERT FEXPR [ERTA]
     ;; THERT IS THE BREAK FUNCTION, AND ALSO THE TOP LEVEL FUNCTION.
     ;; IT IS CALLED DIRECTLY BY LISP BEFORE LISP GOES INTO THE READ EVAL LOOP.
     ;; FOR HOW THIS IS DONE, SEE MAC-AI LISP DOCUMENTATION.
     ;; IN ESSENCE, THERT CONTAINS ITS OWN LOOP, WHICH IS READ THVAL.
-    ;; _ERTA IS THE ERROR MESSAGE TO BE PRINTED OUT WHEN THERT IS USED FOR ERROR BREAKING.
-    (let [_LISTEN nil ß_W nil ß_Q nil]
+    ;; ERTA IS THE ERROR MESSAGE TO BE PRINTED OUT WHEN THERT IS USED FOR ERROR BREAKING.
+    (let [LISTEN nil ß_W nil ß_Q nil]
         (PRINT '>>>)
-        (COND ((dorun (map #'THPRINT2 _ERTA))                     ;; THE NORMAL MESSAGE PRINTOUT
+        (COND ((dorun (map #'THPRINT2 ERTA))                ;; THE NORMAL MESSAGE PRINTOUT
             (PRINT 'LISTENING)
             (or THLEVEL (THPRINT2 'THVAL))))                ;; IF WE ARE AT TOP LEVEL, THLEVEL WILL BE NIL
     =>  (SETQ THINF nil)                                    ;; GO INTO READ LOOP
         (TERPRI)
         (ERRSET (COND
-            ((EQ (SETQ _LISTEN (READ)) 'P)               ;; READ IN S EXPRESSION
+            ((EQ (SETQ LISTEN (READ)) 'P)                 ;; READ IN S EXPRESSION
                 (RETURN true))                              ;; $P IMPLIES PROCEDE
-            ((and (not (ATOM _LISTEN))                     ;; ($P EXP) IMPLIES PROCEDE AND OUTPUT (EVAL EXP)
-                    (EQ (car _LISTEN) 'P))
-                (RETURN (eval (cadr _LISTEN))))
-            (THLEVEL (PRINT (eval _LISTEN)))               ;; EVAL LISTENING IF NOT AT TOP LEVEL
-            (:else (PRINT (THVAL _LISTEN THALIST)))))       ;; THVAL LISTENING AT TOP LEVEL
+            ((and (not (ATOM LISTEN))                       ;; ($P EXP) IMPLIES PROCEDE AND OUTPUT (EVAL EXP)
+                    (EQ (car LISTEN) 'P))
+                (RETURN (eval (cadr LISTEN))))
+            (THLEVEL (PRINT (eval LISTEN)))                 ;; EVAL LISTENING IF NOT AT TOP LEVEL
+            (:else (PRINT (THVAL LISTEN THALIST)))))        ;; THVAL LISTENING AT TOP LEVEL
         (GO =>)))
 
 (§ DEFUN THINIT FEXPR [L]
@@ -2843,7 +2835,7 @@ nil
 ;; ##################################################################
 
 (§ DEFUN SHRDLU []
-    (let [ERT-TIME nil END nil AMB nil TIMAMB nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil SENT nil PUNCT nil IGNORE nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil CURTIME nil STATE nil GLOBAL-MESSAGE nil LEVEL nil P-TIME nil SMN-TIME nil PLNR-TIME nil ANS-TIME nil ANS-PLNR-TIME nil SH-GCTIME nil]
+    (let [END nil AMB nil TIMAMB nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil SENT nil PUNCT nil IGNORE nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil CURTIME nil STATE nil GLOBAL-MESSAGE nil LEVEL nil]
         (CLEANOUT TSS EVX NODE ANS OSS RSS X)       ;; FLUSH OLD GENSYMS
     CATCH-LOOP
         (CATCH
@@ -2855,13 +2847,7 @@ nil
                       LASTSENT C
                       GLOBAL-MESSAGE nil
                       MES 'NOPE
-                      BACKREF nil                   ;; ???????????????????
-                      RUNTIME (RUNTIME)
-                      SH-GCTIME (STATUS GCTIME)
-                      PLNR-TIME 0
-                      ANS-PLNR-TIME 0
-                      SMN-TIME 0
-                      ERT-TIME 0)
+                      BACKREF nil)                  ;; ???????????????????
         UP      (SETQ N (SETQ SENT (ETAOIN)))
                 (or ANNOYANCE (PRINT *1))
                 (and ß_Q (%SENT))
@@ -2885,80 +2871,20 @@ nil
                         ((not ANSWER?)
                             (and SH-PARSESMNTC-PAUSE (ERT ANALYSIS COMPLETED)))
                         ((COND
-                            (TOPLEVEL-ERRSET? (ERRSET (TIME-ANSWER '(ANSWER C))))
-                            (:else (TIME-ANSWER '(ANSWER C)))))
+                            (TOPLEVEL-ERRSET? (ERRSET (eval '(ANSWER C))))
+                            (:else (eval '(ANSWER C)))))
                         ((APPLY #'SAY (or GLOBAL-MESSAGE '(I DON'T UNDERSTAND\.))))))
                     ((PRINT *3)
                         (APPLY #'SAY (or GLOBAL-MESSAGE '(I DON'T UNDERSTAND\.)))))
-            (SHRDLU-TIMER)
             (and SH-STANDARD-PRINTOUT (SHSTPO))
             (and SH-AFTERANSWER-PAUSE (ERT))
             (GO LOOP))
         ABORT-PARSER)
         (GO CATCH-LOOP)))
 
-(§ DEFUN TIMER [T0 T1] (/ (- T1 T0) 1000000.0))
-
-(§ DEFUN PARSEVAL [A]
-    (let [P-TTIME nil P-GC nil SM-TIME nil MP-TIME nil RETURN-NODE nil]
-        (SETQ P-GC (STATUS GCTIME)
-              SM-TIME 0
-              MP-TIME 0
-              P-TTIME (RUNTIME))
-        (SETQ RETURN-NODE (eval (cons 'PARSE A)))
-        (SETQ P-TIME (- (TIMER P-TTIME (RUNTIME)) SM-TIME PLNR-TIME))
-        (or (== P-GC (STATUS GCTIME))
-            (SETQ P-TIME
-                (- P-TIME (TIMER P-GC (STATUS GCTIME)))))
-        (SETQ SMN-TIME SM-TIME PLNR-TIME MP-TIME)
-        (RETURN RETURN-NODE)))
+(§ DEFUN PARSEVAL [A] (eval (cons 'PARSE A)))
 
 (§ SETQ PARSEARGS '(CLAUSE MAJOR TOPLEVEL))
-
-;; ######################################################################
-;;                         FANCY TIMING PACKAGE
-;; ######################################################################
-
-(§ DEFUN SHRDLU-TIMER []
-    (or SH-PRINT-TIME (RETURN true))
-    (TERPRI)
-    (PRINC "TOTAL TIME USED: ")
-    (PRINC (TIMER RUNTIME (RUNTIME)))
-    (PRINTC "  AMOUNT SPENT IN GARBAGE COLLECTION")
-    (PRINC (TIMER SH-GCTIME (STATUS GCTIME)))
-    (or (EQ SH-PRINT-TIME 'FANCY) (RETURN true))
-    (TERPRI)
-    (PRINC "BREAKDOWN:")
-    (PRINTC "   PARSING")
-    (PRINC P-TIME)
-    (PRINTC "   SEMANTICS")
-    (PRINC SMN-TIME)
-    (PRINTC "   MICROPLANNER")
-    (PRINTC "      FOR SEMANTICS")
-    (PRINC PLNR-TIME)
-    (PRINTC "      FOR ANSWERING")
-    (PRINC ANS-PLNR-TIME)
-    (PRINTC "   ANSWERING")
-    (PRINC ANS-TIME)
-    (TERPRI)
-    nil)
-
-(§ DEFUN TIME-ANSWER [REAL-CALL]
-    (let [MP-TIME nil SM-TIME nil PLNR-TIME nil ANS-TTIME nil GC nil RESULT nil]
-        (SETQ MP-TIME 0
-              SM-TIME 0
-              GC (STATUS GCTIME)
-              ANS-TTIME (RUNTIME)
-              PLNR-TIME 0)
-        (SETQ RESULT (eval REAL-CALL))
-        (SETQ ANS-TIME
-            (- (TIMER ANS-TTIME (RUNTIME)) PLNR-TIME))
-        (or (== GC (STATUS GCTIME))
-            (SETQ ANS-TIME
-                (- ANS-TIME (TIMER GC (STATUS GCTIME)))))
-        (SETQ ANS-PLNR-TIME MPLNR-TIME
-              SMN-TIME (+ SMN-TIME SM-TIME))
-        (RETURN RESULT)))
 
 (§ DEFUN PARSE-STATISTICS []
     (COND ((== PARSINGS 0)
@@ -2967,30 +2893,14 @@ nil
             (PUTPROP 'PARSINGS (inc (GET 'PARSINGS 'WINS)) 'WINS))
         (SETQ PARSINGS (inc PARSINGS)))
 
-;; THESE NEXT TWO ARE LEFT OVER FROM PREVIOUS INCARNATIONS.
-
-;; (DEFUN TIMER NIL
-;;        (AND SH-PRINT-TIME
-;;         (PRINT 'TIME-USED)
-;;         (PRINC (DIFFERENCE (TIME-SINCE RUNTIME) ERT-TIME))))
-
-(§ DEFUN TIME-SINCE [X] (/ (- (RUNTIME) X) 1000000.0))
-
-;; ############################################################
-;;         FUNCTIONS THAT EXTRACT INPUT FROM THE USER
-;; ############################################################
-
-(§ DEFUN DEFLIST FEXPR [LIST]
+(§ DEFUN DEFLIST FEXPR [L]
     (dorun (map #'(lambda (A)
-                (PUTPROP (car A) (cadr A) (car LIST)))
-            (cdr LIST)))
-    (car LIST))
+                (PUTPROP (car A) (cadr A) (car L)))
+            (cdr L)))
+    (car L))
 
-;; ################################################################
-;;            SPECIALIZED AND NOT SO, OUTPUT ROUTINES
-;; ################################################################
-
-(§ DEFUN %SENT []    ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
+(§ DEFUN %SENT []
+    ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
     (TERPRI)
     (dorun (map #'PRINT3 SENT))
     (PRINC PUNCT))
@@ -3012,19 +2922,18 @@ nil
     *4)
 
 (§ DEFUN DP [X]
-    (let [PLIST nil]
-        (TERPRI)
-        (TERPRI)
-        (PRINC \[)
-        (PRINC X)
-        (PRINC \])
-        (SETQ PLIST (PLIST X))
-    A   (COND ((MEMQ (car PLIST) '(PNAME VALUE)) (GO B)))
+    (TERPRI)
+    (TERPRI)
+    (PRINC \[)
+    (PRINC X)
+    (PRINC \])
+    (let [L (PLIST X)]
+    A   (COND ((MEMQ (car L) '(PNAME VALUE)) (GO B)))
         (TERPRI)
         (TAB 4)
-        (PRINC (car PLIST))
-        (SPRINT (cadr PLIST) (*DIF LINEL 18) 18)
-    B   (COND ((SETQ PLIST (cddr PLIST)) (GO A)))
+        (PRINC (car L))
+        (SPRINT (cadr L) (*DIF LINEL 18) 18)
+    B   (COND ((SETQ L (cddr L)) (GO A)))
         (TERPRI)
         (and DPSTOP (ERT))
         (RETURN '*)))
@@ -3092,13 +3001,12 @@ nil
     (ERTEX (SETQ GLOBAL-MESSAGE MESSAGE) true nil))        ;; MARKES KNOWN INADEQUACIES OF THE SYSTEM.  SWITCHABLE STOP, CAUSES ABORTION.
 
 (§ DEFUN ERTEX [MESSAGE CAUSE-ABORTION IGNORE-NOSTOP-SWITCH?]
-    (let [ERT-TIME nil GLOP nil EXP nil ST-BUFFER nil BUILDING-ST-FORM nil ß_W nil ß_Q nil FIRSTWORD nil]
+    (let [GLOP nil EXP nil ST-BUFFER nil BUILDING-ST-FORM nil ß_W nil ß_Q nil FIRSTWORD nil]
         (and NOSTOP
             (not IGNORE-NOSTOP-SWITCH?)
             (and CAUSE-ABORTION
                 (THROW CAUSE-ABORTION ABORT-PARSER))
             (RETURN true))
-        (SETQ ERT-TIME (RUNTIME))
         (TERPRI)
         (dorun (map #'PRINT3 MESSAGE))
     PRINT
@@ -3120,7 +3028,6 @@ nil
         (COND ((ATOM GLOP)
             (SETQ GLOP (or (GET GLOP 'ABBREV) GLOP))
             (COND ((MEMQ GLOP '(true P nil))                     ;; LEAVE-LOOP CHARS
-                    (SETQ ERT-TIME (+ (TIME-SINCE ERT-TIME) ERT-TIME)) ;; ERT-TIME IS BOUND BY SHRDLU
                     (RETURN GLOP))
                 ((EQ GLOP 'GO)                                  ;; CAUSE RETURN TO READY-STATE
                     (THROW 'GO ABORT-PARSER))
@@ -3519,10 +3426,6 @@ nil
 (§ DEFUN PARSETRACE LABELS (COND ((== (ARG nil) 0) (SETQ PARSETRACE 'ALL)) (:else (SETQ PARSETRACE (LISTIFY LABELS)))))
 
 (§ DEFUN PARSEBREAK LABELS (COND ((== (ARG nil) 0) (SETQ PARSEBREAK 'ALL)) (:else (SETQ PARSEBREAK (LISTIFY LABELS)))))
-
-(§ DEFUN FANCYTIMER OFF? (COND ((== (ARG nil) 1) (SETQ SH-PRINT-TIME nil)) (:else (SETQ SH-PRINT-TIME 'FANCY))))
-
-(§ DEFUN TOTALTIME OFF? (COND ((== (ARG nil) 1) (SETQ SH-PRINT-TIME nil)) (:else (SETQ SH-PRINT-TIME true))))
 
 (§ DEFUN SMNTRACE OFF? (COND ((== (ARG nil) 1) (SETQ SMNTRACE nil)) (:else (SETQ SMNTRACE true))))
 
@@ -4092,7 +3995,6 @@ nil
 (§ SETQ DPSTOP nil
       NODE-STOP nil
       SMN-STOP nil
-      ERT-TIME 0
       ALTMODE (list (ASCII 27))
       BREAKCHARS (list (ASCII 32) (ASCII 13) (ASCII 46))
       LINEL 65)
@@ -4112,7 +4014,7 @@ nil
 
 (§ SETQ CONTROLSWITCHES '(NOSTOP ANSWER? SMN TOPLEVEL-ERRSET? ERT-ERRSET? MAKEINTERN))
 
-(§ SETQ DISPLAYSWITCHES '(PARSETRACE PARSEBREAK PARSENODE-SEE LABELTRACE MAKE-VERBOSE LABELBREAK BUILDSEE BUILD-SEE PLANNERSEE SH-PRINT-TIME))
+(§ SETQ DISPLAYSWITCHES '(PARSETRACE PARSEBREAK PARSENODE-SEE LABELTRACE MAKE-VERBOSE LABELBREAK BUILDSEE BUILD-SEE PLANNERSEE))
 
 ;; ************************
 
@@ -4124,8 +4026,7 @@ nil
       LABELBREAK nil
       BUILDSEE nil
       BUILD-SEE nil
-      PLANNERSEE nil
-      SH-PRINT-TIME nil)
+      PLANNERSEE nil)
 
 (§ SETQ DISCOURSE true
       WANT-DISPLAY nil
@@ -4167,8 +4068,7 @@ nil
     (NORMALFEATUREMODE)
     (NOPAUSES)
     (SETQ NOSTOP true ANSWER? true SMN nil TOPLEVEL-ERRSET? true ERT-ERRSET true)
-    (SETQ ß_D nil)
-    (SETQ SH-PRINT-TIME true))
+    (SETQ ß_D nil))
 
 (§ DEFUN DEBUGMODE []
     (QUIETMODE)
@@ -4326,7 +4226,7 @@ nil
 (§ SETQ SMNBREAKS nil) ;; A LIST OF SMNFNS WHICH WILL BE BROKEN AT (BEFORE CALLING)
 
 (§ DEFUN CALLSM FEXPR [SEMANTIC-EXPRESSION]
-    (let [RESULT nil MPLNR-TIME nil SM-TTIME nil GC nil SMNFN nil]
+    (let [RESULT nil SMNFN nil]
         (SETQ SMNFN (car SEMANTIC-EXPRESSION))
         (and SMNTRACE
             (APPLY #'SAY (list 'SEMANTICS '***** UNIT 'CALLING SMNFN)))
@@ -4335,15 +4235,7 @@ nil
                 (:else (RETURN true))))
         (and SMNTRACE
             (do (PRINTC "  CALLSM: ") (PRINC (car SEMANTIC-EXPRESSION))))
-        (SETQ MPLNR-TIME 0)
-        (SETQ GC (STATUS GCTIME)
-              SM-TTIME (RUNTIME)
-              RESULT (eval (car SEMANTIC-EXPRESSION)))
-        (SETQ SM-TIME (+ SM-TIME (- (TIMER SM-TTIME (RUNTIME)) MPLNR-TIME)))
-        (or (== GC (STATUS GCTIME))
-            (SETQ SM-TIME (- SM-TIME (TIMER GC (STATUS GCTIME)))
-                  P-GC (STATUS GCTIME)))
-        (SETQ MP-TIME (+ MP-TIME MPLNR-TIME))
+        (SETQ RESULT (eval (car SEMANTIC-EXPRESSION)))
         (and SMNTRACE
             (do (PRINTC "CALLSM RETURNING: ") (PRINC RESULT)))
         (COND ((or (EQ SMNBREAKS 'ALL) (MEMQ SMNFN SMNBREAKS)) (ERT)))
@@ -9207,17 +9099,13 @@ nil
             ((SETQ %LIST (cons %X (cdr %LIST))) (GO GO)))))
 
 (§ DEFUN THVAL2 [WHO AA]
-    (let [RESULT nil X nil MPLNR-TTIME nil M-GC nil]
+    (let [RESULT nil X nil]
         (SETQ THLEVEL '(true))
         (SETQ X (SETQ RESULT '(nil)))
         (and PLANNERSEE (DISP AA) PLNRSEE-PAUSE (ERT FOR PLANNER))
         (and (not (EQ RESULT X))
             (RETURN RESULT))
-        (SETQ MPLNR-TTIME (RUNTIME) M-GC (STATUS GCTIME))
         (SETQ RESULT (THVAL AA '((EV COMMAND))))
-        (SETQ MPLNR-TIME (TIMER MPLNR-TTIME (RUNTIME)))
-        (or (== M-GC (STATUS GCTIME))
-            (SETQ MPLNR-TIME (- MPLNR-TIME (TIMER M-GC (STATUS GCTIME))) GC (STATUS GCTIME)))
         (RETURN RESULT)))
 
 (§ DEFUN WHO [X]
