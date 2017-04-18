@@ -340,7 +340,7 @@
             (SETQ TYPE (if p 'THANTE 'THERASING))
             ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
             (when-not pseudo
-                (thpush *thtree* (list (COND (p 'THASSERT) ('THERASE)) THX THY)))
+                (thpush *thtree* (list (if p 'THASSERT 'THERASE) THX THY)))
             ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
             ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
             (SETQ THY (doall (mapcat thtae tha)))
@@ -497,31 +497,30 @@
 (§ defq- THFAIL [tha]
     (and tha
         (let [thtree1 nil tha1 nil THX nil]
-        F   (SETQ tha1 (COND
-                ((= (car tha) 'THEOREM) 'THPROG)
-                ((= (car tha) 'THTAG) 'THPROG)
-                ((= (car tha) 'THMESSAGE) (set! *thmessage* (cadr tha)) (RETURN nil))
-                (:else (car tha))))
+        F   (SETQ tha1
+                (condp = (car tha)
+                    'THEOREM 'THPROG
+                    'THTAG 'THPROG
+                    'THMESSAGE (do (set! *thmessage* (cadr tha)) (RETURN nil))
+                    (car tha)))
             (SETQ thtree1 *thtree*)
-        LP1 (COND ((nil? thtree1)
-                    (terpri)
-                    (pr tha)
-                    (SETQ tha (ert "NOT FOUND - THFAIL"))
-                    (COND ((term? tha) (RETURN tha))
-                        (:else (GO F))))
-                ((= (caar thtree1) tha1) (GO ELP1)))
+        LP1 (cond (nil? thtree1)
+                    (do (terpri)
+                        (pr tha)
+                        (SETQ tha (ert "NOT FOUND - THFAIL"))
+                        (if (term? tha) (RETURN tha) (GO F)))
+                (= (caar thtree1) tha1) (GO ELP1))
         ALP1 (SETQ thtree1 (cdr thtree1))
             (GO LP1)
         ELP1 (COND ((= (car tha) 'THTAG)
-                (COND ((memq (cadr tha) (cadddr (car thtree1))) (GO TAGS))
-                    (:else (GO ALP1)))))
+                (if (memq (cadr tha) (cadddr (car thtree1))) (GO TAGS) (GO ALP1))))
             (set! *thmessage* (list (cdr thtree1) (and (cdr tha) (cadr tha))))
             (RETURN nil)
         TAGS (SETQ THX (caddar thtree1))
-        LP2  (COND ((nil? THX) (GO ALP1))
-                ((= (caaddr (car THX)) (cadr tha))
-                    (set! *thmessage* (list (caar THX) (and (cddr tha) (caddr tha))))
-                    (RETURN nil)))
+        LP2  (cond (nil? THX) (GO ALP1)
+                (= (caaddr (car THX)) (cadr tha))
+                    (do (set! *thmessage* (list (caar THX) (and (cddr tha) (caddr tha))))
+                        (RETURN nil)))
             (SETQ THX (cdr THX))
             (GO LP2))))
 
@@ -538,26 +537,26 @@
 
 (§ defq- THFINALIZE [tha]
     (let [thtree1 nil THT nil THX nil]
-        (COND ((nil? tha) (SETQ tha (ert "BAD CALL - THFINALIZE"))))
-        (COND ((term? tha) (RETURN tha))
-            ((= (car tha) 'THTAG) (SETQ THT (cadr tha)))
-            ((= (car tha) 'THEOREM) (SETQ tha (list 'THPROG))))
+        (when (nil? tha) (SETQ tha (ert "BAD CALL - THFINALIZE")))
+        (cond (term? tha) (RETURN tha)
+            (= (car tha) 'THTAG) (SETQ THT (cadr tha))
+            (= (car tha) 'THEOREM) (SETQ tha (list 'THPROG)))
         (set! *thtree* (SETQ thtree1 (cons nil *thtree*)))
     PLUP (SETQ THX (cadr thtree1))
-        (COND ((nil? (cdr thtree1)) (terpri) (pr tha) (ert "OVERPOP - THFINALIZE"))
-            ((and THT (= (car THX) 'THPROG) (memq THT (cadddr THX)))
-                (GO RTLEV))
-            ((or (= (car THX) 'THPROG) (= (car THX) 'THAND))
-                (RPLACA (cddr THX) nil)
-                (SETQ thtree1 (cdr thtree1)))
-            ((= (car THX) 'THREMBIND)
-                (SETQ thtree1 (cdr thtree1)))
-            ((RPLACD thtree1 (cddr thtree1))))
-        (COND ((= (car THX) (car tha)) (GO DONE)))
+        (cond (nil? (cdr thtree1)) (do (terpri) (pr tha) (ert "OVERPOP - THFINALIZE"))
+            (and THT (= (car THX) 'THPROG) (memq THT (cadddr THX)))
+                (GO RTLEV)
+            (or (= (car THX) 'THPROG) (= (car THX) 'THAND))
+                (do (RPLACA (cddr THX) nil)
+                    (SETQ thtree1 (cdr thtree1)))
+            (= (car THX) 'THREMBIND)
+                (SETQ thtree1 (cdr thtree1))
+            :else (RPLACD thtree1 (cddr thtree1)))
+        (when (= (car THX) (car tha)) (GO DONE))
         (GO PLUP)
     RTLEV (SETQ THX (cddr THX))
-    LEVLP (COND ((nil? (car THX)) (SETQ thtree1 (cdr thtree1)) (GO PLUP))
-            ((= (caaddr (caar THX)) THT) (GO DONE)))
+    LEVLP (cond (nil? (car THX)) (do (SETQ thtree1 (cdr thtree1)) (GO PLUP))
+            (= (caaddr (caar THX)) THT) (GO DONE))
         (RPLACA THX (cdar THX))
         (GO LEVLP)
     DONE (set! *thtree* (cdr *thtree*))
@@ -659,62 +658,59 @@
     (let [_ (if (= *thvalue* 'THNOVAL) (THVARSUBST (cadar *thtree*) nil) *thvalue*)] (thpopt) _))
 
 (§ defn- THIP [thi]
-    ;; THI IS AN ITEM FROM THE ASSERTION OR PATTERN OF THE THEOREM BEING ENTERED
+    ;; THI IS AN ITEM FROM THE ASSERTION OR PATTERN OF THE THEOREM BEING ENTERED.
     (let [THT1 nil THT3 nil THSV nil THT2 nil THI1 nil]
+        ;; THNF IS A FREE VARIABLE FROM THADD (WHO CALLS THIS BUGGER).
+        ;; IT SAYS WE ARE LOOKING AT THE N'TH PLACE IN THE PATTERN.
         (set! *thnf* (inc *thnf*))
-        ;; THNF IS A FREE VARIABLE FROM THADD (WHO CALLS THIS BUGGER)
-        ;; IT SAYS WE ARE LOOKING AT THE N'TH PLACE IN THE PATTERN
-        (COND ((and (term? thi) (not (= thi '?)) (not (number? thi)))
-                ;; THI1 IS THE NAME OF THE ATOM TO LOOK UNDER WHEN THI IS A USUAL ATOM
-                ;; THI1 = THI NUMBERS DON'T HAVE PROPERTY LISTS SO THEY DON'T COUNT AS
-                ;; NORMAL ATOMS, NOR DOES "?" SINCE IT IS A SORT OF VARIABLE IN PLANNER
-                (SETQ THI1 thi))
-            ((or (= thi '?) (memq (car thi) '(THV THNV)))
-                ;; SEE IF THI IS A VARIABLE
-                (COND (*thfst* (RETURN 'THVRB))
-                    ;; IF WE ARE DOING THIS FOR THE FIRST TIME, DON'T CONSIDER VARIABLES
-                    ;; FOR EXPLANATION WHY, SEE THADD
-                    ((SETQ THI1 'THVRB))))
-            ((RETURN 'THVRB)))
-        ;; OTHERWISE THI IS SOMETHING WITH NO PROPERTY LIST LIKE A NUMBER, OR LIST
-        ;; RETURNING THVRB TO THADD TELLS IT THAT EVERYTHING IS OK SO
-        ;; FAR, BUT NOTHING WAS DONE ON THIS ITEM
-        (COND ((not (SETQ THT1 (getprop THI1 *thwh*)))
-                ;; THWH IS THE NAME OF THE PROPERTY TO LOOK UNDER ON THE ATOM
-                ;; IF THIS PROPERTY IS NOT THERE THEN WE MUST PUT IT THERE
-                ;; IN PARTICULAR, NO PROPERTY MEANS THAT THE
-                ;; ASSERTEE HAS NEVER BEEN ASSERTED BEFORE
-                (putprop! THI1 *thwh* (list nil (list *thnf* (list *thlas* 1 *thttl*)))))
-            ((= THT1 'THNOHASH) (RETURN 'THBQF))
-            ;; IF THE PROPERTY IS "THNOHASH" IT MEANS THAT WE
-            ;; SHOULD NOT BOTHER TO INDEX UNDER THIS ATOM, SO
-            ;; JUST RETURN TO THADD
-            ((not (SETQ THT2 (assq *thnf* (cdr THT1))))
-                ;; LOOK ON THE PROPERTY LIST ENTRY TO SEE
-                ;; IF THERE IS A SUB-ENTRY FOR PATTERNS WITH THIS ATOM IN THE THNF'TH POSITION.
-                ;; IF NOT, HACK THE ENTRY SO THERE IS.
-                ;; AGAIN THIS IMPLIES THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
-                (concat THT1 (list (list *thnf* (list *thlas* 1 *thttl*)))))
-            ((not (SETQ THT3 (assq *thlas* (cdr THT2))))
-                ;; NOW LOOK WITHIN THE SUB-ENTRY FOR A SUB-SUB-ENTRY.
-                ;; I.E. THOSE PATTERNS WHICH ARE ALSO OF THE CORRECT TOTAL LENGTH
-                ;; THLAS IS A VARIABLE FROM THADD WHICH GIVES THE LENGTH OF THE ASSERTEE
-                ;; AGAIN, IF NOT THERE, HACK IT IN
-                (concat THT2 (list (list *thlas* 1 *thttl*))))
-            ((and (or *thfst* *thfstp*)
-                    ;; THIS BRANCH SAYS THAT WE STILL NEED TO CHECK THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE
-                    ;; THIS MEANS THAT WE MUST LOOK DOWN THE REMAINING SUB-SUB-BUCKET LOOKING FOR THE ASSERTEE
-                    (if (= *thwh* 'THASSERTION) (assq *thtt* (cddr THT3))
-                        ;; RANDOMNESS DUE TO THE FACT THAT ASSERTIONS HAVE PROPERTY LIST ON THEM,
-                        ;; WHILE THEOREM NAMES ARE ATOMS WHOES PROPERTY LISTS ARE OF THE USUAL "INVISIBLE" VARIETY
-                        (memq *thtt* (cddr THT3))))
-                ;; IF THE ASSERTEE IS FOUND, RETURN NIL INDICATING FAILURE
-                (RETURN nil))
-            ((SETQ THSV (cddr THT3))
-            ;; HACK IN THE LATEST ENTRY INTO THE SUB-SUB-BUCKET
-            (RPLACA (cdr THT3) (inc (cadr THT3)))
-            (RPLACD (cdr THT3) (concat (list *thttl*) THSV))))
-        ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO
+        ;; THI1 IS THE NAME OF THE ATOM TO LOOK UNDER WHEN THI IS A USUAL ATOM.
+        ;; THI1 = THI NUMBERS DON'T HAVE PROPERTY LISTS, SO THEY DON'T COUNT AS
+        ;; NORMAL ATOMS, NOR DOES "?" SINCE IT IS A SORT OF VARIABLE IN PLANNER.
+        (cond (and (term? thi) (not (= thi '?)) (not (number? thi)))
+                (SETQ THI1 thi)
+            ;; SEE IF THI IS A VARIABLE.
+            (or (= thi '?) (memq (car thi) '(THV THNV)))
+                ;; IF WE ARE DOING THIS FOR THE FIRST TIME, DON'T CONSIDER VARIABLES.
+                ;; FOR EXPLANATION WHY, SEE THADD.
+                (if *thfst* (RETURN 'THVRB) (SETQ THI1 'THVRB))
+            :else (RETURN 'THVRB))
+        ;; OTHERWISE THI IS SOMETHING WITH NO PROPERTY LIST LIKE A NUMBER, OR LIST.
+        ;; RETURNING THVRB TO THADD TELLS IT THAT EVERYTHING IS OK SO FAR,
+        ;; BUT NOTHING WAS DONE ON THIS ITEM.
+        (SETQ THT1 (getprop THI1 *thwh*))
+        (cond (not THT1)
+                ;; THWH IS THE NAME OF THE PROPERTY TO LOOK UNDER ON THE ATOM.
+                ;; IF THIS PROPERTY IS NOT THERE, THEN WE MUST PUT IT THERE.
+                ;; IN PARTICULAR, NO PROPERTY MEANS THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
+                (putprop! THI1 *thwh* (list nil (list *thnf* (list *thlas* 1 *thttl*))))
+            ;; IF THE PROPERTY IS "THNOHASH", IT MEANS THAT WE SHOULD NOT BOTHER TO INDEX UNDER THIS ATOM,
+            ;; SO JUST RETURN TO THADD.
+            (= THT1 'THNOHASH) (RETURN 'THBQF)
+            ;; LOOK ON THE PROPERTY LIST ENTRY TO SEE
+            ;; IF THERE IS A SUB-ENTRY FOR PATTERNS WITH THIS ATOM IN THE THNF'TH POSITION.
+            ;; IF NOT, HACK THE ENTRY SO THERE IS.
+            ;; AGAIN THIS IMPLIES THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
+            (not (SETQ THT2 (assq *thnf* (cdr THT1))))
+                (concat THT1 (list (list *thnf* (list *thlas* 1 *thttl*))))
+            ;; NOW LOOK WITHIN THE SUB-ENTRY FOR A SUB-SUB-ENTRY.
+            ;; I.E. THOSE PATTERNS WHICH ARE ALSO OF THE CORRECT TOTAL LENGTH.
+            ;; THLAS IS A VARIABLE FROM THADD WHICH GIVES THE LENGTH OF THE ASSERTEE.
+            ;; AGAIN, IF NOT THERE, HACK IT IN.
+            (not (SETQ THT3 (assq *thlas* (cdr THT2))))
+                (concat THT2 (list (list *thlas* 1 *thttl*)))
+            ;; THIS BRANCH SAYS THAT WE STILL NEED TO CHECK THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
+            ;; THIS MEANS THAT WE MUST LOOK DOWN THE REMAINING SUB-SUB-BUCKET LOOKING FOR THE ASSERTEE.
+            (and (or *thfst* *thfstp*)
+                    ;; RANDOMNESS DUE TO THE FACT THAT ASSERTIONS HAVE PROPERTY LIST ON THEM,
+                    ;; WHILE THEOREM NAMES ARE ATOMS WHOES PROPERTY LISTS ARE OF THE USUAL "INVISIBLE" VARIETY.
+                    (if (= *thwh* 'THASSERTION) (assq *thtt* (cddr THT3)) (memq *thtt* (cddr THT3))))
+                ;; IF THE ASSERTEE IS FOUND, RETURN NIL INDICATING FAILURE.
+                (RETURN nil)
+            (SETQ THSV (cddr THT3))
+                ;; HACK IN THE LATEST ENTRY INTO THE SUB-SUB-BUCKET
+                (do (RPLACA (cdr THT3) (inc (cadr THT3)))
+                    (RPLACD (cdr THT3) (concat (list *thttl*) THSV))))
+        ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO.
         'THOK))
 
 (§ defn- THMATCH2 [thx thy]
@@ -736,75 +732,71 @@
         ;; IF EITHER IS A VARIABLE THINGS GET MESSY.
         ;; EVERYTHING DOWN TO ***** IS CONCERNED WITH THIS CASE
         ((or (memq (car thx) '(THV THNV THRESTRICT)) (memq (car thy) '(THV THNV THRESTRICT)))
-        ((lambda [XPAIR YPAIR]
-            ;; X AND Y PAIR ARE THE RESPECTIVE BINDING CELLS WHICH WILL HAVE ANY NEW RESTRICTIONS MENTIONED.
-            ;; IF THX OR THY IS NOT A VARIABLE (I.E. THE OTHER IS) THEN X OR Y PAIR WILL BE NIL.
-            (COND ((and XPAIR
-                    ;; THX IS A VARIABLE
-                    ;; THIS SEES IF THX IS UNASSIGNED
-                    (or (= (car thx) 'THNV) (and (= (car thx) 'THV) (= (cadr XPAIR) 'THUNASSIGNED)))
-                    ;; THCHECK MAKES SURE THE RESTRICTIONS (IF ANY) ON THX ARE COMPATIBLE WITH THY
-                    (thcheck (cddr XPAIR) (if YPAIR (cadr YPAIR) thy)))
-                ;; FURTHERMORE, THY IS ALSO A VARIABLE
-                ;; THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING
-                (COND (YPAIR
-                        (thrplacas (cdr XPAIR) (cadr YPAIR))
-                        ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS
-                        (and (cddr YPAIR) (thrplacds (cdr XPAIR) (thunion (cddr XPAIR) (cddr YPAIR))))
-                        (thrplacds YPAIR (cdr XPAIR)))
-                    ;; IF THY IS NOT A VARIALBE, JUST ASSIGN THX TO THY
-                    ;; THRPLACAS WILL HACK THML, THE FREE VARIABLE FROM THMATCH1
-                    (:else (thrplacas (cdr XPAIR) thy))))
-            ;; IN THIS COND PAIR THY IS A VARIABLE AND THX IS EITHER
-            ;; A CONSTANT OR A PREVIOUSLY ASSIGNED VARIALBE
-            ((and YPAIR
-                    (or (= (car thy) 'THNV)
-                        ;; FURTHERMORE THY IS UNASSIGNED
-                        (and (= (car thy) 'THV) (= (cadr YPAIR) 'THUNASSIGNED)))
-                    ;; MAKE SURE RESTRICTIONS ARE OK
-                    (thcheck (cddr YPAIR) (if XPAIR (cadr XPAIR) thx)))
-                ;; IF THX IS A VARIABLE, LINK.  OTHERWISE JUST ASSIGN THY TO THX.
-                (thrplacas (cdr YPAIR) (if XPAIR (cadr XPAIR) thx)))
-            ;; THX IS AN ASSIGED VARIABLE, SO JUST MAKE
-            ;; SURE ITS ASSIGNEMENT IS EQUAL TO THY
-            ((and XPAIR (= (cadr XPAIR) (if YPAIR (cadr YPAIR) thy))))
-            ;; THX IS A CONSTANT, THY IS A VARIABLE, AND THEY ARE EQUAL
-            ((and YPAIR (= (cadr YPAIR) thx)))
-            ;; LOOSE, SO RETURN WITH AN ERROR
-            (:else (ERR nil))))
+            ((lambda [XPAIR YPAIR]
+                ;; X AND Y PAIR ARE THE RESPECTIVE BINDING CELLS WHICH WILL HAVE ANY NEW RESTRICTIONS MENTIONED.
+                ;; IF THX OR THY IS NOT A VARIABLE (I.E. THE OTHER IS) THEN X OR Y PAIR WILL BE NIL.
+                (COND ((and XPAIR
+                        ;; THX IS A VARIABLE
+                        ;; THIS SEES IF THX IS UNASSIGNED
+                        (or (= (car thx) 'THNV) (and (= (car thx) 'THV) (= (cadr XPAIR) 'THUNASSIGNED)))
+                        ;; THCHECK MAKES SURE THE RESTRICTIONS (IF ANY) ON THX ARE COMPATIBLE WITH THY
+                        (thcheck (cddr XPAIR) (if YPAIR (cadr YPAIR) thy)))
+                    ;; FURTHERMORE, THY IS ALSO A VARIABLE
+                    ;; THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING
+                    (COND (YPAIR
+                            (thrplacas (cdr XPAIR) (cadr YPAIR))
+                            ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS
+                            (and (cddr YPAIR) (thrplacds (cdr XPAIR) (thunion (cddr XPAIR) (cddr YPAIR))))
+                            (thrplacds YPAIR (cdr XPAIR)))
+                        ;; IF THY IS NOT A VARIALBE, JUST ASSIGN THX TO THY
+                        ;; THRPLACAS WILL HACK THML, THE FREE VARIABLE FROM THMATCH1
+                        (:else (thrplacas (cdr XPAIR) thy))))
+                ;; IN THIS COND PAIR THY IS A VARIABLE AND THX IS EITHER
+                ;; A CONSTANT OR A PREVIOUSLY ASSIGNED VARIALBE
+                ((and YPAIR
+                        (or (= (car thy) 'THNV)
+                            ;; FURTHERMORE THY IS UNASSIGNED
+                            (and (= (car thy) 'THV) (= (cadr YPAIR) 'THUNASSIGNED)))
+                        ;; MAKE SURE RESTRICTIONS ARE OK
+                        (thcheck (cddr YPAIR) (if XPAIR (cadr XPAIR) thx)))
+                    ;; IF THX IS A VARIABLE, LINK.  OTHERWISE JUST ASSIGN THY TO THX.
+                    (thrplacas (cdr YPAIR) (if XPAIR (cadr XPAIR) thx)))
+                ;; THX IS AN ASSIGED VARIABLE, SO JUST MAKE
+                ;; SURE ITS ASSIGNEMENT IS EQUAL TO THY
+                ((and XPAIR (= (cadr XPAIR) (if YPAIR (cadr YPAIR) thy))))
+                ;; THX IS A CONSTANT, THY IS A VARIABLE, AND THEY ARE EQUAL
+                ((and YPAIR (= (cadr YPAIR) thx)))
+                ;; LOOSE, SO RETURN WITH AN ERROR
+                (:else (ERR nil))))
 
-            ;; THE FOLLOWING TWO CONDS BIND XPAIR AND YPAIR RESPECTIVELY
-            (COND
+                ;; THE FOLLOWING TWO CONDS BIND XPAIR AND YPAIR RESPECTIVELY.
+
                 ;; IF THX IS A NORMAL VARIALBE, IN PARTICULAR
                 ;; WE ARE NOT INTRODUCING NEW RESTRICTIONS AT THIS TIME,
-                ;; THEN X PAIR IS JUST THE BINDING LIST
-                ((thvar? thx) (thgal thx *tholist*))
-                ;; WE MUST HACK A NEW RESTRICTION ONTO THE BINDING LIST
-                ((= (car thx) 'THRESTRICT)
-                    ;; WE ARE "RESTRICTING" A ?.
-                    ;; SINCE ? HAS NO BINDING LIST, WE MAKE UP A PSEUDO BINDING LIST.
-                    (COND ((= (cadr thx) '?)
-                            (PROG1 (cons '? (cons 'THUNASSIGNED (concat (cddr thx) nil)))
-                                (SETQ thx '(THNV ?))))
-                        ;; WE ARE RESTRICTING A VARIABLE.  THIS MEANS THAT WE MUST PUT IN ON THE BINDING LIST.
-                        (:else ((lambda [U]
+                ;; THEN XPAIR IS JUST THE BINDING LIST.
+                (cond (thvar? thx) (thgal thx *tholist*)
+                    ;; WE MUST HACK A NEW RESTRICTION ONTO THE BINDING LIST.
+                    (= (car thx) 'THRESTRICT)
+                        ;; WE ARE "RESTRICTING" A ?.
+                        ;; SINCE ? HAS NO BINDING LIST, WE MAKE UP A PSEUDO BINDING LIST.
+                        (if (= (cadr thx) '?)
+                            (let [_ (cons '? (cons 'THUNASSIGNED (concat (cddr thx) nil)))] (SETQ thx '(THNV ?)) _)
+                            ;; WE ARE RESTRICTING A VARIABLE.  THIS MEANS THAT WE MUST PUT IN ON THE BINDING LIST.
+                            (let [u (thgal (cadr thx) *tholist*)]
                                 ;; THUNION MAKES SURE WE DON'T PUT THE SAME RESTRICTION ON TWICE.
-                                (thrplacds (cdr U) (thunion (cddr U) (cddr thx)))
+                                (thrplacds (cdr u) (thunion (cddr u) (cddr thx)))
                                 (SETQ thx (cadr thx))
-                                U)
-                            (thgal (cadr thx) *tholist*))))))
-            ;; NOTE THAT IF THX IS NOT A VARIABLE THEN XPAIR IS ()
-            ;; WE DO THE EXACT SAME THING FOR THY AS WE JUST DID FOR THX
-            (COND ((thvar? thy) (thgal thy *thalist*))
-                ((= (car thy) 'THRESTRICT)
-                    (COND ((= (cadr thy) '?)
-                        (PROG1 (cons '? (cons 'THUNASSIGNED (concat (cddr thy) nil)))
-                            (SETQ thy '(THNV ?))))
-                        (:else ((lambda [U]
-                                (thrplacds (cdr U) (thunion (cddr U) (cddr thy)))
+                                u)))
+                ;; NOTE THAT IF THX IS NOT A VARIABLE, THEN XPAIR IS ().
+                ;; WE DO THE EXACT SAME THING FOR THY AS WE JUST DID FOR THX.
+                (cond (thvar? thy) (thgal thy *thalist*)
+                    (= (car thy) 'THRESTRICT)
+                        (if (= (cadr thy) '?)
+                            (let [_ (cons '? (cons 'THUNASSIGNED (concat (cddr thy) nil)))] (SETQ thy '(THNV ?)) _)
+                            (let [u (thgal (cadr thy) *thalist*)]
+                                (thrplacds (cdr u) (thunion (cddr u) (cddr thy)))
                                 (SETQ thy (cadr thy))
-                                U)
-                            (thgal (cadr thy) *thalist*))))))))
+                                u)))))
         ;; **************
         ;; IF THE TWO ARE EQUAL, NATURALLY THEY MATCH
         ((= thx thy))
@@ -862,7 +854,7 @@
         ;; IN THEOREMS, WE MUST TAKE INTO ACCOUNT THE FACT THAT THE THEOREM MAY HAVE EITHER THE CORRECT ATOM,
         ;; OR A VARIALBE IN A GIVEN POSITION, AND STILL MATCH.
         (SETQ thb1 thtb)
-    THP1 (or thb1
+    THP1 (when-not thb1
             (RETURN (if thl2 (concat thl1 thl2) thl1)))
         ;; ADD1 TO POSITION COUNTER.
         (set! *thnf* (inc *thnf*))
@@ -871,41 +863,41 @@
         ;; UPDATE THB1.
         (SETQ thb1 (cdr thb1))
         ;; IF THE ITEM IS NOT A NORMAL ATOM, SKIP IT AND GO TO NEXT PASS.
-    THP3 (COND ((or (nil? (term? THB2)) (number? THB2) (= THB2 '?))
-                (GO THP1))
+    THP3 (cond (or (nil? (term? THB2)) (number? THB2) (= THB2 '?))
+                (GO THP1)
             ;; IF THE ITEM DOES NOT HAVE THE PROPERTY ON ITS PROPERTY LIST,
             ;; THEN IT OBVIOUSLY DOSEN'T HAVE ANY BUCKET AT ALL.
             ;; SO THA1, WHICH RECORDS THE NUMBER IN THE BUCKET IS SET TO 0
-            ((not (SETQ tha1 (getprop THB2 thwh)))
+            (not (SETQ tha1 (getprop THB2 thwh)))
                 ;; IF A BUCKET IS FOUND, THE FIRST THING IN THE BUCKET WILL BE THE NUMBER OF GOODIES THERE.
                 ;; THE REST WILL BE THE GOODIES.  THE FIRST 0 IN THA1 THEN SAYS THAT THERE WAS NO BUCKET.
                 ;; THE SECOND 0 IS JUST A DUMMY FOR THE GOODIES WHICH ARN'T THERE.
-                (SETQ tha1 '(0 0)))
+                (SETQ tha1 '(0 0))
             ;; IF IT IS A THNOHASH, WE IGNORE IT JUST LIKE A LIST, OR NUMBER.
-            ((= tha1 'THNOHASH) (GO THP1))
+            (= tha1 'THNOHASH) (GO THP1)
             ;; SAME IF THERE IS NO SUB-BUCKET FOR THE ATOM IN THE CORRECT POSITION.
-            ((not (SETQ tha1 (assq *thnf* (cdr tha1))))
-                (SETQ tha1 '(0 0)))
+            (not (SETQ tha1 (assq *thnf* (cdr tha1))))
+                (SETQ tha1 '(0 0))
             ;; SAME FOR SUB-SUB-BUCKET (PATTERN LENGTH).
-            ((not (SETQ tha1 (assq *thal* (cdr tha1))))
-                (SETQ tha1 '(0 0))))
+            (not (SETQ tha1 (assq *thal* (cdr tha1))))
+                (SETQ tha1 '(0 0)))
         (SETQ THRN (cadr tha1))
         (SETQ tha1 (cddr tha1))
         ;; IF IT'S AN ASSERTION, THEN WE DONT HAVE TO LOOK FOR VARIABLES.
-        (and (= thwh 'THASSERTION) (GO THP2))
+        (when (= thwh 'THASSERTION) (GO THP2))
         ;; THVRB IS THE ATOM WHICH HAS THE BUCKET FOR VARIABLES.
         ;; WE WILL NOW LOOK TO SEE IF THERE ARE ANY THEOREMS WHICH
         ;; HAVE A VARIABLE IN THE CORRECT POSSITION.
-        (COND
-            ((not (SETQ tha2 (getprop 'THVRB thwh))) (SETQ tha2 '(0 0)))
-            ((not (SETQ tha2 (assq *thnf* (cdr tha2)))) (SETQ tha2 '(0 0)))
-            ((not (SETQ tha2 (assq *thal* (cdr tha2)))) (SETQ tha2 '(0 0))))
+        (cond
+            (not (SETQ tha2 (getprop 'THVRB thwh))) (SETQ tha2 '(0 0))
+            (not (SETQ tha2 (assq *thnf* (cdr tha2)))) (SETQ tha2 '(0 0))
+            (not (SETQ tha2 (assq *thal* (cdr tha2)))) (SETQ tha2 '(0 0)))
         (SETQ THRVC (cadr tha2))
         (SETQ tha2 (cddr tha2))
         ;; SEE IF THE SUM OF THE NUMBER OF GOODIES IN THE ATOM BUCKET PLUS
         ;; THE NUMBER IN THE VARIABLE BUCKET IS GREATER THAN THE SMALLEST
         ;; NUMBER SO FAR.  IF SO, WE KEEP THE PREVIOUS NUMBER.
-        (and (> (+ THRVC THRN) THL) (GO THP1))
+        (when (> (+ THRVC THRN) THL) (GO THP1))
         ;; OTHERWISE THIS BECOMES THE NEW SMALLEST,
         (SETQ THL (+ THRVC THRN))
         ;; AND THL1 AND THL2 ARE POINTERS TO THE NEWLY DISCOVERD BUCKETS.
@@ -915,11 +907,11 @@
         (GO THP1)
 
         ;; THIS SECTION IS FOR ASSERTIONS, I.E. DON'T HAVE TO CONSIDER VARIABLES.
-    THP2 (COND
+    THP2 (cond
             ;; IF THERE IS NO BUCKET, THEN RETURN SINCE NOTHING WILL MATCH THE PATTERN.
-            ((zero? THRN) (RETURN nil))
+            (zero? THRN) (RETURN nil)
             ;; IF THE NEW BUCKET IS SMALLER, IT BECOMES THE SMALLEST SO FAR.
-            ((> THL THRN) (SETQ thl1 tha1) (SETQ THL THRN)))
+            (> THL THRN) (do (SETQ thl1 tha1) (SETQ THL THRN)))
         ;; GO BACK FOR ANOTHER PASS.
         (GO THP1)))
 
@@ -1030,40 +1022,37 @@
         ;; THA4, THA5, THONE, AND THPC ARE NEW
         (set! *thnf* (inc *thnf*))
         ;; THIS COND SERVES THE SAME PURPOSE AS THE FIRST COND IN THIP
-        (COND ((and (term? thb) (not (= thb '?)) (not (number? thb)))
-                (SETQ THA thb))
-            ((or (= thb '?) (memq (car thb) '(THV THNV)))
-                (COND (*thfst* (RETURN 'THVRB))
-                    ((SETQ THA 'THVRB))))
-            ((RETURN 'THVRB)))
+        (cond (and (term? thb) (not (= thb '?)) (not (number? thb)))
+                (SETQ THA thb)
+            (or (= thb '?) (memq (car thb) '(THV THNV)))
+                (if *thfst* (RETURN 'THVRB) (SETQ THA 'THVRB))
+            :else (RETURN 'THVRB))
         ;; ALL THE REST SERVES THE SAME PURPOSE AS THE SECOND COND IN THIP.
         ;; IT WAS ORIGINALLY WRITTEN AS A SINGLE COND, BUT THE COMPILER BARFED ON IT,
         ;; SO IT WAS BROKEN UP INTO BITE SIZE PIECES.
         (SETQ tha1 (getprop THA *thwh*))
-        (or tha1 (RETURN nil))
-        (and (= tha1 'THNOHASH) (RETURN 'THBQF))
+        (when-not tha1 (RETURN nil))
+        (when (= tha1 'THNOHASH) (RETURN 'THBQF))
         (SETQ tha2 (thba *thnf* tha1))
-        (or tha2 (RETURN nil))
+        (when-not tha2 (RETURN nil))
         (SETQ tha3 (thba *thal* (cadr tha2)))
-        (or tha3 (RETURN nil))
+        (when-not tha3 (RETURN nil))
         (SETQ tha4 (cadr tha3))
         (SETQ THPC (not (= *thwh* 'THASSERTION)))
-        (SETQ tha5
-            (COND ((or *thfst* *thfstp*) (thba *thbs* (cdr tha4)))
-                ((thba (if THPC *thon* (car *thon*)) (cdr tha4)))))
-        (or tha5 (RETURN nil))
+        (SETQ tha5 (if (or *thfst* *thfstp*) (thba *thbs* (cdr tha4)) (thba (if THPC *thon* (car *thon*)) (cdr tha4))))
+        (when-not tha5 (RETURN nil))
         (SETQ THONE (cadr tha5))
         (RPLACD tha5 (cddr tha5))
-        (and (not (== (cadr tha4) 1))
-            (or (SETQ THSV (cddr tha4)) true)
+        (when-not (== (cadr tha4) 1)
+            (SETQ THSV (cddr tha4))
             (RPLACA (cdr tha4) (dec (cadr tha4)))
             (RETURN THONE))
         (SETQ THSV (cddr tha3))
         (RPLACD tha3 THSV)
-        (and (cdadr tha2) (RETURN THONE))
+        (when (cdadr tha2) (RETURN THONE))
         (SETQ THSV (cddr tha2))
         (RPLACD tha2 THSV)
-        (and (cdr tha1) (RETURN THONE))
+        (when (cdr tha1) (RETURN THONE))
         (remprop! THA *thwh*)
         THONE))
 
@@ -1242,35 +1231,33 @@
     (let [THX nil THY nil THZ (car *thtree*) THW nil THEOREM nil]
         (SETQ THY (cddr THZ))                                       ;; = RECOMMENDATIONS
         (RPLACD THY (dec (cdr THY)))
-    NXTREC (COND ((or (nil? (car THY)) (zero? (cdr THY)))
-            (RETURN nil)))                                          ;; RECOMMENDATIONS EXHAUSTED. FAIL
+    NXTREC (when (or (nil? (car THY)) (zero? (cdr THY)))
+            (RETURN nil))                                          ;; RECOMMENDATIONS EXHAUSTED. FAIL
         (SETQ THX (caar THY))
         (GO (car THX))
     THNUM (RPLACD THY (cadr THX))
         (RPLACA THY (cdar THY))
         (GO NXTREC)
     THDBF (set! *tholist* *thalist*)
-        (COND ((nil? (caddr THX))
-                (RPLACA THY (cdar THY))
-                (GO NXTREC))                                        ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
-            ((PROG1 (and ((cadr THX) (SETQ THW (caaddr THX))) (thmatch1 (cadr THZ) (car THW)))
-                    (RPLACA (cddr THX) (cdaddr THX)))
-                (RETURN THW))
-            (:else (GO THDBF)))
-    THTBF (COND ((nil? (caddr THX))
-                (RPLACA THY (cdar THY))
-                (GO NXTREC)))                                       ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
+        (cond (nil? (caddr THX))
+                (do (RPLACA THY (cdar THY))
+                    (GO NXTREC))                                        ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
+            (let [_ (and ((cadr THX) (SETQ THW (caaddr THX))) (thmatch1 (cadr THZ) (car THW)))] (RPLACA (cddr THX) (cdaddr THX)) _)
+                (RETURN THW)
+            :else (GO THDBF))
+    THTBF (when (nil? (caddr THX))
+            (RPLACA THY (cdar THY))
+            (GO NXTREC))                                       ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
         (SETQ THEOREM (caaddr THX))
-    THTBF1 (COND ((not (and (SETQ THW (getprop THEOREM 'THEOREM)) (= (car THW) 'THCONSE)))
-                (terpri)
-                (pr THEOREM)
-                (SETQ THEOREM (ert "BAD THEOREM - THTRY1"))
-                (COND ((= THEOREM true) (GO NXTREC))
-                    (:else (GO THTBF1)))))
-        (COND ((PROG1 (and ((cadr THX) (caaddr THX)) (thapply1 THEOREM THW (cadr THZ)))
-                    (RPLACA (cddr THX) (cdaddr THX)))
-                (RETURN true))
-            (:else (GO THTBF)))))
+    THTBF1 (SETQ THW (getprop THEOREM 'THEOREM))
+        (when-not (and THW (= (car THW) 'THCONSE))
+            (terpri)
+            (pr THEOREM)
+            (SETQ THEOREM (ert "BAD THEOREM - THTRY1"))
+            (if (= THEOREM true) (GO NXTREC) (GO THTBF1)))
+        (if (let [_ (and ((cadr THX) (caaddr THX)) (thapply1 THEOREM THW (cadr THZ)))] (RPLACA (cddr THX) (cdaddr THX)) _)
+            (RETURN true)
+            (GO THTBF))))
 
 (defn- thtry [x]
     ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
@@ -1309,14 +1296,13 @@
 
 (defn- thundot [] (thpopt) true)
 
-(§ defq- THUNIQUE [tha]
-    (SETQ tha (cons 'THUNIQUE (doall (map eval tha))))
-    (let [x *thalist*]
-    =>  (COND ((nil? x) (thpush *thalist* tha) (RETURN true))
-            ((= (caar x) 'THUNIQUE)
-                (COND ((= (car x) tha) (RETURN nil)))))
-        (SETQ x (cdr x))
-        (GO =>)))
+(§ defq- THUNIQUE [a]
+    (let [a (cons 'THUNIQUE (doall (map eval a)))]
+        (loop [x *thalist*]
+            (cond (nil? x) (do (thpush *thalist* a) (RETURN true))
+                (= (caar x) 'THUNIQUE)
+                    (when (= (car x) a) (RETURN nil)))
+            (recur (cdr x)))))
 
 (defn- thv1 [x]
     ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
@@ -1345,59 +1331,57 @@
         ;; NOTE THAT EACH PLANNER FUNCTION CORRESPONDS TO THREE LISP FUNCTIONS:
         ;; ONE TO SET THINGS UP (THIS IS WHAT IS GETTING EVALED AT THIS POINT),
         ;; ONE TO HANDLE SUCCESS AND ONE FOR FAILURE.
-        (COND ((ERRSET (set! *thvalue* (eval THE))))
+        (when-not (ERRSET (set! *thvalue* (eval THE)))
             ;; IF THERE WAS A LISP ERROR, REPORT IT TO THE USER.
-            (:else (terpri) (pr THE) (set! *thvalue* (ert "LISP ERROR - THVAL"))))
+            (terpri) (pr THE) (set! *thvalue* (ert "LISP ERROR - THVAL")))
         ;; USUALLY THEMESSAGE WILL BE NIL.
         ;; EXCEPTION IS WHEN USER HAS USED THE THMESSAGE FUNCTION.
-    GO1 (COND (*thmessage* (GO MFAIL))
+    GO1 (cond *thmessage* (GO MFAIL)
             ;; IF THEXP IS NON NIL, IT MEANS THAT WE HAVE MORE PLANNER TO WORK ON BEFORE GOING TO NEXT LINE OF USER CODE.
-            (*thexp* (GO GO))
+            *thexp* (GO GO)
             ;; IF THVALUE IS NON NIL, IT MEANS THAT SO FAR THE THEOREM IS SUCCEEDING.
-            (*thvalue* (GO SUCCEED))
+            *thvalue* (GO SUCCEED)
             ;; ELSE WE ARE IN A FAILURE SITUATION.
-            (:else (GO FAIL)))
+            :else (GO FAIL))
     SUCCEED
         ;; SAVE CURRENT STATE OF THTREE AND THALIST IN CASE WE HAVE TO BACK UP.
-        (COND ((nil? *thbranch*)
+        (when (nil? *thbranch*)
             (set! *thbranch* *thtree*)
-            (set! *thabranch* *thalist*)))
+            (set! *thabranch* *thalist*))
         ;; IF THE THTREE IS NIL, IT MEANS THAT THE THPROG OR WHATEVER HAS BEEN COMPLETED,
         ;; SO THERE ARE NO MORE EXPRESSIONS TO DO.  ALL THEOREMS ACT LIKE A THPROG, INCLUDING
         ;; PUTTING ITS MARK ON THTREE, SEE THAPPLY, HENCE NO NEED TO GROW MORE BRANCHES ON THTREE.
-        (COND ((nil? *thtree*)
-                (RETURN *thvalue*))
+        (cond (nil? *thtree*) (RETURN *thvalue*)
             ;; THIS IS THE NORMAL CASE.
             ;; WE EVAL THE SUCCEED-FUNCTION OF THE PLANNER FUNCTION WHICH JUST SUCCEEDED.
-            ((set! *thexp* (getprop (caar *thtree*) 'THSUCCEED))
-                (GO GO2))
+            (set! *thexp* (getprop (caar *thtree*) 'THSUCCEED))
+                (GO GO2)
             ;; IN CASE OF LOSSAGE, LETS THE USER SUCCEED ANYWAY.
-            ((ert "BAD SUCCEED - THVAL")
-                (GO SUCCEED))
-            ((GO FAIL)))
+            (ert "BAD SUCCEED - THVAL")
+                (GO SUCCEED)
+            :else (GO FAIL))
         ;; HAS TO DO WITH FAILURE + MESSAGE
-    MFAIL (COND ((= (car *thmessage*) *thtree*)
+    MFAIL (when (= (car *thmessage*) *thtree*)
             (set! *thexp* (cadr *thmessage*))
             (set! *thmessage* nil)
-            (GO GO)))
+            (GO GO))
         ;; IF THTREE IS NIL, WE HAVE FAILED THE ENTIRE EXPRESSION.
-    FAIL (COND ((nil? *thtree*)
-                (RETURN nil))
+    FAIL (cond (nil? *thtree*) (RETURN nil)
             ;; NORMAL CASE.  EVAL THE FAILURE FUNCTION ASSOCIATED
             ;; WITH THE PLANNER FUNCTION WHICH JUST FAILED.
-            ((set! *thexp* (getprop (caar *thtree*) 'THFAIL))
-                (GO GO2))
-            ((ert "BAD FAIL - THVAL")
-                (GO SUCCEED))
-            ((GO FAIL)))
+            (set! *thexp* (getprop (caar *thtree*) 'THFAIL))
+                (GO GO2)
+            (ert "BAD FAIL - THVAL")
+                (GO SUCCEED)
+            :else (GO FAIL))
         ;; THEXP AT THIS POINT IS THE APPROPRIATE SUCCESS OR FAILURE ASSOCIATED FUNCTION.
         ;; EVAL IT AND AT THE SAME TIME,
         ;; SET IT TO NIL IN CASE WE NEED THEXP FOR MORE EXPRESSIONS TO BE PROCESSED.
-    GO2 (set! *thvalue* ((PROG1 *thexp* (set! *thexp* nil))))
+    GO2 (set! *thvalue* ((let [_ *thexp*] (set! *thexp* nil) _)))
         ;; GO THROUGH THE ENTIRE PROCESS AGAIN.
         ;; A TYPICAL PROCESS IN SUCCESS IS TO KEEP REMOVING EXPRESSIONS FROM THTREE
         ;; UNTIL WE GET BACK TO THE THREE ENTRY PUT ON BY THPROG.
-        ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING
+        ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING.
         (GO GO1)))
 
 (defn- thvar? [x]
@@ -1445,16 +1429,11 @@
     (if (term? thx) thx (doall (map #'THVARS2 thx))))
 
 (§ defq- THVSETQ [tha]
-    (let [a tha]
-    =>  (COND ((nil? a) (RETURN *thvalue*))
-            ((nil? (cdr a))
-                (terpri)
-                (pr tha)
-                (ert "ODD NUMBER OF GOODIES - THVSETQ"))
-            (:else (set! *thvalue*
-                (car (RPLACA (cdr (thsgal (car a))) (THVAL (cadr a) *thalist*))))))
-        (SETQ a (cddr a))
-        (GO =>)))
+    (loop-when [a tha] a => *thvalue*
+        (if (cdr a)
+            (set! *thvalue* (car (RPLACA (cdr (thsgal (car a))) (THVAL (cadr a) *thalist*))))
+            (do (terpri) (pr tha) (ert "ODD NUMBER OF GOODIES - THVSETQ")))
+        (recur (cddr a))))
 
 (putprop! 'THTAG 'THFAIL thtagf)
 (putprop! 'THGOAL 'THFAIL thgoalf)
@@ -1513,9 +1492,11 @@
         ;; IF OBJECT-TO-BE-TRACED IS A PARTICULAR THEOREM, THEN THE TRIPLET
         ;; '(THEOREM (THSEL 'CADR) (THSEL 'CADDDR))
         ;; IS GUARANTEED TO BE ON THTRACE IN ADDITION TO THE STANDARD TRIPLET.
-        (COND ((getprop (car x) 'THEOREM)
-            (COND ((SETQ y (assq 'THEOREM *thtrace*)) (RPLACD y '((THSEL #'cadr) (THSEL #'caddr))))
-                ((set! *thtrace* (list x (concat '(THEOREM (THSEL #'cadr) (THSEL #'caddr)) *thtrace*)))))))
+        (when (getprop (car x) 'THEOREM)
+            (SETQ y (assq 'THEOREM *thtrace*))
+            (if y
+                (RPLACD y '((THSEL #'cadr) (THSEL #'caddr)))
+                (set! *thtrace* (list x (concat '(THEOREM (THSEL #'cadr) (THSEL #'caddr)) *thtrace*)))))
         ;; THTRACE IS UPDATED.  IF THE OBJECT-TO-BE-TRACED IS ALREADY ON THTHRACE, THEN
         ;; THE TRACE AND BREAK CONDITIONS ARE UPDATED, ELSE THE WHOLE TRIPLET IS PLACED ON THTRACE.
         (SETQ y (assq (car x) *thtrace*))
@@ -8223,63 +8204,63 @@ GO  (let [x l]
         (SETQ ANS (THVAL-MULT (ambput CODE)))
         (SETQ PLAUS (car ANS))
         (SETQ LENGTH (count (SETQ ANS (cadr ANS))))
-        (RETURN (COND
-            ((= TYPE 'ALL)
+        (cond
+            (= TYPE 'ALL)
                 (ANSBUILD
                     (+ PLAUS (plausibility? RSS))
-                    (COND ((nil? ANS) '((say "YES"))) ((cons '(say "NO, NOT") (prepput (namelist PHRASE 'INDEF ANS)))))
-                    true))
-            ((= TYPE 'HOWMANY)
+                    (if (nil? ANS) '((say "YES")) (cons '(say "NO, NOT") (prepput (namelist PHRASE 'INDEF ANS))))
+                    true)
+            (= TYPE 'HOWMANY)
                 (ANSBUILD
                     (+ PLAUS (plausibility? RSS))
                     (prepput (namesugar LENGTH REL))
-                    true))
-            ((memq TYPE '(WHICH WHAT))
+                    true)
+            (memq TYPE '(WHICH WHAT))
                 (ANSBUILD
-                    (+ PLAUS (plausibility? RSS) (COND (ANS 512) (0)))
+                    (+ PLAUS (plausibility? RSS) (if ANS 512 0))
                     (prepput (namelist PHRASE 'DEF ANS))
-                    true))
-            ((= TYPE 'INDEF)
-                (SETQ NUM (num? REL))
-                (ANSBUILD
-                    (+ PLAUS (plausibility? RSS))
-                    (COND
-                        ((memq NUM '(NS SG-PL))
-                            (COND
-                                ((nil? ANS) (if (istense (parsenode? RSS) 'MODAL) '((say "I DON'T KNOW")) '((say "NO"))))
-                                (:else (concat '((say "YES,")) (COND
-                                    ((istense (parsenode? RSS) 'MODAL) nil)
-                                    ((prepput (concat (and (cdr ANS) (concat (namesugar LENGTH REL) '((print \:)))) (namelist PHRASE 'INDEF ANS)))))))))
-                        ((number? NUM)
-                            ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
-                            ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
-                            (concat
-                                (COND
-                                    ((= NUM LENGTH) '((say "YES,")))
-                                    ((> LENGTH NUM) nil)
-                                    ((zero? NUM) '((say "NO,")))
-                                    (:else '((say "NO, ONLY"))))
-                                (COND
-                                    ((= NUM LENGTH) nil)
-                                    (:else (prepput (concat (namesugar LENGTH REL) '((print \:))))))
-                                (prepput (namelist PHRASE 'INDEF ANS))))
-                        ((= (car NUM) 'EXACTLY)
-                            (COND ((= LENGTH NUM) '((say "YES")))
-                                (:else (cons '(say "NO,") (prepput (namesugar LENGTH RES))))))
-                        ((= (car NUM) '>)
-                            (cons (COND
-                                    ((> LENGTH NUM) '(say "YES,"))
-                                    ((zero? LENGTH) '(say "NO,"))
-                                    (:else '(say "NO, ONLY")))
-                                (prepput (namesugar LENGTH REL))))
-                        ((= (car NUM) '<)
-                            (cons (COND
-                                    ((< LENGTH NUM) '(say "YES,"))
-                                    (:else '(say "NO,")))
-                                (prepput (namesugar LENGTH REL))))
-                        ((ert "ANSREL -- FUNNY NUMBER")))
-                    true))
-            ((ert "ANSREL-- FUNNY TYPE"))))))
+                    true)
+            (= TYPE 'INDEF)
+                (do (SETQ NUM (num? REL))
+                    (ANSBUILD
+                        (+ PLAUS (plausibility? RSS))
+                        (cond
+                            (memq NUM '(NS SG-PL))
+                                (if (nil? ANS)
+                                    (if (istense (parsenode? RSS) 'MODAL) '((say "I DON'T KNOW")) '((say "NO")))
+                                    (concat '((say "YES,"))
+                                        (when-not (istense (parsenode? RSS) 'MODAL)
+                                            (prepput (concat (and (cdr ANS) (concat (namesugar LENGTH REL) '((print \:)))) (namelist PHRASE 'INDEF ANS))))))
+                            (number? NUM)
+                                ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
+                                ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
+                                (concat
+                                    (cond
+                                        (= NUM LENGTH) '((say "YES,"))
+                                        (> LENGTH NUM) nil
+                                        (zero? NUM) '((say "NO,"))
+                                        :else '((say "NO, ONLY")))
+                                    (cond
+                                        (= NUM LENGTH) nil
+                                        :else (prepput (concat (namesugar LENGTH REL) '((print \:)))))
+                                    (prepput (namelist PHRASE 'INDEF ANS)))
+                            (= (car NUM) 'EXACTLY)
+                                (cond (= LENGTH NUM) '((say "YES"))
+                                    :else (cons '(say "NO,") (prepput (namesugar LENGTH RES))))
+                            (= (car NUM) '>)
+                                (cons (cond
+                                        (> LENGTH NUM) '(say "YES,")
+                                        (zero? LENGTH) '(say "NO,")
+                                        :else '(say "NO, ONLY"))
+                                    (prepput (namesugar LENGTH REL)))
+                            (= (car NUM) '<)
+                                (cons (cond
+                                        (< LENGTH NUM) '(say "YES,")
+                                        :else '(say "NO,"))
+                                    (prepput (namesugar LENGTH REL)))
+                            :else (ert "ANSREL -- FUNNY NUMBER"))
+                        true))
+            :else (ert "ANSREL-- FUNNY TYPE"))))
 
 (§ defn- ANSTHM [exp]
     ;; GENRATES A THEOREM OR ASSERTION FOR AN EXPRESSION.
@@ -8298,10 +8279,11 @@ GO  (let [x l]
         nil))
 
 (§ defn- ANSTHMADD [oss]
-    (SETQ VARLIST (cons (variable? oss) VARLIST))
-    (SETQ BODY (COND
-        (BODY (PLNR-PROGIFY nil (list BODY (PLNR-DESCRIBE (relations? oss) (variable? oss) (list (variable? oss))))))
-        (:else (PLNR-DESCRIBE (relations? oss) (variable? oss) (list (variable? oss))))))
+    (SETQ VARLIST (cons (variable? oss) VARLIST))
+    (SETQ BODY
+        (if BODY
+            (PLNR-PROGIFY nil (list BODY (PLNR-DESCRIBE (relations? oss) (variable? oss) (list (variable? oss)))))
+            (PLNR-DESCRIBE (relations? oss) (variable? oss) (list (variable? oss)))))
     (plnr-var (variable? oss)))
 
 (defn- ansthmelement [x]
@@ -8361,16 +8343,16 @@ GO  (let [x l]
     (let [xx nil num (count (wordafter node))]
         (APPLY #'concat
             (MAPLIST (lambda [word]
-                (COND
-                    ((not (< num (count word))) nil)                ;; THIS KLUDGE STOPS IT AT THE END OF THE NODE
-                    ((SETQ xx (assq (car word) '((I YOU) (ME YOU) (AM ARE) (ARE AM))))
-                        (cdr xx))                                   ;; WE RETURN LIST OF THE THING REALLY WANTED, SO
-                    ((= (car word) 'YOU)                           ;; THE APPLY APPEND CAN GET RID OF THE EMPTY ONES.
-                        (SETQ xx (FINDMOTHER word node))            ;; UNFORTUNATELY, FOR "YOU" IT IS NECESSARY TO
-                        (COND ((isq xx 'SUBJ) '(I))                  ;; DECIDE WHETHER IT SHOULD BE REPLACED BY "I" OR
-                            ((isq xx 'OBJ) '(YOU))                   ;; "ME", ACCORDING TO WHETHER IT WAS PARSED AS AN
-                            ((bug "ELIZA -- SUBJ OBJ"))))             ;; OBJECT OR SUBJECT. FINDMOTHER IS USED TO FIND
-                    ((list (car word)))))                           ;; THE PARSE NODE. WORDS OTHER THAN THE SPECIAL
+                (cond
+                    (not (< num (count word))) nil                ;; THIS KLUDGE STOPS IT AT THE END OF THE NODE
+                    (SETQ xx (assq (car word) '((I YOU) (ME YOU) (AM ARE) (ARE AM))))
+                        (cdr xx)                                   ;; WE RETURN LIST OF THE THING REALLY WANTED, SO
+                    (= (car word) 'YOU)                           ;; THE APPLY APPEND CAN GET RID OF THE EMPTY ONES.
+                        (do (SETQ xx (FINDMOTHER word node))            ;; UNFORTUNATELY, FOR "YOU" IT IS NECESSARY TO
+                            (cond (isq xx 'SUBJ) '(I)                  ;; DECIDE WHETHER IT SHOULD BE REPLACED BY "I" OR
+                                (isq xx 'OBJ) '(YOU)                   ;; "ME", ACCORDING TO WHETHER IT WAS PARSED AS AN
+                                :else (bug "ELIZA -- SUBJ OBJ")))             ;; OBJECT OR SUBJECT. FINDMOTHER IS USED TO FIND
+                    :else (list (car word))))                           ;; THE PARSE NODE. WORDS OTHER THAN THE SPECIAL
                 (firstword node)))))                                       ;; ONES GO THROUGH DIRECTLY.
 
 (def- timid 200)
@@ -8397,32 +8379,32 @@ GO  (let [x l]
         ;; NAMEOBJ RETURNS A LIST OF THE OBJECT AND THE ...
         ;; THIS PATCH MAY WELL BE TOTAL OUT OF PHASE WITH THE BACKREF HACKER - DDM 5-12-73 INSTRUCTIONS FOR NAMING IT.
         (SETQ names (doall (map #(NAMEOBJ % spec) names)))
-        (COND ((nil? names) (RETURN '(say "NOTHING"))))
+        (when (nil? names) (RETURN '(say "NOTHING")))
     UP  (SETQ COUNT 1)
         (SETQ EXAM (car names))
         (SETQ names (cdr names))
-    BACK (COND ((SETQ x (assq (car EXAM) names))
+    BACK (when (SETQ x (assq (car EXAM) names))
             (SETQ names (DELQ x names))
             (SETQ COUNT (inc COUNT))
             (SETQ EXAM (list (car EXAM) (concat (cadr x) (cadr EXAM))))
-            (GO BACK)))
+            (GO BACK))
         ;; WHEN THERE ARE TWO OBJECTS WITH THE SAME ENGLISH DESCRIPTIONS, A JOINT OBJECT IS PRODUCED COMBINING THE OBJECTS.
         ;; THE COUNT IS LATER USED TO PUT IN THE APPROPRIATE NUMBER, AND THE DESCRIPTION IS CHECKED TO SEE IF "ONE" CAN BE USED.
         ;; ADD THE ONE JUST PRODUCED TO THE RESULT LIST.  TRY ANOTHER.
         (SETQ RES (cons (cons (PLURALIZE (car EXAM) COUNT) (cdr EXAM)) RES))
-        (and names (GO UP))
+        (when names (GO UP))
         (SETQ RES
             (doall (map (lambda [PHRASE2]
-                    (COND ((propname (caadr PHRASE2)) (car PHRASE2))
+                    (if (propname (caadr PHRASE2)) (car PHRASE2)
                         ;; ANSNAME PARSES THE PHRASE AND PUTS THE ...
                         ;; ANSONE SUBSTITUTES "ONE" IF POSSIBLE
-                        (:else (ANSNAME PHRASE2) (ONECHECK (car PHRASE2)))))
+                        (do (ANSNAME PHRASE2) (ONECHECK (car PHRASE2)))))
                 RES)))
         (SETQ ANS (car RES))
-    OUTPUT (COND
-            ((nil? (SETQ RES (cdr RES))) (RETURN ANS))
-            ((cdr RES) (SETQ comma? true) (SETQ ANS (concat ANS '((print \,)) (car RES))))
-            ((SETQ ANS (concat ANS (and comma? '((print \,))) '((say "AND")) (car RES)))))
+    OUTPUT (cond
+            (nil? (SETQ RES (cdr RES))) (RETURN ANS)
+            (cdr RES) (do (SETQ comma? true) (SETQ ANS (concat ANS '((print \,)) (car RES))))
+            :else (SETQ ANS (concat ANS (and comma? '((print \,))) '((say "AND")) (car RES))))
         (GO OUTPUT)))
 
 (defn- pron-prt [particle ng]
