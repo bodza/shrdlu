@@ -177,8 +177,9 @@
 (dynamic- *thon*)
 (dynamic- *thbs*)
 (dynamic- *thy1*)
+(dynamic- *thy*)
 (dynamic- *thz1*)
-(dynamic- *tha2*)
+(dynamic- *thz*)
 
 (defn- thadd [thtt' thpl]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
@@ -301,7 +302,7 @@
         (do (set! *thalist* *tholist*) (thpopt) nil)))
 
 (defn- thass1 [a p]
-    (let [*thy1* nil THY nil]
+    (binding [*thy1* nil *thy* nil]
         ;; IF YOU SEE "THPSEUDO", SET FLAG "PSEUDO" TO T.
         (let [pseudo (and (cdr a) (= (caadr a) 'THPSEUDO))
               ;; IF (CAR THA) IS AN ATOM, WE ARE ASSERTING (ERASING) A THEOREM.
@@ -323,7 +324,7 @@
                         p (let [[y a] (if (and a (= (caar a) 'THPROP)) [(eval (cadar a)) (cdr a)] [nil a])]
                             ;; THADD TAKES TWO ARGS: THE FIRST IS ITEM TO BE ADDED,
                             ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM.
-                            [(thadd thx (SETQ THY y)) a])
+                            [(thadd thx (set! *thy* y)) a])
                         ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE.
                         :else [(thremove thx) a])]
                 ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
@@ -333,13 +334,13 @@
                     (let [type (if p 'thante 'therasing)]
                         ;; IF WE ACTUALLY MUNGED THE DATABASE, PUT THE FACT IN THTREE.
                         (when-not pseudo
-                            (thpush *thtree* (list (if p 'thassert 'therase) thx THY)))
+                            (thpush *thtree* (list (if p 'thassert 'therase) thx *thy*)))
                         ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
                         ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
-                        (SETQ THY (doall (mapcat #(thtae % thx type) a)))
+                        (set! *thy* (doall (mapcat #(thtae % thx type) a)))
                         ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
                         ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>).
-                        (when THY (set! *thexp* (cons 'thdo THY)))
+                        (when *thy* (set! *thexp* (cons 'thdo *thy*)))
                         thx))))))
 
 (defq- thassert [& a]
@@ -585,25 +586,23 @@
 (defq- thgo [& a]
     (apply thsucceed (cons 'thtag a)))
 
-(§ defq- thgoal [& tha]
+(defq- thgoal [& a]
     ;; THA = (PATTERN RECOMMENDATION)
     ;; PATTERN IS EITHER EXPLICIT, THE VALUE OF A PLANNER VARIABLE OR THVAL OF $E...
     ;; THA2 = INSTANTIATED PATTERN
     ;; THA1 = RECOMMENDATIONS
-    (let [THY nil *thy1* nil THZ nil *thz1* nil *tha2* (thvarsubst (car tha) true)]
-        (let [tha1 (cdr tha)]
-            (when (or (nil? tha1)                                      ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
-                    (and (not (and (= (caar tha1) 'THANUM)
-                            (SETQ tha1 (cons (list 'THNUM (cadar tha1)) (cons (list 'THDBF 'thtrue) (cdr tha1))))))
-                        (not (and (= (caar tha1) 'THNODB)              ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
-                            (do (SETQ tha1 (cdr tha1)) true)))
-                        (not (= (caar tha1) 'THDBF))))
-                (SETQ tha1 (cons (list 'THDBF 'thtrue) tha1)))
-            (SETQ tha1 (doall (mapcat thtry tha1)))                      ;; THMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
-            (when tha1
-                (thpush *thtree* (list 'thgoal *tha2* tha1))                    ;; (THGOAL PATTERN MATCHES)
+    (binding [*thy* nil *thy1* nil *thz* nil *thz1* nil]
+        (let [a1 (thvarsubst (car a) true) a2 (cdr a)
+              a2 (condp = (caar a2)                         ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
+                    'THANUM (cons (list 'THNUM (cadar a2)) (cons '(THDBF thtrue) (cdr a2)))
+                    'THNODB (cdr a2)                        ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
+                    'THDBF a2
+                    (cons '(THDBF thtrue) a2))
+              a2 (doall (mapcat #(thtry % a1) a2))]         ;; THEOREMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
+            (when a2
+                (thpush *thtree* (list 'thgoal a1 a2))      ;; (THGOAL PATTERN MATCHES)
                 (RPLACD (cddar *thtree*) 262143))
-            nil)))                                                       ;; FAILS TO THGOALF
+            nil)))                                          ;; FAILS TO THGOALF
 
 (defn- thgoalf []
     ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY.
@@ -1119,7 +1118,7 @@
                 (cdr a)))
         (= (car a) 'THTBF)
             (doall (mapcat #(when (apply (cadr a) %) (list (list 'thapply % (car thx))))
-                (if *thy1* THY (do (set! *thy1* true) (SETQ THY (thmatchlist (car thx) type))))))
+                (if *thy1* *thy* (do (set! *thy1* true) (set! *thy* (thmatchlist (car thx) type))))))
         :else (do (terpri) (pr a) (bug! "UNCLEAR RECOMMENDATION - THTAE"))))
 
 (defq- thtag [& a]
@@ -1157,31 +1156,32 @@
                 (RPLACA y (cdar y))
                 (recur)))))
 
-(defn- thtry [x]
+(defn- thtry [x a1]
     ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
     ;; SO WHENEVER WE FAIL BACK TO A THGOAL, WE GO TO THE NEXT "THING TO DO".
     ;; X IS THE LIST OF RECOMMENDATIONS.
-    (cond ;; ANY ATOMIC RECOMMENDATION IS IGNORED.  THIS IS USEFUL IN ERROR RECOVERY.
-        (term? x) nil
-        ;; HAVE A THEOREM BASE FILTER.
-        (= (car x) 'THTBF)
-            ;; MAKE UP A LIST WHICH GIVES
-            ;; 1 - THE INDICATOR "THTBF"
-            ;; 2 - THE ACTUAL FILTER (THTRUE IS THE MOST COMMON)
-            ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
-            (do (when (not *thz1*) (set! *thz1* true) (SETQ THZ (thmatchlist *tha2* 'thconse)))
-                (when THZ (list (list 'THTBF (cadr x) THZ))))
-        ;; DO THE SAME THING, ONLY FOR DATABASE FILTERS.
-        (= (car x) 'THDBF)
-            (do (when (not *thy1*) (set! *thy1* true) (SETQ THY (thmatchlist *tha2* 'THASSERTION)))
-                (when THY (list (list 'THDBF (cadr x) THY))))
-        ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE STATEMENTS,
-        ;; WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE.
-        (= (car x) 'THUSE)
-            (list (list 'THTBF 'thtrue (cdr x)))
-        (= (car x) 'THNUM)
-            (list x)
-        :else (do (terpri) (pr x) (bug! "UNCLEAR RECOMMENDATION - THTRY"))))
+    ;; ANY ATOMIC RECOMMENDATION IS IGNORED.  THIS IS USEFUL IN ERROR RECOVERY.
+    (when-not (term? x)
+        (condp = (car x)
+            ;; HAVE A THEOREM BASE FILTER.
+            'THTBF
+                ;; MAKE UP A LIST WHICH GIVES
+                ;; 1 - THE INDICATOR "THTBF"
+                ;; 2 - THE ACTUAL FILTER (THTRUE IS THE MOST COMMON)
+                ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
+                (do (when (not *thz1*) (set! *thz1* true) (set! *thz* (thmatchlist a1 'thconse)))
+                    (when *thz* (list (list 'THTBF (cadr x) *thz*))))
+            ;; DO THE SAME THING, ONLY FOR DATABASE FILTERS.
+            'THDBF
+                (do (when (not *thy1*) (set! *thy1* true) (set! *thy* (thmatchlist a1 'THASSERTION)))
+                    (when *thy* (list (list 'THDBF (cadr x) *thy*))))
+            ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE STATEMENTS,
+            ;; WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE.
+            'THUSE
+                (list (list 'THTBF 'thtrue (cdr x)))
+            'THNUM
+                (list x)
+            (do (terpri) (pr x) (bug! "UNCLEAR RECOMMENDATION - THTRY")))))
 
 (defn- thundof []
     (when' (caddar *thtree*) => (thpopt)
@@ -1220,8 +1220,7 @@
         ;; THEXP IS RESERVED FOR FURTHER EXPRESSIONS,
         ;; WHICH SHOULD BE THVALED BEFORE WE GO TO THE NEXT ITEM OF ACTUAL CODE.
         ;; FOR EXAMPLE, THASSERT USES THIS FEATURE TO PROCESS ANTECEDENT THEOREMS.
-    GO  (let [e *thexp*]
-            (set! *thexp* nil)
+    GO  (let [e *thexp*] (set! *thexp* nil)
             ;; EVAL THE CURRENT EXPRESSION TO BE THVALED.
             ;; NOTE THAT EACH PLANNER FUNCTION CORRESPONDS TO THREE LISP FUNCTIONS:
             ;; ONE TO SET THINGS UP (THIS IS WHAT IS GETTING EVALED AT THIS POINT),
@@ -1231,49 +1230,49 @@
                 (terpri) (pr e) (bug! "LISP ERROR - THVAL")))
         ;; USUALLY THEMESSAGE WILL BE NIL.
         ;; EXCEPTION IS WHEN USER HAS USED THE THMESSAGE FUNCTION.
-    (loop []
-        (cond *thmessage* (GO MFAIL)
-            ;; IF THEXP IS NON NIL, IT MEANS THAT WE HAVE MORE PLANNER TO WORK ON BEFORE GOING TO NEXT LINE OF USER CODE.
-            *thexp* (GO GO)
-            ;; IF THVALUE IS NON NIL, IT MEANS THAT SO FAR THE THEOREM IS SUCCEEDING.
-            *thvalue* (GO SUCCEED)
-            ;; ELSE WE ARE IN A FAILURE SITUATION.
-            :else (GO FAIL))
-    SUCCEED
-        ;; SAVE CURRENT STATE OF THTREE AND THALIST IN CASE WE HAVE TO BACK UP.
-        (when (nil? *thbranch*)
-            (set! *thbranch* *thtree*)
-            (set! *thabranch* *thalist*))
-        ;; IF THE THTREE IS NIL, IT MEANS THAT THE THPROG OR WHATEVER HAS BEEN COMPLETED,
-        ;; SO THERE ARE NO MORE EXPRESSIONS TO DO.  ALL THEOREMS ACT LIKE A THPROG, INCLUDING
-        ;; PUTTING ITS MARK ON THTREE, SEE THAPPLY, HENCE NO NEED TO GROW MORE BRANCHES ON THTREE.
-        (cond (nil? *thtree*) (RETURN *thvalue*)
-            ;; THIS IS THE NORMAL CASE.
-            ;; WE EVAL THE SUCCEED-FUNCTION OF THE PLANNER FUNCTION WHICH JUST SUCCEEDED.
-            (set! *thexp* (getprop (caar *thtree*) 'thsucceed))
-                (GO GO2)
-            :else (GO FAIL))
-        ;; HAS TO DO WITH FAILURE + MESSAGE
-    MFAIL (when (= (car *thmessage*) *thtree*)
-            (set! *thexp* (cadr *thmessage*))
-            (set! *thmessage* nil)
-            (GO GO))
-        ;; IF THTREE IS NIL, WE HAVE FAILED THE ENTIRE EXPRESSION.
-    FAIL (cond (nil? *thtree*) (RETURN nil)
-            ;; NORMAL CASE.  EVAL THE FAILURE FUNCTION ASSOCIATED
-            ;; WITH THE PLANNER FUNCTION WHICH JUST FAILED.
-            (set! *thexp* (getprop (caar *thtree*) 'thfail))
-                (GO GO2)
-            :else (GO FAIL))
-        ;; THEXP AT THIS POINT IS THE APPROPRIATE SUCCESS OR FAILURE ASSOCIATED FUNCTION.
-        ;; EVAL IT AND AT THE SAME TIME,
-        ;; SET IT TO NIL IN CASE WE NEED THEXP FOR MORE EXPRESSIONS TO BE PROCESSED.
-    GO2 (set! *thvalue* ((let [_ *thexp*] (set! *thexp* nil) _)))
-        ;; GO THROUGH THE ENTIRE PROCESS AGAIN.
-        ;; A TYPICAL PROCESS IN SUCCESS IS TO KEEP REMOVING EXPRESSIONS FROM THTREE
-        ;; UNTIL WE GET BACK TO THE THREE ENTRY PUT ON BY THPROG.
-        ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING.
-        (recur))))
+        (loop []
+            (cond *thmessage* (GO MFAIL)
+                ;; IF THEXP IS NON NIL, IT MEANS THAT WE HAVE MORE PLANNER TO WORK ON BEFORE GOING TO NEXT LINE OF USER CODE.
+                *thexp* (GO GO)
+                ;; IF THVALUE IS NON NIL, IT MEANS THAT SO FAR THE THEOREM IS SUCCEEDING.
+                *thvalue* (GO SUCCEED)
+                ;; ELSE WE ARE IN A FAILURE SITUATION.
+                :else (GO FAIL))
+        SUCCEED
+            ;; SAVE CURRENT STATE OF THTREE AND THALIST IN CASE WE HAVE TO BACK UP.
+            (when (nil? *thbranch*)
+                (set! *thbranch* *thtree*)
+                (set! *thabranch* *thalist*))
+            ;; IF THE THTREE IS NIL, IT MEANS THAT THE THPROG OR WHATEVER HAS BEEN COMPLETED,
+            ;; SO THERE ARE NO MORE EXPRESSIONS TO DO.  ALL THEOREMS ACT LIKE A THPROG, INCLUDING
+            ;; PUTTING ITS MARK ON THTREE, SEE THAPPLY, HENCE NO NEED TO GROW MORE BRANCHES ON THTREE.
+            (cond (nil? *thtree*) (RETURN *thvalue*)
+                ;; THIS IS THE NORMAL CASE.
+                ;; WE EVAL THE SUCCEED-FUNCTION OF THE PLANNER FUNCTION WHICH JUST SUCCEEDED.
+                (set! *thexp* (getprop (caar *thtree*) 'thsucceed))
+                    (GO GO2)
+                :else (GO FAIL))
+            ;; HAS TO DO WITH FAILURE + MESSAGE
+        MFAIL (when (= (car *thmessage*) *thtree*)
+                (set! *thexp* (cadr *thmessage*))
+                (set! *thmessage* nil)
+                (GO GO))
+            ;; IF THTREE IS NIL, WE HAVE FAILED THE ENTIRE EXPRESSION.
+        FAIL (cond (nil? *thtree*) (RETURN nil)
+                ;; NORMAL CASE.  EVAL THE FAILURE FUNCTION ASSOCIATED
+                ;; WITH THE PLANNER FUNCTION WHICH JUST FAILED.
+                (set! *thexp* (getprop (caar *thtree*) 'thfail))
+                    (GO GO2)
+                :else (GO FAIL))
+            ;; THEXP AT THIS POINT IS THE APPROPRIATE SUCCESS OR FAILURE ASSOCIATED FUNCTION.
+            ;; EVAL IT AND AT THE SAME TIME,
+            ;; SET IT TO NIL IN CASE WE NEED THEXP FOR MORE EXPRESSIONS TO BE PROCESSED.
+        GO2 (set! *thvalue* ((let [_ *thexp*] (set! *thexp* nil) _)))
+            ;; GO THROUGH THE ENTIRE PROCESS AGAIN.
+            ;; A TYPICAL PROCESS IN SUCCESS IS TO KEEP REMOVING EXPRESSIONS FROM THTREE
+            ;; UNTIL WE GET BACK TO THE THREE ENTRY PUT ON BY THPROG.
+            ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING.
+            (recur))))
 
 (defn- thvar? [x]
     ;; IS X A PLANNER VARIABLE?
@@ -6350,7 +6349,7 @@
     ;;                                    SMOB1 FOR CADR
     ;;                                    SMOB2 FOR CADDR
     ;;   PROCEDUREß      CONDENSED PLANNER CODE SCHEMA
-    ;;   PLAUSIBILITYß   EVALUATED TO GET INTEGER FROM 0 TO 512 INDICATING RELATIVE LIKLIHOOD OF THIS DEFINITION SENSE.
+    ;;   PLAUSIBILITYß   EVALUATED TO GET INTEGER FROM 0 TO 512 INDICATING RELATIVE LIKELIHOOD OF THIS DEFINITION SENSE.
     ;;   MARKERSß        SEMANTIC MARKERS
     ;;
     ;; VALUE:
@@ -6541,7 +6540,7 @@
         (let [x (getprop x 'WHO)]
             (cond (= *who* 'HE) x x (<= (car *who*) x (cadr *who*))))))
 
-(§ defq- object [& a]
+(defq- object [& a]
     ;; %DEFL IS THE LIST OF DEFINITION SENSES.
     ;; CONSTRUCTS OSS FOR GARDEN VARIETY NOUNS AND ADJECTIVES.
     ;; USED IN DEFINITIONS.
@@ -6551,7 +6550,7 @@
     ;;  THE KEYWORD IS NOT EVALUATED BUT ITS VLUE IS.
     ;; POSIBLE KEYWORDS:
     ;;     MARKERSß            LIST OF SEMANTIC MARKERS
-    ;;     PLAUSIBILITYß       EVALS TO INTEGER FROM 0 TO 512 INDICATING RELATIVE LIKLIHOOD OF THIS DEFINITION SENSE
+    ;;     PLAUSIBILITYß       EVALS TO INTEGER FROM 0 TO 512 INDICATING RELATIVE LIKELIHOOD OF THIS DEFINITION SENSE
     ;; FREE VARIABLE INPUT:
     ;;     SM  -  A LIST OF CURRENT OSS'S WITH WHICH THE TO-BE-CREATED ONES MUST BE COMPATIBLE.
     ;; VALUE:
