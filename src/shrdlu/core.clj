@@ -168,15 +168,15 @@
 
 (defn- RPLACA [l x] (§))
 (defn- RPLACD [l x] (§))
-(defn- MAKOBLIST [_] (§))
 (defn- ERRSET [_] (§))
 (defn- ERR [_] (§))
 (defn- SETQ [x y] (§))
 (defn- SET [x y] (§))
-(defn- MAP [f & a] (§))
-(defn- MAPLIST [f & a] (§))
-(defn- INTERP [_] (§))
-(defn- SUBST [x y z] (§))
+
+(defn- map*
+    ([s] (map* identity s))
+    ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
+(defn- subst [x y z] (replace {y x} z))
 
 (declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thflush thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thstate thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size starthistory startime support tcent tfind timechk %sent forget combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 conjo comma cantake canparse !bethere !beint both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !loc2 !name !notice !on !propdefine !role !stackup smtime smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref evalcheck iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
@@ -732,7 +732,7 @@
             (dorun (map (lambda [d]
                 (remprop! d b))
             c)))
-        (MAKOBLIST nil))))
+        (§ MAKOBLIST nil))))
     (or a '(thassertion thconse thante therasing)))))
 
 (defn- thgal [x a]
@@ -1225,7 +1225,7 @@
                         (cdr b)))))
                 (or a '(thassertion thconse thante therasing)))))
             c)))
-        (MAKOBLIST nil)))
+        (§ MAKOBLIST nil)))
     (terpri)
     nil)
 
@@ -2712,7 +2712,7 @@
             (rebuild *c* *fe* *nb* *n* *h* *sm*)
             (set! *nn* (not= *n* *cut*))
             (do (set! *pop* nil)
-                (MAP (lambda [b] (ERRSET (and (MAP #(and (= % (firstword b)) (ERR)) *n*) (set! *pop* (cons (car b) *pop*))))) *backref*)
+                (dorun (map* (lambda [b] (ERRSET (when *n* (dorun (map* #(and (= % (firstword b)) (ERR)) *n*)) (set! *pop* (cons (car b) *pop*))))) *backref*))
                 (set! *backref* *pop*))
             true)))
 
@@ -3477,10 +3477,6 @@
         (set! *locationmarker* *n*)                                     ;; DO THIS TO ACT LIKE MAJOR DECLARATIVE CLAUSE
         (GO FDEC)
 
-    ;; ##############################################################
-    ;;                            RETURN
-    ;; ##############################################################
-
     RETSM
         (or (smcl2 *h*) (GO FAIL))
         (GO RETURN))
@@ -3881,10 +3877,6 @@
     POPRET
         (pop*)
 
-    ;; --------------------------------------------------------------
-    ;; RETURN AFTER CALLING SMNG2 TO PROCESS THE COMPLETED NOUN GROUP
-    ;; --------------------------------------------------------------
-
     RETSM
         (or (smng2) (GO TRYA))
         (GO RETURN)
@@ -4155,10 +4147,6 @@
 
     POPV
         (bug! 'vg "POPV")
-
-    ;; -------------------------------------------------
-    ;;           RETURN AND CHECK SEMANTICS
-    ;; -------------------------------------------------
 
     RETSM
         (| (smvg) RETURN FAIL))
@@ -4494,7 +4482,7 @@
                     (do (move-pt 'H) (trnsf 'NPL 'NS 'MASS 'NFS)))
             (cq 'VB)
                 (let [common (getprop 'VB 'ELIM)]
-                    (MAP #(SETQ common (meet common (features %))) *h*)
+                    (dorun (map* #(SETQ common (meet common (features %))) *h*))
                     (feset *c* (union common (features *c*)))))
         (| (smconj *h*) RETURN (CONJOINß)))             ;; THEN MARK AS A LIST
 
@@ -4945,9 +4933,8 @@
 (putprop! 'OF 'SEMANTICS [['PREP '(and (cq 'NG)
                                 (relation
                                     [:restrictions '(((!DIRECTION)) ((!PHYSOB)))
-                                        :procedure '((!EVAL (list '!DIRECTION
-                                                        (cadr (SETQ XX (or (assq '!DIRECTION (cddaar (INTERP MAP1))) (bug! 'of "DEFINITION"))))
-                                                        (if (caddr XX) '*OF '*!2*) (if (caddr XX) '*!2* '*OF) '*TIME)))]))]
+                                        :procedure '((!EVAL (let [a (or (assq '!DIRECTION (cddaar (§ INTERP MAP1))) (bug! 'of "DEFINITION"))]
+                                                        (list '!DIRECTION (cadr a) (if (caddr a) '*OF '*!2*) (if (caddr a) '*!2* '*OF) '*TIME))))]))]
                            ['PREP2 true]])
 
 (putprop! 'OFF 'FEATURES ['PRT])
@@ -5292,7 +5279,7 @@
 
 (defn- !blueprint [x]
     (if (getprop x 'REFER) '*!2*
-        (let [a (loop-when [a nil x (cddaar (INTERP x))] x => a
+        (let [a (loop-when [a nil x (cddaar (§ INTERP x))] x => a
                     (cond (not= (caar x) 'thgoal) (bug! '!blueprint nil)
                         (= (caadar x) '!IS) (recur a (cdr x))
                         (= (caadar x) '!PART) (recur (cons (cadr (cadar x)) a) (cdr x))
@@ -5821,15 +5808,15 @@
                                 (smit2 *pt* 64)
                                 (when (move-pt 'PV) (§ recur)))
                             (when-not *sm*                              ;; FIND A REFERENT MAP IN ANSNAME (NG'S IN LAST ANSWER)
-                                (MAP #(smit2 % 0) *ansname*))
+                                (dorun (map* #(smit2 % 0) *ansname*)))
                             (when-not *sm*                              ;; FIND A REFERENT MAP IN BACKREF2 (NG'S IN LAST SENTENCE)
-                                (MAP #(smit2 % 0) *backref2*)))
+                                (dorun (map* #(smit2 % 0) *backref2*))))
                    done- (lambda []
                             (putprop! *pronoun* 'BIND *candidates*)
                             (when-not (cdr *sm*) (remprop! (car *sm*) 'AMBIGUITIES=)))
         ] (not (and *mvb* (isq *mvb* 'DO) (cq 'OBJ1))) => (smset *lastevent*)
             (cond (getprop *pronoun* 'BIND)
-                    (MAP #(smit2 % 0) (getprop *pronoun* 'BIND))
+                    (dorun (map* #(smit2 % 0) (getprop *pronoun* 'BIND)))
                 (smit2 (getprop *pronoun* 'LASTBIND) 0)
                     (done-)
                 (or (move-pt 'C 'U 'U '(NG) 'U 'U '(NG)) (move-pt 'C 'U 'U '(NG) 'U '(COMP) 'PV '(SUBJ)))
@@ -6161,7 +6148,8 @@
 (defn- smcl2 [node]
     ;; AS IN SMCL1, WE NEED TO SCAN THE CONSTITUENTS OF THE CLAUSE AND ALLOW THEM TO MAKE
     ;; WHATEVER MODIFICATION ARE APPROPRIATE.
-    (MAP smcl-modifiers node))
+    (dorun (map* smcl-modifiers node))
+    node)
 
 (defn- smcl-modifiers [x]
     ;; AS IN CONSTITUENT, THIS PROCEDURE IS BASICLY ONE LARGE DISPATCH TABLE WHICH
@@ -6408,16 +6396,14 @@
         (set! *backref* nil)
         (set! *lastrel* (rel? ansrss))
         (dorun (map #(do (putprop! % 'LASTBIND (getprop % 'BIND)) (remprop! % 'BIND)) '(IT THEY ONE)))
-        (or
-            (cq 'MODAL)
-            (cq 'DECLAR)
-            (MAP #(let [a (semantics %)]
+        (or (cq 'MODAL) (cq 'DECLAR)
+            (dorun (map* #(let [a (semantics %)]
                     (when (cdr a) ;; TRUE IF NODE HAD MULTIPLE INTERPRETATIONS
                         (bug! 'dobackref "RETURN AN OSS FOR BACKNODE" a))
                     (or (refer? (car a)) ;; IF NODE HAS REFERENT, FINE
                         (putprop! (car a) 'REFER=
                             (or (getprop (variable? (car a)) 'BIND) (bug! 'dobackref "RETURN REFERENT FOR BACKNODE" a)))))
-                *backref2*))
+                *backref2*)))
         ;; A FEW MISSING PIECES GO HERE
         nil))
 
@@ -6740,7 +6726,7 @@
                         (= x '*ORDINAL*) body
                         ;; A SUBST DEFINITION IF IT IS THE ONLY THING IS TO BE APPLIED TO THE OSS TO WHICH THIS RSS WILL BE RELATED.
                         ;; THE VARIABLE FOR A RELATION IS INSERTED INTO THE SECOND PLACE OF THE RELATION IF IT IS REFERRED TO ANYWHERE ELSE.
-                        (and (cdr a) (= (car x) '!SUBST)) (do (mapc2 (lambda [x y] (SETQ a (SUBST x y a))) (cdr x)) body)
+                        (and (cdr a) (= (car x) '!SUBST)) (do (mapc2 (lambda [x y] (SETQ a (subst x y a))) (cdr x)) body)
                         x (cons x body)
                         :else body)]
                 (recur body (cdr a))))))
@@ -6753,12 +6739,12 @@
         (ERRSET
             ;; IT GOES FROM THE BEGINNING OF THE SENTENCE LOOKING FOR AN INDEFINITE NG,
             ;; EITHER AT THE TOP LEVEL OR AS A FIRST LEVEL PREPOBJ, BUT NOT A COMPLEMENT.
-            (MAP (lambda [x]
+            (dorun (map* (lambda [x]
                 (cond
                     (isq x 'NG) (and (not (isq x 'COMP)) (not (isq x 'DEF)) (set! *rel* x) (ERR nil))
                     (isq x 'LOBJ) (and (isq (daughters x) 'INDEF) (set! *rel* x) (ERR nil))
                     (isq x 'PREPG) (and (isq (daughters x) 'INDEF) (set! *rel* (daughters x)) (ERR nil))))
-                (reverse (daughters node))))
+                (reverse (daughters node)))))
         (or *rel* (and (cq 'PASV) (not (cq 'AGENT)) (set! *rel* '(FAKE-AGENT))))
         (and *rel* (semantics *rel*))))
 
@@ -6768,7 +6754,7 @@
     (let [x (gensym 'X)]
         (plnr-progify nil
             (concat body (list (plnr-notify true
-                (plnr-progify (list x) (concat (SUBST x var body) (list (plnr-goalify (compare-proc var x ordinal)))))))))))
+                (plnr-progify (list x) (concat (subst x var body) (list (plnr-goalify (compare-proc var x ordinal)))))))))))
 
 (defn- compare-proc [var newvar ordinal]
     (let [{:keys [restrictions dimension direction]} ordinal]
@@ -6819,8 +6805,8 @@
                             (if event (cons (car exp) (cons event (cdr exp))) exp)))]
                     (cond ;; THE EVENT NAME IS STUCK INTO THE SECOND POSITION IF THERE IS ONE.
                         (nil? *quantifier*) (plnr-goalify exp)
-                        (= *quantifier* 'AND) (plnr-progify nil (doall (map #(expand (SUBST % '*AND* exp) nil freevars) *choice*)))
-                        (= *quantifier* 'OR) #_(PLNR-ORIFY (doall (map #(expand (SUBST % '*OR* exp) nil freevars) *choice*))) (bug! 'plnr-orify "NOT WRITTEN YET")
+                        (= *quantifier* 'AND) (plnr-progify nil (doall (map #(expand (subst % '*AND* exp) nil freevars) *choice*)))
+                        (= *quantifier* 'OR) #_(PLNR-ORIFY (doall (map #(expand (subst % '*OR* exp) nil freevars) *choice*))) (bug! 'plnr-orify "NOT WRITTEN YET")
                         (= *quantifier* 'FIND) (plnr-findify *choice* *var* (list *var*) (plnr-progify nil (cons *body* (list (plnr-goalify exp)))))
                         :else (plnr-notify (memq *quantifier* '(ALL NO))
                                 (plnr-progify (and *var* (list *var*)) (cons *body* (list (plnr-notify (= *quantifier* 'ALL) (plnr-goalify exp)))))))))))
@@ -7377,19 +7363,22 @@
 
 (defn- eliza [node]
     ;; DOES THE OBVIOUS THING.
+    ;; WE RETURN LIST OF THE THING REALLY WANTED, SO THE APPLY APPEND CAN GET RID OF THE EMPTY ONES.
+    ;; UNFORTUNATELY, FOR "YOU" IT IS NECESSARY TO DECIDE WHETHER IT SHOULD BE REPLACED BY "I" OR "ME",
+    ;; WHETHER IT WAS PARSED AS AN OBJECT OR SUBJECT.  FINDMOTHER IS USED TO FIND THE PARSE NODE.
+    ;; WORDS OTHER THAN THE SPECIAL ONES GO THROUGH DIRECTLY.
     (let [num (count (wordafter node))]
         (apply concat
-            (MAPLIST (lambda [word]
-                    (when (< num (count word))                ;; THIS KLUDGE STOPS IT AT THE END OF THE NODE
+            (doall (map* (lambda [word]
+                    ;; THIS KLUDGE STOPS IT AT THE END OF THE NODE.
+                    (when (< num (count word))
                         (let [x (assq (car word) '((I YOU) (ME YOU) (AM ARE) (ARE AM)))]
-                            (cond x (cdr x)                                   ;; WE RETURN LIST OF THE THING REALLY WANTED, SO
-                                (= (car word) 'YOU)                           ;; THE APPLY APPEND CAN GET RID OF THE EMPTY ONES.
-                                    (let [x (findmother word node)]            ;; UNFORTUNATELY, FOR "YOU" IT IS NECESSARY TO
-                                        (cond (isq x 'SUBJ) '(I)                  ;; DECIDE WHETHER IT SHOULD BE REPLACED BY "I" OR
-                                            (isq x 'OBJ) '(YOU)                   ;; "ME", ACCORDING TO WHETHER IT WAS PARSED AS AN
-                                            :else (bug! 'eliza "SUBJ OBJ")))             ;; OBJECT OR SUBJECT.  FINDMOTHER IS USED TO FIND
-                                :else (list (car word))))))                           ;; THE PARSE NODE.  WORDS OTHER THAN THE SPECIAL
-                (firstword node)))))                                       ;; ONES GO THROUGH DIRECTLY.
+                            (cond x (cdr x)
+                                (= (car word) 'YOU)
+                                    (let [x (findmother word node)]
+                                        (cond (isq x 'SUBJ) '(I) (isq x 'OBJ) '(YOU) :else (bug! 'eliza "SUBJ OBJ")))
+                                :else (list (car word))))))
+                (firstword node))))))
 
 (def- timid 200)
 
@@ -7399,7 +7388,7 @@
 (defn- findmother [word node]
     ;; FINDMOTHER TAKES A PLACE IN THE SENTENCE AND A GRAMMAR NODE (BOTH ARE ACTUALLY LISTS)
     ;; AND FINDS THE SINGLE-WORD CONSTITUTENT BEGINNING AT THAT PLACE IN THE SENTENCE.
-    (if (and (= word (firstword node)) (= (cdr word) (wordafter node))) node (apply concat (MAPLIST #(findmother word %) (daughters node)))))
+    (if (and (= word (firstword node)) (= (cdr word) (wordafter node))) node (apply concat (doall (map* #(findmother word %) (daughters node))))))
 
 (defn- headpart [node]
     ;; EVERYTHING UP TO THE NOUN, FOR EXAMPLE "THE RED BLOCK" IN "THE RED BLOCK WHICH ..."
@@ -7608,8 +7597,8 @@
 (defn- pluralize [item num]
     ;; CONVERTS A SINGULAR NOUNPHRASE OR "ONCE" STATEMENT INTO PLURAL.
     (cond (< num 2) item
-        (memq 'A (car item)) (cons (pluralmake (SUBST (namenum num) 'A (car item))) (cdr item))
-        (memq 'ONCE (car item)) (cons (SUBST (ordname num) 'ONCE (car item)) (cdr item))
+        (memq 'A (car item)) (cons (pluralmake (subst (namenum num) 'A (car item))) (cdr item))
+        (memq 'ONCE (car item)) (cons (subst (ordname num) 'ONCE (car item)) (cdr item))
         :else (bug! 'pluralize "FUNNY ITEM" item)))
 
 (defn- pluralmake [phrase]
@@ -7618,7 +7607,7 @@
         (let [plural (symbol (str (car sing) 'S))]
             (when-not (getprop plural 'FEATURES)
                 (buildword plural ['NOUN 'NPL] (semantics sing) (car sing)))
-            (SUBST plural (car sing) phrase))))
+            (subst plural (car sing) phrase))))
 
 (defn- thval-mult [code]
     ;; DOES A THVAL WITH DIFFERENT VALUES OF WHO (I.E. NIL (EVERYTHING I KNOW),
@@ -7673,8 +7662,8 @@
                                                 (let [? (plnr-findify (list 1 (- need have) true) (variable? oss) (list (variable? oss))
                                                             (plnr-progify nil
                                                                 (concat (list plnrcode)
-                                                                    (SUBST (variable? oss) '*** '((not (or (memq (thv ***) ans) (memq (thv ***) *ans2*)))))
-                                                                    (and x (SUBST (variable? oss) '* (car x))))))
+                                                                    (subst (variable? oss) '*** '((not (or (memq (thv ***) ans) (memq (thv ***) *ans2*)))))
+                                                                    (and x (subst (variable? oss) '* (car x))))))
                                                     ans (concat (thval ? *thalist*) ans)]
                                                     (recur ans (count ans) (if x (cdr x) 'NOMORE))))))))))))
 
@@ -8791,7 +8780,7 @@ RETSM
         (fq! 'COMPOUND)
         (and (> (count *h*) 2) (fq! 'LIST))
         (cond (or (cq 'NG) (cq 'NOUN)) (if (cq 'AND) (fq! 'NPL) (do (move-pt 'H) (trnsf 'NPL 'NS 'MASS 'NFS)))
-            (cq 'VB) (let [common (getprop 'VB 'ELIM)] (MAP #(SETQ common (meet common (features %))) *h*) (feset *c* (union common (features *c*)))))
+            (cq 'VB) (let [common (getprop 'VB 'ELIM)] (dorun (map* #(SETQ common (meet common (features %))) *h*)) (feset *c* (union common (features *c*)))))
         (if (smconj *h*) (GO RETURN) (GO FAIL (m! 'CONJOINß)))
 FAIL
         (set! *mes* *me*)
