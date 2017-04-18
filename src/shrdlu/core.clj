@@ -1397,13 +1397,11 @@
         (thand (thassert (!CLEARTOP ($? x))) (thsucceed THEOREM)))
         (memory ($? why))
     =>  (thcond ((thgoal (!SUPPORT ($? x) ($_ y)))
-            (thgoal (!GET-RID-OF ($? y))
-                (THNODB)
-                (THUSE TC-GET-RID-OF))
-            (thgo =>))
+                (thgoal (!GET-RID-OF ($? y)) (THNODB) (THUSE TC-GET-RID-OF))
+                (thgo =>))
             ((thassert (!CLEARTOP ($? x)))
-            (memorend (!CLEARTOP ($? EV) ($? x)))
-            (thsucceed THEOREM)))))
+                (memorend ($? EV) '(!CLEARTOP ($? EV) ($? x)))
+                (thsucceed THEOREM)))))
 
 (putprop! 'TC-EXISTS 'THEOREM
     '(thconse (x) (!EXISTS ($? x)) (thsucceed)))
@@ -1426,7 +1424,7 @@
                 (memory ($? why))
                 (thgoal (!FINDSPACE ßTABLE ($E (size ($? x))) ($? x) ($_ y)) (THUSE TC-FINDSPACE))
                 (thgoal (!PUT ($? x) ($? y)) (THNODB) (THUSE TC-PUT))
-                (memorend (!GET-RID-OF ($? EV) ($? x))))
+                (memorend ($? EV) '(!GET-RID-OF ($? EV) ($? x))))
             ((thgoal (!GET-RID-OF ($E (car ($? x)))) (THUSE TC-GET-RID-OF))
                 (or (thsetq ($_ x) (cdr ($? x))) (thsucceed THEOREM))
                 (thgo =>)))))
@@ -1445,7 +1443,7 @@
         (thsetq ($_ y) (topcenter ($? x)))
         (thgoal (!MOVEHAND2 ($? y)) (THNODB) (THUSE TC-MOVEHAND2))
         (thassert (!GRASPING ($? x)))
-        (memorend (!GRASP ($? EV) ($? x)))
+        (memorend ($? EV) '(!GRASP ($? EV) ($? x)))
         (thsetq *grasplist* (cons (list *thtime* ($? x)) *grasplist*))
         (thor (GRASP ($? x)) (and (UNGRASP) nil))))
 
@@ -1454,9 +1452,9 @@
         (($? loc) ($? x) ($? y) ($? z))
         (thor (thgoal (!MANIP ($? y))) (thgoal (!IS ($? y) !BOX)))
         (thor (thgoal (!MANIP ($? z))) (thgoal (!IS ($? z) !BOX)))
-        (not (= ($? y) ($? z)))
+        (not= ($? y) ($? z))
         (locgreater LOC ($? y) ($? z)
-            ((lambda [x] (cond (= x '!RIGHT) car (= x '!BEHIND) cadr (= x '!ABOVE) caddr :else (bug! "TC-LOC"))) ($? x)))))
+            (condp = ($? x) '!RIGHT car '!BEHIND cadr '!ABOVE caddr (bug! "TC-LOC")))))
 
 (putprop! 'TC-MAKESPACE 'THEOREM
     '(thconse (surf size obj space x (why ($? EV)) EV)
@@ -1467,7 +1465,7 @@
             (thgoal (!GET-RID-OF ($? x)) (THUSE TC-GET-RID-OF)))
         (thor (thgoal (!FINDSPACE ($? surf) ($? size) ($? obj) ($? space)) (THUSE TC-FINDSPACE))
             (thgo =>))
-        (memorend (!MAKESPACE ($? EV) ($? surf)))))
+        (memorend ($? EV) '(!MAKESPACE ($? EV) ($? surf)))))
 
 (putprop! 'TC-MORE 'THEOREM
     '(thconse (measure x y)
@@ -1519,25 +1517,25 @@
         (thor (thgoal (!SUPPORT ($? y) ($? x))) (thand (thasval ($? x)) (thgoal (!SUPPORT ($_ z) ($? x))) (thgoal (!ON ($? z) ($? y)) (THUSE TC-ON))))))
 
 (putprop! 'TC-PACK 'THEOREM
-    '(thconse (OBJ SURF BLOCKS PYR x y)
-        (!PACK ($? OBJ) ($? SURF))
-        (or (thvsetq ($_ BLOCKS) (packo ($? OBJ) '!BLOCK)) true)
-        (or (thvsetq ($_ PYR) (packo ($? OBJ) '!PYRAMID)) true)
-    =>  (thcond ((nil? ($? BLOCKS))
-            (thcond ((nil? ($? PYR)) (thsucceed THEOREM))
-                ((thvsetq ($_ y) (findspace 'PACK ($? SURF) (size (car ($? PYR))) (car ($? PYR))))
-                    (thgoal (!PUT ($E (car ($? PYR))) ($? y)) (THUSE TC-PUT))
-                    (or (thsetq ($? PYR) (cdr ($? PYR))) true)
+    '(thconse (obj surf blocks pyr x y)
+        (!PACK ($? obj) ($? surf))
+        (or (thvsetq ($_ blocks) (packo ($? obj) '!BLOCK)) true)
+        (or (thvsetq ($_ pyr) (packo ($? obj) '!PYRAMID)) true)
+    =>  (thcond ((nil? ($? blocks))
+            (thcond ((nil? ($? pyr)) (thsucceed THEOREM))
+                ((thvsetq ($_ y) (findspace 'PACK ($? surf) (size (car ($? pyr))) (car ($? pyr))))
+                    (thgoal (!PUT ($E (car ($? pyr))) ($? y)) (THUSE TC-PUT))
+                    (or (thsetq ($? pyr) (cdr ($? pyr))) true)
                     (thgo =>))))
-                ((thsetq ($_ x) (car ($? BLOCKS)))
-                    (thvsetq ($? y) (findspace 'PACK ($? SURF) (size ($? x)) ($? x)))
+                ((thsetq ($_ x) (car ($? blocks)))
+                    (thvsetq ($? y) (findspace 'PACK ($? surf) (size ($? x)) ($? x)))
                     (thgoal (!PUT ($? x) ($? y)) (THUSE TC-PUT))
-                    (or (thsetq ($? BLOCKS) (cdr ($? BLOCKS))) true)
-                    (thcond ((thvsetq ($_ y) (or (packon ($? x) ($? PYR)) (packon ($? x) ($? BLOCKS))))
+                    (or (thsetq ($? blocks) (cdr ($? blocks))) true)
+                    (thcond ((thvsetq ($_ y) (or (packon ($? x) ($? pyr)) (packon ($? x) ($? blocks))))
                             (thgoal (!PUTON ($? y) ($? x)) (THUSE TC-PUTON))
-                            (if (memq ($? y) ($? PYR))
-                                (thsetq ($_ PYR) (delq ($? y) (concat ($? PYR) nil)))
-                                (thsetq ($_ BLOCKS) (delq ($? y) (concat ($? BLOCKS) nil)))))
+                            (if (memq ($? y) ($? pyr))
+                                (thsetq ($_ pyr) (delq ($? y) (concat ($? pyr) nil)))
+                                (thsetq ($_ blocks) (delq ($? y) (concat ($? blocks) nil)))))
                         ((thsucceed)))
                     (thgo =>)))))
 
@@ -1564,7 +1562,7 @@
         (memory ($? why))
         (thgoal (!GRASP ($? x)) (THUSE TC-GRASP))
         (thgoal (!RAISEHAND) (THNODB) (THUSE TC-RAISEHAND))
-        (memorend (!PICKUP ($? EV) ($? x)))))
+        (memorend ($? EV) '(!PICKUP ($? EV) ($? x)))))
 
 (putprop! 'TC-REFERS 'THEOREM
     '(thconse (x)
@@ -1591,7 +1589,7 @@
         (!PUTIN ($? x) ($? y))
         (memory ($? why))
         (thcond ((thgoal (!PUTON ($? x) ($? y)) (THUSE TC-PUTON))
-                (memorend (!PUTIN ($? EV) ($? x) ($? y)))
+                (memorend ($? EV) '(!PUTIN ($? EV) ($? x) ($? y)))
                 (thsucceed THEOREM))
             ((thsucceed)))
         (thgoal (!IS ($? y) !BOX))
@@ -1600,7 +1598,7 @@
                 (thval '(thfind ALL ($? w) (w) (thgoal (!ON ($? w) ($? y)))) *thalist*)))
         (thgoal (!CLEARTOP ($? y)) (THUSE TC-CLEARTOP))
         (thgoal (!PACK ($? z) ($? y)) (THUSE TC-PACK))
-        (memorend (!PUTIN ($? EV) ($? x) ($? y)))))
+        (memorend ($? EV) '(!PUTIN ($? EV) ($? x) ($? y)))))
 
 (putprop! 'TC-PUTON 'THEOREM
     '(thconse (x y z (why ($? EV)) EV)
@@ -1625,14 +1623,14 @@
             ((thnot (thgoal (!IS ($? y) !BOX)))
                 (thgoal (!CLEARTOP ($? y)) (THUSE TC-CLEARTOP))
                 (thgoal (!PACK ($? x) ($? y)) (THUSE TC-PACK))))
-        (memorend (!PUTON ($? EV) ($? x) ($? y)))))
+        (memorend ($? EV) '(!PUTON ($? EV) ($? x) ($? y)))))
 
 (putprop! 'TC-RAISEHAND 'THEOREM
     '(thconse ((why ($? EV)) EV)
         (!RAISEHAND)
         (memory ($? why))
         (thgoal (!MOVEHAND ($E (list (car *handat*) (cadr *handat*) 512))) (THNODB) (THUSE TC-MOVEHAND))
-        (memorend (!RAISEHAND ($? EV)))))
+        (memorend ($? EV) '(!RAISEHAND ($? EV)))))
 
 (putprop! 'TC-STACK 'THEOREM
     '(thconse (x y)
@@ -1655,7 +1653,7 @@
             (thand (thassert (!PART ($? z) ($? x))) (thfinalize thand)))))
 
 (putprop! 'TC-STACKUP 'THEOREM
-    '(thconse (x y BLOCKS PYR (why ($? EV)) EV)
+    '(thconse (x y blocks pyr (why ($? EV)) EV)
         (!STACKUP ($? x))
         (or (< (reduce + (map #(caddr (size %)) ($? x))) 641)
             (not (DPRINT2 "TOO HIGH,")))
@@ -1670,16 +1668,16 @@
                         '(thor (thand (thgoal (!IS ($? y) !BLOCK)) (thnot (thgoal (!SUPPORT ($? y) ?)))) (thgoal (!IS ($? y) !BLOCK)))
                         '(not (= ($? x) ($? y))))
                         *thalist*)))))
-        (not (and (thvsetq ($_ PYR) (packo ($? x) '!PYRAMID)) (cdr ($? PYR))))
-        (thvsetq ($_ BLOCKS) (cons 'ßTABLE (packo ($? x) '!BLOCK)))
+        (not (and (thvsetq ($_ pyr) (packo ($? x) '!PYRAMID)) (cdr ($? pyr))))
+        (thvsetq ($_ blocks) (cons 'ßTABLE (packo ($? x) '!BLOCK)))
         (memory ($? why))
     =>  (thcond
-            ((cdr ($? BLOCKS))
-                (thgoal (!PUTON ($E (cadr ($? BLOCKS))) ($E (car ($? BLOCKS)))) (THUSE TC-PUTON))
-                (thsetq ($_ BLOCKS) (cdr ($? BLOCKS)))
+            ((cdr ($? blocks))
+                (thgoal (!PUTON ($E (cadr ($? blocks))) ($E (car ($? blocks)))) (THUSE TC-PUTON))
+                (thsetq ($_ blocks) (cdr ($? blocks)))
                 (thgo =>))
-            (($? PYR) (thgoal (!PUTON ($E (car ($? PYR))) ($E (car ($? BLOCKS)))) (THUSE TC-PUTON)))
-            ((memorend (!STACKUP ($? EV) ($? x)))))))
+            (($? pyr) (thgoal (!PUTON ($E (car ($? pyr))) ($E (car ($? blocks)))) (THUSE TC-PUTON)))
+            ((memorend ($? EV) '(!STACKUP ($? EV) ($? x)))))))
 
 (putprop! 'TC-STARTEND3 'THEOREM
     '(thconse (x y EV time)
@@ -1701,13 +1699,13 @@
         (putprop! ($? newev) 'TYPE '!START)))
 
 (putprop! 'TC-UNGRASP 'THEOREM
-    '(thconse (x OBJ (why ($? EV)) EV)
+    '(thconse (x #_obj (why ($? EV)) EV)
         (!UNGRASP)
         (thcond ((thgoal (!GRASPING ($? x)))
                 (memory ($? why))
                 (thgoal (!SUPPORT ? ($? x)))
                 (therase (!GRASPING ($? x)))
-                (memorend (!UNGRASP ($? EV) ($? x)))
+                (memorend ($? EV) '(!UNGRASP ($? EV) ($? x)))
                 (thsetq *thtime* (inc *thtime*))
                 (thor (UNGRASP) (and (GRASP ($? x)) nil)))
             ((thsucceed)))))
@@ -2154,10 +2152,10 @@
           y (loc- 'yy y) z (loc- 'zz z)]
         (not (< (fun (cadr y)) (+ (fun (cadr z)) (fun (caddr z)))))))
 
-(defq- memorend [& a]
-    (and (putprop! ($? EV) 'END *thtime*)
-        (apply thassert (list (thvarsubst (car a) nil)))
-        (putprop! ($? EV) 'TYPE (caar a))))
+(defn- memorend [ev a]
+    (and (putprop! ev 'END *thtime*)
+        (apply thassert (list (thvarsubst a nil)))
+        (putprop! ev 'TYPE (car a))))
 
 (defn- memory [why]
     (thand (thvsetq ($_ EV) (gensym 'E))
@@ -4520,7 +4518,7 @@
 (putprop! 'AS 'SEMANTICS '((nil? true)))
 (putprop! 'AS 'FEATURES '(AS))
 
-(putprop! 'ASK 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
+(putprop! 'ASK 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
 (putprop! 'ASK 'FEATURES '(VB TRANS INF SUBTOB))
 
 (putprop! 'AT 'SEMANTICS '((NUMD true)))
@@ -4532,30 +4530,30 @@
 (putprop! 'BACK 'SEMANTICS '((PREP2 true) (NOUN true)))
 (putprop! 'BACK 'FEATURES '(NOUN NS PREP2))
 
-(putprop! 'BALL 'SEMANTICS '((NOUN (object (MARKERSß (!MANIP !ROUND) PROCEDUREß ((!IS *** !BALL)))))))
+(putprop! 'BALL 'SEMANTICS '((NOUN (object '(MARKERSß (!MANIP !ROUND) PROCEDUREß ((!IS *** !BALL)))))))
 (putprop! 'BALL 'FEATURES '(NOUN NS))
 
 (putprop! 'BE 'FEATURES '(INT AUX VB BE INF))
 (putprop! 'BE 'SEMANTICS '((VB ((THERE (!bethere)) (INT (!beint))))))
 
 (defn- !bethere []
-    (relation (RESTRICTIONSß (((!THING) (= (quantifier? *smsub*) 'INDEF))) PROCEDUREß nil)))
+    (relation '(RESTRICTIONSß (((!THING) (= (quantifier? *smsub*) 'INDEF))) PROCEDUREß nil)))
 
 (defn- !beint []
     (or (relation
-            (RESTRICTIONSß (((!PHYSOB)) (*smcomp* (!PROPERTY)))
+            '(RESTRICTIONSß (((!PHYSOB)) (*smcomp* (!PROPERTY)))
                 PROCEDUREß (!EVAL (let [prop (meet (getprop '!PROPERTY 'SYSTEM) (markers? *smcomp*))] (if prop (list (list (car prop) '*!1* '*!2*)) (list '(*!2* *!1*))))))
-            (RESTRICTIONSß (((!THING)) (*smcomp* (!SYSTEMS) (and (not (refer? *smcomp*)) (= (rel? *smcomp*) *smsub*))))
+            '(RESTRICTIONSß (((!THING)) (*smcomp* (!SYSTEMS) (and (not (refer? *smcomp*)) (= (rel? *smcomp*) *smsub*))))
                 PROCEDUREß (!EVAL (relations? *smcomp*)))
-            (RESTRICTIONSß (((!THING)) (*smcomp* (!THING) (refer? *smcomp*)))
+            '(RESTRICTIONSß (((!THING)) (*smcomp* (!THING) (refer? *smcomp*)))
                 PROCEDUREß ((!EVAL (list 'thamong '*!1* (list 'quote (refer? *!2*)))))))
         (oops! "SORRY, I DON'T UNDERSTAND THE VERB BE, WHEN YOU USE IT LIKE THAT.")))
 
 (putprop! 'BEFORE 'SEMANTICS '((BINDER (smbinder *tss* nil *start*))))
 (putprop! 'BEFORE 'FEATURES '(BINDER TIME))
 
-(putprop! 'BEGIN 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START *!2* *TIME)))))
-                                   (ITRNS (relation (RESTRICTIONSß (((!ANIMATE))) MARKERSß (!EVENT) PROCEDUREß ((!START EE *TIME)))))))))
+(putprop! 'BEGIN 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START *!2* *TIME)))))
+                                   (ITRNS (relation '(RESTRICTIONSß (((!ANIMATE))) MARKERSß (!EVENT) PROCEDUREß ((!START EE *TIME)))))))))
 (putprop! 'BEGIN 'FEATURES '(VB TRANS INF TOOB INGOB ITRNS))
 
 (putprop! 'BEGAN 'IRREGULAR '(BEGIN (PAST) (INF)))
@@ -4569,17 +4567,17 @@
 (putprop! 'BENEATH 'SEMANTICS '((PREP (!loc '!ABOVE false))))
 (putprop! 'BENEATH 'FEATURES '(PREP PLACE))
 
-(putprop! 'BESIDE 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO *!1* *!2* *TIME)))))))
+(putprop! 'BESIDE 'SEMANTICS '((PREP (relation '(RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO *!1* *!2* *TIME)))))))
 (putprop! 'BESIDE 'FEATURES '(PREP PLACE))
 
-(putprop! 'BIG 'SEMANTICS '((MEASURE (measure DIMENSIONß !SIZE RESTRICTIONSß (!PHYSOB) DIRECTIONß true))
-                            (ADJ (object (MARKERSß (!PHYSOB !BIG) PROCEDUREß ((!MORE !SIZE *** (128 128 128))))))))
+(putprop! 'BIG 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!SIZE 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))
+                            (ADJ (object '(MARKERSß (!PHYSOB !BIG) PROCEDUREß ((!MORE !SIZE *** (128 128 128))))))))
 (putprop! 'BIG 'FEATURES '(ADJ))
 
 (putprop! 'BLACK 'SEMANTICS '((ADJ (!color !BLACK))))
 (putprop! 'BLACK 'FEATURES '(ADJ))
 
-(putprop! 'BLOCK 'SEMANTICS '((NOUN (object (MARKERSß (!MANIP !RECTANGULAR) PROCEDUREß ((!IS *** !BLOCK)))))))
+(putprop! 'BLOCK 'SEMANTICS '((NOUN (object '(MARKERSß (!MANIP !RECTANGULAR) PROCEDUREß ((!IS *** !BLOCK)))))))
 (putprop! 'BLOCK 'FEATURES '(NOUN NS))
 
 (putprop! 'BLUE 'SEMANTICS '((ADJ (!color !BLUE))))
@@ -4604,7 +4602,7 @@
             (set! *special* 'SKIP)
             (do (set! *re* nil) (set! *n* nbb) nil)))))
 
-(putprop! 'BOX 'SEMANTICS '((NOUN (object (MARKERSß (!BOX) PROCEDUREß ((!IS *** !BOX)))))))
+(putprop! 'BOX 'SEMANTICS '((NOUN (object '(MARKERSß (!BOX) PROCEDUREß ((!IS *** !BOX)))))))
 (putprop! 'BOX 'FEATURES '(NOUN NS))
 
 (putprop! 'BRICK 'FEATURES '(NOUN NS))
@@ -4616,10 +4614,10 @@
 (putprop! 'BUT 'SEMANTICS true)
 (putprop! 'BUT 'SPECIAL '(conjo))
 
-(putprop! 'BY 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO *!1* *!2* *TIME)))))))
+(putprop! 'BY 'SEMANTICS '((PREP (relation '(RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!NEXTO *!1* *!2* *TIME)))))))
 (putprop! 'BY 'FEATURES '(PREP))
 
-(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (relation (RESTRICTIONSß (((!ANIMATE)) ((!THING)) ((!name))) PROCEDUREß ((!CALL *!2* *!3* *TIME)))))))))
+(putprop! 'CALL 'SEMANTICS '((VB ((TRANS2 (relation '(RESTRICTIONSß (((!ANIMATE)) ((!THING)) ((!name))) PROCEDUREß ((!CALL *!2* *!3* *TIME)))))))))
 (putprop! 'CALL 'FEATURES '(VB INF TRANS2))
 
 (putprop! 'CAN 'SEMANTICS '((VB true)))
@@ -4654,7 +4652,7 @@
 (putprop! 'CLEAR-OUT 'SEMANTICS '((TRANS (!cleanoff))))
 (putprop! 'CLEAR-OUT 'FEATURES '(COMBINATION TRANS))
 
-(putprop! 'COLOR 'SEMANTICS '((NOUN (object (MARKERSß (!COLOR) PROCEDUREß ((!IS *** !COLOR)))))))
+(putprop! 'COLOR 'SEMANTICS '((NOUN (object '(MARKERSß (!COLOR) PROCEDUREß ((!IS *** !COLOR)))))))
 (putprop! 'COLOR 'FEATURES '(NOUN NS))
 
 (putprop! 'CONSTRUCT 'SEMANTICS '((VB ((TRANS (!build))))))
@@ -4662,23 +4660,23 @@
 
 (putprop! 'CONTAIN 'SEMANTICS '((VB ((TRANS
     (relation
-        (RESTRICTIONSß (((!BOX)) ((!PHYSOB))) PROCEDUREß ((!CONTAIN *!1* *!2* *TIME)))
-        (RESTRICTIONSß (((!CONSTRUCT)) ((!THING))) PROCEDUREß ((!PART *!2* *!1* *TIME)))))))))
+        '(RESTRICTIONSß (((!BOX)) ((!PHYSOB))) PROCEDUREß ((!CONTAIN *!1* *!2* *TIME)))
+        '(RESTRICTIONSß (((!CONSTRUCT)) ((!THING))) PROCEDUREß ((!PART *!2* *!1* *TIME)))))))))
 (putprop! 'CONTAIN 'FEATURES '(VB INF TRANS))
 
-(putprop! 'CONTAINER 'SEMANTICS '((NOUN (object (MARKERSß (!BOX) PROCEDUREß ((!IS *** !BOX)))))))
+(putprop! 'CONTAINER 'SEMANTICS '((NOUN (object '(MARKERSß (!BOX) PROCEDUREß ((!IS *** !BOX)))))))
 (putprop! 'CONTAINER 'FEATURES '(NOUN NS))
 
 (putprop! 'CORNER 'FEATURES '(NOUN NS))
 
-(putprop! 'CUBE 'SEMANTICS '((NOUN (object (MARKERSß (!MANIP !RECTANGULAR) PROCEDUREß ((!IS *** !BLOCK) (!eqdim ***)))))))
+(putprop! 'CUBE 'SEMANTICS '((NOUN (object '(MARKERSß (!MANIP !RECTANGULAR) PROCEDUREß ((!IS *** !BLOCK) (!eqdim ***)))))))
 (putprop! 'CUBE 'FEATURES '(NOUN NS))
 
 (putprop! 'DID 'IRREGULAR '(DO (PAST V3PS) (INF PRESENT)))
 
 (putprop! 'DO 'SEMANTICS '((VB ((TRANS
     (relation
-        (RESTRICTIONSß RESTRICTIONSß
+        '(RESTRICTIONSß RESTRICTIONSß
             PROCEDUREß ((((!ANIMATE)) ((!EVENT))))
             MARKERSß PROCEDUREß
             PLAUSIBILITYß (!EVAL (or (getprop MAP2 'REFER) (bug! "DO DEFINITION"))))))))))
@@ -4690,8 +4688,8 @@
 (putprop! 'DOWN 'FEATURES '(PRT))
 
 (putprop! 'DROP 'SEMANTICS '((VB
-    ((TRANSL (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)) (*smobl* (!PLACE *TIME))) PROCEDUREß ((!DROP *!1* *!2* *!3*)) MARKERSß ((!MOTION)))))
-     (TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!DROP *!1* *!2* PLACE *TIME)) MARKERSß ((!MOTION)))))))))
+    ((TRANSL (relation '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP)) (*smobl* (!PLACE *TIME))) PROCEDUREß ((!DROP *!1* *!2* *!3*)) MARKERSß ((!MOTION)))))
+     (TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!DROP *!1* *!2* PLACE *TIME)) MARKERSß ((!MOTION)))))))))
 (putprop! 'DROP 'FEATURES '(TRANSL TRANSL2 VB INF TRANS))
 
 (putprop! 'EACH 'SEMANTICS '((DET 'ALL)))
@@ -4719,7 +4717,7 @@
 (putprop! 'FIND 'SEMANTICS '((VB ((TRANS (!notice))))))
 (putprop! 'FIND 'FEATURES '(VB INF TRANS))
 
-(putprop! 'FINISH 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!END *!2* *TIME)))))))))
+(putprop! 'FINISH 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!END *!2* *TIME)))))))))
 (putprop! 'FINISH 'FEATURES '(VB INF TRANS INFOB))
 
 (putprop! 'FIVE 'SEMANTICS '((NUM 5)))
@@ -4738,7 +4736,7 @@
 
 (putprop! 'GAVE 'IRREGULAR '(GIVE (PAST) (INF)))
 
-(putprop! 'GIVE 'SEMANTICS '((VB ((TRANS2 (relation (RESTRICTIONSß (((!ANIMATE)) ((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!GIVE *!1* *!2* *!3* *TIME)))))))))
+(putprop! 'GIVE 'SEMANTICS '((VB ((TRANS2 (relation '(RESTRICTIONSß (((!ANIMATE)) ((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!GIVE *!1* *!2* *!3* *TIME)))))))))
 (putprop! 'GIVE 'FEATURES '(VB INF TRANS2))
 
 (putprop! 'GO 'FEATURES '(ITRNS VB INF))
@@ -4759,7 +4757,7 @@
 
 (putprop! 'HAD 'IRREGULAR '(HAVE (PAST) (INF)))
 
-(putprop! 'HAND 'SEMANTICS '((NOUN (object (MARKERSß (!HAND) PROCEDUREß ((!IS *** !HAND)))))))
+(putprop! 'HAND 'SEMANTICS '((NOUN (object '(MARKERSß (!HAND) PROCEDUREß ((!IS *** !HAND)))))))
 (putprop! 'HAND 'FEATURES '(NOUN NS))
 
 (putprop! 'HANDLE 'SEMANTICS '((VB ((TRANS (!grasp))))))
@@ -4770,14 +4768,14 @@
 (putprop! 'HAVE 'SEMANTICS '((VB ((TRANS (!have))))))
 (putprop! 'HAVE 'FEATURES '(HAVE VB AUX INF TRANS))
 
-(putprop! 'HIGH 'SEMANTICS '((MEASURE (measure DIMENSIONß !HEIGHT RESTRICTIONSß (!PHYSOB) DIRECTIONß true))
-                             (ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!HIGH ***)))))))
+(putprop! 'HIGH 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!HEIGHT 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))
+                             (ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!HIGH ***)))))))
 (putprop! 'HIGH 'FEATURES '(ADJ))
 
 (putprop! 'HOLD 'SEMANTICS '((VB ((TRANS
     (relation
-        (RESTRICTIONSß (((!HAND)) ((!MANIP))) PROCEDUREß ((!GRASPING *!2* *TIME)))
-        (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) PROCEDUREß ((!GRASPING *!2* *TIME)))))))))
+        '(RESTRICTIONSß (((!HAND)) ((!MANIP))) PROCEDUREß ((!GRASPING *!2* *TIME)))
+        '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) PROCEDUREß ((!GRASPING *!2* *TIME)))))))))
 (putprop! 'HOLD 'FEATURES '(VB INF TRANS))
 
 (putprop! 'HE 'FEATURES '(PRON NS SUBJ))
@@ -4828,31 +4826,31 @@
 
 (putprop! 'KNOW 'FEATURES '(VB INF TRANS REPOB))
 
-(putprop! 'LARGE 'SEMANTICS '((MEASURE (measure DIMENSIONß !SIZE RESTRICTIONSß (!PHYSOB) DIRECTIONß true))
-                              (ADJ (object (MARKERSß (!PHYSOB !BIG) PROCEDUREß ((!MORE !SIZE *** (128 128 128))))))))
+(putprop! 'LARGE 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!SIZE 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))
+                              (ADJ (object '(MARKERSß (!PHYSOB !BIG) PROCEDUREß ((!MORE !SIZE *** (128 128 128))))))))
 (putprop! 'LARGE 'FEATURES '(ADJ))
 
 (putprop! 'LEAST 'SEMANTICS '((NUMD (list '> (dec *num*)))))
 (putprop! 'LEAST 'FEATURES '(NUMD NUMDAT))
 
-(putprop! 'LEFT 'SEMANTICS '((NOUN (object (MARKERSß (!DIRECTION) PROCEDUREß ((!DIRECTION !RIGHT nil)))))))
+(putprop! 'LEFT 'SEMANTICS '((NOUN (object '(MARKERSß (!DIRECTION) PROCEDUREß ((!DIRECTION !RIGHT nil)))))))
 (putprop! 'LEFT 'FEATURES '(NOUN NS))
 
 (putprop! 'LESS 'SEMANTICS '((NUMD (list '< *num*))))
 (putprop! 'LESS 'FEATURES '(NUMD NUMDAN))
 
-(putprop! 'LIKE 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!THING))) PROCEDUREß ((!LIKE *!1* *!2*)))))))))
+(putprop! 'LIKE 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!THING))) PROCEDUREß ((!LIKE *!1* *!2*)))))))))
 (putprop! 'LIKE 'FEATURES '(VB INF TRANS))
 
 (putprop! 'LIST 'SEMANTICS '((VB ((TRANS (!name))))))
 (putprop! 'LIST 'FEATURES '(VB VO TRANS))
 
-(putprop! 'LITTLE 'SEMANTICS '((MEASURE (measure DIMENSIONß !SIZE RESTRICTIONSß (!PHYSOB) DIRECTIONß nil))
-                               (ADJ (object (MARKERSß (!PHYSOB !LITTLE) PROCEDUREß ((!MORE !SIZE (128 128 128) ***)))))))
+(putprop! 'LITTLE 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!SIZE 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß nil))
+                               (ADJ (object '(MARKERSß (!PHYSOB !LITTLE) PROCEDUREß ((!MORE !SIZE (128 128 128) ***)))))))
 (putprop! 'LITTLE 'FEATURES '(ADJ))
 
-(putprop! 'LONG 'SEMANTICS '((MEASURE (measure DIMENSIONß !LENGTH RESTRICTIONSß (!PHYSOB) DIRECTIONß true))
-                             (ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !LENGTH *** (128 128 128))))))))
+(putprop! 'LONG 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!LENGTH 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))
+                             (ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !LENGTH *** (128 128 128))))))))
 (putprop! 'LONG 'FEATURES '(ADJ))
 
 (putprop! 'MAKE 'SEMANTICS '((VB ((TRANS (!build))))))
@@ -4869,24 +4867,24 @@
 (putprop! 'MOST 'SEMANTICS '((NUMD (list '< (inc *num*)))))
 (putprop! 'MOST 'FEATURES '(NUMD NUMDAT DET QNTFR NPL NONUM))
 
-(putprop! 'MOVE 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) PROCEDUREß ((!PUT *!2* PLACE *TIME)) MARKERSß ((!MOTION)))))))))
+(putprop! 'MOVE 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) PROCEDUREß ((!PUT *!2* PLACE *TIME)) MARKERSß ((!MOTION)))))))))
 (putprop! 'MOVE 'FEATURES '(VB INF TRANS))
 
 (putprop! 'MY 'IRREGULAR '(I (POSS) (SUBJ)))
 
-(putprop! 'NAME 'SEMANTICS '((NOUN (object ((!NAME !ROLE) ((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL *!2* *!1*))))))
+(putprop! 'NAME 'SEMANTICS '((NOUN (object '((!NAME !ROLE) ((IS *** !NAME) (!CALL ? ***) (!role (!THING) (!CALL *!2* *!1*))))))
                              (VB ((TRANS (!name))))))
 (putprop! 'NAME 'FEATURES '(NOUN NS VB INF TRANS))
 
-(putprop! 'NARROW 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !WIDTH (128 0 0) ***)))))
-                               (MEASURE (measure DIMENSIONß !WIDTH RESTRICTIONSß (!PHSYOB) DIRECTIONß nil))))
+(putprop! 'NARROW 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !WIDTH (128 0 0) ***)))))
+                               (MEASURE (measure 'DIMENSIONß '!WIDTH 'RESTRICTIONSß '(!PHSYOB) 'DIRECTIONß nil))))
 (putprop! 'NARROW 'FEATURES '(ADJ))
 
 (putprop! 'NEITHER 'FEATURES '(B-SPECIAL))
 (putprop! 'NEITHER 'SEMANTICS true)
 (putprop! 'NEITHER 'B-SPECIAL '(both 'NOR))
 
-(putprop! 'NICE 'SEMANTICS '((ADJ (object (MARKERSß (!THING) PROCEDUREß ((!LIKE ßFRIEND ***)))))))
+(putprop! 'NICE 'SEMANTICS '((ADJ (object '(MARKERSß (!THING) PROCEDUREß ((!LIKE ßFRIEND ***)))))))
 (putprop! 'NICE 'FEATURES '(ADJ))
 
 (putprop! 'NO 'SEMANTICS '((DET 'NO)))
@@ -4908,12 +4906,12 @@
 (putprop! 'NOW 'SEMANTICS '((ADV (or (= (cadr (assq 'TIME *fe*)) 'ßNOW) (bug! "NOW DEFINITION")))))
 (putprop! 'NOW 'FEATURES '(ADV TIMW))
 
-(putprop! 'OBJECT 'SEMANTICS '((NOUN (object (MARKERSß (!PHYSOB !VAGUE) PROCEDUREß ((!PHYSOB ***)))))))
+(putprop! 'OBJECT 'SEMANTICS '((NOUN (object '(MARKERSß (!PHYSOB !VAGUE) PROCEDUREß ((!PHYSOB ***)))))))
 (putprop! 'OBJECT 'FEATURES '(NOUN NS))
 
 (putprop! 'OF 'SEMANTICS '((PREP (and (cq 'NG)
                                 (relation
-                                    (RESTRICTIONSß (((!DIRECTION)) ((!PHYSOB)))
+                                    '(RESTRICTIONSß (((!DIRECTION)) ((!PHYSOB)))
                                         PROCEDUREß ((!EVAL (list '!DIRECTION
                                                         (cadr (SETQ XX (or (assq '!DIRECTION (cddaar (INTERP MAP1))) (bug! "OF DEFINITION"))))
                                                         (if (caddr XX) '*OF '*!2*) (if (caddr XX) '*!2* '*OF) '*TIME)))))))
@@ -4959,7 +4957,7 @@
 (putprop! 'PICK-UP 'ROOT '(PICK UP))
 (putprop! 'PICK-UP 'SEMANTICS '((TRANS
     (relation
-        (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
+        '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
             MARKERSß (!EVENT)
             PROCEDUREß ((!EVAL (if (memq (num? *smob1*) '(1 NS)) '(!PICKUP *!2* *TIME) '(!PUTIN *!2* ßBOX *TIME)))))))))
 (putprop! 'PICK-UP 'FEATURES '(COMBINATION TRANS))
@@ -4968,13 +4966,13 @@
 (putprop! 'PLEASE 'SEMANTICS true)
 (putprop! 'PLEASE 'B-SPECIAL '(flushme))
 
-(putprop! 'POINTED 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB !POINTED) PROCEDUREß ((!SHAPE *** !POINTED)))))))
+(putprop! 'POINTED 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB !POINTED) PROCEDUREß ((!SHAPE *** !POINTED)))))))
 (putprop! 'POINTED 'FEATURES '(ADJ))
 
 (putprop! 'PUT 'PAST 'PUT)
 (putprop! 'PUT 'SEMANTICS '((VB ((TRANSL
     (relation
-        (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)) (*smobl* (!PLACE)))
+        '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)) (*smobl* (!PLACE)))
             MARKERSß (!EVENT)
             PROCEDUREß (!EVAL
                 (doall (map #(condp = (car %)
@@ -4985,11 +4983,11 @@
 (putprop! 'PUT 'FEATURES '(INF PAST VB TRANSL VPRT))
 
 (putprop! 'PUT-AWAY 'ROOT '(PUT AWAY))
-(putprop! 'PUT-AWAY 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTIN *!2* ßBOX *TIME)))))))
+(putprop! 'PUT-AWAY 'SEMANTICS '((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTIN *!2* ßBOX *TIME)))))))
 (putprop! 'PUT-AWAY 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PUT-DOWN 'ROOT '(PUT DOWN))
-(putprop! 'PUT-DOWN 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON *!2* ßTABLE *TIME)))))))
+(putprop! 'PUT-DOWN 'SEMANTICS '((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON *!2* ßTABLE *TIME)))))))
 (putprop! 'PUT-DOWN 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PUT-TOGETHER 'ROOT '(PUT TOGETHER))
@@ -4997,17 +4995,17 @@
 (putprop! 'PUT-TOGETHER 'FEATURES '(COMBINATION TRANS))
 
 (putprop! 'PYRAMID 'FEATURES '(NOUN NS))
-(putprop! 'PYRAMID 'SEMANTICS '((NOUN (object (MARKERSß (!PHYSOB !POINTED) PROCEDUREß ((!IS *** !PYRAMID)))))))
+(putprop! 'PYRAMID 'SEMANTICS '((NOUN (object '(MARKERSß (!PHYSOB !POINTED) PROCEDUREß ((!IS *** !PYRAMID)))))))
 
 (putprop! 'RED 'SEMANTICS '((ADJ (!color !RED))))
 (putprop! 'RED 'FEATURES '(ADJ))
 
 (putprop! 'RELEASE 'FEATURES '(VB TRANS INF))
 
-(putprop! 'RIGHT 'SEMANTICS '((NOUN (object (MARKERSß (!DIRECTION) PROCEDUREß ((!DIRECTION !RIGHT true)))))))
+(putprop! 'RIGHT 'SEMANTICS '((NOUN (object '(MARKERSß (!DIRECTION) PROCEDUREß ((!DIRECTION !RIGHT true)))))))
 (putprop! 'RIGHT 'FEATURES '(NOUN NS))
 
-(putprop! 'ROUND 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB !ROUND) PROCEDUREß ((!SHAPE *** !ROUND)))))))
+(putprop! 'ROUND 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB !ROUND) PROCEDUREß ((!SHAPE *** !ROUND)))))))
 (putprop! 'ROUND 'FEATURES '(ADJ))
 
 (putprop! 'SAW 'IRREGULAR '(SEE (PAST) (INF)))
@@ -5018,16 +5016,16 @@
 (putprop! 'SET 'FEATURES '(VB INF))
 
 (putprop! 'SET-DOWN 'ROOT '(SET DOWN))
-(putprop! 'SET-DOWN 'SEMANTICS '((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON *!2* ßTABLE *TIME)))))))
+(putprop! 'SET-DOWN 'SEMANTICS '((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON *!2* ßTABLE *TIME)))))))
 (putprop! 'SET-DOWN 'FEATURES '(COMBINATION TRANS))
 
-(putprop! 'SHAPE 'SEMANTICS '((NOUN (object (MARKERSß (!SHAPE) PROCEDUREß ((!IS *** !SHAPE)))))))
+(putprop! 'SHAPE 'SEMANTICS '((NOUN (object '(MARKERSß (!SHAPE) PROCEDUREß ((!IS *** !SHAPE)))))))
 (putprop! 'SHAPE 'FEATURES '(NOUN NS))
 
 (putprop! 'SHE 'FEATURES '(PRON SUBJ NS))
 
-(putprop! 'SHORT 'SEMANTICS '((MEASURE (measure DIMENSIONß !HEIGHT RESTRICTIONSß (!PHYSOB) DIRECTIONß nil))
-                              (ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !HEIGHT (128 0 0) ***)))))))
+(putprop! 'SHORT 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!HEIGHT 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß nil))
+                              (ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !HEIGHT (128 0 0) ***)))))))
 (putprop! 'SHORT 'FEATURES '(ADJ))
 
 (putprop! 'SHRDLU 'REFER 'ßSHRDLU)
@@ -5037,17 +5035,17 @@
 
 (putprop! 'SIT 'SEMANTICS '((VB ((ITRNSL
     (relation
-        (RESTRICTIONSß (((!PHYSOB)) (*smobl* (!PLACE)))
+        '(RESTRICTIONSß (((!PHYSOB)) (*smobl* (!PLACE)))
             PROCEDUREß (!EVAL
                 (doall (map #(if (memq (car %) '(!ON !IN)) (list '!SUPPORT (cadr %) '*!1* '*TIME) (bug! "SIT DEFINITION"))
                     (relations? *smobl*)))))))))))
 (putprop! 'SIT 'FEATURES '(VB INF ITRNSL))
 
-(putprop! 'SIZE 'SEMANTICS '((NOUN (object (MARKERSß (!SIZE) PROCEDUREß ((!IS *** !SIZE)))))))
+(putprop! 'SIZE 'SEMANTICS '((NOUN (object '(MARKERSß (!SIZE) PROCEDUREß ((!IS *** !SIZE)))))))
 (putprop! 'SIZE 'FEATURES '(NOUN NS))
 
-(putprop! 'SMALL 'SEMANTICS '((MEASURE (measure DIMENSIONß !SIZE RESTRICTIONSß (!PHYSOB) DIRECTIONß nil))
-                              (ADJ (object (MARKERSß (!PHYSOB !LITTLE) PROCEDUREß ((!MORE !SIZE (128 128 128) ***)))))))
+(putprop! 'SMALL 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!SIZE 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß nil))
+                              (ADJ (object '(MARKERSß (!PHYSOB !LITTLE) PROCEDUREß ((!MORE !SIZE (128 128 128) ***)))))))
 (putprop! 'SMALL 'FEATURES '(ADJ))
 
 (putprop! 'SOME 'SEMANTICS '((DET 'INDEF)))
@@ -5058,10 +5056,10 @@
 
 (putprop! 'SPHERE 'FEATURES '(NOUN NS))
 
-(putprop! 'SQUARE 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB !RECTANGULAR) PROCEDUREß ((!SHAPE ** !RECTANGULAR)))))))
+(putprop! 'SQUARE 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB !RECTANGULAR) PROCEDUREß ((!SHAPE ** !RECTANGULAR)))))))
 (putprop! 'SQUARE 'FEATURES '(ADJ))
 
-(putprop! 'STACK 'SEMANTICS '((NOUN (object (MARKERSß (!STACK) PROCEDUREß ((!IS *** !STACK)))))
+(putprop! 'STACK 'SEMANTICS '((NOUN (object '(MARKERSß (!STACK) PROCEDUREß ((!IS *** !STACK)))))
                               (VB ((TRANS (!stackup))))))
 (putprop! 'STACK 'FEATURES '(NOUN NS VB INF VPRT TRANS))
 
@@ -5069,23 +5067,23 @@
 (putprop! 'STACK-UP 'SEMANTICS '((TRANS (!stackup))))
 (putprop! 'STACK-UP 'FEATURES '(COMBINATION TRANS))
 
-(putprop! 'START 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START *!2* *TIME)))))))))
+(putprop! 'START 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!START *!2* *TIME)))))))))
 (putprop! 'START 'FEATURES '(VB INF TRANS INGOB1 TOOB1))
 
-(putprop! 'SUPPORT 'SEMANTICS '((NOUN (object (MARKERSß (!PHYSOB !ROLE) PROCEDUREß ((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT *!1* *!2*))))))
-                                (VB ((TRANS (relation (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PROCEDUREß ((!SUPPORT *!1* *!2* *TIME)))))))))
+(putprop! 'SUPPORT 'SEMANTICS '((NOUN (object '(MARKERSß (!PHYSOB !ROLE) PROCEDUREß ((!SUPPORT *** ?) (!role (!PHYSOB) (!SUPPORT *!1* *!2*))))))
+                                (VB ((TRANS (relation '(RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PROCEDUREß ((!SUPPORT *!1* *!2* *TIME)))))))))
 (putprop! 'SUPPORT 'FEATURES '(VB INF TRANS IMPERF NOUN NS))
 
-(putprop! 'TABLE 'SEMANTICS '((NOUN (object (MARKERSß (!TABLE) PROCEDUREß ((!IS *** !TABLE)))))))
+(putprop! 'TABLE 'SEMANTICS '((NOUN (object '(MARKERSß (!TABLE) PROCEDUREß ((!IS *** !TABLE)))))))
 (putprop! 'TABLE 'FEATURES '(NOUN NS))
 
 (putprop! 'TAKE 'FEATURES '(VB INF TRANSL TRANS))
 
-(putprop! 'TALL 'SEMANTICS '((MEASURE (measure DIMENSIONß !HEIGHT RESTRICTIONSß (!PHYSOB) DIRECTIONß true))
-                             (ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !HEIGHT *** (128 0 0))))))))
+(putprop! 'TALL 'SEMANTICS '((MEASURE (measure 'DIMENSIONß '!HEIGHT 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))
+                             (ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !HEIGHT *** (128 0 0))))))))
 (putprop! 'TALL 'FEATURES '(ADJ))
 
-(putprop! 'TELL 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
+(putprop! 'TELL 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
 (putprop! 'TELL 'FEATURES '(VB INF TRANS2 TOOB2))
 
 (putprop! 'THAN 'SEMANTICS '((nil? true)))
@@ -5127,15 +5125,15 @@
 (putprop! 'THEY 'SEMANTICS '((PRON (smit 'THEY))))
 (putprop! 'THEY 'FEATURES '(PRON SUBJ NPL))
 
-(putprop! 'THICK 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !THICKNESS *** (0 128 0))))))
-                              (MEASURE (measure DIMENSIONß !THICKNESS RESTRICTIONSß (!PHYSOB) DIRECTIONß true))))
+(putprop! 'THICK 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !THICKNESS *** (0 128 0))))))
+                              (MEASURE (measure 'DIMENSIONß '!THICKNESS 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))))
 (putprop! 'THICK 'FEATURES '(ADJ))
 
-(putprop! 'THIN 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !THICKNESS (0 128 0) ***)))))
-                             (MEASURE (measure DIMENSIONß !THICKNESS RESTRICTIONSß (!PHYSOB) DIRECTIONß nil))))
+(putprop! 'THIN 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !THICKNESS (0 128 0) ***)))))
+                             (MEASURE (measure 'DIMENSIONß '!THICKNESS 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß nil))))
 (putprop! 'THIN 'FEATURES '(ADJ))
 
-(putprop! 'THING 'SEMANTICS '((NOUN (object (MARKERSß (!THING !VAGUE !PHYSOB) PROCEDUREß ((!PHYSOB  *** )))))))
+(putprop! 'THING 'SEMANTICS '((NOUN (object '(MARKERSß (!THING !VAGUE !PHYSOB) PROCEDUREß ((!PHYSOB  *** )))))))
 (putprop! 'THING 'FEATURES '(NOUN NS))
 
 (putprop! 'THIS 'FEATURES '(NS DET DEM DEF))
@@ -5145,7 +5143,7 @@
 
 (putprop! 'TIME 'FEATURES '(NOUN NS TIM1))
 
-(putprop! 'TO 'SEMANTICS '((PREP (relation (RESTRICTIONSß (((!PHYSOB)) ((!DIRECTION))) PROCEDUREß ((!EVAL (SUBTOP '*!1* '*OF (REFERENCE? *smob1*)))))))))
+(putprop! 'TO 'SEMANTICS '((PREP (relation '(RESTRICTIONSß (((!PHYSOB)) ((!DIRECTION))) PROCEDUREß ((!EVAL (SUBTOP '*!1* '*OF (REFERENCE? *smob1*)))))))))
 (putprop! 'TO 'FEATURES '(PREP))
 
 (putprop! 'TOGETHER 'SEMANTICS '((PRT true)))
@@ -5159,7 +5157,7 @@
 (putprop! 'TOUCH 'SEMANTICS '((VB ((TRANS (!grasp))))))
 (putprop! 'TOUCH 'FEATURES '(VB INF TRANS))
 
-(putprop! 'TOY 'SEMANTICS '((NOUN (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MANIP ***)))))))
+(putprop! 'TOY 'SEMANTICS '((NOUN (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MANIP ***)))))))
 (putprop! 'TOY 'FEATURES '(NOUN NS))
 
 (putprop! 'TWO 'SEMANTICS '((NUM 2)))
@@ -5176,7 +5174,7 @@
 
 (putprop! 'US 'IRREGULAR '(WE (OBJ) (SUBJ)))
 
-(putprop! 'WANT 'SEMANTICS '((VB ((TRANS (relation (RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
+(putprop! 'WANT 'SEMANTICS '((VB ((TRANS (relation '(RESTRICTIONSß (((!ANIMATE)) ((!EVENT))) MARKERSß (!EVENT) PROCEDUREß ((!WANT *!1* *!2* *TIME)))))))))
 (putprop! 'WANT 'FEATURES '(VB INF TRANS TOOB SUBTOB))
 
 (putprop! 'WAS 'IRREGULAR '(BE (V3PS VFS PAST) (INF)))
@@ -5226,8 +5224,8 @@
 
 (putprop! 'WHYEVER 'FEATURES '(PRON EVERPRON NS))
 
-(putprop! 'WIDE 'SEMANTICS '((ADJ (object (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !WIDTH *** (0 128 0))))))
-                             (MEASURE (measure DIMENSIONß !WIDTH RESTRICTIONSß (!PHYSOB) DIRECTIONß true))))
+(putprop! 'WIDE 'SEMANTICS '((ADJ (object '(MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !WIDTH *** (0 128 0))))))
+                             (MEASURE (measure 'DIMENSIONß '!WIDTH 'RESTRICTIONSß '(!PHYSOB) 'DIRECTIONß true))))
 (putprop! 'WIDE 'FEATURES '(ADJ))
 
 (putprop! 'WILL 'SEMANTICS '((VB true)))
@@ -5278,7 +5276,7 @@
 (putprop! '!BOX 'SYS '(!PHYSOB))
 
 (defn- !build []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!STACK))) MARKERSß (!EVENT) PROCEDUREß ((!EVAL (list '!STACKUP (!blueprint *smob1*) '*TIME))))))
+    (relation '(RESTRICTIONSß (((!ANIMATE)) ((!STACK))) MARKERSß (!EVENT) PROCEDUREß ((!EVAL (list '!STACKUP (!blueprint *smob1*) '*TIME))))))
 
 (putprop! '!CALL 'THMLIST '((3 '((THUSE TC-3)))))
 
@@ -5286,7 +5284,7 @@
 (putprop! '!COLOR 'SYS '(!PROPERTY))
 
 (defq- !color [& a]
-    (eval (SUBST (car a) 'COLOR '(object (MARKERSß (!PHYSOB COLOR) PROCEDUREß ((!color *** COLOR)))))))
+    (object (list 'MARKERSß (list '!PHYSOB (car a)) 'PROCEDUREß (list (list '!color '*** (car a))))))
 
 (putprop! '!CONSTRUCT 'SYSTEM '(!STACK !ROW))
 (putprop! '!CONSTRUCT 'SYS '(!PHYSOB))
@@ -5294,7 +5292,7 @@
 (putprop! '!CONTAIN 'PRIORITY -1)
 
 (defn- !cleanoff []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!CLEARTOP *!2* *TIME)))))
+    (relation '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!CLEARTOP *!2* *TIME)))))
 
 (putprop! '!CLEARTOP 'THMLIST '((2 '((THUSE TC-2))) (3 '((THUSE TCT-3))) (4 '((THUSE TCTE-4)))))
 
@@ -5320,7 +5318,7 @@
 
 (defn- !grasp []
     (relation
-        (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
+        '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
             MARKERSß (!EVENT)
             PROCEDUREß ((!EVAL (if (istense *c* 'IMPERF) '(!GRASPING *!2* *TIME) '(!GRASP *!2* *TIME)))))))
 
@@ -5332,9 +5330,9 @@
 
 (defn- !have []
     (relation
-        (RESTRICTIONSß (((!THING)) ((!THING) (and (memq '!ROLE (markers? *smob1*)) (check-markers (cadr (assq '!ROLE (relations? *smob1*))) (markers? *smsub*) (systems? *smsub*)))))
+        '(RESTRICTIONSß (((!THING)) ((!THING) (and (memq '!ROLE (markers? *smob1*)) (check-markers (cadr (assq '!ROLE (relations? *smob1*))) (markers? *smsub*) (systems? *smsub*)))))
             PROCEDUREß ((!SUBST *!1* ?)))
-        (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)))
+        '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)))
             PROCEDUREß ((!BELONG *!2* *!1*)))))
 
 (putprop! '!HEIGHT 'MEASFN #(caddr (size %)))
@@ -5342,12 +5340,12 @@
 (defn- !in []
     (if (cq 'LOBJ)
         (relation
-            (RESTRICTIONSß (((!THING)) ((!BOX))) MARKERSß (!PLACE) PROCEDUREß ((!IN *!2*))))
+            '(RESTRICTIONSß (((!THING)) ((!BOX))) MARKERSß (!PLACE) PROCEDUREß ((!IN *!2*))))
         (relation
-            (RESTRICTIONSß (((!MANIP)) ((!BOX))) PROCEDUREß ((!CONTAIN *!2* *!1* *TIME)))
-            (RESTRICTIONSß (((!MANIP)) ((!HAND))) PROCEDUREß ((!GRASPING *!1* *TIME)))
-            (RESTRICTIONSß (((!PLACE)) ((!BOX))) PROCEDUREß ((!IN *!1* *!2*)))
-            (RESTRICTIONSß (((!MANIP)) ((!CONSTRUCT))) PROCEDUREß ((!PART *!1* *!2* *TIME))))))
+            '(RESTRICTIONSß (((!MANIP)) ((!BOX))) PROCEDUREß ((!CONTAIN *!2* *!1* *TIME)))
+            '(RESTRICTIONSß (((!MANIP)) ((!HAND))) PROCEDUREß ((!GRASPING *!1* *TIME)))
+            '(RESTRICTIONSß (((!PLACE)) ((!BOX))) PROCEDUREß ((!IN *!1* *!2*)))
+            '(RESTRICTIONSß (((!MANIP)) ((!CONSTRUCT))) PROCEDUREß ((!PART *!1* *!2* *TIME))))))
 
 (putprop! '!IS 'PRIORITY 64)
 
@@ -5364,8 +5362,8 @@
 (defn- !loc2 [loctype' locneg']
     (binding [*loctype* loctype' *locneg* locneg']
         (if (cq 'LOBJ)
-            (relation (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC *loctype* *locneg* *!2*)))))
-            (relation (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC *loctype* (if *locneg* '*!1* '*!2*) (if *locneg* '*!2* '*!1*) '*TIME))))))))
+            (relation '(RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC *loctype* *locneg* *!2*)))))
+            (relation '(RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC *loctype* (if *locneg* '*!1* '*!2*) (if *locneg* '*!2* '*!1*) '*TIME))))))))
 
 (putprop! '!MANIP 'SYS '(!PHYSOB))
 
@@ -5375,23 +5373,23 @@
 (putprop! '!NAME 'SYS '(!SYSTEMS))
 
 (defn- !name []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME *!2*)))))
+    (relation '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME *!2*)))))
 
 (putprop! '!NOTICE 'THMLIST '((2 '((THUSE TC-2)))))
 
 (defn- !notice []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NOTICE *!2* *TIME)))))
+    (relation '(RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NOTICE *!2* *TIME)))))
 
 (putprop! '!ON 'THMLIST '((3 '((THUSE TC-ON))) (4 '((THUSE TCT-ON)))))
 
 (defn- !on []
     (if (cq 'LOBJ)
         (relation
-            (RESTRICTIONSß (((!THING)) ((!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!ON *!2*))))
+            '(RESTRICTIONSß (((!THING)) ((!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!ON *!2*))))
         (relation
-            (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PARAPHRASEß (ANYWHERE ON TOP OF) PROCEDUREß ((!ON *!1* *!2* *TIME)))
-            (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PARAPHRASEß (DIRECTLY ON THE SURFACE) PROCEDUREß ((!SUPPORT *!2* *!1* *TIME)))
-            (RESTRICTIONSß (((!PLACE)) ((!PHYSOB))) PROCEDUREß ((!ON *!1* *!2*))))))
+            '(RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PARAPHRASEß (ANYWHERE ON TOP OF) PROCEDUREß ((!ON *!1* *!2* *TIME)))
+            '(RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PARAPHRASEß (DIRECTLY ON THE SURFACE) PROCEDUREß ((!SUPPORT *!2* *!1* *TIME)))
+            '(RESTRICTIONSß (((!PLACE)) ((!PHYSOB))) PROCEDUREß ((!ON *!1* *!2*))))))
 
 (putprop! '!PACK 'THMLIST '((3 '((THUSE TC-3)))))
 
@@ -5453,7 +5451,7 @@
 (putprop! '!STACKUP 'THMLIST '((2 '((THUSE TC-2)))))
 
 (defn- !stackup []
-    (relation (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!STACKUP *!2* *TIME)))))
+    (relation '(RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!STACKUP *!2* *TIME)))))
 
 (putprop! '!START 'THMLIST '((3 '((THUSE TC-STARTEND3))) (4 '((THUSE TC-STARTEND4)))))
 
@@ -6264,7 +6262,7 @@
 (dynamic- *!2*)
 (dynamic- *!3*)
 
-(defq- relation [& a]
+(defn- relation [& a]
     ;; CONSTRUCTS RSS'S FOR GARDEN VARIETY VERBS.  USED IN DEFINITION OF SAME.
     ;;
     ;; INPUTS:
@@ -6474,7 +6472,7 @@
         (let [x (getprop x 'WHO)]
             (cond (= *who* 'HE) x x (<= (car *who*) x (cadr *who*))))))
 
-(defq- object [& a]
+(defn- object [& a]
     ;; %DEFL IS THE LIST OF DEFINITION SENSES.
     ;; CONSTRUCTS OSS FOR GARDEN VARIETY NOUNS AND ADJECTIVES.
     ;; USED IN DEFINITIONS.
@@ -6683,7 +6681,7 @@
     (let [{restrictions 'RESTRICTIONSß dimension 'DIMENSIONß direction 'DIRECTIONß} (cdr (findmeasure node))]
         (putprop! 'COMPARE-PSEUDO-VERB 'SEMANTICS
             (list 'relation
-                (list 'RESTRICTIONSß (list (list restrictions) (list restrictions))
+                (list 'RESTRICTIONSß (list (list restrictions) (list restrictions))
                       'PROCEDUREß (list (list degree dimension (if direction '*!1* '*!2*) (if direction '*!2* '*!1*))))))
         '(COMPARE-PSEUDO-VERB)))
 
@@ -6692,10 +6690,9 @@
     (let [r (root (firstword node)) x (assq 'MEASURE (getprop r 'SEMANTICS))]
         (if x (cadr x) (oops! (str "I DON'T KNOW HOW TO COMPARE THINGS WITH RESPECT TO " r)))))
 
-(defq- measure [& a]
+(defn- measure [& a]
     ;; USED TO GENERATE ORDINALS -- IT IS CALLED WHEN A MEASURE DEFINITION IS EVALLED
-    (apply object
-        (list (list 'MARKERSß (cadr (memq 'RESTRICTIONSß a)) 'PROCEDUREß (list (list '*ORDINAL* a))))))
+    (object (list 'MARKERSß (cadr (memq 'RESTRICTIONSß a)) 'PROCEDUREß (list (list '*ORDINAL* a)))))
 
 (dynamic- *ordinal*)
 
