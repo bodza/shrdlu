@@ -114,7 +114,7 @@
 (§ DEFPROP TC-BELONG
     (THCONSE (X Y)
         (!BELONG $?X $?Y)
-        (THAMONG $?Y '(:SHRDLU))
+        (THAMONG $?Y '(ßSHRDLU))
         (THGOAL (!PHYSOB $?X) (THUSE TC-PHYSOB)))
     THEOREM)
 
@@ -137,7 +137,7 @@
             ((and (THASVAL $?X) (not (OSS? $?X))) (THSETQ $_Y $?X))
             ((THASVAL $?X)
                 (or (nil? DISCOURSE)
-                (THPUTPROP (VARIABLE? $?X) $?X 'NG))
+                    (THPUTPROP (VARIABLE? $?X) $?X 'NG))
                 (THSETQ $_Y (FINDCHOOSE $?X $?Z nil)))
         ((THGOAL (!MANIP $?Y)) (THNOT (THGOAL (!SUPPORT $?Y ?))))))
     THEOREM)
@@ -168,9 +168,9 @@
 (§ DEFPROP TC-FINDSPACE
     (THCONSE (SURF SIZE OBJ SPACE)
         (!FINDSPACE $?SURF $?SIZE $?OBJ $?SPACE)
-        (THOR (and (not (MEMQ $?SURF '(:BOX :TABLE))) (not (GET '!NOCLEAR 'THASSERTION))
+        (THOR (and (not (MEMQ $?SURF '(ßBOX ßTABLE))) (not (GET '!NOCLEAR 'THASSERTION))
             (THSETQ $_SPACE (FINDSPACE 'CENTER $?SURF $?SIZE $?OBJ)))
-        (and (or (EQ $?SURF ':BOX) (and (not (EQ $?SURF ':TABLE)) (GET '!NOCLEAR 'THASSERTION)))
+        (and (or (EQ $?SURF 'ßBOX) (and (not (EQ $?SURF 'ßTABLE)) (GET '!NOCLEAR 'THASSERTION)))
             (THSETQ $_SPACE (FINDSPACE 'PACK $?SURF $?SIZE $?OBJ)))
         (THSETQ $_SPACE (FINDSPACE 'RANDOM $?SURF $?SIZE $?OBJ))))
     THEOREM)
@@ -182,7 +182,7 @@
     =>  (THCOND ((nil? $?X))
             ((ATOM $?X)
                 (MEMORY)
-                (THGOAL (!FINDSPACE :TABLE $E (SIZE $?X) $?X $_Y) (THUSE TC-FINDSPACE))
+                (THGOAL (!FINDSPACE ßTABLE $E (SIZE $?X) $?X $_Y) (THUSE TC-FINDSPACE))
                 (THGOAL (!PUT $?X $?Y) (THNODB) (THUSE TC-PUT))
                 (MEMOREND (!GET-RID-OF $?EV $?X)))
             ((THGOAL (!GET-RID-OF $E (car $?X)) (THUSE TC-GET-RID-OF))
@@ -263,7 +263,7 @@
                                 $?Z
                                 (cadar (or (THVAL '(THGOAL (!SUPPORT $?Y $?X))
                                         (cons (list 'Y 'THUNASSIGNED) THALIST))
-                                    '((nil :HAND))))
+                                    '((nil ßHAND))))
                                 nil)
                             (GET $?X 'HISTORY))
                         'HISTORY)))
@@ -344,7 +344,7 @@
 (§ DEFPROP TC-PHYSOB
     (THCONSE (X)
         (!PHYSOB $?X)
-        (THOR (THGOAL (!MANIP $?X)) (THAMONG $?X '(:BOX :TABLE :HAND))))
+        (THOR (THGOAL (!MANIP $?X)) (THAMONG $?X '(ßBOX ßTABLE ßHAND))))
     THEOREM)
 
 (§ DEFPROP TC-PICKUP
@@ -438,7 +438,7 @@
         (THNOT (THAND (THGOAL (!PART $?Y $_X))
             (THGOAL (!IS $?X !STACK))))
     =>  (THGOAL (!SUPPORT $_X $?Y))
-        (THCOND ((MEMQ $?X '(:TABLE :BOX)))
+        (THCOND ((MEMQ $?X '(ßTABLE ßBOX)))
             ((THSETQ $_Y $?X) (THGO =>)))
         (THSETQ $_X (MAKESYM 'STACK))
         (THASSERT (!IS $?X !STACK))
@@ -467,7 +467,7 @@
                         '(not (EQ $?X $?Y)))
                         THALIST)))))
         (COND ((THVSETQ $_PYR (PACKO $?X '!PYRAMID)) (nil? (cdr $?PYR))) (:else true))
-        (THVSETQ $_BLOCKS (cons ':TABLE (PACKO $?X '!BLOCK)))
+        (THVSETQ $_BLOCKS (cons 'ßTABLE (PACKO $?X '!BLOCK)))
         (MEMORY)
     =>  (THCOND
             ((cdr $?BLOCKS)
@@ -523,7 +523,7 @@
     (THCONSE (X NEWEV EV TIME Z)
         (!WANT $?NEWEV $?X $?EV $?TIME)
         (or (and (THASVAL $?X) (THASVAL $?EV) (THASVAL $?TIME)) (ERT TC-WANT5 THASVAL))
-        (EQ $?X ':FRIEND)
+        (EQ $?X 'ßFRIEND)
         (EQ (GET $?EV 'WHY) 'COMMAND)
         (THSETQ $_NEWEV (MAKESYM 'EV))
         (PUTPROP $?NEWEV
@@ -710,8 +710,8 @@
     CHOOSE)
 
 (§ DEFPROP !PUTIN
-    (((THNOT (THGOAL (!CONTAIN :BOX $?*))) (THGOAL (!CLEARTOP $?*)))
-     ((THNOT (THGOAL (!CONTAIN :BOX $?*)))))
+    (((THNOT (THGOAL (!CONTAIN ßBOX $?*))) (THGOAL (!CLEARTOP $?*)))
+     ((THNOT (THGOAL (!CONTAIN ßBOX $?*)))))
     CHOOSE)
 
 (§ DEFPROP !PUTIN (((THGOAL (!IS $?* !BOX)))) CHOOSE2)
@@ -801,7 +801,7 @@ nil
     (let [XYMAX nil XYMIN nil N nil V nil X1 nil X2 nil]
         (SETQ OBJ (LISTIFY OBJ))
         (and (MEMQ SURF OBJ) (RETURN nil))
-        (COND ((EQ SURF ':TABLE)
+        (COND ((EQ SURF 'ßTABLE)
                 (SETQ XYMIN '(0 0))
                 (SETQ XYMAX '(640 640))
                 (SETQ LEVEL 0)
@@ -817,7 +817,7 @@ nil
                         OBJ)
                     (RETURN V))
                 ((RETURN nil))))
-            ((EQ (car X) ':BOX)
+            ((EQ (car X) 'ßBOX)
                 (SETQ XYMIN (list (caadr X) (cadadr X)))
                 (SETQ XYMAX (list (+ (caaddr X) (caadr X)) (+ (cadr (caddr X)) (cadadr X))))
                 (SETQ LEVEL 1))
@@ -927,7 +927,7 @@ nil
 
 (§ defn- OCCUPIER [X Y Z]
     (let [W nil X1 nil X2 nil]
-        (COND ((neg? Z) (RETURN ':TABLE)))
+        (COND ((neg? Z) (RETURN 'ßTABLE)))
         (SETQ W ATABLE)
     =>  (COND ((nil? W) (RETURN nil))
             ((and (< (dec (car (SETQ X1 (cadar W)))) X (+ (car X1) (car (SETQ X2 (caddar W)))))
@@ -969,8 +969,8 @@ nil
         ((cons (list SIZE X) L))))
 
 (§ defn- SIZE [X]
-    (COND ((EQ X ':BOX) '(256 256 192))
-        ((EQ X ':TABLE) '(640 640 640))
+    (COND ((EQ X 'ßBOX) '(256 256 192))
+        ((EQ X 'ßTABLE) '(640 640 640))
         ((ATOM X) (caddr (ATAB X)))
         (X)))
 
@@ -982,7 +982,7 @@ nil
     (DEFPROP EE 0 END)
     (DEFPROP EE !START TYPE)
     (SETQ EVENTLIST '(EE))
-    (THADD '(!START EE :DIALOG) nil)
+    (THADD '(!START EE ßDIALOG) nil)
     (ERRSET (CLEANOUT E) nil)
     (dorun (map #'(lambda [X]
         (and (GET (car X) 'THASSERTION)
@@ -996,7 +996,7 @@ nil
 (§ defn- STARTIME [L TIME] (< (caar L) (or (START? TIME) -1)))
 
 (§ defn- SUPPORT [LOC SIZE X]
-    (COND ((EQ (caddr LOC) 0) ':TABLE)
+    (COND ((EQ (caddr LOC) 0) 'ßTABLE)
         ((SETQ LOC (OCCUPIER (+ (car LOC) (half (car SIZE))) (+ (cadr LOC) (half (cadr SIZE))) (dec (caddr LOC))))
             (COND ((EQ LOC X) nil) (LOC)))))
 
@@ -1030,42 +1030,42 @@ nil
 (§ THFLUSH THASSERTION)
 
 (§ SETQ ATABLE
-  '((:B1 (72 64 0) (64 64 64))
-    (:B2 (72 64 64) (64 64 64))
-    (:B3 (256 0 0) (128 128 128))
-    (:B4 (416 416 1) (128 128 128))
-    (:B5 (320 64 128) (64 64 192))
-    (:B6 (0 192 0) (128 192 192))
-    (:B7 (0 160 192) (128 128 128))
-    (:B10 (192 416 0) (128 64 256))
-    (:BW1 (376 376 0) (8 256 192))
-    (:BW2 (376 376 0) (256 8 192))
-    (:BW3 (376 640 0) (256 8 192))
-    (:BW4 (640 376 0) (8 256 192))
-    (:BOX (384 384 0) (256 256 1))))
+  '((ßB1 (72 64 0) (64 64 64))
+    (ßB2 (72 64 64) (64 64 64))
+    (ßB3 (256 0 0) (128 128 128))
+    (ßB4 (416 416 1) (128 128 128))
+    (ßB5 (320 64 128) (64 64 192))
+    (ßB6 (0 192 0) (128 192 192))
+    (ßB7 (0 160 192) (128 128 128))
+    (ßB10 (192 416 0) (128 64 256))
+    (ßBW1 (376 376 0) (8 256 192))
+    (ßBW2 (376 376 0) (256 8 192))
+    (ßBW3 (376 640 0) (256 8 192))
+    (ßBW4 (640 376 0) (8 256 192))
+    (ßBOX (384 384 0) (256 256 1))))
 
 (§ SETQ DISPLAY-AS
-  '((:B1 !DISPLAY !BLOCK (72 64 0) (64 64 64) RED)
-    (:B2 !DISPLAY !PYRAMID (72 64 64) (64 64 64) GREEN)
-    (:B3 !DISPLAY !BLOCK (256 0 0) (128 128 128) GREEN)
-    (:B4 !DISPLAY !PYRAMID (416 416 1) (128 128 128) BLUE)
-    (:B5 !DISPLAY !PYRAMID (320 64 128) (64 64 192) RED)
-    (:B6 !DISPLAY !BLOCK (0 192 0) (128 192 192) RED)
-    (:B7 !DISPLAY !BLOCK (0 160 192) (128 128 128) GREEN)
-    (:B10 !DISPLAY !BLOCK (192 416 0) (128 64 256) BLUE)
-    (:HAND !DISPLAY !HAND (32 0 0) (0 0 0) WHITE)
-    (:TABLE !DISPLAY !TABLE (0 0 0) (512 512 0) BLACK)
-    (:BOX !DISPLAY !BOX (384 384 0) (254 254 192) WHITE)))
+  '((ßB1 !DISPLAY !BLOCK (72 64 0) (64 64 64) RED)
+    (ßB2 !DISPLAY !PYRAMID (72 64 64) (64 64 64) GREEN)
+    (ßB3 !DISPLAY !BLOCK (256 0 0) (128 128 128) GREEN)
+    (ßB4 !DISPLAY !PYRAMID (416 416 1) (128 128 128) BLUE)
+    (ßB5 !DISPLAY !PYRAMID (320 64 128) (64 64 192) RED)
+    (ßB6 !DISPLAY !BLOCK (0 192 0) (128 192 192) RED)
+    (ßB7 !DISPLAY !BLOCK (0 160 192) (128 128 128) GREEN)
+    (ßB10 !DISPLAY !BLOCK (192 416 0) (128 64 256) BLUE)
+    (ßHAND !DISPLAY !HAND (32 0 0) (0 0 0) WHITE)
+    (ßTABLE !DISPLAY !TABLE (0 0 0) (512 512 0) BLACK)
+    (ßBOX !DISPLAY !BOX (384 384 0) (254 254 192) WHITE)))
 
 (§ THDATA)
-    (ß (!IS :B1 !BLOCK))
-    (ß (!IS :B2 !PYRAMID))
-    (ß (!IS :B3 !BLOCK))
-    (ß (!IS :B4 !PYRAMID))
-    (ß (!IS :B5 !PYRAMID))
-    (ß (!IS :B6 !BLOCK))
-    (ß (!IS :B7 !BLOCK))
-    (ß (!IS :B10 !BLOCK))
+    (ß (!IS ßB1 !BLOCK))
+    (ß (!IS ßB2 !PYRAMID))
+    (ß (!IS ßB3 !BLOCK))
+    (ß (!IS ßB4 !PYRAMID))
+    (ß (!IS ßB5 !PYRAMID))
+    (ß (!IS ßB6 !BLOCK))
+    (ß (!IS ßB7 !BLOCK))
+    (ß (!IS ßB10 !BLOCK))
 
     (ß (!IS !RED !COLOR))
     (ß (!IS !BLUE !COLOR))
@@ -1077,72 +1077,72 @@ nil
     (ß (!IS !ROUND !SHAPE))
     (ß (!IS !POINTED !SHAPE))
 
-    (ß (!IS :SHRDLU !ROBOT))
-    (ß (!IS :FRIEND !PERSON))
-    (ß (!IS :HAND !HAND))
+    (ß (!IS ßSHRDLU !ROBOT))
+    (ß (!IS ßFRIEND !PERSON))
+    (ß (!IS ßHAND !HAND))
 
-    (ß (!AT :B1 (64 64 0)))
-    (ß (!AT :B2 (64 64 64)))
-    (ß (!AT :B3 (256 0 0)))
-    (ß (!AT :B4 (416 416 1)))
-    (ß (!AT :B5 (320 64 128)))
-    (ß (!AT :B6 (0 192 0)))
-    (ß (!AT :B7 (0 160 192)))
-    (ß (!AT :B10 (192 416 0)))
+    (ß (!AT ßB1 (64 64 0)))
+    (ß (!AT ßB2 (64 64 64)))
+    (ß (!AT ßB3 (256 0 0)))
+    (ß (!AT ßB4 (416 416 1)))
+    (ß (!AT ßB5 (320 64 128)))
+    (ß (!AT ßB6 (0 192 0)))
+    (ß (!AT ßB7 (0 160 192)))
+    (ß (!AT ßB10 (192 416 0)))
 
-    (ß (!SUPPORT :B1 :B2))
-    (ß (!SUPPORT :B3 :B5))
-    (ß (!SUPPORT :B6 :B7))
+    (ß (!SUPPORT ßB1 ßB2))
+    (ß (!SUPPORT ßB3 ßB5))
+    (ß (!SUPPORT ßB6 ßB7))
 
-    (ß (!CLEARTOP :B2))
-    (ß (!CLEARTOP :B4))
-    (ß (!CLEARTOP :B5))
-    (ß (!CLEARTOP :B7))
-    (ß (!CLEARTOP :B10))
+    (ß (!CLEARTOP ßB2))
+    (ß (!CLEARTOP ßB4))
+    (ß (!CLEARTOP ßB5))
+    (ß (!CLEARTOP ßB7))
+    (ß (!CLEARTOP ßB10))
 
-    (ß (!MANIP :B1))
-    (ß (!MANIP :B2))
-    (ß (!MANIP :B3))
-    (ß (!MANIP :B4))
-    (ß (!MANIP :B5))
-    (ß (!MANIP :B6))
-    (ß (!MANIP :B7))
-    (ß (!MANIP :B10))
+    (ß (!MANIP ßB1))
+    (ß (!MANIP ßB2))
+    (ß (!MANIP ßB3))
+    (ß (!MANIP ßB4))
+    (ß (!MANIP ßB5))
+    (ß (!MANIP ßB6))
+    (ß (!MANIP ßB7))
+    (ß (!MANIP ßB10))
 
-    (ß (!SUPPORT :TABLE :B1))
-    (ß (!SUPPORT :TABLE :B3))
-    (ß (!SUPPORT :BOX :B4))
-    (ß (!SUPPORT :TABLE :B10))
-    (ß (!SUPPORT :TABLE :B6))
-    (ß (!SUPPORT :TABLE :BOX))
+    (ß (!SUPPORT ßTABLE ßB1))
+    (ß (!SUPPORT ßTABLE ßB3))
+    (ß (!SUPPORT ßBOX ßB4))
+    (ß (!SUPPORT ßTABLE ßB10))
+    (ß (!SUPPORT ßTABLE ßB6))
+    (ß (!SUPPORT ßTABLE ßBOX))
 
-    (ß (!AT :BOX (384 384 0)))
-    (ß (!IS :BOX !BOX))
-    (ß (!IS :TABLE !TABLE))
-    (ß (!CONTAIN :BOX :B4))
+    (ß (!AT ßBOX (384 384 0)))
+    (ß (!IS ßBOX !BOX))
+    (ß (!IS ßTABLE !TABLE))
+    (ß (!CONTAIN ßBOX ßB4))
 
-    (ß (!SHAPE :B1 !RECTANGULAR))
-    (ß (!SHAPE :B3 !RECTANGULAR))
-    (ß (!SHAPE :B2 !POINTED))
-    (ß (!SHAPE :B4 !POINTED))
-    (ß (!SHAPE :B5 !POINTED))
-    (ß (!SHAPE :B6 !RECTANGULAR))
-    (ß (!SHAPE :B7 !RECTANGULAR))
-    (ß (!SHAPE :B10 !RECTANGULAR))
+    (ß (!SHAPE ßB1 !RECTANGULAR))
+    (ß (!SHAPE ßB3 !RECTANGULAR))
+    (ß (!SHAPE ßB2 !POINTED))
+    (ß (!SHAPE ßB4 !POINTED))
+    (ß (!SHAPE ßB5 !POINTED))
+    (ß (!SHAPE ßB6 !RECTANGULAR))
+    (ß (!SHAPE ßB7 !RECTANGULAR))
+    (ß (!SHAPE ßB10 !RECTANGULAR))
 
-    (ß (!COLOR :B1 !RED))
-    (ß (!COLOR :B2 !GREEN))
-    (ß (!COLOR :B3 !GREEN))
-    (ß (!COLOR :B4 !BLUE))
-    (ß (!COLOR :B5 !RED))
-    (ß (!COLOR :B6 !RED))
-    (ß (!COLOR :B7 !GREEN))
-    (ß (!COLOR :B10 !BLUE))
-    (ß (!COLOR :BOX !WHITE))
-    (ß (!COLOR :TABLE !BLACK))
+    (ß (!COLOR ßB1 !RED))
+    (ß (!COLOR ßB2 !GREEN))
+    (ß (!COLOR ßB3 !GREEN))
+    (ß (!COLOR ßB4 !BLUE))
+    (ß (!COLOR ßB5 !RED))
+    (ß (!COLOR ßB6 !RED))
+    (ß (!COLOR ßB7 !GREEN))
+    (ß (!COLOR ßB10 !BLUE))
+    (ß (!COLOR ßBOX !WHITE))
+    (ß (!COLOR ßTABLE !BLACK))
 
-    (ß (!CALL :SHRDLU SHRDLU))
-    (ß (!CALL :FRIEND YOU))
+    (ß (!CALL ßSHRDLU SHRDLU))
+    (ß (!CALL ßFRIEND YOU))
 nil
 
 (§ SETQ HANDAT '(32 0 0))
@@ -1156,7 +1156,7 @@ nil
 (§ SETQ PLAN nil)
 
 (§ dorun (map #'(lambda [X Y] (PUTPROP X (list Y) 'COLOR))
-    '(:B1 :B2 :B3 :B4 :B5 :B6 :B7 :B10)
+    '(ßB1 ßB2 ßB3 ßB4 ßB5 ßB6 ßB7 ßB10)
     '(CB1 CB2 CB3 CB4 CB5 CB6 CB7 CB10)))
 
 #_(ns shrdlu.plnr)
@@ -1204,7 +1204,7 @@ nil
             (COND ((ATOM THTT)
                     ;; IF NO THEOREM PROPERTY, THE GUY MADE A MISTAKE
                     (or (SETQ THT1 (GET THTT 'THEOREM))
-                        (do (PRINT THTT) (THERT CANT THASSERT\, NO THEOREM - THADD)))
+                        (do (PRINT THTT) (THERT CAN'T THASSERT\, NO THEOREM - THADD)))
                     ;; THWH NOW SET TO KIND OF THEOREM, LIKE THERASING
                     (SETQ THWH (car THT1))
                     ;; MAKE AN EXTRA POINTER TO THTT
@@ -2326,7 +2326,7 @@ nil
             (doall (map #'(lambda [X]
                     (COND ((not (and (SETQ THXX (GET X 'THEOREM)) (EQ (car THXX) TYPE)))
                             (PRINT X)
-                            (list 'THAPPLY (THERT BAD THEOREM "-THTAE") (car THX)))
+                            (list 'THAPPLY (THERT BAD THEOREM - THTAE) (car THX)))
                         (:else (list 'THAPPLY X (car THX)))))
                 (cdr XX))))
         ((EQ (car XX) 'THTBF)
@@ -2336,7 +2336,7 @@ nil
                 (COND (THY1 THY)
                     ((SETQ THY1 true)
                         (SETQ THY (THMATCHLIST (car THX) TYPE)))))))
-    (:else (PRINT XX) (THTAE (THERT UNCLEAR RECCOMMENDATION "-THTAE")))))
+    (:else (PRINT XX) (THTAE (THERT UNCLEAR RECCOMMENDATION - THTAE)))))
 
 (§ defq- THTAG [L]
     (and (car L)
@@ -2459,11 +2459,6 @@ nil
         ;; FOR EXAMPLE, THASSERT USES THIS FEATURE TO PROCESS ANTECEDENT THEOREMS.
     GO  (SETQ THE THEXP)
         (SETQ THEXP nil)
-        ;; TYPING ^A (CONTROL A) AT MAC-AI LISP CAUSES ^A (UPARROW A) TO BE SET TO T.
-        ;; THIS CAN BE DONE WHILE A FUNCTION IS BEING PROCESSED.
-        ;; THE NET EFFECT IS TO TEMPORARILY HALT EVALUATION.
-        (COND (ß_A (SETQ ß_A nil)
-            (or (THERT ß_A - THVAL) (GO FAIL))))
         ;; THSTEP AND ITS RELATIVES ARE FOR STEPPING THROUGH PLANNER FUNCTIONS IN A SPECIAL WAY.
         ;; TO THIS DATE ONLY SUSSMAN KNOWS EXACTLY WHAT IT IS SUPPOSE TO DO.
         ;; YOU CAN SAFELY IGNORE ANY EXPRESSION WHICH MENTIONS IT.
@@ -2584,7 +2579,7 @@ nil
     =>  (COND ((nil? A) (RETURN THVALUE))
             ((nil? (cdr A))
                 (PRINT THA)
-                (THERT ODD NUMBER OF GOODIES-THSETQ))
+                (THERT ODD NUMBER OF GOODIES - THSETQ))
             (:else (SETQ THVALUE
                 (car (RPLACA (cdr (THSGAL (car A))) (THVAL (cadr A) THALIST))))))
         (SETQ A (cddr A))
@@ -2835,49 +2830,37 @@ nil
 ;; ##################################################################
 
 (§ defn- SHRDLU []
-    (let [END nil AMB nil TIMAMB nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil SENT nil PUNCT nil IGNORE nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil CURTIME nil STATE nil GLOBAL-MESSAGE nil LEVEL nil]
+    (let [END nil BOTH nil BACKREF nil BACKREF2 nil ANSNAME nil LASTREL nil WHO nil PT nil PTW nil SENT nil PUNCT nil H nil N nil NB nil FE nil SM nil RE nil MES nil MESP nil C nil CUT nil GLOBAL-MESSAGE nil LEVEL nil]
         (CLEANOUT TSS EVX NODE ANS OSS RSS X)       ;; FLUSH OLD GENSYMS
     CATCH-LOOP
         (CATCH
             (do
         LOOP    (SETQ SENTNO (inc SENTNO)
-                      PARSINGS 0
                       LEVEL 0
                       LASTSENTNO (inc LASTSENTNO)
                       LASTSENT C
                       GLOBAL-MESSAGE nil
                       MES 'NOPE
                       BACKREF nil)                  ;; ???????????????????
-        UP      (SETQ N (SETQ SENT (ETAOIN)))
-                (or ANNOYANCE (PRINT *1))
+                (SETQ N (SETQ SENT (ETAOIN)))
                 (and ß_Q (%SENT))
                 (SETQ ß_Q nil)
-                (and IGNORE (GO UP))
                 (COND
                     ((and
                         (COND
                             (TOPLEVEL-ERRSET? (ERRSET (SETQ PT (SETQ C (PARSEVAL PARSEARGS)))))
                             (:else (SETQ PT (SETQ C (PARSEVAL PARSEARGS)))))
                         C)
-                    (or ANNOYANCE (PRINT *2))
                     (SETQ FE (FE C))
                     (SETQ NB SENT)
                     (SETQ H (H C))
                     (SETQ INTERPRETATION (SM C))
-                    (and SH-BEFOREANSWER-PAUSE (ERT BEFORE ANSWERING))
-                    (COND
-                        (SMN (and SH-PARSE-PAUSE (ERT PARSING COMPLETED))
-                            (GO LOOP))
-                        ((not ANSWER?)
-                            (and SH-PARSESMNTC-PAUSE (ERT ANALYSIS COMPLETED)))
+                    (COND (SMN (GO LOOP))
+                        ((not ANSWER?) nil)
                         ((COND
                             (TOPLEVEL-ERRSET? (ERRSET (eval '(ANSWER C))))
                             (:else (eval '(ANSWER C)))))
-                        ((APPLY #'SAY (or GLOBAL-MESSAGE '(I DON'T UNDERSTAND\.))))))
-                    ((PRINT *3)
-                        (APPLY #'SAY (or GLOBAL-MESSAGE '(I DON'T UNDERSTAND\.)))))
-            (and SH-STANDARD-PRINTOUT (SHSTPO))
-            (and SH-AFTERANSWER-PAUSE (ERT))
+                        ((APPLY #'SAY (or GLOBAL-MESSAGE '(I DON'T UNDERSTAND\.)))))))
             (GO LOOP))
         ABORT-PARSER)
         (GO CATCH-LOOP)))
@@ -2885,13 +2868,6 @@ nil
 (§ defn- PARSEVAL [A] (eval (cons 'PARSE A)))
 
 (§ SETQ PARSEARGS '(CLAUSE MAJOR TOPLEVEL))
-
-(§ defn- PARSE-STATISTICS []
-    (COND ((== PARSINGS 0)
-            (PUTPROP 'PARSINGS 0 'WINS)))
-        (and RE
-            (PUTPROP 'PARSINGS (inc (GET 'PARSINGS 'WINS)) 'WINS))
-        (SETQ PARSINGS (inc PARSINGS)))
 
 (§ defq- DEFLIST [L]
     (dorun (map #'(lambda [A]
@@ -2919,7 +2895,7 @@ nil
         (PRINC (cadr A))
         (TERPRI))
     (SPRINT (COND ((cdr A) (GET (car A) (cadr A))) ((eval (car A)))) LINEL 0)
-    *4)
+    '*)
 
 (§ defn- DP [X]
     (TERPRI)
@@ -2935,7 +2911,6 @@ nil
         (SPRINT (cadr L) (*DIF LINEL 18) 18)
     B   (COND ((SETQ L (cddr L)) (GO A)))
         (TERPRI)
-        (and DPSTOP (ERT))
         (RETURN '*)))
 
 ;; ################################################################
@@ -3075,10 +3050,8 @@ nil
 (§ defn- MAKESYM [A]
     ;; FUNCTION MAKESYM MAKES UP A GENSYM OF ITS ARG
     (PUTPROP A (inc (or (GET A 'MAKESYM) 0)) 'MAKESYM)
-    (SETQ A (MAKNAM (concat (or (GET A 'EXPLO)
-                (PUTPROP A (EXPLODE A) 'EXPLO))
-                (EXPLODE (GET A 'MAKESYM)))))
-    (COND (MAKEINTERN (INTERN A)) (A)))
+    (SETQ A (MAKNAM (concat (or (GET A 'EXPLO) (PUTPROP A (EXPLODE A) 'EXPLO)) (EXPLODE (GET A 'MAKESYM)))))
+    (INTERN A))
 
 (§ defn- LIS2FY [X]
     (COND ((ATOM X) (list (list X))) ((ATOM (car X)) (list X)) (X)))
@@ -3163,8 +3136,7 @@ nil
     nil)
 
 (§ defn- UNION [A B]
-    (let [SET nil]
-        (SETQ SET (reverse A))
+    (let [SET (reverse A)]
     =>  (COND ((nil? B) (RETURN (reverse SET)))
             ((MEMQ (car B) SET))
             ((SETQ SET (cons (car B) SET))))
@@ -3172,8 +3144,7 @@ nil
         (GO =>)))
 
 (§ defn- WALLP [A]
-    (let [ALIST nil LINEL nil]
-        (SETQ LINEL 72)
+    (let [ALIST nil LINEL 72]
         (and (STATUS TTY) (TYO 12))
         (TERPRI)
         (SPRINT (list (PR1 A) (reverse ALIST)) LINEL 0)
@@ -3232,18 +3203,6 @@ nil
                                                             ;; CONSIDERED SPELLING ERRORS OR NEW WORDS.
                         (SETQ NEWWORD (not NEWWORD) ALTN (not ALTN))
                         (GO CHAR))
-                    ((EQ CHAR 'Q)                           ;; ALTMODE-Q CAUSES READIN FROM DISK FILE.
-                        (SETQ ß_Q true)
-                        (SETQ IGNORE nil)
-                        (GO THRU))
-                    ((EQ CHAR 'M)
-                        (SETQ ß_Q true)
-                        (SETQ IGNORE nil)
-                        (GO THRU))
-                    ((EQ CHAR 'I)                           ;; ALTMODE-I IGNORES SENTENCE READ FROM FILE.
-                        (SETQ IGNORE true)
-                        (SETQ ß_Q true)
-                        (GO THRU))
                     ((GO THRU))))
             ((EQ CHAR RUBOUT)
                 (COND (WORD (PRINC (car WORD)) (SETQ WORD (cdr WORD)))
@@ -3412,27 +3371,6 @@ nil
 
 #_(ns shrdlu.show)
 
-;; QUICKIES
-
-(§ defn- SHSTPO [] ;; "SH-STANDARD-PRINTOUT"
-    (PARSINGS))
-
-(§ defn- PARSINGS []
-    (PRINTC "  RATIO OF WINNING PARSES TO TOTAL ")
-    (PRINC (GET 'PARSINGS 'WINS))
-    (PRINC '\/)
-    (PRINC PARSINGS))
-
-(§ DEFUN PARSETRACE LABELS (COND ((== (ARG nil) 0) (SETQ PARSETRACE 'ALL)) (:else (SETQ PARSETRACE (LISTIFY LABELS)))))
-
-(§ DEFUN PARSEBREAK LABELS (COND ((== (ARG nil) 0) (SETQ PARSEBREAK 'ALL)) (:else (SETQ PARSEBREAK (LISTIFY LABELS)))))
-
-(§ DEFUN SMNTRACE OFF? (COND ((== (ARG nil) 1) (SETQ SMNTRACE nil)) (:else (SETQ SMNTRACE true))))
-
-(§ DEFUN SMNBREAK OFF? (COND ((== (ARG nil) 1) (SETQ SMNBREAK nil)) (:else (SETQ SMNBREAK true))))
-
-(§ defq- LBK [LABELS] (SETQ LABELBREAK LABELS))
-
 (§ defq- LABELTRACE [A]
     (dorun (map #'(lambda [X]
         (let [BODY nil]
@@ -3536,7 +3474,7 @@ nil
                     (TAB 13)
                     (PRINC "SUPPORTS ")
                     (PRINC OBJ)))
-                '(:B1 :B2 :B3 :B4 :B5 :B6 :B7 :B10 :BOX)))
+                '(ßB1 ßB2 ßB3 ßB4 ßB5 ßB6 ßB7 ßB10 ßBOX)))
         (TERPRI)
         (SAY THE HAND IS GRASPING)
         (PRINC \space)
@@ -3621,7 +3559,7 @@ nil
                 (LISTIFY (REQUEST "PROPERTY:"
                     '(THE PROPERTY (IES) YOU WANT TO SEE\.  A LINE FEED MEANS ALL PROPERTIES OF THE ATOM))))))
         ((cdr X) (APPLY #'DISP X))
-        (:else (let [DPSTOP nil] (DP (car X)) nil))))
+        (:else (DP (car X)) nil)))
 
 (§ defq- TELL [A]
     (SHOWTELL A 'CANTELL 'TELLTREE 'TELLINFO 'TELL))
@@ -3663,13 +3601,10 @@ nil
     SHOW SHOWCHOICE)
 
 (§ DEFS DO
-    TELL #'(lambda [X] (PRINTEXT '(not YET DEFINED))))
+    TELL #'(lambda [X] (PRINTEXT '(NOT YET DEFINED))))
 
 (§ DEFS STOP
-    TELL (lambda [X]
-            (SETQ DPSTOP (ONOFF X '(STOP AFTER DISPLAYING EACH NODE AND SEMANTIC STRUCTURE?)))
-            (SETQ PLANNERSEE (and PLANNERSEE
-                (COND ((ONOFF X '(STOP AFTER SHOWING PLANNER INPUT?)) true) ('NOSTOP))))))
+    TELL (lambda [X] (SETQ PLANNERSEE (and PLANNERSEE (COND ((ONOFF X '(STOP AFTER SHOWING PLANNER INPUT?)) true) ('NOSTOP))))))
 
 (§ DEFS PLANNER
     SHOWTREE (ASSERTIONS THEOREM SCENE EVENT)
@@ -3696,11 +3631,11 @@ nil
             (COND ((nil? (cdr X)) (TELLCHOICE X))
                 ((EQ (cadr X) 'ON)
                     (do (SETQ ß_W true) (CLEAR-OUTPUT true))
-                    (SETQ PARSENODE-SEE true LABELTRACE true)
+                    (SETQ LABELTRACE true)
                     (TRACE CALLSM PARSE))
                 ((EQ (cadr X) 'OFF)
                     (do (SETQ ß_W true) (CLEAR-OUTPUT true))
-                    (SETQ PARSENODE-SEE nil LABELTRACE nil)
+                    (SETQ LABELTRACE nil)
                     (UNTRACE CALLSM PARSE))
                 (:else (TELLCHOICE X)))
             (SETQ ß_W nil)))
@@ -3718,14 +3653,9 @@ nil
 
 (§ DEFS SEMANTICS
     TELL (lambda [X]
-            (SETQ SMN nil BUILD-SEE true SMN-STOP true)
-            (COND
-                ((EQ (QUERY '(DO SEMANTIC ANALYSIS?) '(YES NO) nil) 'NO)
-                    (SETQ SMN true))
-                ((EQ (QUERY '(SHOW BUILDING OF SEMANTIC STRUCTURES?) '(YES NO) nil) 'NO)
-                    (SETQ BUILD-SEE nil))
-                ((EQ (QUERY '(STOP AFTER DISPLAYING SEMANTIC STRUCTURES?) '(YES NO) nil) 'NO)
-                    (SETQ SMN-STOP nil)))))
+            (SETQ SMN nil)
+            (COND ((EQ (QUERY '(DO SEMANTIC ANALYSIS?) '(YES NO) nil) 'NO)
+                    (SETQ SMN true)))))
 
 (§ DEFS RUN
     TELLTREE (STOP DO)
@@ -3758,22 +3688,16 @@ nil
     SHOW (lambda [X] (DISP (GET (CHARG X "THEOREM-NAME:" '(PLANNER THEOREM WHOSE DEFINITION IS TO BE SHOWN)) 'THEOREM))))
 
 (§ DEFS NODE
-    TELL (lambda [X] (SETQ PARSENODE-SEE true NODE-STOP true)
-            (COND
-                ((EQ (QUERY '(SEE SUCCESSFUL PARSE NODES BEING BUILT?) '(YES NO) nil) 'NO)
-                    (SETQ PARSENODE-SEE nil))
-                ((EQ (QUERY '(STOP AFTER DISPLAY OF NODES?) '(YES NO) nil) 'NO)
-                    (SETQ NODE-STOP nil))))
     SHOW (lambda [X]
             (COND ((GET (cadr X) 'FEATURES) (DP (cadr X)))
-                ((SHOWMOVE (cdr X)) (let [DPSTOP nil] (DP (car PT)) nil) (RESTOREPT))
+                ((SHOWMOVE (cdr X)) (DP (car PT)) (RESTOREPT))
                 (:else (SAY NO SUCH NODE)))))
 
 (§ DEFS TREE
     SHOW (lambda [X]
             (COND ((GET (cadr X) 'FEATURES) (WALLP (list (cadr X))))
                 ((SHOWMOVE (cdr X)) (WALLP PT) (RESTOREPT))
-                (:else (SAY NO SUCH NODE)))))
+                (:else (SAY NO SUCH TREE)))))
 
 (§ DEFS UNIT
     SHOW (lambda [X] (APPLY #'DG (or (cdr X) (list (REQUEST "UNIT:" '(GRAMMAR UNIT WHOSE PROGRAM IS TO BE EXAMINED -- "E.G."  CLAUSE NG PREPG VG ADJG)))))))
@@ -3824,7 +3748,7 @@ nil
         (concat (list (QUERY '(WHICH THEOREM TYPE?) '(THANTE THERASING THCONSE) '(ANTECEDENT\, ERASING\, OR CONSEQUENT THEOREM))
                     (LISTIFY (REQUEST "VARIABLE-LIST:" nil))
                     (REQUEST "PATTERN:" '(A LIST ENCLOSED IN PARENS\, LIKE (!IS $?X !ZOG)))
-                    (REQUEST "BODY:" '(list OF MICROPLANNER STAEMENTS))))
+                    (REQUEST "BODY:" '(LIST OF MICROPLANNER STATEMENTS))))
         'THEOREM)
     (THADD X nil)
     (PRINT X))
@@ -3856,7 +3780,7 @@ nil
     (let [FE nil TYPE nil MARK nil REST nil TR nil]
         (SETQ A (COND (A (car A)) (:else (REQUEST "WORD:" '(ENGLISH WORD TO BE DEFINED)))))
         (SETQ TYPE (QUERY '(NOUN OR VERB?) '(NOUN VERB) '(OTHER TYPES MUST BE DEFINED IN LISP)))
-    =>  (or (SETQ MARK (REQUEST 'MARKERSß '(list OF SEMANTIC MARKERS FOR WORD BEING DEFINED - TO SEE MARKER TREE TYPE <LF>)))
+    =>  (or (SETQ MARK (REQUEST 'MARKERSß '(LIST OF SEMANTIC MARKERS FOR WORD BEING DEFINED - TO SEE MARKER TREE TYPE <LF>)))
             (and (SHOW MARKER !SYSTEMS) (GO =>)))
         (SETQ MARK (LISTIFY MARK))
         (COND
@@ -3867,22 +3791,22 @@ nil
                         'PROCEDUREß
                         (LIS2FY (REQUEST 'PROCEDUREß
                                     '(EXPRESSION OR LIST OF EXPRESSIONS TO BE PUT IN PLANNER GOALS TO DESCRIBE OBJECT - USE *** TO REPRESENT OBJECT BEING DESCRIBED BY WORD
-                                        -- "E.G."  (!IS *** !ZOG) OR ((!IS *** !ZOG) (!LOVE :EVERYONE ***)))))))))
+                                        -- "E.G."  (!IS *** !ZOG) OR ((!IS *** !ZOG) (!LOVE ßEVERYONE ***)))))))))
                     'SEMANTICS)
                 (RETURN true))
             ((SETQ TR (EQ (QUERY '(TRANSITIVE OR INTRANSITIVE?) '(TRANSITIVE INTRANSITIVE) nil) 'TRANSITIVE))
                 (PUTPROP A '(VB TRANS INF) 'FEATURES))
             (:else (PUTPROP A '(VB ITRNS INF) 'FEATURES)))
-        (SETQ REST (list (list (LISTIFY (REQUEST '(RESTRICTIONS ON "SUBJECT:") '(list OF SEMANTIC MARKERS))))))
+        (SETQ REST (list (list (LISTIFY (REQUEST '(RESTRICTIONS ON "SUBJECT:") '(LIST OF SEMANTIC MARKERS))))))
         (and TR
-            (SETQ REST (concat REST (list (LISTIFY (REQUEST '(RESTRICTIONS ON "OBJECT:") '(list OF SEMANTIC MARKERS)))))))
+            (SETQ REST (concat REST (list (LISTIFY (REQUEST '(RESTRICTIONS ON "OBJECT:") '(LIST OF SEMANTIC MARKERS)))))))
         (PUTPROP A
             (list (list 'VB (list 'RELATION (list
                 'MARKERSß MARK
                 'RESTRICTIONSß REST
                 'PROCEDUREß
                     (LIS2FY (REQUEST 'PROCEDUREß
-                                '(list OF EXPRESSIONS TO BE PUT INTO PLANNER GOALS TO DESCRIBE ACTION OR RELATION -- USE !1 FOR SUBJECT\, !2 FOR OBJECT\.
+                                '(LIST OF EXPRESSIONS TO BE PUT INTO PLANNER GOALS TO DESCRIBE ACTION OR RELATION -- USE !1 FOR SUBJECT\, !2 FOR OBJECT\.
                                     "E.G."  (!SUPPORT !1 !2) OR ((!HAPPY !1) (!SMILING !1)))))))))
             'SEMANTICS)
         (RETURN true)))
@@ -3918,7 +3842,7 @@ nil
 (§ defq- PDEFINE [MOBY]
     (list 'DEFUN (car MOBY) 'nil
         (concat (list 'PROG
-            (concat '(FE H ME NB C SM CUT NN T1 T2 T3 :RESULT) (cadr MOBY))
+            (concat '(FE H ME NB C SM CUT NN T1 T2 T3 ßRESULT) (cadr MOBY))
             '(SETQ NN true)
             '(SETQ CUT END)
             '(SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -3944,24 +3868,24 @@ nil
                     (SETQ PREDICATE (cadr E) T1 (caddr E) T2 (cadddr E))
                 (and (cddddr E) (SETQ T3 (car (cddddr E))))
                     (RETURN (list
-                        (list 'SETQ ':RESULT PREDICATE)
+                        (list 'SETQ 'ßRESULT PREDICATE)
                         (COND
                             ((and T1 (nil? T2)) ;; T3 CAN BE EITHER THERE OR NOT
-                                (list 'COND (TOPLEVEL-LIST ':RESULT
+                                (list 'COND (TOPLEVEL-LIST 'ßRESULT
                                     (COND
                                         (T3 (list 'COND (TOPLEVEL-LIST (list 'NULL 'NN) (TAG-CHECK T3)) (TOPLEVEL-LIST ':else (TAG-CHECK T1))))
                                         (:else (TAG-CHECK T1))))))
                             ((and (nil? T1) T2 (nil? T3))
-                                (list 'COND (TOPLEVEL-LIST (list 'NULL ':RESULT) (TAG-CHECK T2))))
+                                (list 'COND (TOPLEVEL-LIST (list 'NULL 'ßRESULT) (TAG-CHECK T2))))
                             ((and (nil? T1) T2 T3)
-                                (list 'COND (list (list 'NULL ':RESULT) (list 'COND (TOPLEVEL-LIST (list 'NULL 'NN) (TAG-CHECK T3)) (TOPLEVEL-LIST ':else (TAG-CHECK T2))))))
+                                (list 'COND (list (list 'NULL 'ßRESULT) (list 'COND (TOPLEVEL-LIST (list 'NULL 'NN) (TAG-CHECK T3)) (TOPLEVEL-LIST ':else (TAG-CHECK T2))))))
                             ((and T1 T2 (nil? T3))
-                                (list 'COND (TOPLEVEL-LIST ':RESULT (TAG-CHECK T1)) (TOPLEVEL-LIST ':else (TAG-CHECK T2))))
+                                (list 'COND (TOPLEVEL-LIST 'ßRESULT (TAG-CHECK T1)) (TOPLEVEL-LIST ':else (TAG-CHECK T2))))
                             ((and T1 T2 T3)
-                                (list 'COND (list ':RESULT (list 'COND (TOPLEVEL-LIST (list 'NULL 'NN) (TAG-CHECK T3)) (TOPLEVEL-LIST ':else (TAG-CHECK T1))))
+                                (list 'COND (list 'ßRESULT (list 'COND (TOPLEVEL-LIST (list 'NULL 'NN) (TAG-CHECK T3)) (TOPLEVEL-LIST ':else (TAG-CHECK T1))))
                                             (TOPLEVEL-LIST ':else (TAG-CHECK T2))))
                             ((and (nil? T1) (nil? T2) T3)
-                                (list 'COND (TOPLEVEL-LIST (list 'AND (list 'NULL 'NN) ':RESULT) (TAG-CHECK T3))))
+                                (list 'COND (TOPLEVEL-LIST (list 'AND (list 'NULL 'NN) 'ßRESULT) (TAG-CHECK T3))))
                             ((and (nil? T1) (nil? T2) (nil? T3))
                                 (list 'I-AM-A-TAG))))))
                 (:else (RETURN (list E))))
@@ -4009,16 +3933,10 @@ nil
 (§ defq- CALLSM [SEMANTIC-EXPRESSION]
     (let [RESULT nil SMNFN nil]
         (SETQ SMNFN (car SEMANTIC-EXPRESSION))
-        (and SMNTRACE
-            (APPLY #'SAY (list 'SEMANTICS '***** UNIT 'CALLING SMNFN)))
         (and SMN
             (COND ((or (EQ SMNBREAKS true) (MEMQ SMNFN SMNBREAKS)) (RETURN (ERT)))
                 (:else (RETURN true))))
-        (and SMNTRACE
-            (do (PRINTC "  CALLSM: ") (PRINC (car SEMANTIC-EXPRESSION))))
         (SETQ RESULT (eval (car SEMANTIC-EXPRESSION)))
-        (and SMNTRACE
-            (do (PRINTC "CALLSM RETURNING: ") (PRINC RESULT)))
         (COND ((or (EQ SMNBREAKS 'ALL) (MEMQ SMNFN SMNBREAKS)) (ERT)))
         (RETURN RESULT)))
 
@@ -4181,18 +4099,10 @@ nil
         (SETQ NN (not (EQ N CUT)))
         (SETQ PARENT C)
         (COND ((NQ B-SPECIAL)
-            (and PARSETRACE
-                (do (PRINTC "  SPECIAL WORD") (PRINC (car N))))
             (eval (GETR 'B-SPECIAL N))))
         (COND ((EQ SPECIAL 'SKIP) (GO SKIP))
             ((EQ SPECIAL 'DONE) (GO DONE))
             ((EQ SPECIAL 'LOSE) (SETQ N NBB) (GO LOSE)))
-        (and PARSETRACE
-            (do (TERPRI)
-                (PRINC '\()
-                (PRINC LEVEL)
-                (PRINC " #### PARSING: ")
-                (PRINC REST)))
         (COND ((nil? (SETQ RE (APPLY-GRAMMAR UNIT)))    ;; THIS IS WHERE ALL THE WORK HAPPENS.  IF THE PARSE SUCCEEDS,
             (SETQ RE nil)                               ;; IT WILL RETURN THE NODE THAT HAS BEEN BUILT UP
             (SETQ N NBB)                                ;; (SEE THE FUNCTION "INTERPRETATION" IN IN GINTER)
@@ -4207,28 +4117,7 @@ nil
                 SM
                 C))
     LOSE (SETQ NN (not (EQ N CUT)))
-    OK  (COND ((and RE (or (EQ PARSETRACE 'ALL) (EQ PARSEBREAK 'ALL) (MEMQ UNIT PARSEBREAK) (MEMQ UNIT PARSETRACE)))
-            (TERPRI)
-            (PRINC '\()
-            (PRINC LEVEL)
-            (PRINC " PARSE SUCEEDED: ")
-            (PRINC UNIT)
-            (PRINC "  ")
-            (PRINC (FROM (NB RE) N))
-            (and PARSENODE-SEE (DP (car RE)))
-            (and (or (EQ PARSEBREAK 'ALL)
-                    (MEMQ UNIT PARSEBREAK))
-                (ERT)))
-            ((or PARSEBREAK PARSETRACE)
-                (TERPRI)
-                (PRINC '\()
-                (PRINC LEVEL)
-                (PRINC " PARSE FAILED")
-                (and (or (EQ PARSEBREAK 'ALL)
-                        (MEMQ UNIT PARSEBREAK))
-                    (ERT))))
-        (PARSE-STATISTICS)                              ;; DEFINED IN SYSCOM
-        (SETQ LEVEL (dec LEVEL))
+    OK  (SETQ LEVEL (dec LEVEL))
         (RETURN RE)))
 
 (§ defn- PARSE3 [REST P]
@@ -4247,7 +4136,7 @@ nil
             (SETQ LABL (cons (caar XP) LABL)))                  ;; IF THE FEATURE IS NOT AN ATOM JUST ADD THE
             ((EQ (car XP) 'NULL))                               ;; FEATURE TO THE LIST
             ((MEMQ (car XP) (FE N)))
-            ((MEMQ (car XP) UNMKD))
+            ((MEMQ (car XP) '(COMPONENT BOTH)))
             ((M (car XP)) (SETQ N NBB) (RETURN nil)))
         (COND ((SETQ XP (cdr XP)) (GO LOOP)))
     OK  (SETQ RE
@@ -4266,8 +4155,6 @@ nil
     DONE (SETR 'PARENT C RE)
         (COND (P RE)
             (:else (REBUILD FE NB N (SETQ H (concat RE H)) SM C)))
-        (and PARSENODE-SEE RE (DP (car RE)) PNS-BK (ERT))
-        (PARSE-STATISTICS)
         (RETURN RE)))
 
 (§ defn- PARSEREL [A B NODE]
@@ -5634,7 +5521,7 @@ nil
 
     POLR2                                                           ;; THE CLAUSE COULD ONLY BE MARKED AS "POLR2"
         (or (SETQ PT (GETR 'QAUX (MOVE-PT C U)))                    ;; ("DID THE...?") IF AN AUX OF SOME VERIETY HAD
-            (and (BUG "VG:POLR2") (GO FAIL)))                         ;; ALREADY BEEN PARSED, IF THAT IS NOT THE CASE,
+            (and (BUG "VGßPOLR2") (GO FAIL)))                         ;; ALREADY BEEN PARSED, IF THAT IS NOT THE CASE,
         (SETQ H (list (car PT)))                                    ;; THEN WE HAVE A BUG IN THE PROGRAM SOMEWHERE SET
         (TRNSF NEG)                                                 ;; THE INITIAL DAUGHTER OF THE VG TO BE THE
         (COND ((ISQ H DO) (GO DO))                                  ;; PREVIOUSLY PARSED AUX MARK THE VG AS NEG IF
@@ -5642,7 +5529,7 @@ nil
             ((ISQ H WILL) (GO WILL))                                ;; OF THIS FUNCTION) DISPATCH TABLE , CHECKING THE
             ((ISQ H BE) (GO BE))                                    ;; AUX
             ((ISQ H HAVE) (GO HAVE)))
-        (ERT BUG "VG:POLR2VB")                                        ;; NOTHING BUT UNGRAMATICAL NONSENSE SHOULD REACH
+        (ERT BUG "VGßPOLR2VB")                                        ;; NOTHING BUT UNGRAMATICAL NONSENSE SHOULD REACH
         (GO FAIL)                                                   ;; THIS POINT
 
     ;; ###############################################################
@@ -6104,7 +5991,7 @@ nil
                 (> (- (count (NB H))               ;; OR IF THAT ONE COMPONENT
                             (count (N H)))                         ;; IS MORE THAN 4 WORDS LONG
                     4))
-                (MEMQ (NEXTWORD) '(or AND NOR BUT))
+                (MEMQ (NEXTWORD) '(OR AND NOR BUT))
                 (F (NEXTWORD)))                                     ;; THEN CHECK FOR COMMA COMBINATION
             (SETQ PREV (list PREV (NEXTWORD)))
             (FLUSHME)))
@@ -6135,7 +6022,7 @@ nil
             ((EQ PREV '\,)
                 (COND ((NEXTWORD? COMMA) (FQ LIST) (GO UP))
                     (:else (GO LIST))))
-            ((MEMQ PREV '(and OR NOR BUT))
+            ((MEMQ PREV '(AND OR NOR BUT))
                 (COND ((EQ BOTH (NB H)) (FQ BOTH)))
                 (COND ((or (NEXTWORD? 'BUT)
                         (and (NEXTWORD? PREV)
@@ -6179,26 +6066,6 @@ nil
                     nil)
                 (FESET (UNION COMMON (FE C)) C)))
         (| (CALLSM (SMCONJ)) RETURN (CONJOINß SMCONJ)))             ;; THEN MARK AS A LIST
-
-(§ defq- BOTH [A]
-    ;; HANDLES (BOTH AND) (EITHER OR) (NEITHER NOR) COMBINATIONS
-    ;; THE CONJOIN PROGRAM DOES SPECIAL THINGS WHEN BOTH IS SET
-    (let [END nil]
-        (SETQ END CUT)                                              ;; MAKE END OUT OF PREVIOUS CUT POINT
-        (RETURN (let [CUT nil NBB nil BOTH nil]
-            (SETQ NBB N)
-            (and (FLUSHME)
-                (MOVE-PTW N NW (EQ (WORD PTW) (car A)) NW)          ;; LOOK FOR THE MATCHING WORD E.G. AND, OR, NOR
-                (CUT END)
-                (SETQ BOTH PTW)                                     ;; SAVE POINTER TO THE WORD AFTER THE MATCHING WORD
-                (SETQ RE (COND
-                    ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true))
-                    ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
-                (< (count N) (count BOTH))                    ;; FAIL UNLESS WE PARSED BEYOND MATCHING WORD
-                (RETURN (SETQ SPECIAL 'SKIP)))
-            (SETQ RE nil)
-            (SETQ N NBB)
-            (RETURN nil)))))
 
 (§ defn- DOUBLEQUOTER [] (APPLY-GRAMMAR 'PARSEQUOTED))
 
@@ -6350,25 +6217,27 @@ nil
 (§ DEFS BOTH
     SEMANTICS ((DET 'DEF))
     FEATURES (B-SPECIAL QNTFR DET DEF NPL BOTH)
-    B-SPECIAL (BOTH AND)
-    FEXPR (lambda [A]
-        (let [END nil]
-            (SETQ END CUT)
-            (RETURN
-                (let [CUT nil NBB nil BOTH nil]
-                    (SETQ NBB N)
-                    (and (FLUSHME)
-                        (** N NW (EQ (WORD PTW) (car A)) NW)
-                        (CUT END)
-                        (SETQ BOTH PTW)
-                        (SETQ RE
-                        (COND ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true))
-                            ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
-                        (< (count N) (count BOTH))
-                        (RETURN (SETQ SPECIAL 'SKIP)))
-                    (SETQ RE nil)
-                    (SETQ N NBB)
-                    (RETURN nil))))))
+    B-SPECIAL (BOTH AND))
+
+(§ defq- BOTH [A]
+    ;; HANDLES (BOTH AND) (EITHER OR) (NEITHER NOR) COMBINATIONS
+    ;; THE CONJOIN PROGRAM DOES SPECIAL THINGS WHEN BOTH IS SET
+    (let [END nil]
+        (SETQ END CUT)                                              ;; MAKE END OUT OF PREVIOUS CUT POINT
+        (RETURN (let [CUT nil NBB nil BOTH nil]
+            (SETQ NBB N)
+            (and (FLUSHME)
+                (MOVE-PTW N NW (EQ (WORD PTW) (car A)) NW)          ;; LOOK FOR THE MATCHING WORD E.G. AND, OR, NOR
+                (CUT END)
+                (SETQ BOTH PTW)                                     ;; SAVE POINTER TO THE WORD AFTER THE MATCHING WORD
+                (SETQ RE (COND
+                    ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true))
+                    ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
+                (< (count N) (count BOTH))                    ;; FAIL UNLESS WE PARSED BEYOND MATCHING WORD
+                (RETURN (SETQ SPECIAL 'SKIP)))
+            (SETQ RE nil)
+            (SETQ N NBB)
+            (RETURN nil)))))
 
 (§ DEFS BOX
     SEMANTICS ((NOUN (OBJECT (MARKERSß (!BOX) PROCEDUREß ((!IS *** !BOX))))))
@@ -6503,7 +6372,7 @@ nil
 
 (§ DEFS FOUR SEMANTICS ((NUM 4)) FEATURES (NUM))
 
-(§ DEFS FRIEND REFER :FRIEND FEATURES (NOUN NS))
+(§ DEFS FRIEND REFER ßFRIEND FEATURES (NOUN NS))
 
 (§ DEFS FROM FEATURES (PREP))
 
@@ -6680,7 +6549,7 @@ nil
 (§ DEFS NEITHER FEATURES (B-SPECIAL) SEMANTICS true B-SPECIAL (BOTH NOR))
 
 (§ DEFS NICE
-    SEMANTICS ((ADJ (OBJECT (MARKERSß (!THING) PROCEDUREß ((!LIKE :FRIEND ***))))))
+    SEMANTICS ((ADJ (OBJECT (MARKERSß (!THING) PROCEDUREß ((!LIKE ßFRIEND ***))))))
     FEATURES (ADJ))
 
 (§ DEFS NO SEMANTICS ((DET 'NO)) FEATURES (DET QNTFR NS NPL))
@@ -6696,7 +6565,7 @@ nil
 (§ DEFS NOTHING SEMANTICS ((TPRON 'NO)) FEATURES (TPRON NEG NS))
 
 (§ DEFS NOW
-    SEMANTICS ((ADV (or (EQ (cadr (ASSQ 'TIME FE)) ':NOW) (ERT NOW DEFINITION))))
+    SEMANTICS ((ADV (or (EQ (cadr (ASSQ 'TIME FE)) 'ßNOW) (ERT NOW DEFINITION))))
     FEATURES (ADV TIMW))
 
 (§ DEFS OBJECT
@@ -6751,7 +6620,7 @@ nil
     SEMANTICS ((TRANS (RELATION
             (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
              MARKERSß (!EVENT)
-             PROCEDUREß ((!EVAL (COND ((MEMQ (NUMBER? SMOB1) '(1 NS)) '(!PICKUP !2 *TIME)) ('(!PUTIN !2 :BOX *TIME)))))))))
+             PROCEDUREß ((!EVAL (COND ((MEMQ (NUMBER? SMOB1) '(1 NS)) '(!PICKUP !2 *TIME)) ('(!PUTIN !2 ßBOX *TIME)))))))))
     FEATURES (COMBINATION TRANS))
 
 (§ DEFS PLEASE FEATURES (B-SPECIAL) SEMANTICS true B-SPECIAL (FLUSHME))
@@ -6776,12 +6645,12 @@ nil
 
 (§ DEFS PUT-AWAY
     ROOT (PUT AWAY)
-    SEMANTICS ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTIN !2 :BOX *TIME))))))
+    SEMANTICS ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTIN !2 ßBOX *TIME))))))
     FEATURES (COMBINATION TRANS))
 
 (§ DEFS PUT-DOWN
     ROOT (PUT DOWN)
-    SEMANTICS ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON !2 :TABLE *TIME))))))
+    SEMANTICS ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON !2 ßTABLE *TIME))))))
     FEATURES (COMBINATION TRANS))
 
 (§ DEFS PUT-TOGETHER
@@ -6813,7 +6682,7 @@ nil
 
 (§ DEFS SET-DOWN
     ROOT (SET DOWN)
-    SEMANTICS ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON !2 :TABLE *TIME))))))
+    SEMANTICS ((TRANS (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!PUTON !2 ßTABLE *TIME))))))
     FEATURES (COMBINATION TRANS))
 
 (§ DEFS SHAPE
@@ -6827,7 +6696,7 @@ nil
            (ADJ (OBJECT (MARKERSß (!PHYSOB) PROCEDUREß ((!MORE !HEIGHT (128 0 0) ***))))))
     FEATURES (ADJ))
 
-(§ DEFS SHRDLU REFER :SHRDLU)
+(§ DEFS SHRDLU REFER ßSHRDLU)
 
 (§ DEFS SINCE SEMANTICS ((BINDER (SMBINDER END nil))) FEATURES (BINDER TIME))
 
@@ -7002,7 +6871,7 @@ nil
 
 (§ DEFS WHATEVER FEATURES (PRON EVERPRON NS))
 
-(§ DEFS WE REFER (:SHRDLU :FRIEND))
+(§ DEFS WE REFER (ßSHRDLU ßFRIEND))
 
 (§ DEFS WHERE SEMANTICS ((QADJ (FQ WHERE))) FEATURES (QADJ PLACE))
 
@@ -7069,70 +6938,68 @@ nil
 
 (§ DEFS !BLUE SYS (!SPECTRUM))
 
-(§ DEFS !BLUEPRINT
-    EXPR (lambda [X]
-        (let [PARTS nil]
-            (COND ((GET X 'REFER) (RETURN '!2))
-                ((nil? (SETQ X (cddaar (INTERP X))))
-                    (GO DONE)))
-        LOOP (COND ((not (EQ (caar X) 'THGOAL)) (ERT BLUEPRINT THGOAL))
-                ((EQ (caadar X) '!IS))
-                ((EQ (caadar X) '!PART) (SETQ PARTS (cons (cadr (cadar X)) PARTS)))
-                ((ERT !BLUEPRINT)))
-            (and (SETQ X (cdr X)) (GO LOOP))
-        DONE (and PARTS
-                (GET (car PARTS) 'REFER)
-                (RETURN (GET (car PARTS) 'REFER)))
-            (PUTPROP 'BLUEPRINT
-                (COND ((nil? PARTS) (GET 'STACKPARTS 'SM))
-                    ((cdr PARTS) (ERT !BLUEPRINT PARTS))
-                    ((GET (car PARTS) 'SM)))
-                'SM)
-            (RETURN 'BLUEPRINT))))
+(§ defn- !BLUEPRINT [X]
+    (let [PARTS nil]
+        (COND ((GET X 'REFER) (RETURN '!2))
+            ((nil? (SETQ X (cddaar (INTERP X))))
+                (GO DONE)))
+    LOOP (COND ((not (EQ (caar X) 'THGOAL)) (ERT BLUEPRINT THGOAL))
+            ((EQ (caadar X) '!IS))
+            ((EQ (caadar X) '!PART) (SETQ PARTS (cons (cadr (cadar X)) PARTS)))
+            ((ERT !BLUEPRINT)))
+        (and (SETQ X (cdr X)) (GO LOOP))
+    DONE (and PARTS
+            (GET (car PARTS) 'REFER)
+            (RETURN (GET (car PARTS) 'REFER)))
+        (PUTPROP 'BLUEPRINT
+            (COND ((nil? PARTS) (GET 'STACKPARTS 'SM))
+                ((cdr PARTS) (ERT !BLUEPRINT PARTS))
+                ((GET (car PARTS) 'SM)))
+            'SM)
+        (RETURN 'BLUEPRINT)))
 
 (§ DEFS !BOX SYS (!PHYSOB))
 
-(§ DEFS !BUILD
-    EXPR (lambda []
-        (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!STACK))) MARKERSß (!EVENT) PROCEDUREß ((!EVAL (list '!STACKUP (!BLUEPRINT SMOB1) '*TIME)))))))
+(§ defn- !BUILD []
+    (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!STACK))) MARKERSß (!EVENT) PROCEDUREß ((!EVAL (list '!STACKUP (!BLUEPRINT SMOB1) '*TIME))))))
 
 (§ DEFS !CALL THMLIST ((3 '((THUSE TC-3)))))
 
 (§ DEFS !COLOR
-    FEXPR (lambda [A]
-        (eval (SUBST (car A) 'COLOR '(OBJECT (MARKERSß (!PHYSOB COLOR) PROCEDUREß ((!COLOR *** COLOR)))))))
     PRIORITY 192
     SYS (!PROPERTY))
+
+(§ defq- !COLOR [A]
+    (eval (SUBST (car A) 'COLOR '(OBJECT (MARKERSß (!PHYSOB COLOR) PROCEDUREß ((!COLOR *** COLOR)))))))
 
 (§ DEFS !CONSTRUCT SYSTEM (!STACK !ROW) SYS (!PHYSOB))
 
 (§ DEFS !CONTAIN PRIORITY -1)
 
-(§ DEFS !CLEANOFF
-    EXPR (lambda []
-        (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!CLEARTOP !2 *TIME))))))
+(§ defn- !CLEANOFF []
+    (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!CLEARTOP !2 *TIME)))))
 
 (§ DEFS !CLEARTOP
     NAMEVENT (I3 (cons (VBFIX 'CLEAN nil) (PRTPUT 'OFF OBJ1)))
     THMLIST ((2 '((THUSE TC-2))) (3 '((THUSE TCT-3))) (4 '((THUSE TCTE-4)))))
 
-(§ DEFS !DEFINE
-    EXPR (lambda [X Y]
-        (list '!DEFINITION
-            (cadadr (cdaar (INTERP X)))
-            (let [X nil]
-                (PUTPROP (SETQ X (MAKESYM 'ATM)) (INTERP Y) 'NEWWORD)
-                (RETURN X)))))
+(§ defn- !DEFINE [X Y]
+    (list '!DEFINITION
+        (cadadr (cdaar (INTERP X)))
+        (let [X (MAKESYM 'ATM)]
+            (PUTPROP X (INTERP Y) 'NEWWORD)
+            (RETURN X))))
 
 (§ DEFS !DEFINITION
-    FEXPR (lambda [A]
-        (PUTPROP (cadar A) '(NOUN NS) 'WORD)
-        (PUTPROP (cadar A)
-            (SUBST (SUBST '*** (caddr (GET (cadr A) 'NEWWORD)) (car (GET (cadr A) 'NEWWORD)))
-                'NG
-                '((NOUN (SETQ LIST2 (list (SUBST (SUBST (caddar LIST1) '*** 'NG) (caar LIST1) (car LIST1)))))))
-            'SMNTC))
     NOGOAL true)
+
+(§ defq- !DEFINITION [A]
+    (PUTPROP (cadar A) '(NOUN NS) 'WORD)
+    (PUTPROP (cadar A)
+        (SUBST (SUBST '*** (caddr (GET (cadr A) 'NEWWORD)) (car (GET (cadr A) 'NEWWORD)))
+            'NG
+            '((NOUN (SETQ LIST2 (list (SUBST (SUBST (caddar LIST1) '*** 'NG) (caar LIST1) (car LIST1)))))))
+        'SMNTC))
 
 (§ DEFS !DIRECTION NOGOAL true)
 
@@ -7140,10 +7007,11 @@ nil
     THMLIST ((3 '((THUSE TC-STARTEND3))) (4 '((THUSE TC-STARTEND4)))))
 
 (§ DEFS !EQDIM
-    EXPR (lambda [X]
-            (SETQ X (SIZE X))
-            (and (EQ (car X) (cadr X)) (EQ (car X) (caddr X))))
     NOGOAL true)
+
+(§ defn- !EQDIM [X]
+    (SETQ X (SIZE X))
+    (and (EQ (car X) (cadr X)) (EQ (car X) (caddr X))))
 
 (§ DEFS !EQUIV PRIORITY 512)
 
@@ -7157,13 +7025,14 @@ nil
     NAMEVENT (I3 (concat (list (VBFIX 'GET true) 'RID 'OF) OBJ1)))
 
 (§ DEFS !GRASP
-    EXPR (lambda []
-        (RELATION
-            (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
-            MARKERSß (!EVENT)
-            PROCEDUREß ((!EVAL (COND ((IMPERF) '(!GRASPING !2 *TIME)) ('(!GRASP !2 *TIME))))))))
     NAMEVENT (I3 (cons (VBFIX 'GRASP nil) OBJ1))
     THMLIST ((2 '((THUSE TC-2))) (3 '((THUSE TCT-3))) (4 '((THUSE TCTE-4)))))
+
+(§ defn- !GRASP []
+    (RELATION
+        (RESTRICTIONSß (((!ANIMATE)) ((!MANIP)))
+        MARKERSß (!EVENT)
+        PROCEDUREß ((!EVAL (COND ((IMPERF) '(!GRASPING !2 *TIME)) ('(!GRASP !2 *TIME))))))))
 
 (§ DEFS !GRASPING THMLIST ((3 '((THUSE TCT-GRASPING)))))
 
@@ -7171,40 +7040,38 @@ nil
 
 (§ DEFS !HAND SYS (!PHYSOB))
 
-(§ DEFS !HAVE
-    EXPR (lambda []
-        (RELATION
-            (RESTRICTIONSß (((!THING)) ((!THING) (and (MEMQ '!ROLE (MARKERS? SMOB1)) (CHECK (cadr (ASSOC '!ROLE (RELATIONS? SMOB1))) (MARKERS? SMSUB) (SYSTEMS? SMSUB)))))
-            PROCEDUREß ((!SUBST !1 ?)))
-            (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)))
-            PROCEDUREß ((!BELONG !2 !1))))))
+(§ defn- !HAVE []
+    (RELATION
+        (RESTRICTIONSß (((!THING)) ((!THING) (and (MEMQ '!ROLE (MARKERS? SMOB1)) (CHECK (cadr (ASSOC '!ROLE (RELATIONS? SMOB1))) (MARKERS? SMSUB) (SYSTEMS? SMSUB)))))
+        PROCEDUREß ((!SUBST !1 ?)))
+        (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB)))
+        PROCEDUREß ((!BELONG !2 !1)))))
 
 (§ DEFS !HEIGHT MEASFN (lambda [X] (caddr (SIZE X))))
 
-(§ DEFS !IN
-    EXPR (lambda []
-        (COND ((CQ LOBJ)
-            (RELATION
-                (RESTRICTIONSß (((!THING)) ((!BOX))) MARKERSß (!PLACE) PROCEDUREß ((!IN !2)))))
-            ((RELATION
-                (RESTRICTIONSß (((!MANIP)) ((!BOX))) PROCEDUREß ((!CONTAIN !2 !1 *TIME)))
-                (RESTRICTIONSß (((!MANIP)) ((!HAND))) PROCEDUREß ((!GRASPING !1 *TIME)))
-                (RESTRICTIONSß (((!PLACE)) ((!BOX))) PROCEDUREß ((!IN !1 !2)))
-                (RESTRICTIONSß (((!MANIP)) ((!CONSTRUCT))) PROCEDUREß ((!PART !1 !2 *TIME))))))))
+(§ defn- !IN []
+    (COND ((CQ LOBJ)
+        (RELATION
+            (RESTRICTIONSß (((!THING)) ((!BOX))) MARKERSß (!PLACE) PROCEDUREß ((!IN !2)))))
+        ((RELATION
+            (RESTRICTIONSß (((!MANIP)) ((!BOX))) PROCEDUREß ((!CONTAIN !2 !1 *TIME)))
+            (RESTRICTIONSß (((!MANIP)) ((!HAND))) PROCEDUREß ((!GRASPING !1 *TIME)))
+            (RESTRICTIONSß (((!PLACE)) ((!BOX))) PROCEDUREß ((!IN !1 !2)))
+            (RESTRICTIONSß (((!MANIP)) ((!CONSTRUCT))) PROCEDUREß ((!PART !1 !2 *TIME)))))))
 
 (§ DEFS !IS PRIORITY 64)
 
 (§ DEFS !LIKE TELLABLE true THMLIST ((3 '((THTBF THTRUE)))))
 
 (§ DEFS !LOC
-    THMLIST ((4 '((THUSE TC-LOC))) (5 '((THUSE TCT-LOC))))
-    FEXPR (lambda [A] (!LOC2 (car A) (cadr A))))
+    THMLIST ((4 '((THUSE TC-LOC))) (5 '((THUSE TCT-LOC)))))
 
-(§ DEFS !LOC2
-    EXPR (lambda [LOCTYPE !LOC]
-        (COND ((CQ LOBJ)
-            (RELATION (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC LOCTYPE !LOC !2))))))
-        ((RELATION (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC LOCTYPE (COND (!LOC '!1) ('!2)) (COND (!LOC '!2) ('!1)) '*TIME)))))))))
+(§ defq- !LOC [A] (!LOC2 (car A) (cadr A)))
+
+(§ defn- !LOC2 [LOCTYPE !LOC]
+    (COND ((CQ LOBJ)
+        (RELATION (RESTRICTIONSß (((!THING)) (LOBJ (!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!EVAL (list '!LOC LOCTYPE !LOC !2))))))
+    ((RELATION (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PROCEDUREß ((!EVAL (list '!LOC LOCTYPE (COND (!LOC '!1) ('!2)) (COND (!LOC '!2) ('!1)) '*TIME))))))))
 
 (§ DEFS !MANIP SYS (!PHYSOB))
 
@@ -7212,26 +7079,29 @@ nil
 
 (§ DEFS !NAME
     THMLIST ((2 '((THUSE TC-2))))
-    EXPR (lambda []
-        (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME !2)))))
     SYS (!SYSTEMS))
+
+(§ defn- !NAME []
+    (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NAME !2)))))
 
 (§ DEFS !NEWWORD SYS (!THING))
 
 (§ DEFS !NOTICE
-    THMLIST ((2 '((THUSE TC-2))))
-    EXPR (lambda []
-        (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NOTICE !2 *TIME))))))
+    THMLIST ((2 '((THUSE TC-2)))))
+
+(§ defn- !NOTICE []
+    (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!PHYSOB))) MARKERSß (!EVENT) PROCEDUREß ((!NOTICE !2 *TIME)))))
 
 (§ DEFS !ON
-    THMLIST ((3 '((THUSE TC-ON))) (4 '((THUSE TCT-ON))))
-    EXPR (lambda []
-        (COND ((CQ LOBJ)
-            (RELATION (RESTRICTIONSß (((!THING)) ((!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!ON !2)))))
-            ((RELATION
-                (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PARAPHRASEß (ANYWHERE ON TOP OF) PROCEDUREß ((!ON !1 !2 *TIME)))
-                (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PARAPHRASEß (DIRECTLY ON THE SURFACE) PROCEDUREß ((!SUPPORT !2 !1 *TIME)))
-                (RESTRICTIONSß (((!PLACE)) ((!PHYSOB))) PROCEDUREß ((!ON !1 !2))))))))
+    THMLIST ((3 '((THUSE TC-ON))) (4 '((THUSE TCT-ON)))))
+
+(§ defn- !ON []
+    (COND ((CQ LOBJ)
+        (RELATION (RESTRICTIONSß (((!THING)) ((!PHYSOB))) MARKERSß (!PLACE) PROCEDUREß ((!ON !2)))))
+        ((RELATION
+            (RESTRICTIONSß (((!PHYSOB)) ((!PHYSOB))) PARAPHRASEß (ANYWHERE ON TOP OF) PROCEDUREß ((!ON !1 !2 *TIME)))
+            (RESTRICTIONSß (((!PHYSOB)) ((!MANIP))) PARAPHRASEß (DIRECTLY ON THE SURFACE) PROCEDUREß ((!SUPPORT !2 !1 *TIME)))
+            (RESTRICTIONSß (((!PLACE)) ((!PHYSOB))) PROCEDUREß ((!ON !1 !2)))))))
 
 (§ DEFS !PACK THMLIST ((3 '((THUSE TC-3)))))
 
@@ -7261,17 +7131,14 @@ nil
 
 (§ DEFS !REFERS THMLIST ((2 '((THUSE TC-REFERS)))))
 
-(§ DEFS !ROLE FEXPR (lambda [A] true) NOGOAL true)
-
 (§ DEFS !PHYSOB
     SYSTEM (!BOX !CONSTRUCT !HAND !MANIP !TABLE)
     SYS (!THING)
     THMLIST ((2 '((THUSE TC-PHYSOB)))))
 
-(§ DEFS !PROPDEFINE
-    EXPR (lambda [X]
-        (PUTPROP X '(PROPN NS) 'FEATURES)               ;; CHANGED TO FEATURES FROM 'WORD' IN THE OLD DICTIONARY
-        (PUTPROP X '((PROPN T)) 'SEMANTICS)))
+(§ defn- !PROPDEFINE [X]
+    (PUTPROP X '(PROPN NS) 'FEATURES)               ;; CHANGED TO FEATURES FROM 'WORD' IN THE OLD DICTIONARY
+    (PUTPROP X '((PROPN T)) 'SEMANTICS))
 
 (§ DEFS !PROPERTY SYSTEM (!COLOR !SIZE !SHAPE) SYS (!THING))
 
@@ -7281,7 +7148,10 @@ nil
 
 (§ DEFS !RELATION SYS (!SYSTEMS))
 
-(§ DEFS !ROLE FEXPR (lambda [A] true) NOGOAL true)
+(§ DEFS !ROLE
+    NOGOAL true)
+
+(§ defq- !ROLE [A] true)
 
 (§ DEFS !ROUND SYS (!SHAPES))
 
@@ -7299,8 +7169,10 @@ nil
 
 (§ DEFS !STACKUP
     THMLIST ((2 '((THUSE TC-2))))
-    EXPR (lambda [] (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!STACKUP !2 *TIME)))))
     NAMEVENT (I3 (cons (VBFIX 'STACK nil) (PRTPUT 'UP OBJ1))))
+
+(§ defn- !STACKUP []
+    (RELATION (RESTRICTIONSß (((!ANIMATE)) ((!MANIP))) MARKERSß (!EVENT) PROCEDUREß ((!STACKUP !2 *TIME)))))
 
 (§ DEFS !START
     THMLIST ((3 '((THUSE TC-STARTEND3))) (4 '((THUSE TC-STARTEND4)))))
@@ -7448,7 +7320,7 @@ nil
     OSSNODE= FRIEND-OSS
     MARKERS= (!PERSON !ANIMATE !THING !SYSTEMS)
     SYSTEMS= (!ANIMATE !THING !SYSTEMS)
-    REFER= (:FRIEND)
+    REFER= (ßFRIEND)
     DETERMINER= (1 DEF nil))
 
 (§ DEFS NAME-OSS
@@ -7468,7 +7340,7 @@ nil
     OSSNODE= SHRDLU-OSS
     MARKERS= (!ROBOT !ANIMATE !THING !SYSTEMS)
     SYSTEMS= (!ANIMATE !THING !SYSTEMS)
-    REFER= (:SHRDLU)
+    REFER= (ßSHRDLU)
     DETERMINER= (1 DEF nil))
 
 (§ DEFS STACKPARTS-OSS
@@ -7506,7 +7378,7 @@ nil
     OSSNODE= WE-OSS
     MARKERS= (!ANIMATE !THING !SYSTEMS)
     SYSTEMS= (!ANIMATE !THING !SYSTEMS)
-    REFER= (:SHRDLU :FRIEND)
+    REFER= (ßSHRDLU ßFRIEND)
     AND= (FRIEND-OSS SHRDLU-OSS))
 
 ;; ======>>> TEMPORARY PLACE FOR OSS-PROPERTY DEFS - MOVE WHEN APPROVED
@@ -7596,7 +7468,7 @@ nil
             ((EQUAL TENSE '(MODAL))
                 (SETQ GLOBAL-MESSAGE '(THAT DOESN'T MAKE ANY SENSE TO ME\.))
                 (ADD-F-PT 'MODAL PT))                               ;; CLAUSES ARE ALSO MARKED AS MODAL.
-            ((and (EQUAL TENSE '(FUTURE)) (ISQ PT QUEST) (EQUAL (REFER? (car (SM (GETR 'SUBJECT PT)))) '(:SHRDLU))) ;; FUTURE QUESTIONS WITH "YOU"
+            ((and (EQUAL TENSE '(FUTURE)) (ISQ PT QUEST) (EQUAL (REFER? (car (SM (GETR 'SUBJECT PT)))) '(ßSHRDLU))) ;; FUTURE QUESTIONS WITH "YOU"
                 (SETQ TENSE '(PRESENT))                             ;; SUBJECT IS REALLY IMPERATIVE.
                 (REMOVE-F-PT 'QUEST PT)
                 (ADD-F-PT 'IMPER PT))                               ;; THE CLAUSE IS NO LONGER QUESTION, BUT RATHER, IMPERATIVE.
@@ -8235,7 +8107,6 @@ nil
         (and MARKERS= (not SYSTEMS=) (SETQ %X (CHECK MARKERS= nil nil)) (SETQ MARKERS= (car %X)) (SETQ SYSTEMS= (cadr %X)))
         (SETQ NODE= (or OSSNODE= RSSNODE= TSSNODE= ANSNODE= (ERT "...BUILD:" NO NODE=)))
         (dorun (map #'(lambda [%PROP] (and (SETQ %X (eval %PROP)) (PUTPROP NODE= %X %PROP))) %PROPS))
-        (and BUILD-SEE ((lambda [DPSTOP] (DP NODE=)) SMN-STOP))
         (RETURN NODE=)))
 
 (§ defn- NEWCOPY [OSS]
@@ -8883,7 +8754,7 @@ nil
     (let [RESULT nil X nil]
         (SETQ THLEVEL '(true))
         (SETQ X (SETQ RESULT '(nil)))
-        (and PLANNERSEE (DISP AA) PLNRSEE-PAUSE (ERT FOR PLANNER))
+        (and PLANNERSEE (DISP AA))
         (and (not (EQ RESULT X))
             (RETURN RESULT))
         (SETQ RESULT (THVAL AA '((EV COMMAND))))
@@ -9099,9 +8970,7 @@ nil
             ((and (cdr ANSLIST) (not (ENOUGH-BETTER (car ANSLIST) (cadr ANSLIST))))
                 (SETQ ANSLIST (ANSELIMINATE ANSLIST))
                 (GO CHOOSE)))
-            (or ANNOYANCE (PRINT *3))
     TEST-LOOP
-        (and ANS-AFTERFORMULATION-PAUSE  (ERT ANSWER HAS BEEN DETERMINED))
         ;; THE ACTION INCLUDES BOTH THE THINGS TO BE DONE
         ;; AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
         (EVLIS (ACTION? (car ANSLIST)))
@@ -9580,7 +9449,7 @@ nil
     ;; WHEN EVALUATED WILL PRINT OUT AN ENGLISH DESCRIPTION OF THE SINGLE, SIMPLE EVENT IMBEDDED
     ;; IN THE LIST "THASSERTION" WITH THE TENSE SPECIFIED.
     (let [PLNR-FORM nil VERB nil OBJ1 nil OBJ2 nil]
-        ;; THE THASSERTION PROPERTY IS A LIST THAT TYPICALLY LOOKS LIKE "(NIL (2 (3 1 ((!GRASP :E2 :B6)))))"
+        ;; THE THASSERTION PROPERTY IS A LIST THAT TYPICALLY LOOKS LIKE "(NIL (2 (3 1 ((!GRASP ßE2 ßB6)))))"
         (SETQ PLNR-FORM (car (caddr (cadadr (GET EVENT 'THASSERTION))))
             VERB (CUTOFF (car PLNR-FORM))
             OBJ1 (caddr PLNR-FORM)
@@ -9608,7 +9477,7 @@ nil
     ;; GENERATES A LIST OF EXPRESSIONS TO BE EVALUATED WHICH WILL CAUSE THE APPROPRIATE NAMELIST TO BE PRINTED OUT.
     ;; THE ARGUMENTS ARE JUST THOSE TO LISTNAMES.
     (list (list 'EVLIS (list 'LISTNAMES (QUOTIFY ONE) (QUOTIFY SPEC) (QUOTIFY LISTX)))))
-    ;; A TYPICAL CALL WOULD RESULT IN A VALUE OF ((EVLIS (LISTNAMES '(A RED BLOCK) 'INDEF '(:B1 :B7)))) WHICH WOULD BE EVALUATED LATER.
+    ;; A TYPICAL CALL WOULD RESULT IN A VALUE OF ((EVLIS (LISTNAMES '(A RED BLOCK) 'INDEF '(ßB1 ßB7)))) WHICH WOULD BE EVALUATED LATER.
     ;; NOTE THAT LISTNAMES WILL IN TURN PRODUCE A LIST OF EXPRESSIONS TO BE EVALUATED, WHICH WILL BE CAUGHT BY THE EVLIS.  CONFUSING?
 
 (§ defn- NAMELIST-EVALED [ONE SPEC LISTX]
@@ -9627,7 +9496,7 @@ nil
 (§ defn- NAMEOBJ [ITEM SPEC]
     ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF
     (let [TYPEß nil TYPELIST nil TYPE nil NAMEß nil COLORß nil COLORLIST nil SIZEß nil SIZELIST nil CUBE nil NAME nil X nil]
-        (and (SETQ X (ASSOC ITEM '((:SHRDLU I) (:FRIEND YOU))))
+        (and (SETQ X (ASSOC ITEM '((ßSHRDLU I) (ßFRIEND YOU))))
             (RETURN (list (ANSAY (cdr X)) (list ITEM))))                        ;;  SPECIAL CASE CHECK
         (THVAL2 nil '(THGOAL (!NAMEOBJ) (THUSE TC-NAMEOBJ)))
         (or TYPELIST
@@ -9962,7 +9831,7 @@ BY")         (PRINC (COND ((EQ X 'IT) "\"IT\"") ((MEMQ 'THEY (FROM SENT nil)) "\
 ;; #################################################################
 
 (§ defn- CLAUSE []
-    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil POSITION-OF-PRTMVB nil LOCATIONMARKER nil SUBJ-VB-BACKUP-TYPE1 nil POSITION-OF-PTW nil]
+    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil POSITION-OF-PRTMVB nil LOCATIONMARKER nil SUBJ-VB-BACKUP-TYPE1 nil POSITION-OF-PTW nil]
         (SETQ NN true)
         (SETQ CUT END)
         (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -9970,23 +9839,23 @@ BY")         (PRINC (COND ((EQ X 'IT) "\"IT\"") ((MEMQ 'THEY (FROM SENT nil)) "\
 ENTERING-CLAUSE
         (and LABELTRACE (PASSING 'ENTERING-CLAUSE))
         (SETR 'TIME (BUILD TSSNODE= (MAKESYM 'TSS)) C)
-        (SETQ :RESULT (CQ SIMP))
-        (COND (:RESULT (GO SUBJ)))
-        (SETQ :RESULT (CQ MAJOR))
-        (COND (:RESULT (GO INIT)) (:else (GO SEC)))
+        (SETQ ßRESULT (CQ SIMP))
+        (COND (ßRESULT (GO SUBJ)))
+        (SETQ ßRESULT (CQ MAJOR))
+        (COND (ßRESULT (GO INIT)) (:else (GO SEC)))
 INIT
         (and LABELTRACE (PASSING 'INIT))
         (SETQ LOCATIONMARKER N)
-        (SETQ :RESULT (and (NQ BINDER) (PARSE CLAUSE BOUND INIT)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO FIXIT)) (:else (GO MAJOR)))))
+        (SETQ ßRESULT (and (NQ BINDER) (PARSE CLAUSE BOUND INIT)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO FIXIT)) (:else (GO MAJOR)))))
         (FQ BIND)
-        (SETQ :RESULT (CALLSM (SMBIND)))
-        (COND (:RESULT (GO INIT)))
+        (SETQ ßRESULT (CALLSM (SMBIND)))
+        (COND (ßRESULT (GO INIT)))
 FIXIT
         (and LABELTRACE (PASSING 'FIXIT))
         (SETQ PTW CUT)
-        (SETQ :RESULT (CUT (MOVE-PTW)))
-        (COND (:RESULT (GO INIT)) (:else (GO MAJOR)))
+        (SETQ ßRESULT (CUT (MOVE-PTW)))
+        (COND (ßRESULT (GO INIT)) (:else (GO MAJOR)))
 MAJOR
         (and LABELTRACE (PASSING 'MAJOR))
         (CUT END)
@@ -9998,44 +9867,44 @@ FDEC
         (FQ DECLAR)
 THEREINIT
         (and LABELTRACE (PASSING 'THEREINIT))
-        (SETQ :RESULT (and (NEXTWORD? 'THERE) (PARSE nil THERE) (FQ DECLAR)))
-        (COND (:RESULT (COND ((nil? NN) (M INIT) (GO FAIL)) (:else (GO THERE)))))
+        (SETQ ßRESULT (and (NEXTWORD? 'THERE) (PARSE nil THERE) (FQ DECLAR)))
+        (COND (ßRESULT (COND ((nil? NN) (M INIT) (GO FAIL)) (:else (GO THERE)))))
 THER2
         (and LABELTRACE (PASSING 'THER2))
         (and (NQ PREP) (PARSE PREPG INIT) (or (CALLSM (SMRELATE H)) (POP)))
         (and (NQ ADV) (PARSE ADV TIMW) (or (CALLSM (SMADVERB)) (POP)))
         (and (NQ ADV) (PARSE ADJG ADV VBAD) (or (CALLSM (SMRELATE H)) (POP)))
         (PARSE NG TIME)
-        (SETQ :RESULT (EQ LOCATIONMARKER N))
-        (COND (:RESULT (COND ((nil? NN) (GO INPOP)) (:else (GO CLAUSETYPE)))) (:else (GO INIT)))
+        (SETQ ßRESULT (EQ LOCATIONMARKER N))
+        (COND (ßRESULT (COND ((nil? NN) (GO INPOP)) (:else (GO CLAUSETYPE)))) (:else (GO INIT)))
 INPOP
         (and LABELTRACE (PASSING 'INPOP))
-        (SETQ :RESULT (MOVE-PT C DLC))
-        (COND ((nil? :RESULT) (M INPOP) (GO FAIL)))
+        (SETQ ßRESULT (MOVE-PT C DLC))
+        (COND ((nil? ßRESULT) (M INPOP) (GO FAIL)))
 BICUT
         (and LABELTRACE (PASSING 'BICUT))
         (CUT-BACK-ONE)
         (GO INIT)
 CLAUSETYPE
         (and LABELTRACE (PASSING 'CLAUSETYPE))
-        (SETQ :RESULT (CQ DECLAR))
-        (COND (:RESULT (GO SUBJ)))
-        (SETQ :RESULT (and (NQ VB) (NQ INF) (PARSE VG IMPER) (FQ IMPER)))
-        (COND (:RESULT (GO VG1)))
+        (SETQ ßRESULT (CQ DECLAR))
+        (COND (ßRESULT (GO SUBJ)))
+        (SETQ ßRESULT (and (NQ VB) (NQ INF) (PARSE VG IMPER) (FQ IMPER)))
+        (COND (ßRESULT (GO VG1)))
         (FQ DECLAR)
-        (SETQ :RESULT (CQ IMPER))
-        (COND (:RESULT (M IMPER) (GO FAIL)))
+        (SETQ ßRESULT (CQ IMPER))
+        (COND (ßRESULT (M IMPER) (GO FAIL)))
 SUBJ
         (and LABELTRACE (PASSING 'SUBJ))
         (CUT END)
 SUBJ3
         (and LABELTRACE (PASSING 'SUBJ3))
-        (SETQ :RESULT (or (and (NEXTWORD? 'TO) (PARSE CLAUSE RSNG TO SUBJ)) (and (PARSE CLAUSE RSNG ING SUBJ))))
-        (COND (:RESULT (COND ((nil? NN) (GO SUBJ1)) (:else (GO SUBREG)))))
+        (SETQ ßRESULT (or (and (NEXTWORD? 'TO) (PARSE CLAUSE RSNG TO SUBJ)) (and (PARSE CLAUSE RSNG ING SUBJ))))
+        (COND (ßRESULT (COND ((nil? NN) (GO SUBJ1)) (:else (GO SUBREG)))))
 SUBJ4
         (and LABELTRACE (PASSING 'SUBJ4))
-        (SETQ :RESULT (PARSE NG SUBJ))
-        (COND (:RESULT (COND ((nil? NN) (GO SUBJ1)) (:else (GO SUBREG)))))
+        (SETQ ßRESULT (PARSE NG SUBJ))
+        (COND (ßRESULT (COND ((nil? NN) (GO SUBJ1)) (:else (GO SUBREG)))))
         (COND ((CQ REL-NOT-FOUND)
                 (RQ REL-NOT-FOUND)
                 (SETR 'SUBJECT (GETR 'RELHEAD C) C)
@@ -10052,14 +9921,14 @@ SUBJ4
             ((GO FAIL)))
 HEAD
         (and LABELTRACE (PASSING 'HEAD))
-        (SETQ :RESULT (or (MOVE-PTW N PW (NOUN)) (MOVE-PTW N PW (PRON))))
-        (COND ((nil? :RESULT) (M HEAD) (GO FAIL)))
+        (SETQ ßRESULT (or (MOVE-PTW N PW (NOUN)) (MOVE-PTW N PW (PRON))))
+        (COND ((nil? ßRESULT) (M HEAD) (GO FAIL)))
 SUB2
         (and LABELTRACE (PASSING 'SUB2))
-        (SETQ :RESULT (POP))
-        (COND ((nil? :RESULT) (GO FAIL)))
-        (SETQ :RESULT (CUT PTW))
-        (COND (:RESULT (GO INIT)) (:else (GO SUB2)))
+        (SETQ ßRESULT (POP))
+        (COND ((nil? ßRESULT) (GO FAIL)))
+        (SETQ ßRESULT (CUT PTW))
+        (COND (ßRESULT (GO INIT)) (:else (GO SUB2)))
 SUBJ1
         (and LABELTRACE (PASSING 'SUBJ1))
         (COND ((ISQ H QUOTED) (and (ISQ H LIST) (FQ LIST)) (FQ QUOTED) (SETQ H (H H)) (GO RETSM)))
@@ -10068,21 +9937,21 @@ SUBJ1
                 ((ISQ PT HAVE) (FQ SUBQ) (RQ REL-NOT-FOUND) (SETR 'SUBJECT (GETR 'RELHEAD C) C) (GO VBL))))
 SUBJ11
         (and LABELTRACE (PASSING 'SUBJ11))
-        (SETQ :RESULT (CUT-BACK-ONE))
-        (COND (:RESULT (GO SUBJ3)) (:else (M SUBJ11) (GO FAIL)))
+        (SETQ ßRESULT (CUT-BACK-ONE))
+        (COND (ßRESULT (GO SUBJ3)) (:else (M SUBJ11) (GO FAIL)))
 SUBREG
         (and LABELTRACE (PASSING 'SUBREG))
         (SETR 'SUBJECT H C)
         (GO VB)
 VB
         (and LABELTRACE (PASSING 'VB))
-        (SETQ :RESULT (PARSE ADJG ADV VBAD))
-        (COND (:RESULT (COND ((nil? NN) (M VB-ADJG) (GO FAIL)) (:else (GO VB)))))
+        (SETQ ßRESULT (PARSE ADJG ADV VBAD))
+        (COND (ßRESULT (COND ((nil? NN) (M VB-ADJG) (GO FAIL)) (:else (GO VB)))))
         (RQ VBLOK)
 VBL
         (and LABELTRACE (PASSING 'VBL))
-        (SETQ :RESULT (PARSE VG))
-        (COND (:RESULT (GO VBREG)))
+        (SETQ ßRESULT (PARSE VG))
+        (COND (ßRESULT (GO VBREG)))
 NOVERB
         (and LABELTRACE (PASSING 'NOVERB))
         (COND ((CQ SUBJFORK) (FQ VBFORK) (GO FINDOBJ1))
@@ -10100,28 +9969,28 @@ VBREG
 VG1
         (and LABELTRACE (PASSING 'VG1))
         (CUT END)
-        (SETQ :RESULT (ISQ MVB BE))
-        (COND (:RESULT (COND ((nil? NN) (M BE) (GO FAIL)) (:else (GO BE)))))
-        (SETQ :RESULT (ISQ MVB VPRT))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO CHECKPASV)) (:else (GO CHECKPASV)))))
-        (SETQ :RESULT (and (NQ PRT) (PARSE PRT)))
-        (COND ((nil? :RESULT) (GO DPRT)))
+        (SETQ ßRESULT (ISQ MVB BE))
+        (COND (ßRESULT (COND ((nil? NN) (M BE) (GO FAIL)) (:else (GO BE)))))
+        (SETQ ßRESULT (ISQ MVB VPRT))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO CHECKPASV)) (:else (GO CHECKPASV)))))
+        (SETQ ßRESULT (and (NQ PRT) (PARSE PRT)))
+        (COND ((nil? ßRESULT) (GO DPRT)))
         (FQ PRT)
-        (SETQ :RESULT (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD (NB H)))))
-        (COND (:RESULT (GO CHECKPASV)) (:else (GO POPRT)))
+        (SETQ ßRESULT (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD (NB H)))))
+        (COND (ßRESULT (GO CHECKPASV)) (:else (GO POPRT)))
 DPRT
         (and LABELTRACE (PASSING 'DPRT))
-        (SETQ :RESULT (ISQ H PASV))
-        (COND (:RESULT (GO CHECKPASV)))
-        (SETQ :RESULT (SETQ POSITION-OF-PRT (MOVE-PTW N NW (PRT))))
-        (COND ((nil? :RESULT) (GO FINDOBJ1)))
-        (SETQ :RESULT (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD POSITION-OF-PRT))))
-        (COND ((nil? :RESULT) (GO POPRT)))
-        (SETQ :RESULT (ISQ MVB TRANS))
-        (COND ((nil? :RESULT) (GO FINDOBJ1)))
+        (SETQ ßRESULT (ISQ H PASV))
+        (COND (ßRESULT (GO CHECKPASV)))
+        (SETQ ßRESULT (SETQ POSITION-OF-PRT (MOVE-PTW N NW (PRT))))
+        (COND ((nil? ßRESULT) (GO FINDOBJ1)))
+        (SETQ ßRESULT (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD POSITION-OF-PRT))))
+        (COND ((nil? ßRESULT) (GO POPRT)))
+        (SETQ ßRESULT (ISQ MVB TRANS))
+        (COND ((nil? ßRESULT) (GO FINDOBJ1)))
         (CUT POSITION-OF-PRT)
-        (SETQ :RESULT (PARSE NG OBJ OBJ1))
-        (COND (:RESULT (GO POPRT)) (:else (GO FINDOBJ1)))
+        (SETQ ßRESULT (PARSE NG OBJ OBJ1))
+        (COND (ßRESULT (GO POPRT)) (:else (GO FINDOBJ1)))
         (CUT END)
         (SETR 'OBJ1 H C)
         (PARSE PRT)
@@ -10133,8 +10002,8 @@ POPRT
         (GO FINDOBJ1)
 CHECKPASV
         (and LABELTRACE (PASSING 'CHECKPASV))
-        (SETQ :RESULT (and (ISQ H PASV) (FQ PASV) (SETR 'OBJ1 (GETR 'SUBJECT C) C)))
-        (COND (:RESULT (COND ((nil? NN) (GO FINDFAKE2)) (:else (GO FINDOBJ2)))))
+        (SETQ ßRESULT (and (ISQ H PASV) (FQ PASV) (SETR 'OBJ1 (GETR 'SUBJECT C) C)))
+        (COND (ßRESULT (COND ((nil? NN) (GO FINDFAKE2)) (:else (GO FINDOBJ2)))))
         (FQ ACTV)
         (GO FINDOBJ1)
 BE
@@ -10144,26 +10013,26 @@ BE
         (PARSE ADV VBAD)
 FINDOBJ1
         (and LABELTRACE (PASSING 'FINDOBJ1))
-        (SETQ :RESULT (or (CANPARSE 1 '(ADJG COMP) 'INT)
+        (SETQ ßRESULT (or (CANPARSE 1 '(ADJG COMP) 'INT)
                 (CANPARSE 1 '(NG COMP) 'INT)))
-        (COND (:RESULT (COND ((nil? NN) (GO ONT)) (:else (GO CHECKIT)))))
-        (SETQ :RESULT (or (CANPARSE 1 '(PREPG COMP) 'INT)
+        (COND (ßRESULT (COND ((nil? NN) (GO ONT)) (:else (GO CHECKIT)))))
+        (SETQ ßRESULT (or (CANPARSE 1 '(PREPG COMP) 'INT)
                 (CANPARSE 1 '(CLAUSE RSNG ING) 'TRANS)
                 (CANPARSE 1 '(CLAUSE RSNG REPORT) 'TRANS)
                 (CANPARSE 1 '(CLAUSE RSNG TO) 'TRANS)
                 (CANPARSE 1 '(PREPG LOC) 'ITRNSL)
                 (CANPARSE 1 '(ADV PLACE) 'ITRNSL)))
-        (COND (:RESULT (GO ONT)))
-        (SETQ :RESULT (CANPARSE 1 '(NG) 'TRANS))
-        (COND (:RESULT (COND ((nil? NN) (GO FINDFAKE2)) (:else (GO FINDOBJ2)))))
+        (COND (ßRESULT (GO ONT)))
+        (SETQ ßRESULT (CANPARSE 1 '(NG) 'TRANS))
+        (COND (ßRESULT (COND ((nil? NN) (GO FINDFAKE2)) (:else (GO FINDOBJ2)))))
 FINDFAKE1
         (and LABELTRACE (PASSING 'FINDFAKE1))
-        (SETQ :RESULT (MOVE-PT C U (REL-NOT-FOUND)))
-        (COND (:RESULT (GO OBJ1REL)))
-        (SETQ :RESULT (and (CANTAKE 1 '(PREPG LOC) 'ITRNSL) (MOVE-PT C U (QADJ)) (ISQ (GETR 'QADJ PT) PLACE) (FQ ITRANSL)))
-        (COND (:RESULT (GO PUTLOBJ)))
-        (SETQ :RESULT (CANPARSE 1 nil 'ITRNS))
-        (COND (:RESULT (GO ONT)))
+        (SETQ ßRESULT (MOVE-PT C U (REL-NOT-FOUND)))
+        (COND (ßRESULT (GO OBJ1REL)))
+        (SETQ ßRESULT (and (CANTAKE 1 '(PREPG LOC) 'ITRNSL) (MOVE-PT C U (QADJ)) (ISQ (GETR 'QADJ PT) PLACE) (FQ ITRANSL)))
+        (COND (ßRESULT (GO PUTLOBJ)))
+        (SETQ ßRESULT (CANPARSE 1 nil 'ITRNS))
+        (COND (ßRESULT (GO ONT)))
 GOOF1
         (and LABELTRACE (PASSING 'GOOF1))
         (or GLOBAL-MESSAGE (ERTERR NEW TRANSITIVITY - FIRST OBJ))
@@ -10175,29 +10044,29 @@ OBJ1REL
         (FQ OBJ1REL)
 FINDOBJ2
         (and LABELTRACE (PASSING 'FINDOBJ2))
-        (SETQ :RESULT (CANPARSE 2 '(CLAUSE RSNG TO) 'TRANS2))
-        (COND (:RESULT (GO FIXSUBJECT)))
-        (SETQ :RESULT (or (CANPARSE 2 '(ADV PLACE) 'TRANSL) (CANPARSE 2 '(PREPG LOC) 'TRANSL)))
-        (COND (:RESULT (GO ONT)))
-        (SETQ :RESULT (or (CANPARSE 2 '(ADJG COMP) 'TRANSINT) (CANPARSE 2 '(NG COMP) 'TRANSINT)))
-        (COND (:RESULT (GO ONT)))
-        (SETQ :RESULT (CANPARSE 2 '(NG) 'TRANS2))
-        (COND (:RESULT (GO ONT)))
+        (SETQ ßRESULT (CANPARSE 2 '(CLAUSE RSNG TO) 'TRANS2))
+        (COND (ßRESULT (GO FIXSUBJECT)))
+        (SETQ ßRESULT (or (CANPARSE 2 '(ADV PLACE) 'TRANSL) (CANPARSE 2 '(PREPG LOC) 'TRANSL)))
+        (COND (ßRESULT (GO ONT)))
+        (SETQ ßRESULT (or (CANPARSE 2 '(ADJG COMP) 'TRANSINT) (CANPARSE 2 '(NG COMP) 'TRANSINT)))
+        (COND (ßRESULT (GO ONT)))
+        (SETQ ßRESULT (CANPARSE 2 '(NG) 'TRANS2))
+        (COND (ßRESULT (GO ONT)))
 FINDFAKE2
         (and LABELTRACE (PASSING 'FINDFAKE2))
-        (SETQ :RESULT (and (ISQ MVB TRANS2) (MOVE-PT C U (REL-NOT-FOUND))))
-        (COND (:RESULT (GO OBJ2REL)))
-        (SETQ :RESULT (and (CANTAKE 2 '(PREPG LOC) 'TRANSL) (MOVE-PT C U (QADJ)) (ISQ (GETR 'QADJ PT) PLACE) (FQ TRANSL)))
-        (COND (:RESULT (GO PUTLOBJ)))
+        (SETQ ßRESULT (and (ISQ MVB TRANS2) (MOVE-PT C U (REL-NOT-FOUND))))
+        (COND (ßRESULT (GO OBJ2REL)))
+        (SETQ ßRESULT (and (CANTAKE 2 '(PREPG LOC) 'TRANSL) (MOVE-PT C U (QADJ)) (ISQ (GETR 'QADJ PT) PLACE) (FQ TRANSL)))
+        (COND (ßRESULT (GO PUTLOBJ)))
 OBJ2TO
         (and LABELTRACE (PASSING 'OBJ2TO))
         (PARSE ADV VBAD)
-        (SETQ :RESULT
+        (SETQ ßRESULT
         (COND ((and (NEXTWORD? 'TO) (ISQ MVB TO2) (PARSE PREPG TO)) (SETR 'OBJ2 (GETR 'OBJ1 H) C) (FQ TRANS2TO TRANS2))
             ((and (CQ PREPQ) (MOVE-PT H PV (QUEST)) (EQ (WORD (MOVE-PTW FW)) 'TO) (RQ PREPQ) (FQ TRANS2TOQ TRANS2) (SETR 'OBJ2 (GETR 'OBJ1 PT) C)))))
-        (COND (:RESULT (GO ONT)))
-        (SETQ :RESULT (CANPARSE 2 nil 'TRANS))
-        (COND (:RESULT (GO ONT)) (:else (GO FAIL)))
+        (COND (ßRESULT (GO ONT)))
+        (SETQ ßRESULT (CANPARSE 2 nil 'TRANS))
+        (COND (ßRESULT (GO ONT)) (:else (GO FAIL)))
 PUTLOBJ
         (and LABELTRACE (PASSING 'PUTLOBJ))
         (SETR 'LOBJ PT C)
@@ -10217,10 +10086,10 @@ FIXSUBJECT
         (GO ONT)
 CHECKIT
         (and LABELTRACE (PASSING 'CHECKIT))
-        (SETQ :RESULT (EQ (WORD (NB (GETR 'SUBJECT C))) 'IT))
-        (COND ((nil? :RESULT) (GO ONT)))
-        (SETQ :RESULT (or (and (NEXTWORD? 'TO) (PARSE CLAUSE RSNG TO SUBJ)) (and (NQ ING) (PARSE CLAUSE RSNG ING SUBJ)) (PARSE CLAUSE REPORT)))
-        (COND ((nil? :RESULT) (GO ONT)))
+        (SETQ ßRESULT (EQ (WORD (NB (GETR 'SUBJECT C))) 'IT))
+        (COND ((nil? ßRESULT) (GO ONT)))
+        (SETQ ßRESULT (or (and (NEXTWORD? 'TO) (PARSE CLAUSE RSNG TO SUBJ)) (and (NQ ING) (PARSE CLAUSE RSNG ING SUBJ)) (PARSE CLAUSE REPORT)))
+        (COND ((nil? ßRESULT) (GO ONT)))
         (FQ IT)
         (SETR 'LOGICAL-SUBJECT H C)
         (GO ONT)
@@ -10230,16 +10099,16 @@ GOOF2
         (GO FAIL)
 ONT
         (and LABELTRACE (PASSING 'ONT))
-        (SETQ :RESULT (CQ PASV))
-        (COND (:RESULT (GO PONT)))
+        (SETQ ßRESULT (CQ PASV))
+        (COND (ßRESULT (GO PONT)))
 ONT1
         (and LABELTRACE (PASSING 'ONT1))
-        (SETQ :RESULT (CALLSM (SMCL1)))
-        (COND ((nil? :RESULT) (M SMCL1) (GO FAIL)))
-        (SETQ :RESULT (not (CQ REL-NOT-FOUND)))
-        (COND (:RESULT (COND ((nil? NN) (GO RETSM)) (:else (GO TONT)))))
-        (SETQ :RESULT (ISQ (GETR 'HEAD (GETR 'RELHEAD C)) TIM1))
-        (COND ((nil? :RESULT) (GO PREPSHORT)))
+        (SETQ ßRESULT (CALLSM (SMCL1)))
+        (COND ((nil? ßRESULT) (M SMCL1) (GO FAIL)))
+        (SETQ ßRESULT (not (CQ REL-NOT-FOUND)))
+        (COND (ßRESULT (COND ((nil? NN) (GO RETSM)) (:else (GO TONT)))))
+        (SETQ ßRESULT (ISQ (GETR 'HEAD (GETR 'RELHEAD C)) TIM1))
+        (COND ((nil? ßRESULT) (GO PREPSHORT)))
 TIMEQ
         (and LABELTRACE (PASSING 'TIMEQ))
         (RQ REL-NOT-FOUND)
@@ -10247,12 +10116,12 @@ TIMEQ
         (GO TONT)
 PREPSHORT
         (and LABELTRACE (PASSING 'PREPSHORT))
-        (SETQ :RESULT (and (NQ PREP) (PARSE PREPG)))
-        (COND ((nil? :RESULT) (M ONT-SHORT-PREP) (GO FAIL)))
-        (SETQ :RESULT (CALLSM (SMRELATE H)))
-        (COND ((nil? :RESULT) (M ONTß) (GO FAIL)))
-        (SETQ :RESULT (CQ REL-NOT-FOUND))
-        (COND (:RESULT (COND ((nil? NN) (M ONT-NOT-FOUND) (GO FAIL)) (:else (GO PREPSHORT))))
+        (SETQ ßRESULT (and (NQ PREP) (PARSE PREPG)))
+        (COND ((nil? ßRESULT) (M ONT-SHORT-PREP) (GO FAIL)))
+        (SETQ ßRESULT (CALLSM (SMRELATE H)))
+        (COND ((nil? ßRESULT) (M ONTß) (GO FAIL)))
+        (SETQ ßRESULT (CQ REL-NOT-FOUND))
+        (COND (ßRESULT (COND ((nil? NN) (M ONT-NOT-FOUND) (GO FAIL)) (:else (GO PREPSHORT))))
             (:else (GO TONT)))
 PONT
         (and LABELTRACE (PASSING 'PONT))
@@ -10261,68 +10130,68 @@ PONT
         (GO ONT1)
 TONT
         (and LABELTRACE (PASSING 'TONT))
-        (SETQ :RESULT (SETQ POSITION-OF-PTW N))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO RETSM)) (:else (GO RETSM)))))
+        (SETQ ßRESULT (SETQ POSITION-OF-PTW N))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO RETSM)) (:else (GO RETSM)))))
 NPASV
         (and LABELTRACE (PASSING 'NPASV))
-        (SETQ :RESULT (and (NQ PREP) (PARSE PREPG) (CALLSM (SMRELATE H))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (NQ TIMW) (PARSE ADV TIMW) (or (CALLSM (SMTIME)) (GO FAIL))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (not (CQ BE)) (PARSE ADJG ADV) (or (CALLSM (SMRELATE H)) (GO FAIL))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (PARSE NG TIME) (or (CALLSM (SMTIME)) (GO FAIL))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (NQ PLACE) (PARSE ADV PLACE) (or (CALLSM (SMPLACE)) (GO FAIL))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (NQ BINDER) (PARSE CLAUSE BOUND) (or (CALLSM (SMBIND)) (GO FAIL))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (NEXTWORD? 'TO) (PARSE CLAUSE TO ADJUNCT) (or (CALLSM (SMTOADJ)) (GO FAIL))))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (EQ N POSITION-OF-PTW))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO RETSM)) (:else (GO TONT)))))
-        (SETQ :RESULT (or (not (CQ TOPLEVEL)) (NQ SPECIAL)))
-        (COND (:RESULT (GO RETSM)))
+        (SETQ ßRESULT (and (NQ PREP) (PARSE PREPG) (CALLSM (SMRELATE H))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (NQ TIMW) (PARSE ADV TIMW) (or (CALLSM (SMTIME)) (GO FAIL))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (not (CQ BE)) (PARSE ADJG ADV) (or (CALLSM (SMRELATE H)) (GO FAIL))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (PARSE NG TIME) (or (CALLSM (SMTIME)) (GO FAIL))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (NQ PLACE) (PARSE ADV PLACE) (or (CALLSM (SMPLACE)) (GO FAIL))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (NQ BINDER) (PARSE CLAUSE BOUND) (or (CALLSM (SMBIND)) (GO FAIL))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (NEXTWORD? 'TO) (PARSE CLAUSE TO ADJUNCT) (or (CALLSM (SMTOADJ)) (GO FAIL))))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (EQ N POSITION-OF-PTW))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO RETSM)) (:else (GO TONT)))))
+        (SETQ ßRESULT (or (not (CQ TOPLEVEL)) (NQ SPECIAL)))
+        (COND (ßRESULT (GO RETSM)))
         (ERT "CLAUSE:" SOMETHING LEFT OVER AT TOP LEVEL)
         (GO FAIL)
 THERE
         (and LABELTRACE (PASSING 'THERE))
         (FQ THERE)
         (CUT END)
-        (SETQ :RESULT (PARSE ADV TIMW))
-        (COND ((and (nil? NN) :RESULT) (M THERE) (GO FAIL)))
-        (SETQ :RESULT (and (PARSE VG) (ISQ MVB BE)))
-        (COND (:RESULT (COND ((nil? NN) (M THERE) (GO FAIL)) (:else (GO THEF))))
+        (SETQ ßRESULT (PARSE ADV TIMW))
+        (COND ((and (nil? NN) ßRESULT) (M THERE) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE VG) (ISQ MVB BE)))
+        (COND (ßRESULT (COND ((nil? NN) (M THERE) (GO FAIL)) (:else (GO THEF))))
             (:else (GO NOTHE)))
 THERQ
         (and LABELTRACE (PASSING 'THERQ))
-        (SETQ :RESULT (ISQ (MOVE-PT H PV (QAUX)) BE))
-        (COND (:RESULT (GO THERQ2)))
-        (SETQ :RESULT (and (NQ TIMW) (PARSE ADV TIMW)))
-        (COND ((and (nil? NN) :RESULT) (M THEREQ) (GO FAIL)))
-        (SETQ :RESULT (and (PARSE VG) (ISQ MVB BE)))
-        (COND (:RESULT (GO THERQ2)))
+        (SETQ ßRESULT (ISQ (MOVE-PT H PV (QAUX)) BE))
+        (COND (ßRESULT (GO THERQ2)))
+        (SETQ ßRESULT (and (NQ TIMW) (PARSE ADV TIMW)))
+        (COND ((and (nil? NN) ßRESULT) (M THEREQ) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE VG) (ISQ MVB BE)))
+        (COND (ßRESULT (GO THERQ2)))
         (RQ POLR2)
         (GO NOTHE)
 THERQ2
         (and LABELTRACE (PASSING 'THERQ2))
         (FQ SUBJTQ)
         (FQ THERE)
-        (SETQ :RESULT (CQ POLAR))
-        (COND (:RESULT (GO THEF)) (:else (GO ONT)))
+        (SETQ ßRESULT (CQ POLAR))
+        (COND (ßRESULT (GO THEF)) (:else (GO ONT)))
 THEF
         (and LABELTRACE (PASSING 'THEF))
-        (SETQ :RESULT (and (NQ ADV) (PARSE ADV TIMW)))
-        (COND ((and (nil? NN) :RESULT) (M THEF) (GO FAIL)))
-        (SETQ :RESULT (PARSE NG SUBJ SUBJT))
-        (COND ((nil? :RESULT) (GO THERREL)))
+        (SETQ ßRESULT (and (NQ ADV) (PARSE ADV TIMW)))
+        (COND ((and (nil? NN) ßRESULT) (M THEF) (GO FAIL)))
+        (SETQ ßRESULT (PARSE NG SUBJ SUBJT))
+        (COND ((nil? ßRESULT) (GO THERREL)))
         (FQ THERE)
         (SETR 'SUBJECT H C)
         (GO ONT)
 THERREL
         (and LABELTRACE (PASSING 'THERREL))
-        (SETQ :RESULT (MOVE-PT C U (REL-NOT-FOUND)))
-        (COND ((nil? :RESULT) (GO NOTHE)))
+        (SETQ ßRESULT (MOVE-PT C U (REL-NOT-FOUND)))
+        (COND ((nil? ßRESULT) (GO NOTHE)))
         (SETR 'SUBJECT (GETR 'RELHEAD PT) C)
         (REMOVE-F-PT 'REL-NOT-FOUND PT)
         (GO ONT)
@@ -10334,41 +10203,41 @@ NOTHE
         (GO THER2)
 IMPER
         (and LABELTRACE (PASSING 'IMPER))
-        (SETQ :RESULT (PARSE NG TIME))
-        (COND ((and (nil? NN) :RESULT) (GO IMPOP)))
-        (SETQ :RESULT (and (NQ ADV) (PARSE ADJG ADV VBAD)))
-        (COND ((and (nil? NN) :RESULT) (GO IMPOP)))
-        (SETQ :RESULT (and (NQ ADV) (PARSE ADV TIMW)))
-        (COND ((and (nil? NN) :RESULT) (GO IMPOP)))
+        (SETQ ßRESULT (PARSE NG TIME))
+        (COND ((and (nil? NN) ßRESULT) (GO IMPOP)))
+        (SETQ ßRESULT (and (NQ ADV) (PARSE ADJG ADV VBAD)))
+        (COND ((and (nil? NN) ßRESULT) (GO IMPOP)))
+        (SETQ ßRESULT (and (NQ ADV) (PARSE ADV TIMW)))
+        (COND ((and (nil? NN) ßRESULT) (GO IMPOP)))
 IMPE
         (and LABELTRACE (PASSING 'IMPE))
-        (SETQ :RESULT (PARSE VG IMPER))
-        (COND ((nil? :RESULT) (GO IMPOP)))
+        (SETQ ßRESULT (PARSE VG IMPER))
+        (COND ((nil? ßRESULT) (GO IMPOP)))
         (FQ IMPER)
         (GO VG1)
 IMPOP
         (and LABELTRACE (PASSING 'IMPOP))
-        (SETQ :RESULT (POP nil))
-        (COND (:RESULT (GO IMPE)) (:else (M IMPOP) (GO FAIL)))
+        (SETQ ßRESULT (POP nil))
+        (COND (ßRESULT (GO IMPE)) (:else (M IMPOP) (GO FAIL)))
 QUEST
         (and LABELTRACE (PASSING 'QUEST))
         (FQ QUEST)
-        (SETQ :RESULT (NQ PREP))
-        (COND ((nil? :RESULT) (GO NGQUES)))
-        (SETQ :RESULT (PARSE PREPG))
-        (COND ((nil? :RESULT)
+        (SETQ ßRESULT (NQ PREP))
+        (COND ((nil? ßRESULT) (GO NGQUES)))
+        (SETQ ßRESULT (PARSE PREPG))
+        (COND ((nil? ßRESULT)
             (COND ((nil? NN) (M PREPQ-INCOMPLETE) (GO FAIL)) (:else (GO NGQUES)))))
-        (SETQ :RESULT (ISQ H QUEST))
-        (COND ((nil? :RESULT) (GO QUEST)))
+        (SETQ ßRESULT (ISQ H QUEST))
+        (COND ((nil? ßRESULT) (GO QUEST)))
         (SETR 'QADJ H C)
         (GO POLAR)
 NGQUES
         (and LABELTRACE (PASSING 'NGQUES))
-        (SETQ :RESULT (PARSE NG QUEST))
-        (COND (:RESULT (GO NGQST)))
-        (SETQ :RESULT
+        (SETQ ßRESULT (PARSE NG QUEST))
+        (COND (ßRESULT (GO NGQST)))
+        (SETQ ßRESULT
         (or (and (NEXTWORD? 'HOW) (PARSE ADJG QUEST) (SETR 'RELHEAD H C)) (and (NQ QADJ) (PARSE QADJ) (FQ QADJ) (SETR 'QADJ H C))))
-        (COND (:RESULT (GO POLAR)) (:else (GO POLAR)))
+        (COND (ßRESULT (GO POLAR)) (:else (GO POLAR)))
         (FQ SHORTQUES)
         (CALLSM (SMADJQSHORT))
 ADJQS
@@ -10387,26 +10256,26 @@ NGQST2
             (:else (MOVE-PTW N PW) (POP NG QUEST) (CUT PTW) (GO NGQUES)))
 QUEST2
         (and LABELTRACE (PASSING 'QUEST2))
-        (SETQ :RESULT (and (NEXTWORD? 'THERE) (PARSE nil THERE)))
-        (COND (:RESULT (GO THERQ)) (:else (GO SUBF)))
+        (SETQ ßRESULT (and (NEXTWORD? 'THERE) (PARSE nil THERE)))
+        (COND (ßRESULT (GO THERQ)) (:else (GO SUBF)))
 SUBF
         (and LABELTRACE (PASSING 'SUBF))
-        (SETQ :RESULT (PARSE NG SUBJ))
-        (COND (:RESULT (COND ((nil? NN) (GO SUBJ1)) (:else (GO SUBREG)))))
+        (SETQ ßRESULT (PARSE NG SUBJ))
+        (COND (ßRESULT (COND ((nil? NN) (GO SUBJ1)) (:else (GO SUBREG)))))
         (RQ REL-NOT-FOUND)
         (GO BE)
 POLAR
         (and LABELTRACE (PASSING 'POLAR))
-        (SETQ :RESULT (and (NQ VB) (PARSE VB AUX (QAUX)) (SETR 'QAUX H C) (CALLSM (SMVAUX)) (SETMVB H)))
-        (COND ((nil? :RESULT) (GO QCHOP)))
+        (SETQ ßRESULT (and (NQ VB) (PARSE VB AUX (QAUX)) (SETR 'QAUX H C) (CALLSM (SMVAUX)) (SETMVB H)))
+        (COND ((nil? ßRESULT) (GO QCHOP)))
         (or (CQ QADJ) (GETR 'RELHEAD C) (FQ POLAR))
         (FQ POLR2)
         (GO QUEST2)
 QCHOP
         (and LABELTRACE (PASSING 'QCHOP))
         (ERT "CLAUSE:" QCHOP)
-        (SETQ :RESULT (POPTO CLAUSE BOUND))
-        (COND (:RESULT (GO BICUT)) (:else (M QCHOP) (GO FAIL)))
+        (SETQ ßRESULT (POPTO CLAUSE BOUND))
+        (COND (ßRESULT (GO BICUT)) (:else (M QCHOP) (GO FAIL)))
 SEC
         (and LABELTRACE (PASSING 'SEC))
         (COND ((CQ BOUND) (GO BOUND))
@@ -10417,16 +10286,16 @@ SEC
             (:else (MQ RSNG-TYPE) (GO FAIL)))
 BOUND
         (and LABELTRACE (PASSING 'BOUND))
-        (SETQ :RESULT (PARSE BINDER))
-        (COND ((nil? :RESULT)
+        (SETQ ßRESULT (PARSE BINDER))
+        (COND ((nil? ßRESULT)
             (COND ((nil? NN) (M BINDER) (GO FAIL)) (:else (M BOUND) (GO FAIL)))))
         (SETQ LOCATIONMARKER N)
         (GO FDEC)
 RSQ
         (and LABELTRACE (PASSING 'RSQ))
         (SETR 'RELHEAD (MOVE-PT C U (NG)) C)
-        (SETQ :RESULT (CQ PREPREL))
-        (COND ((nil? :RESULT) (GO RSQ2)))
+        (SETQ ßRESULT (CQ PREPREL))
+        (COND ((nil? ßRESULT) (GO RSQ2)))
         (PARSE PREPG PRONREL)
         (SETR 'QADJ H C)
         (GO REPORT)
@@ -10446,32 +10315,32 @@ RSQ2
 REL
         (and LABELTRACE (PASSING 'REL))
         (SETR 'SUBJECT (GETR 'RELHEAD C) C)
-        (SETQ :RESULT (PARSE VG))
-        (COND (:RESULT (GO VG1)))
+        (SETQ ßRESULT (PARSE VG))
+        (COND (ßRESULT (GO VG1)))
         (FQ REL-NOT-FOUND)
         (GO SUBJ)
 TO
         (and LABELTRACE (PASSING 'TO))
-        (SETQ :RESULT (and (CQ COMPONENT) (PARSE VG TO TODEL)))
-        (COND (:RESULT (GO VG1)))
-        (SETQ :RESULT (NEXTWORD? 'FOR))
-        (COND ((nil? :RESULT) (GO TO1)))
+        (SETQ ßRESULT (and (CQ COMPONENT) (PARSE VG TO TODEL)))
+        (COND (ßRESULT (GO VG1)))
+        (SETQ ßRESULT (NEXTWORD? 'FOR))
+        (COND ((nil? ßRESULT) (GO TO1)))
         (PARSE nil FOR)
         (FQ FOR)
         (PARSE NG SUBJ TOSUBJ)
         (SETR 'SUBJECT H C)
 TO1
         (and LABELTRACE (PASSING 'TO1))
-        (SETQ :RESULT (PARSE VG TO))
-        (COND (:RESULT (GO VG1)) (:else (M TO) (GO FAIL)))
+        (SETQ ßRESULT (PARSE VG TO))
+        (COND (ßRESULT (GO VG1)) (:else (M TO) (GO FAIL)))
 ING
         (and LABELTRACE (PASSING 'ING))
-        (SETQ :RESULT (MOVE-PTW N NW (ING)))
-        (COND ((nil? :RESULT) (GO FAIL)))
-        (SETQ :RESULT (or (NQ ING) (CQ OBJ2) (and (PARSE NG SUBJ INGSUBJ) (SETR 'SUBJECT H C) (FQ SUBING) (RQ ING))))
-        (COND ((and (nil? NN) :RESULT) (M ING) (GO FAIL)))
-        (SETQ :RESULT (PARSE VG ING))
-        (COND (:RESULT (GO VG1)) (:else (M ING) (GO FAIL)))
+        (SETQ ßRESULT (MOVE-PTW N NW (ING)))
+        (COND ((nil? ßRESULT) (GO FAIL)))
+        (SETQ ßRESULT (or (NQ ING) (CQ OBJ2) (and (PARSE NG SUBJ INGSUBJ) (SETR 'SUBJECT H C) (FQ SUBING) (RQ ING))))
+        (COND ((and (nil? NN) ßRESULT) (M ING) (GO FAIL)))
+        (SETQ ßRESULT (PARSE VG ING))
+        (COND (ßRESULT (GO VG1)) (:else (M ING) (GO FAIL)))
 REPORT
         (and LABELTRACE (PASSING 'REPORT))
         (and (NEXTWORD? 'THAT) (PARSE nil THAT) (FQ THAT))
@@ -10490,7 +10359,7 @@ RETURN
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (§ defn- NG []
-    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil]
+    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil]
         (SETQ NN true)
         (SETQ CUT END)
         (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -10526,30 +10395,30 @@ PROPN
         (and LABELTRACE (PASSING 'PROPN))
         (PARSE PROPN)
         (FQ DEF PROPNG)
-        (SETQ :RESULT (ISQ H POSS))
-        (COND (:RESULT (GO PROPS)))
-        (SETQ :RESULT (and NN (NQ PROPN)))
-        (COND (:RESULT (GO PROPN)))
+        (SETQ ßRESULT (ISQ H POSS))
+        (COND (ßRESULT (GO PROPS)))
+        (SETQ ßRESULT (and NN (NQ PROPN)))
+        (COND (ßRESULT (GO PROPN)))
 PROPS
         (and LABELTRACE (PASSING 'PROPS))
         (or (CALLSM (SMPROP)) (GO FAIL))
-        (SETQ :RESULT (ISQ H POSS))
-        (COND (:RESULT (GO POSS)) (:else (GO PRAG)))
+        (SETQ ßRESULT (ISQ H POSS))
+        (COND (ßRESULT (GO POSS)) (:else (GO PRAG)))
 PRON
         (and LABELTRACE (PASSING 'PRON))
-        (SETQ :RESULT (PARSE PRON POSS))
-        (COND (:RESULT (COND ((nil? NN) (GO RED2)) (:else (GO POSS)))))
+        (SETQ ßRESULT (PARSE PRON POSS))
+        (COND (ßRESULT (COND ((nil? NN) (GO RED2)) (:else (GO POSS)))))
 PRON2
         (and LABELTRACE (PASSING 'PRON2))
-        (SETQ :RESULT (CQ NPRON))
-        (COND (:RESULT (M NPRON) (GO FAIL)))
-        (SETQ :RESULT (or (and (CQ SUBJ) (PARSE PRON SUBJ)) (and (or (CQ OBJ) (CQ TOSUBJ) (CQ INGSUBJ)) (PARSE PRON OBJ)) (CQ INGSUBJ)))
-        (COND ((nil? :RESULT) (M PRON) (GO FAIL)))
+        (SETQ ßRESULT (CQ NPRON))
+        (COND (ßRESULT (M NPRON) (GO FAIL)))
+        (SETQ ßRESULT (or (and (CQ SUBJ) (PARSE PRON SUBJ)) (and (or (CQ OBJ) (CQ TOSUBJ) (CQ INGSUBJ)) (PARSE PRON OBJ)) (CQ INGSUBJ)))
+        (COND ((nil? ßRESULT) (M PRON) (GO FAIL)))
         (FQ PRONG DEF)
 PRON3
         (and LABELTRACE (PASSING 'PRON3))
-        (SETQ :RESULT (CALLSM (SMPRON H)))
-        (COND ((nil? :RESULT) (GO FAIL)))
+        (SETQ ßRESULT (CALLSM (SMPRON H)))
+        (COND ((nil? ßRESULT) (GO FAIL)))
 PRAG
         (and LABELTRACE (PASSING 'PRAG))
         (SETR 'HEAD H C)
@@ -10567,74 +10436,74 @@ TPRON
         (GO SMNG)
 EVERPRON
         (and LABELTRACE (PASSING 'EVERPRON))
-        (SETQ :RESULT (and (PARSE PRON EVERPRON) (CALLSM (SMPRON H))))
-        (COND ((nil? :RESULT) (GO FAIL)))
-        (SETQ :RESULT (and (PARSE CLAUSE RSQ NOREL) (CALLSM (SMRELATE H))))
-        (COND (:RESULT (GO RETSM)) (:else (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE PRON EVERPRON) (CALLSM (SMPRON H))))
+        (COND ((nil? ßRESULT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE CLAUSE RSQ NOREL) (CALLSM (SMRELATE H))))
+        (COND (ßRESULT (GO RETSM)) (:else (GO FAIL)))
 AS
         (and LABELTRACE (PASSING 'AS))
-        (SETQ :RESULT (and (PARSE nil AS) (PARSE NUMD NUMDAS) NN (PARSE nil AS)))
-        (COND (:RESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO NUMD2)))) (:else (M AS) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil AS) (PARSE NUMD NUMDAS) NN (PARSE nil AS)))
+        (COND (ßRESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO NUMD2)))) (:else (M AS) (GO FAIL)))
 AT
         (and LABELTRACE (PASSING 'AT))
-        (SETQ :RESULT (and (PARSE nil AT) (PARSE NUMD NUMDAT)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (M AT) (GO FAIL)) (:else (M AT) (GO FAIL)))))
+        (SETQ ßRESULT (and (PARSE nil AT) (PARSE NUMD NUMDAT)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (M AT) (GO FAIL)) (:else (M AT) (GO FAIL)))))
 NUMD2
         (and LABELTRACE (PASSING 'NUMD2))
-        (SETQ :RESULT (and (PARSE NUM) (FQ NUM NUMD)))
-        (COND (:RESULT (COND ((nil? NN) (GO INCOM)) (:else (GO DET1)))) (:else (M NUMD2) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE NUM) (FQ NUM NUMD)))
+        (COND (ßRESULT (COND ((nil? NN) (GO INCOM)) (:else (GO DET1)))) (:else (M NUMD2) (GO FAIL)))
 NUMD
         (and LABELTRACE (PASSING 'NUMD))
-        (SETQ :RESULT (PARSE NUMD NUMDAN))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO ND3)))))
-        (SETQ :RESULT (PARSE nil THAN))
-        (COND (:RESULT (COND ((nil? NN) (GO POPCOM)) (:else (GO NUMD2)))) (:else (GO INCOM)))
+        (SETQ ßRESULT (PARSE NUMD NUMDAN))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO ND3)))))
+        (SETQ ßRESULT (PARSE nil THAN))
+        (COND (ßRESULT (COND ((nil? NN) (GO POPCOM)) (:else (GO NUMD2)))) (:else (GO INCOM)))
 ND3
         (and LABELTRACE (PASSING 'ND3))
-        (SETQ :RESULT (PARSE NUMD NUMDALONE))
-        (COND (:RESULT (COND ((nil? NN) (M NUMD) (GO FAIL)) (:else (GO NUMD2)))) (:else (M NUMD) (GO FAIL)))
+        (SETQ ßRESULT (PARSE NUMD NUMDALONE))
+        (COND (ßRESULT (COND ((nil? NN) (M NUMD) (GO FAIL)) (:else (GO NUMD2)))) (:else (M NUMD) (GO FAIL)))
 TIME
         (and LABELTRACE (PASSING 'TIME))
-        (SETQ :RESULT (and (NQ TIME) (PARSE NOUN TIME)))
-        (COND (:RESULT (GO RETSM)))
-        (SETQ :RESULT (MOVE-PTW N NW (TIM1)))
-        (COND (:RESULT (GO LOOK)) (:else (M TIME) (GO FAIL)))
+        (SETQ ßRESULT (and (NQ TIME) (PARSE NOUN TIME)))
+        (COND (ßRESULT (GO RETSM)))
+        (SETQ ßRESULT (MOVE-PTW N NW (TIM1)))
+        (COND (ßRESULT (GO LOOK)) (:else (M TIME) (GO FAIL)))
 TIMORD
         (and LABELTRACE (PASSING 'TIMORD))
-        (SETQ :RESULT (PARSE ORD TIMORD))
-        (COND ((nil? :RESULT) (GO FAIL)))
-        (SETQ :RESULT (and (PARSE NOUN TIM1) (FQ DET DEF) (CALLSM (SMNGTIME))))
-        (COND (:RESULT (GO RETURN)) (:else (GO FAIL)))
+        (SETQ ßRESULT (PARSE ORD TIMORD))
+        (COND ((nil? ßRESULT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE NOUN TIM1) (FQ DET DEF) (CALLSM (SMNGTIME))))
+        (COND (ßRESULT (GO RETURN)) (:else (GO FAIL)))
 DET
         (and LABELTRACE (PASSING 'DET))
         (PARSE DET)
         (FQ DET)
         (MOVE-PT H)
-        (SETQ :RESULT (TRNSF NPL NS PART DEF INDEF ANY NEG QNTFR))
-        (COND (:RESULT (COND ((nil? NN) (GO INCOM)) (:else (GO IND)))) (:else (M BUG) (GO FAIL)))
+        (SETQ ßRESULT (TRNSF NPL NS PART DEF INDEF ANY NEG QNTFR))
+        (COND (ßRESULT (COND ((nil? NN) (GO INCOM)) (:else (GO IND)))) (:else (M BUG) (GO FAIL)))
 IND
         (and LABELTRACE (PASSING 'IND))
-        (SETQ :RESULT (and (EQ (WORD (NB H)) 'ALL) (EQ (WORD N) 'THE) (PARSE DET) (FQ DEF)))
-        (COND (:RESULT (COND ((nil? NN) (M THE) (GO FAIL)) (:else (GO NUM)))))
-        (SETQ :RESULT (and (ISQ H QNTFR) (FQ QNTFR)))
-        (COND (:RESULT (GO QNUM)))
+        (SETQ ßRESULT (and (EQ (WORD (NB H)) 'ALL) (EQ (WORD N) 'THE) (PARSE DET) (FQ DEF)))
+        (COND (ßRESULT (COND ((nil? NN) (M THE) (GO FAIL)) (:else (GO NUM)))))
+        (SETQ ßRESULT (and (ISQ H QNTFR) (FQ QNTFR)))
+        (COND (ßRESULT (GO QNUM)))
 ORD
         (and LABELTRACE (PASSING 'ORD))
-        (SETQ :RESULT (and (PARSE ORD) (FQ ORD)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO NUM)))))
-        (SETQ :RESULT (and (NEXTWORD? 'OF) (ISQ (MOVE-PTW N NW) MONTH) (PARSE nil OF) (PARSE NOUN MONTH) (FQ DATE)))
-        (COND (:RESULT (GO RETSM)))
-        (SETQ :RESULT (CQ DEF))
-        (COND ((nil? :RESULT) (GO ADJ)))
+        (SETQ ßRESULT (and (PARSE ORD) (FQ ORD)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO NUM)))))
+        (SETQ ßRESULT (and (NEXTWORD? 'OF) (ISQ (MOVE-PTW N NW) MONTH) (PARSE nil OF) (PARSE NOUN MONTH) (FQ DATE)))
+        (COND (ßRESULT (GO RETSM)))
+        (SETQ ßRESULT (CQ DEF))
+        (COND ((nil? ßRESULT) (GO ADJ)))
 NUM
         (and LABELTRACE (PASSING 'NUM))
-        (SETQ :RESULT (PARSE NUM))
-        (COND ((nil? :RESULT) (GO ADJ)))
+        (SETQ ßRESULT (PARSE NUM))
+        (COND ((nil? ßRESULT) (GO ADJ)))
         (FQ NUM)
-        (SETQ :RESULT (CQ DET))
-        (COND ((nil? :RESULT) (GO DET1)))
-        (SETQ :RESULT (COND ((and (ISQ H NS) (CQ NS)) (RQ NPL PART)) ((CQ NPL) (RQ NS PART))))
-        (COND (:RESULT (COND ((nil? NN) (GO INCOM)) (:else (GO ADJ)))) (:else (M NUM) (GO FAIL)))
+        (SETQ ßRESULT (CQ DET))
+        (COND ((nil? ßRESULT) (GO DET1)))
+        (SETQ ßRESULT (COND ((and (ISQ H NS) (CQ NS)) (RQ NPL PART)) ((CQ NPL) (RQ NS PART))))
+        (COND (ßRESULT (COND ((nil? NN) (GO INCOM)) (:else (GO ADJ)))) (:else (M NUM) (GO FAIL)))
 DET1
         (and LABELTRACE (PASSING 'DET1))
         (COND ((ISQ H NS) (FQ NS)) (:else (FQ NPL)))
@@ -10642,41 +10511,41 @@ DET1
 NUMBER
         (and LABELTRACE (PASSING 'NUMBER))
         (FQ DET)
-        (SETQ :RESULT (NQ OF))
-        (COND (:RESULT (GO OF)) (:else (GO ADJ)))
+        (SETQ ßRESULT (NQ OF))
+        (COND (ßRESULT (GO OF)) (:else (GO ADJ)))
 QNUM
         (and LABELTRACE (PASSING 'QNUM))
-        (SETQ :RESULT (ISQ H NONUM))
-        (COND (:RESULT (GO OF)))
-        (SETQ :RESULT (and (PARSE NUM) (FQ NUM)))
-        (COND ((nil? :RESULT) (GO OF)))
-        (SETQ :RESULT (COND ((EQ (SM H) 1) (and (CQ NS) (RQ NPL))) ((CQ NPL) (RQ NS))))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO INCOM)) (:else (M NUMD) (GO FAIL)))))
-        (SETQ :RESULT (EQ (WORD (NB H)) 'NO))
-        (COND (:RESULT (GO ADJ)))
+        (SETQ ßRESULT (ISQ H NONUM))
+        (COND (ßRESULT (GO OF)))
+        (SETQ ßRESULT (and (PARSE NUM) (FQ NUM)))
+        (COND ((nil? ßRESULT) (GO OF)))
+        (SETQ ßRESULT (COND ((EQ (SM H) 1) (and (CQ NS) (RQ NPL))) ((CQ NPL) (RQ NS))))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO INCOM)) (:else (M NUMD) (GO FAIL)))))
+        (SETQ ßRESULT (EQ (WORD (NB H)) 'NO))
+        (COND (ßRESULT (GO ADJ)))
 OF
         (and LABELTRACE (PASSING 'OF))
-        (SETQ :RESULT (and (NQ OF) (PARSE PREPG OF)))
-        (COND (:RESULT (GO SMOF)) (:else (GO NONE)))
+        (SETQ ßRESULT (and (NQ OF) (PARSE PREPG OF)))
+        (COND (ßRESULT (GO SMOF)) (:else (GO NONE)))
 SMOF
         (and LABELTRACE (PASSING 'SMOF))
         (FQ OF)
-        (SETQ :RESULT (or (CALLSM (SMNGOF)) (not (POP))))
-        (COND (:RESULT (GO RETSM)) (:else (GO INCOM)))
+        (SETQ ßRESULT (or (CALLSM (SMNGOF)) (not (POP))))
+        (COND (ßRESULT (GO RETSM)) (:else (GO INCOM)))
 NONE
         (and LABELTRACE (PASSING 'NONE))
-        (SETQ :RESULT (EQ (WORD (NB H)) 'NONE))
-        (COND (:RESULT (GO INCOM)) (:else (GO ADJ)))
+        (SETQ ßRESULT (EQ (WORD (NB H)) 'NONE))
+        (COND (ßRESULT (GO INCOM)) (:else (GO ADJ)))
 ADJ
         (and LABELTRACE (PASSING 'ADJ))
-        (SETQ :RESULT (PARSE ADJ))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO EPR)))))
+        (SETQ ßRESULT (PARSE ADJ))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO EPR)))))
         (and (ISQ H COMPAR) (FQ COMPARATIVE-MODIFIER) (SETR 'COMPARATIVE-MODIFIER H C))
         (GO ADJ)
 EPR
         (and LABELTRACE (PASSING 'EPR))
-        (SETQ :RESULT (or (ISQ H SUP) (ISQ H COMPAR)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO CLASF)))))
+        (SETQ ßRESULT (or (ISQ H SUP) (ISQ H COMPAR)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO CLASF)))))
         (FQ ADJ)
         (and (NEXTWORD? 'OF)
             (PARSE PREPG OF)
@@ -10685,72 +10554,72 @@ EPR
             (GO RETSM))
 CLASF
         (and LABELTRACE (PASSING 'CLASF))
-        (SETQ :RESULT (or (PARSE VB ING (CLASF)) (PARSE VB EN (CLASF)) (PARSE CLASF)))
-        (COND (:RESULT (COND ((nil? NN) (GO REDUC)) (:else (GO CLASF)))))
+        (SETQ ßRESULT (or (PARSE VB ING (CLASF)) (PARSE VB EN (CLASF)) (PARSE CLASF)))
+        (COND (ßRESULT (COND ((nil? NN) (GO REDUC)) (:else (GO CLASF)))))
 NOUN
         (and LABELTRACE (PASSING 'NOUN))
-        (SETQ :RESULT (PARSE NOUN))
-        (COND ((nil? :RESULT) (GO RED2)))
-        (SETQ :RESULT (and (CQ TIME) (not (ISQ H TIM1))))
-        (COND (:RESULT (GO RED1)))
+        (SETQ ßRESULT (PARSE NOUN))
+        (COND ((nil? ßRESULT) (GO RED2)))
+        (SETQ ßRESULT (and (CQ TIME) (not (ISQ H TIM1))))
+        (COND (ßRESULT (GO RED1)))
         (SETQ T1 FE)
         (COND ((and (ISQ H MASS) (or (CQ PART) (not (CQ DET)))) (FQ MASS)))
         (COND ((not (ISQ H NPL)) (RQ NPL PART)))
         (COND ((not (ISQ H NS)) (RQ NS)))
         (COND ((and (not (CQ DET)) (not (CQ NUMD))) (MOVE-PT H) (TRNSF NPL MASS)))
-        (SETQ :RESULT (MEET FE '(NS NPL PART MASS)))
-        (COND ((nil? :RESULT) (GO RED0)))
-        (SETQ :RESULT (NEXTWORD? 'THAN))
-        (COND ((nil? :RESULT) (GO SMNG)))
+        (SETQ ßRESULT (MEET FE '(NS NPL PART MASS)))
+        (COND ((nil? ßRESULT) (GO RED0)))
+        (SETQ ßRESULT (NEXTWORD? 'THAN))
+        (COND ((nil? ßRESULT) (GO SMNG)))
         (FQ THAN)
 SMNG
         (and LABELTRACE (PASSING 'SMNG))
         (SETR 'HEAD H C)
-        (SETQ :RESULT (and (CQ OBOFJ) (not (CQ DEF))))
-        (COND (:RESULT (GO FAIL)))
+        (SETQ ßRESULT (and (CQ OBOFJ) (not (CQ DEF))))
+        (COND (ßRESULT (GO FAIL)))
         (or (CALLSM (SMNG1)) (GO FAIL))
-        (SETQ :RESULT (not (ISQ H POSS)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO RETSM)) (:else (GO POSS)))))
-        (SETQ :RESULT (and (CQ THAN) (PARSE ADJG)))
-        (COND ((nil? :RESULT) (GO RSQ-TO)))
-        (SETQ :RESULT (CALLSM (SMRELATE H)))
-        (COND (:RESULT (GO RETSM)) (:else (GO FAIL)))
+        (SETQ ßRESULT (not (ISQ H POSS)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO RETSM)) (:else (GO POSS)))))
+        (SETQ ßRESULT (and (CQ THAN) (PARSE ADJG)))
+        (COND ((nil? ßRESULT) (GO RSQ-TO)))
+        (SETQ ßRESULT (CALLSM (SMRELATE H)))
+        (COND (ßRESULT (GO RETSM)) (:else (GO FAIL)))
 RSQ-TO
         (and LABELTRACE (PASSING 'RSQ-TO))
-        (SETQ :RESULT (and (NEXTWORD? 'TO) (MEET FE '(COMP SUBJ)) (PARSE CLAUSE RSQ TO) (or (CALLSM (SMRELATE H)) (GO POPRET))))
-        (COND (:RESULT (GO RETSM)))
-        (SETQ :RESULT (and (or (NEXTWORD? 'AS) (NQ COMPAR)) (PARSE ADJG THANNEED)))
-        (COND ((nil? :RESULT) (GO PREPNG)))
+        (SETQ ßRESULT (and (NEXTWORD? 'TO) (MEET FE '(COMP SUBJ)) (PARSE CLAUSE RSQ TO) (or (CALLSM (SMRELATE H)) (GO POPRET))))
+        (COND (ßRESULT (GO RETSM)))
+        (SETQ ßRESULT (and (or (NEXTWORD? 'AS) (NQ COMPAR)) (PARSE ADJG THANNEED)))
+        (COND ((nil? ßRESULT) (GO PREPNG)))
         (and (nil? N) (CQ SUBJ) (ISQ (MOVE-PT C PV) AUX) (ISQ PT BE) (GO POPRET))
-        (SETQ :RESULT (CALLSM (SMRELATE H)))
-        (COND (:RESULT (COND ((nil? NN) (GO RETSM)) (:else (GO RSQ-TO)))) (:else (GO POPRET)))
+        (SETQ ßRESULT (CALLSM (SMRELATE H)))
+        (COND (ßRESULT (COND ((nil? NN) (GO RETSM)) (:else (GO RSQ-TO)))) (:else (GO POPRET)))
 PREPNG
         (and LABELTRACE (PASSING 'PREPNG))
-        (SETQ :RESULT (and (NQ PREP) (not (or (and (NQ PLACE) (CQ NOLOC)) (and (CQ OBJ1) (ISQ MVB TRANSL) (not (ISQ (MOVE-PT C U) QUEST))))) (PARSE PREPG Q)))
-        (COND ((nil? :RESULT) (GO DISGRSQ)))
+        (SETQ ßRESULT (and (NQ PREP) (not (or (and (NQ PLACE) (CQ NOLOC)) (and (CQ OBJ1) (ISQ MVB TRANSL) (not (ISQ (MOVE-PT C U) QUEST))))) (PARSE PREPG Q)))
+        (COND ((nil? ßRESULT) (GO DISGRSQ)))
         (and (nil? N)
             (CQ SUBJ)
             (ISQ (MOVE-PT C PV) AUX)
             (ISQ PT BE)
             (not (ISQ (MOVE-PT U) NGQ))
             (GO POPRET))
-        (SETQ :RESULT (CALLSM (SMRELATE H)))
-        (COND (:RESULT (COND ((nil? NN) (GO RETSM)) (:else (GO RSQ-TO)))) (:else (GO POPRET)))
+        (SETQ ßRESULT (CALLSM (SMRELATE H)))
+        (COND (ßRESULT (COND ((nil? NN) (GO RETSM)) (:else (GO RSQ-TO)))) (:else (GO POPRET)))
 DISGRSQ
         (and LABELTRACE (PASSING 'DISGRSQ))
-        (SETQ :RESULT (EQ (car MES) 'PREP-WHICH))
-        (COND ((nil? :RESULT) (GO RSQ)))
+        (SETQ ßRESULT (EQ (car MES) 'PREP-WHICH))
+        (COND ((nil? ßRESULT) (GO RSQ)))
         (SETQ MES (cdr MES))
-        (SETQ :RESULT (PARSE CLAUSE RSQ PREPREL))
-        (COND (:RESULT (COND ((nil? NN) (GO RETSM)) (:else (GO PREPNG)))) (:else (M RSQ-PREPREL) (GO FAIL)))
+        (SETQ ßRESULT (PARSE CLAUSE RSQ PREPREL))
+        (COND (ßRESULT (COND ((nil? NN) (GO RETSM)) (:else (GO PREPNG)))) (:else (M RSQ-PREPREL) (GO FAIL)))
 RSQ
         (and LABELTRACE (PASSING 'RSQ))
-        (SETQ :RESULT (and (ISQ (MOVE-PT C U) POLR2) (CQ SUBJ) (NQ VB) (not (CQ SUBJT)) (not (ISQ PT QADJ))))
-        (COND (:RESULT (GO RETSM)))
-        (SETQ :RESULT (PARSE CLAUSE RSQ))
-        (COND ((nil? :RESULT) (GO RETSM)))
-        (SETQ :RESULT (CALLSM (SMRELATE H)))
-        (COND (:RESULT (GO RETSM)) (:else (GO POPRET)))
+        (SETQ ßRESULT (and (ISQ (MOVE-PT C U) POLR2) (CQ SUBJ) (NQ VB) (not (CQ SUBJT)) (not (ISQ PT QADJ))))
+        (COND (ßRESULT (GO RETSM)))
+        (SETQ ßRESULT (PARSE CLAUSE RSQ))
+        (COND ((nil? ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (CALLSM (SMRELATE H)))
+        (COND (ßRESULT (GO RETSM)) (:else (GO POPRET)))
 RED0
         (and LABELTRACE (PASSING 'RED0))
         (SETQ FE T1)
@@ -10769,18 +10638,18 @@ RED2
 REDUC
         (and LABELTRACE (PASSING 'REDUC))
         (POP)
-        (SETQ :RESULT (and (nil? H) (NQ PROPN)))
-        (COND (:RESULT (GO PROPN)) (:else (GO NOUN)))
+        (SETQ ßRESULT (and (nil? H) (NQ PROPN)))
+        (COND (ßRESULT (GO PROPN)) (:else (GO NOUN)))
 POPCOM
         (and LABELTRACE (PASSING 'POPCOM))
         (POP)
 INCOM
         (and LABELTRACE (PASSING 'INCOM))
         (FQ INCOM)
-        (SETQ :RESULT (and (ISQ H DET) (ISQ H INCOM) (CALLSM (SMINCOM))))
-        (COND (:RESULT (GO RETURN)))
-        (SETQ :RESULT (and (nil? CUT) (CQ NUM)))
-        (COND (:RESULT (GO SMNG)))
+        (SETQ ßRESULT (and (ISQ H DET) (ISQ H INCOM) (CALLSM (SMINCOM))))
+        (COND (ßRESULT (GO RETURN)))
+        (SETQ ßRESULT (and (nil? CUT) (CQ NUM)))
+        (COND (ßRESULT (GO SMNG)))
 QDETCHECK
         (and LABELTRACE (PASSING 'QDETCHECK))
         (COND ((and (ISQ H QDET) (ISQ (NB H) QPRON)) (POP) (GO QPRON))
@@ -10791,38 +10660,38 @@ POSS
         (or (CALLSM (SMNG2)) (GO FAIL))
 POSS2
         (and LABELTRACE (PASSING 'POSS2))
-        (SETQ :RESULT (CQ INGSUBJ))
-        (COND (:RESULT (GO RETSM)))
+        (SETQ ßRESULT (CQ INGSUBJ))
+        (COND (ßRESULT (GO RETSM)))
         (SETQ H (BUILDNODE (reverse (cons 'POSS (SETDIF FE '(COMPONENT)))) NB N H SM))
         (SETQ BACKREF (concat H (cdr BACKREF)))
-        (SETQ :RESULT (SETR 'FEATURES (SETQ FE (concat '(POSES DET DEF NS NPL) (reverse REST))) C))
-        (COND ((nil? :RESULT) (M BUG) (GO FAIL)))
-        (SETQ :RESULT (or (not NN) (ISQ H DEFPOSS)))
-        (COND ((nil? :RESULT) (GO ORD)))
+        (SETQ ßRESULT (SETR 'FEATURES (SETQ FE (concat '(POSES DET DEF NS NPL) (reverse REST))) C))
+        (COND ((nil? ßRESULT) (M BUG) (GO FAIL)))
+        (SETQ ßRESULT (or (not NN) (ISQ H DEFPOSS)))
+        (COND ((nil? ßRESULT) (GO ORD)))
 POSSDEF
         (and LABELTRACE (PASSING 'POSSDEF))
         (RQ POSES DET DEF)
         (FQ POSSDEF NS NPL)
 QUEST
         (and LABELTRACE (PASSING 'QUEST))
-        (SETQ :RESULT (PARSE nil HOW))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO FAIL)) (:else (GO QDET)))))
-        (SETQ :RESULT (PARSE nil MANY))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO FAIL)))))
+        (SETQ ßRESULT (PARSE nil HOW))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO FAIL)) (:else (GO QDET)))))
+        (SETQ ßRESULT (PARSE nil MANY))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO INCOM)) (:else (GO FAIL)))))
         (FQ DET NPL INDEF HOWMANY)
         (GO OF)
 QDET
         (and LABELTRACE (PASSING 'QDET))
-        (SETQ :RESULT (and (PARSE DET QDET) (FQ DET NPL QDET NS)))
-        (COND (:RESULT (COND ((nil? NN) (GO INCOM)) (:else (GO QNUM)))))
+        (SETQ ßRESULT (and (PARSE DET QDET) (FQ DET NPL QDET NS)))
+        (COND (ßRESULT (COND ((nil? NN) (GO INCOM)) (:else (GO QNUM)))))
 QPRON
         (and LABELTRACE (PASSING 'QPRON))
-        (SETQ :RESULT (PARSE PRON QPRON))
-        (COND (:RESULT (GO PRON3)) (:else (GO FAIL)))
+        (SETQ ßRESULT (PARSE PRON QPRON))
+        (COND (ßRESULT (GO PRON3)) (:else (GO FAIL)))
 RELWD
         (and LABELTRACE (PASSING 'RELWD))
-        (SETQ :RESULT (and (PARSE PRONREL) (CALLSM (SMSET (SM (MOVE-PT C U U (NG)))))))
-        (COND (:RESULT (GO RETURN)))
+        (SETQ ßRESULT (and (PARSE PRONREL) (CALLSM (SMSET (SM (MOVE-PT C U U (NG)))))))
+        (COND (ßRESULT (GO RETURN)))
 POPRET
         (and LABELTRACE (PASSING 'POPRET))
         (POP)
@@ -10832,14 +10701,14 @@ RETSM
         (GO RETURN)
 TRYA
         (and LABELTRACE (PASSING 'TRYA))
-        (SETQ :RESULT (ISQ H NOUN))
-        (COND ((nil? :RESULT) (M TRYA) (GO FAIL)))
+        (SETQ ßRESULT (ISQ H NOUN))
+        (COND ((nil? ßRESULT) (M TRYA) (GO FAIL)))
         (POP)
         (CUT N)
 UP
         (and LABELTRACE (PASSING 'UP))
-        (SETQ :RESULT (POP))
-        (COND (:RESULT (GO UP)))
+        (SETQ ßRESULT (POP))
+        (COND (ßRESULT (GO UP)))
         (SETQ FE (reverse REST))
         (SMSET nil)
         (GO NGSTART)
@@ -10852,7 +10721,7 @@ RETURN
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (§ defn- VG []
-    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil TENSE nil]
+    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil TENSE nil]
         (SETQ NN true)
         (SETQ CUT END)
         (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -10882,40 +10751,40 @@ SIMPLE
 TO
         (and LABELTRACE (PASSING 'TO))
         (FQ NAGR)
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
-        (SETQ :RESULT (or (PARSE nil TO) (CQ TODEL)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (M TO) (GO FAIL)) (:else (M TO) (GO FAIL)))))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (or (PARSE nil TO) (CQ TODEL)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (M TO) (GO FAIL)) (:else (M TO) (GO FAIL)))))
         (SETQ TENSE '(INFINITIVE))
         (GO MODAL2)
 EN
         (and LABELTRACE (PASSING 'EN))
         (FQ NAGR)
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
         (SETQ TENSE '(PAST))
-        (SETQ :RESULT (and (PARSE VB EN (MVB)) (SETMVB H) (FQ PASV)))
-        (COND (:RESULT (GO RETSM)) (:else (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE VB EN (MVB)) (SETMVB H) (FQ PASV)))
+        (COND (ßRESULT (GO RETSM)) (:else (GO FAIL)))
 ING
         (and LABELTRACE (PASSING 'ING))
         (FQ NAGR)
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
 INGADV
         (and LABELTRACE (PASSING 'INGADV))
-        (SETQ :RESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
-        (COND (:RESULT (GO INGADV)))
+        (SETQ ßRESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
+        (COND (ßRESULT (GO INGADV)))
         (SETQ TENSE '(PRESENT))
         (GO BE2)
 IMPER
         (and LABELTRACE (PASSING 'IMPER))
-        (SETQ :RESULT (and (PARSE VB DO NEG INF) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M DONT) (GO FAIL)))
-        (SETQ :RESULT (and (PARSE VB (MVB) INF) (SETMVB H) (CALLSM (SMVG))))
-        (COND (:RESULT (GO RETURN)) (:else (M IMPER) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE VB DO NEG INF) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M DONT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE VB (MVB) INF) (SETMVB H) (CALLSM (SMVG))))
+        (COND (ßRESULT (GO RETURN)) (:else (M IMPER) (GO FAIL)))
 POLR2
         (and LABELTRACE (PASSING 'POLR2))
-        (or (SETQ PT (GETR 'QAUX (MOVE-PT C U))) (and (BUG "VG:POLR2") (GO FAIL)))
+        (or (SETQ PT (GETR 'QAUX (MOVE-PT C U))) (and (BUG "VGßPOLR2") (GO FAIL)))
         (SETQ H (list (car PT)))
         (TRNSF NEG)
         (COND ((ISQ H DO) (GO DO))
@@ -10923,7 +10792,7 @@ POLR2
             ((ISQ H WILL) (GO WILL))
             ((ISQ H BE) (GO BE))
             ((ISQ H HAVE) (GO HAVE)))
-        (ERT BUG "VG:POLR2VB")
+        (ERT BUG "VGßPOLR2VB")
         (GO FAIL)
 DO
         (and LABELTRACE (PASSING 'DO))
@@ -10934,14 +10803,14 @@ DO
         (COND (NN (GO DO2)) (:else (GO MVB)))
 DO2
         (and LABELTRACE (PASSING 'DO2))
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
 ADV2
         (and LABELTRACE (PASSING 'ADV2))
-        (SETQ :RESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
-        (COND (:RESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV2)))))
-        (SETQ :RESULT (PARSE VB (MVB) INF))
-        (COND ((nil? :RESULT) (GO MVB)))
+        (SETQ ßRESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
+        (COND (ßRESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV2)))))
+        (SETQ ßRESULT (PARSE VB (MVB) INF))
+        (COND ((nil? ßRESULT) (GO MVB)))
         (GO REV)
 MODAL
         (and LABELTRACE (PASSING 'MODAL))
@@ -10950,12 +10819,12 @@ MODAL
         (COND (NN (GO MODAL2)) (:else (GO INCOMP)))
 MODAL2
         (and LABELTRACE (PASSING 'MODAL2))
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
 ADV3
         (and LABELTRACE (PASSING 'ADV3))
-        (SETQ :RESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
-        (COND (:RESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV3)))))
+        (SETQ ßRESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
+        (COND (ßRESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV3)))))
         (COND ((PARSE VB BE INF) (GOCOND BE2 MVB))
             ((PARSE VB HAVE INF) (GOCOND HAV2 MVB))
             ((PARSE VB INF (MVB)) (GO REV))
@@ -10973,28 +10842,28 @@ BE
         (COND (NN (GO BE2)) (:else (GO MVB)))
 BE2
         (and LABELTRACE (PASSING 'BE2))
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
 ADV4
         (and LABELTRACE (PASSING 'ADV4))
-        (SETQ :RESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
-        (COND (:RESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV4)))))
+        (SETQ ßRESULT (or (PARSE ADV TIMW) (PARSE ADV VBAD)))
+        (COND (ßRESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV4)))))
         (COND ((and (NEXTWORD? 'GOING) (PARSE VB)) (GO GOING))
             ((and (NQ BE) (PARSE VB ING)) (SETQ TENSE (cons 'PRESENT TENSE)) (GO EN2))
             ((and (NQ ING) (PARSE VB ING (MVB))) (SETQ TENSE (cons 'PRESENT TENSE)) (GO REV))
             ((CQ ING) (MQ ING) (GO FAIL)))
 EN2
         (and LABELTRACE (PASSING 'EN2))
-        (SETQ :RESULT (PARSE VB EN (MVB)))
-        (COND ((nil? :RESULT) (GO MVBE)))
+        (SETQ ßRESULT (PARSE VB EN (MVB)))
+        (COND ((nil? ßRESULT) (GO MVBE)))
         (FQ PASV)
         (GO REV)
 GOING
         (and LABELTRACE (PASSING 'GOING))
-        (SETQ :RESULT (PARSE nil TO))
-        (COND ((nil? :RESULT) (GO GOI)))
-        (SETQ :RESULT (NQ INF))
-        (COND (:RESULT (GO GOING2)))
+        (SETQ ßRESULT (PARSE nil TO))
+        (COND ((nil? ßRESULT) (GO GOI)))
+        (SETQ ßRESULT (NQ INF))
+        (COND (ßRESULT (GO GOING2)))
         (POP)
 GOI
         (and LABELTRACE (PASSING 'GOI))
@@ -11006,10 +10875,10 @@ GOING2
         (GO MODAL2)
 MVBE
         (and LABELTRACE (PASSING 'MVBE))
-        (SETQ :RESULT (ISQ (MOVE-PT H PV (VB)) AUX))
-        (COND ((nil? :RESULT) (GO MVB)))
-        (SETQ :RESULT (ISQ PT BE))
-        (COND ((nil? :RESULT) (M MVBE) (GO FAIL)))
+        (SETQ ßRESULT (ISQ (MOVE-PT H PV (VB)) AUX))
+        (COND ((nil? ßRESULT) (GO MVB)))
+        (SETQ ßRESULT (ISQ PT BE))
+        (COND ((nil? ßRESULT) (M MVBE) (GO FAIL)))
         (SETMVB PT)
         (GO REV)
 HAVE
@@ -11020,20 +10889,20 @@ HAVE
         (COND (NN (GO HAV2)) (:else (GO MVB)))
 HAV2
         (and LABELTRACE (PASSING 'HAV2))
-        (SETQ :RESULT (and (PARSE nil NOT) (FQ NEG)))
-        (COND ((and (nil? NN) :RESULT) (M NOT) (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil NOT) (FQ NEG)))
+        (COND ((and (nil? NN) ßRESULT) (M NOT) (GO FAIL)))
 ADV5
         (and LABELTRACE (PASSING 'ADV5))
-        (SETQ :RESULT (PARSE ADV))
-        (COND (:RESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV5)))))
-        (SETQ :RESULT (PARSE VB BE EN))
-        (COND ((nil? :RESULT) (GO HAV3)))
+        (SETQ ßRESULT (PARSE ADV))
+        (COND (ßRESULT (COND ((nil? NN) (M ADV) (GO FAIL)) (:else (GO ADV5)))))
+        (SETQ ßRESULT (PARSE VB BE EN))
+        (COND ((nil? ßRESULT) (GO HAV3)))
         (SETQ TENSE (cons 'PAST TENSE))
         (COND (NN (GO BE2)) (:else (GO MVB)))
 HAV3
         (and LABELTRACE (PASSING 'HAV3))
-        (SETQ :RESULT (PARSE VB (MVB) EN))
-        (COND ((nil? :RESULT) (GO MVB)))
+        (SETQ ßRESULT (PARSE VB (MVB) EN))
+        (COND ((nil? ßRESULT) (GO MVB)))
         (SETQ TENSE (cons 'PAST TENSE))
         (GO REV)
 INCOMP
@@ -11042,11 +10911,11 @@ INCOMP
         (GO FAIL)
 MVB
         (and LABELTRACE (PASSING 'MVB))
-        (SETQ :RESULT (EQ (FE MVB) (FE H)))
-        (COND (:RESULT (GO MVB2)))
+        (SETQ ßRESULT (EQ (FE MVB) (FE H)))
+        (COND (ßRESULT (GO MVB2)))
         (POP VB)
-        (SETQ :RESULT (PARSE VB (MVB)))
-        (COND ((nil? :RESULT) (M MVB) (GO FAIL)))
+        (SETQ ßRESULT (PARSE VB (MVB)))
+        (COND ((nil? ßRESULT) (M MVB) (GO FAIL)))
 MVB2
         (and LABELTRACE (PASSING 'MVB2))
         (GO REV)
@@ -11064,22 +10933,22 @@ REV
         (COND ((or (ISQ PT PART) (ISQ PT NPL)) (or (and (MEET FE '(INF VPL)) (SETQ T3 true)) (FESET PT (SETDIF (FE PT) '(PART NPL))))))
 NAGR
         (and LABELTRACE (PASSING 'NAGR))
-        (SETQ :RESULT (or T3 (and (EQUAL '(PAST-PRESENT) TENSE) (SETQ TENSE '(PAST)))))
-        (COND ((nil? :RESULT) (M NAGR) (GO FAIL)))
+        (SETQ ßRESULT (or T3 (and (EQUAL '(PAST-PRESENT) TENSE) (SETQ TENSE '(PAST)))))
+        (COND ((nil? ßRESULT) (M NAGR) (GO FAIL)))
 NAUX
         (and LABELTRACE (PASSING 'NAUX))
         (SETMVB (or (MOVE-PT H PV (MVB)) MVB))
-        (SETQ :RESULT
+        (SETQ ßRESULT
         (and (CQ NAUX) (ISQ (MOVE-PT H PV (VB)) AUX) (not (MOVE-PT PV PV (VB)))))
-        (COND (:RESULT (M NAUX) (GO FAIL)) (:else (GO RETSM)))
+        (COND (ßRESULT (M NAUX) (GO FAIL)) (:else (GO RETSM)))
 POPV
         (and LABELTRACE (PASSING 'POPV))
         (ERT POPV)
         (GO FAIL)
 RETSM
         (and LABELTRACE (PASSING 'RETSM))
-        (SETQ :RESULT (CALLSM (SMVG)))
-        (COND (:RESULT (GO RETURN)) (:else (GO FAIL)))
+        (SETQ ßRESULT (CALLSM (SMVG)))
+        (COND (ßRESULT (GO RETURN)) (:else (GO FAIL)))
 FAIL
         (SETQ MES ME)
         (SETQ N (or (N RE) NB))
@@ -11089,7 +10958,7 @@ RETURN
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (§ defn- PREPG []
-    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil]
+    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil]
         (SETQ NN true)
         (SETQ CUT END)
         (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -11098,12 +10967,12 @@ ENTERING-PREPG
         (and LABELTRACE (PASSING 'ENTERING-PREPG))
 ADV
         (and LABELTRACE (PASSING 'ADV))
-        (SETQ :RESULT (and (NQ PREPADV) (PARSE ADV PREPADV)))
-        (COND (:RESULT (COND ((nil? NN) (M PREPADV) (GO FAIL)) (:else (GO ADV)))))
-        (SETQ :RESULT (COND ((CQ AGENT) (NEXTWORD? 'BY)) ((CQ LOC) (NQ PLACE)) ((CQ Q) (not (NQ MOTOR))) (:else true)))
-        (COND ((nil? :RESULT) (M PREP) (GO FAIL)))
-        (SETQ :RESULT (PARSE PREP))
-        (COND ((nil? :RESULT) (M PREP) (GO FAIL)))
+        (SETQ ßRESULT (and (NQ PREPADV) (PARSE ADV PREPADV)))
+        (COND (ßRESULT (COND ((nil? NN) (M PREPADV) (GO FAIL)) (:else (GO ADV)))))
+        (SETQ ßRESULT (COND ((CQ AGENT) (NEXTWORD? 'BY)) ((CQ LOC) (NQ PLACE)) ((CQ Q) (not (NQ MOTOR))) (:else true)))
+        (COND ((nil? ßRESULT) (M PREP) (GO FAIL)))
+        (SETQ ßRESULT (PARSE PREP))
+        (COND ((nil? ßRESULT) (M PREP) (GO FAIL)))
         (MOVE-PT H)
         (TRNSF PLACE TIME)
         (SETQ T1 H)
@@ -11112,31 +10981,31 @@ ADV
                 ((SETQ T1 (COMBINATION? (WORD (NB H)) (WORD N) (WORD (cdr N)))) (PARSE PREP2) (PARSE PREP2)))
             (SETQ T1 (BUILDNODE (FE T1) NB N 'WORD (SM T1)))
             (SETR 'PARENT C T1))
-        (SETQ :RESULT (ISQ H NEED2))
-        (COND (:RESULT (M NEED2) (GO FAIL)))
+        (SETQ ßRESULT (ISQ H NEED2))
+        (COND (ßRESULT (M NEED2) (GO FAIL)))
         (SETR 'HEAD T1 C)
         (or NN (GO SHORT))
         (COND ((EQ (WORD H) 'BY) (FQ AGENT)))
 QUEST
         (and LABELTRACE (PASSING 'QUEST))
-        (SETQ :RESULT (CQ QUEST))
-        (COND ((nil? :RESULT) (GO NG)))
-        (SETQ :RESULT (PARSE NG QUEST OBJ))
-        (COND (:RESULT (GO OBJR)) (:else (M PREPQUEST) (GO FAIL)))
-        (SETQ :RESULT (and (CQ OF) (PARSE NG OFOBJ)))
-        (COND (:RESULT (GO OBJR)))
+        (SETQ ßRESULT (CQ QUEST))
+        (COND ((nil? ßRESULT) (GO NG)))
+        (SETQ ßRESULT (PARSE NG QUEST OBJ))
+        (COND (ßRESULT (GO OBJR)) (:else (M PREPQUEST) (GO FAIL)))
+        (SETQ ßRESULT (and (CQ OF) (PARSE NG OFOBJ)))
+        (COND (ßRESULT (GO OBJR)))
 NG
         (and LABELTRACE (PASSING 'NG))
-        (SETQ :RESULT (PARSE NG OBJ))
-        (COND (:RESULT (GO OBJR)))
+        (SETQ ßRESULT (PARSE NG OBJ))
+        (COND (ßRESULT (GO OBJR)))
 REL
         (and LABELTRACE (PASSING 'REL))
-        (SETQ :RESULT (NEXTWORD? 'WHICH))
-        (COND ((nil? :RESULT) (GO REST)))
-        (SETQ :RESULT (ISQ (MOVE-PT U) CLAUSE))
-        (COND ((nil? :RESULT) (M PREP-WHICH) (GO FAIL)))
-        (SETQ :RESULT (ISQ PT PRONREL))
-        (COND ((nil? :RESULT) (GO PRONREL)))
+        (SETQ ßRESULT (NEXTWORD? 'WHICH))
+        (COND ((nil? ßRESULT) (GO REST)))
+        (SETQ ßRESULT (ISQ (MOVE-PT U) CLAUSE))
+        (COND ((nil? ßRESULT) (M PREP-WHICH) (GO FAIL)))
+        (SETQ ßRESULT (ISQ PT PRONREL))
+        (COND ((nil? ßRESULT) (GO PRONREL)))
         (SETQ MES (cdr MES))
         (GO P-RELWRD)
 PRONREL
@@ -11150,16 +11019,16 @@ P-RELWRD
         (GO RETT)
 REST
         (and LABELTRACE (PASSING 'REST))
-        (SETQ :RESULT (PARSE CLAUSE RSNG ING))
-        (COND (:RESULT (GO OBJR)) (:else (GO SHORT)))
+        (SETQ ßRESULT (PARSE CLAUSE RSNG ING))
+        (COND (ßRESULT (GO OBJR)) (:else (GO SHORT)))
 OBJR
         (and LABELTRACE (PASSING 'OBJR))
         (SETR 'OBJ1 H C)
         (GO RETT)
 SHORT
         (and LABELTRACE (PASSING 'SHORT))
-        (SETQ :RESULT (MEET FE '(NOSHORT Q)))
-        (COND (:RESULT (M SHORT) (GO FAIL)))
+        (SETQ ßRESULT (MEET FE '(NOSHORT Q)))
+        (COND (ßRESULT (M SHORT) (GO FAIL)))
         (or (ISQ (MOVE-PT C U) REL-NOT-FOUND) (ISQ (GETR 'QUESTION-ELEMENT PT) QADJ) (GO FAIL))
         (REMOVE-F-PT 'REL-NOT-FOUND PT)
         (ADD-F-PT 'PREPREL PT)
@@ -11167,8 +11036,8 @@ SHORT
 RETT
         (and LABELTRACE (PASSING 'RETT))
         (and (or (ISQ H QUEST) (and (ISQ H COMPOUND) (MOVE-PT H H PV (QUEST)))) (FQ QUEST))
-        (SETQ :RESULT (CALLSM (SMADJG-PREPG)))
-        (COND (:RESULT (GO RETURN)) (:else (GO FAIL)))
+        (SETQ ßRESULT (CALLSM (SMADJG-PREPG)))
+        (COND (ßRESULT (GO RETURN)) (:else (GO FAIL)))
 FAIL
         (SETQ MES ME)
         (SETQ N (or (N RE) NB))
@@ -11178,7 +11047,7 @@ RETURN
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (§ defn- ADJG []
-    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil]
+    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil]
         (SETQ NN true)
         (SETQ CUT END)
         (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -11187,51 +11056,51 @@ ENTERING-ADJG
         (and LABELTRACE (PASSING 'ENTERING-ADJG))
 COMPCHECK
         (and LABELTRACE (PASSING 'COMPCHECK))
-        (SETQ :RESULT (and (MOVE-PT C U (BE)) (not (CQ COMP))))
-        (COND (:RESULT (GO FAIL)))
-        (SETQ :RESULT (ISQ (MOVE-PT C U) THAN))
-        (COND ((nil? :RESULT) (GO DISP)))
+        (SETQ ßRESULT (and (MOVE-PT C U (BE)) (not (CQ COMP))))
+        (COND (ßRESULT (GO FAIL)))
+        (SETQ ßRESULT (ISQ (MOVE-PT C U) THAN))
+        (COND ((nil? ßRESULT) (GO DISP)))
         (SETR 'HEAD (GETR 'COMPARATIVE-MODIFIER PT) C)
         (GO THAN)
 DISP
         (and LABELTRACE (PASSING 'DISP))
-        (SETQ :RESULT (and (NQ AS) (PARSE nil AS)))
-        (COND (:RESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO AS)))))
-        (SETQ :RESULT (and (NQ AS) (PARSE nil AS)))
-        (COND (:RESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO AS)))))
-        (SETQ :RESULT (NEXTWORD? 'HOW))
-        (COND (:RESULT (GO HOW)) (:else (GO ADV)))
+        (SETQ ßRESULT (and (NQ AS) (PARSE nil AS)))
+        (COND (ßRESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO AS)))))
+        (SETQ ßRESULT (and (NQ AS) (PARSE nil AS)))
+        (COND (ßRESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO AS)))))
+        (SETQ ßRESULT (NEXTWORD? 'HOW))
+        (COND (ßRESULT (GO HOW)) (:else (GO ADV)))
 HOW
         (and LABELTRACE (PASSING 'HOW))
-        (SETQ :RESULT (and (PARSE nil HOW) (FQ QUEST)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO FAIL)) (:else (GO FAIL)))))
-        (SETQ :RESULT (and (PARSE ADJ) (FQ ADJ) (SETR 'HEAD H C)))
-        (COND (:RESULT (GO RETSM)))
-        (SETQ :RESULT (and (PARSE ADV VBAD) (FQ VBAD) (SETR 'HEAD H C)))
-        (COND (:RESULT (GO RETSM)) (:else (GO FAIL)))
+        (SETQ ßRESULT (and (PARSE nil HOW) (FQ QUEST)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO FAIL)) (:else (GO FAIL)))))
+        (SETQ ßRESULT (and (PARSE ADJ) (FQ ADJ) (SETR 'HEAD H C)))
+        (COND (ßRESULT (GO RETSM)))
+        (SETQ ßRESULT (and (PARSE ADV VBAD) (FQ VBAD) (SETR 'HEAD H C)))
+        (COND (ßRESULT (GO RETSM)) (:else (GO FAIL)))
 ADV
         (and LABELTRACE (PASSING 'ADV))
-        (SETQ :RESULT (PARSE ADV ADVADV))
-        (COND (:RESULT (COND ((nil? NN) (GO POPAD)) (:else (GO ADV)))))
-        (SETQ :RESULT (PARSE nil MORE))
-        (COND ((nil? :RESULT) (GO ADJ)))
+        (SETQ ßRESULT (PARSE ADV ADVADV))
+        (COND (ßRESULT (COND ((nil? NN) (GO POPAD)) (:else (GO ADV)))))
+        (SETQ ßRESULT (PARSE nil MORE))
+        (COND ((nil? ßRESULT) (GO ADJ)))
         (FQ COMPAR)
 ADJ
         (and LABELTRACE (PASSING 'ADJ))
-        (SETQ :RESULT (COND ((CQ ADV) (PARSE ADV VBAD)) (:else (PARSE ADJ))))
-        (COND ((nil? :RESULT) (M ADJ) (GO FAIL)))
-        (SETQ :RESULT (SETR 'HEAD H C))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (or (CQ COMPAR) (ISQ H COMPAR)))
-        (COND ((nil? :RESULT) (GO RETSM)))
+        (SETQ ßRESULT (COND ((CQ ADV) (PARSE ADV VBAD)) (:else (PARSE ADJ))))
+        (COND ((nil? ßRESULT) (M ADJ) (GO FAIL)))
+        (SETQ ßRESULT (SETR 'HEAD H C))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (or (CQ COMPAR) (ISQ H COMPAR)))
+        (COND ((nil? ßRESULT) (GO RETSM)))
         (FQ COMPAR)
-        (SETQ :RESULT NN)
-        (COND ((nil? :RESULT) (GO RETSM)))
+        (SETQ ßRESULT NN)
+        (COND ((nil? ßRESULT) (GO RETSM)))
 THAN
         (and LABELTRACE (PASSING 'THAN))
         (COND ((not NN) (GO RETSM)))
-        (SETQ :RESULT (PARSE nil THAN))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (M THAN) (GO FAIL)) (:else (GO RETSM)))))
+        (SETQ ßRESULT (PARSE nil THAN))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (M THAN) (GO FAIL)) (:else (GO RETSM)))))
         (RQ THANNEED)
         (FQ THAN)
         (GO SUBJ)
@@ -11239,20 +11108,20 @@ AS
         (and LABELTRACE (PASSING 'AS))
         (FQ AS)
         (RQ THANNEED)
-        (SETQ :RESULT (and (PARSE ADJ) (SETR 'HEAD H C)))
-        (COND ((nil? :RESULT) (COND ((nil? NN) (GO RETSM)) (:else (M ADJ) (GO FAIL)))))
-        (SETQ :RESULT (PARSE nil AS))
-        (COND (:RESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO SUBJ)))) (:else (GO RETSM)))
+        (SETQ ßRESULT (and (PARSE ADJ) (SETR 'HEAD H C)))
+        (COND ((nil? ßRESULT) (COND ((nil? NN) (GO RETSM)) (:else (M ADJ) (GO FAIL)))))
+        (SETQ ßRESULT (PARSE nil AS))
+        (COND (ßRESULT (COND ((nil? NN) (M AS) (GO FAIL)) (:else (GO SUBJ)))) (:else (GO RETSM)))
 SUBJ
         (and LABELTRACE (PASSING 'SUBJ))
-        (SETQ :RESULT (PARSE NG SUBJ COMPAR))
-        (COND ((nil? :RESULT) (M THAN) (GO FAIL)))
-        (SETQ :RESULT (SETR 'OBJ1 H C))
-        (COND ((and (nil? NN) :RESULT) (GO RETSM)))
-        (SETQ :RESULT (and (ONE-WORD-LEFT) (PARSE VB AUX)))
-        (COND ((nil? :RESULT) (GO RETSM)))
-        (SETQ :RESULT (CHECK-AGREEMENT H (cdr H)))
-        (COND (:RESULT (GO RETSM)))
+        (SETQ ßRESULT (PARSE NG SUBJ COMPAR))
+        (COND ((nil? ßRESULT) (M THAN) (GO FAIL)))
+        (SETQ ßRESULT (SETR 'OBJ1 H C))
+        (COND ((and (nil? NN) ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (and (ONE-WORD-LEFT) (PARSE VB AUX)))
+        (COND ((nil? ßRESULT) (GO RETSM)))
+        (SETQ ßRESULT (CHECK-AGREEMENT H (cdr H)))
+        (COND (ßRESULT (GO RETSM)))
         (POP)
         (GO RETSM)
 POPAD
@@ -11261,10 +11130,10 @@ POPAD
         (GO ADJ)
 RETSM
         (and LABELTRACE (PASSING 'RETSM))
-        (SETQ :RESULT (CQ THANNEED))
-        (COND (:RESULT (M THANNEED) (GO FAIL)))
-        (SETQ :RESULT (CALLSM (SMADJG-PREPG)))
-        (COND (:RESULT (GO RETURN)) (:else (M SMADJ) (GO FAIL)))
+        (SETQ ßRESULT (CQ THANNEED))
+        (COND (ßRESULT (M THANNEED) (GO FAIL)))
+        (SETQ ßRESULT (CALLSM (SMADJG-PREPG)))
+        (COND (ßRESULT (GO RETURN)) (:else (M SMADJ) (GO FAIL)))
 FAIL
         (SETQ MES ME)
         (SETQ N (or (N RE) NB))
@@ -11282,7 +11151,7 @@ RETURN
     (COND ((SECONDWORD? '\") (FLUSHME) true) ((CONJ)) ((ISQ RE INIT) (FLUSHME) true)))
 
 (§ defn- CONJOIN []
-    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil :RESULT nil PREV nil]
+    (let [FE nil H nil ME nil NB nil C nil SM nil CUT nil NN nil T1 nil T2 nil T3 nil ßRESULT nil PREV nil]
         (SETQ NN true)
         (SETQ CUT END)
         (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
@@ -11293,12 +11162,12 @@ UP
         (and LABELTRACE (PASSING 'UP))
         (SETQ PREV (NEXTWORD))
         (FLUSHME)
-        (COND ((and (EQ PREV '\,) (or (cdr H) (> (- (count (NB H)) (count (N H))) 4)) (MEMQ (NEXTWORD) '(or AND NOR BUT)) (F (NEXTWORD)))
+        (COND ((and (EQ PREV '\,) (or (cdr H) (> (- (count (NB H)) (count (N H))) 4)) (MEMQ (NEXTWORD) '(OR AND NOR BUT)) (F (NEXTWORD)))
             (SETQ PREV (list PREV (NEXTWORD)))
             (FLUSHME)))
         (and (ATOM PREV) (MOVE-PTW N NW (EQ (WORD PTW) PREV)) (CUT PTW))
         (and (or (EQ PREV 'BUT) (EQ (cadr PREV) 'BUT)) (NEXTWORD? 'NOT) (or (FLUSHME) (GO LOSE2)) (FQ NEGBUT))
-        (SETQ :RESULT (COND
+        (SETQ ßRESULT (COND
             ((MEMQ (car REST) '(ADJ NUM NOUN PREP VB ADV)) (PARSE3 (concat REST '(COMPONENT)) nil))
             ((MEMQ (car REST) '(NG PREPG ADJG)) (and (not (CQ OFOBJ)) (PARSE2 (concat REST '(COMPONENT)) nil)))
             ((EQ (car REST) 'CLAUSE)
@@ -11306,11 +11175,11 @@ UP
                     (and (PARSE2 (concat REST AUXFE '(COMPONENT)) nil) (or (not AUXFE) (F (car AUXFE))) (SETR 'TIME (GETR 'TIME H) C)))
                 (COND ((ISQ H MAJOR) H) (LASTSENT))
                 (MEET (FE H) '(DECLAR IMPER))))))
-        (COND ((nil? :RESULT) (GO LOSE2)))
+        (COND ((nil? ßRESULT) (GO LOSE2)))
         (CUT END)
         (COND ((not (ATOM PREV)) (GO RETSM))
             ((EQ PREV '\,) (COND ((NEXTWORD? COMMA) (FQ LIST) (GO UP)) (:else (GO LIST))))
-            ((MEMQ PREV '(and OR NOR BUT))
+            ((MEMQ PREV '(AND OR NOR BUT))
                 (COND ((EQ BOTH (NB H)) (FQ BOTH)))
                 (COND ((or (NEXTWORD? 'BUT) (and (NEXTWORD? PREV) (not (and (EQ BOTH (NB H)) (EQ PREV 'AND)))))
                         (FQ LISTA)
@@ -11319,12 +11188,12 @@ UP
                     (:else (GO LISTA)))))
 LOSE2
         (and LABELTRACE (PASSING 'LOSE2))
-        (SETQ :RESULT (CQ LISTA))
-        (COND (:RESULT (GO LISTA)))
+        (SETQ ßRESULT (CQ LISTA))
+        (COND (ßRESULT (GO LISTA)))
 LIST
         (and LABELTRACE (PASSING 'LIST))
-        (SETQ :RESULT (and (EQ PREV '\,) (== (count H) 2) (ISQ H NG) (not (or (ISQ H PRONG) (ISQ (cdr H) PRONG))) (or (NEXTWORD? COMMA) (nil? N))))
-        (COND ((nil? :RESULT) (M CONJOINß) (GO FAIL)))
+        (SETQ ßRESULT (and (EQ PREV '\,) (== (count H) 2) (ISQ H NG) (not (or (ISQ H PRONG) (ISQ (cdr H) PRONG))) (or (NEXTWORD? COMMA) (nil? N))))
+        (COND ((nil? ßRESULT) (M CONJOINß) (GO FAIL)))
         (FLUSHME)
         (FQ APPOSITIVE)
         (GO RETSM)
@@ -11337,8 +11206,8 @@ RETSM
         (and (> (count H) 2) (FQ LIST))
         (COND ((or (CQ NG) (CQ NOUN)) (COND ((CQ AND) (FQ NPL)) (:else (MOVE-PT H) (TRNSF NPL NS MASS NFS))))
             ((CQ VB) (let [COMMON nil] (SETQ COMMON (GET 'VB 'ELIM)) (MAP #'(lambda [X] (SETQ COMMON (MEET COMMON (FE X)))) H) nil) (FESET (UNION COMMON (FE C)) C)))
-        (SETQ :RESULT (CALLSM (SMCONJ)))
-        (COND (:RESULT (GO RETURN)) (:else (M CONJOINß) (GO FAIL)))
+        (SETQ ßRESULT (CALLSM (SMCONJ)))
+        (COND (ßRESULT (GO RETURN)) (:else (M CONJOINß) (GO FAIL)))
 FAIL
         (SETQ MES ME)
         (SETQ N (or (N RE) NB))
@@ -11346,22 +11215,6 @@ FAIL
 RETURN
         (SETQ MES ME)
         (RETURN (REBUILD (reverse FE) NB N H SM C))))
-
-(§ defq- BOTH [A]
-    (let [END nil]
-        (SETQ END CUT)
-        (RETURN (let [CUT nil NBB nil BOTH nil]
-            (SETQ NBB N)
-            (and (FLUSHME)
-                (MOVE-PTW N NW (EQ (WORD PTW) (car A)) NW)
-                (CUT END)
-                (SETQ BOTH PTW)
-                (SETQ RE (COND ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true)) ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
-                (< (count N) (count BOTH))
-                (RETURN (SETQ SPECIAL 'SKIP)))
-            (SETQ RE nil)
-            (SETQ N NBB)
-            (RETURN nil)))))
 
 (§ defn- DOUBLEQUOTER [] (APPLY-GRAMMAR 'PARSEQUOTED))
 
@@ -11399,22 +11252,16 @@ RETURN
 (§ defn- QUIETMODE []
     (dorun (map #'(lambda [X] (SET X nil)) DISPLAYSWITCHES)))
 
-(§ defn- NOPAUSES []
-    (dorun (map #'(lambda [X] (SET X nil)) PAUSESWITCHES)))
-
 (§ defn- NORMALFEATUREMODE []
     (SETQ DISCOURSE true
           NOMEM nil
-          IASUME true
           TIMID 200))
 
-(§ SETQ FEATURESWITCHES '(DISCOURSE NOMEM IASSUME TIMID))
+(§ SETQ FEATURESWITCHES '(DISCOURSE NOMEM TIMID))
 
-(§ SETQ PAUSESWITCHES '(ANS-AFTEREVALUATION-PAUSE ANS-AFTERFORMULATION-PAUSE EVALANS-PAUSE SH-SENT-PAUSE SH-BEFOREANSWER-PAUSE SH-FINISHED-PAUSE PNS-BK PLNRSEE-PAUSE))
+(§ SETQ CONTROLSWITCHES '(NOSTOP ANSWER? SMN TOPLEVEL-ERRSET? ERT-ERRSET?))
 
-(§ SETQ CONTROLSWITCHES '(NOSTOP ANSWER? SMN TOPLEVEL-ERRSET? ERT-ERRSET? MAKEINTERN))
-
-(§ SETQ DISPLAYSWITCHES '(PARSETRACE PARSEBREAK PARSENODE-SEE LABELTRACE MAKE-VERBOSE LABELBREAK BUILDSEE BUILD-SEE PLANNERSEE))
+(§ SETQ DISPLAYSWITCHES '(LABELTRACE LABELBREAK PLANNERSEE))
 
 (§ defn -main [& args]
     ;; LOAD '(PLNR THTRAC)
@@ -11424,54 +11271,24 @@ RETURN
 
     ;; LOAD '(SYSCOM MORPHO SHOW PROGMR GINTER GRAMAR DICTIO SMSPEC SMASS SMUTIL NEWANS BLOCKS DATA)
 
-    (SETQ PARSINGS 0)
-
     (SETQ SAVESENT nil
-        DOT (ASCII 46)
-        *1 "[1]"
-        *2 "[2]"
-        *3 "[3]"
-        *4 "[4]"
-        *5 "[5]"
-        *6 "[6]"
         LASTSENTNO 0
         SENTNO 1
-        UNMKD '(COMPONENT BOTH)
         LASTIME nil)
 
-    (SETQ DPSTOP nil
-        NODE-STOP nil
-        SMN-STOP nil
-        ALTMODE (list (ASCII 27))
+    (SETQ ALTMODE (list (ASCII 27))
         BREAKCHARS (list (ASCII 32) (ASCII 13) (ASCII 46))
         LINEL 65)
 
-    (or (GET 'CLAUSE 'SUBR)
-        (LABELTRACE CLAUSE NG VG ADJG PREPG CONJOIN))
+    (LABELTRACE CLAUSE NG VG ADJG PREPG CONJOIN)
 
-    (SETQ MAKE-VERBOSE nil
-        PARSETRACE nil
-        PARSEBREAK nil
-        PARSENODE-SEE nil
-        LABELTRACE nil
+    (SETQ LABELTRACE nil
         LABELBREAK nil
-        BUILDSEE nil
-        BUILD-SEE nil
         PLANNERSEE nil)
 
-    (SETQ SH-BEFOREANSWER-PAUSE nil
-        ANS-AFTEREVALUATION-PAUSE nil
-        ANS-AFTERFORMULATION-PAUSE nil
-        EVALANS-PAUSE nil
-        DOIT nil
-        SH-PARSE-PAUSE nil
-        SH-PARSESMNTC-PAUSE nil
-        SH-AFTERANSWER-PAUSE nil
-        PNS-BK nil
-        PLNRSEE-PAUSE nil)
+    (SETQ DOIT nil)
 
     (QUIETMODE)
-    (NOPAUSES)
 
     (NORMALFEATUREMODE)
 
@@ -11480,12 +11297,6 @@ RETURN
         SMN nil
         TOPLEVEL-ERRSET? true
         ERT-ERRSET true)
-
-    (SETQ SH-STANDARD-PRINTOUT true
-        SMNBREAK nil
-        SMNTRACE nil
-        MAKEINTERN true
-        ANNOYANCE nil)
 
     (SETQ ERRLIST nil)
 
