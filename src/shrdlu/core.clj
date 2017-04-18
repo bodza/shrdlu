@@ -182,8 +182,6 @@
 
 (defn- RPLACA [l x] (§))
 (defn- RPLACD [l x] (§))
-(defn- ERRSET [_] (§))
-(defn- ERR [_] (§))
 (defn- SETQ [x y] (§))
 (defn- SET [x y] (§))
 (defn- GO [& _] (§))
@@ -193,7 +191,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert therase thassertf thassertt therasef theraset thasval thbind thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therasing thfail thfinalize thfind thfindf thfindt thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thor thor2 thorf thort thprog thproga thprogf thprogt thpure thputprop assq- threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -6603,37 +6601,30 @@
 ;;
 ;; ################################################################
 
-(dynamic- *ambig*)
-
 ;; TOP LEVEL ANSWER FUNCTION FOR ANY INPUT SENTENCE, WHETHER IT IS COMMAND, QUESTION, OR STATEMENT.
 
 (defn- answer [node]
     ;; CLEAR OUT ANSWER NAMES SAVED FOR BACKREF(ERENCE), I.E. MORE THAN ONE RSS FOR THE SENTENCE.
     (set! *ansname* nil)
     ;; AMBIG IS A FLAG SET IF THERE IS A POSSIBLE AMBIGUITY.
-    (binding [*ambig* (cdr (semantics node))]
+    (let [ambig? (cdr (semantics node))]
         ;; A IS THE LIST OF POSSIBLE ANSWERS.
         ;; ANSGEN GENERATES AN ANSWER FOR EACH INTERPRETATION.
         ;; ANSUNIQUE TAKES OUT REDUNDANT ONES IN THE CASE THAT DIFFERENT INTERPRETATIONS LEAD TO THE SAME ANSWER.
         ;; ANSORDER ORDERS THE REMAINING ONES BY PLAUSIBILITY.
-        (let [a (doall (map ansgen (semantics node)))
-              a (ansorder (ansunique a))
-              ;; IF NO ANSWER IS CLEARLY BEST, ASK THE USER FOR CLARIFICATION AND TRY AGAIN.
-              a (loop-when-recur a (and (cdr a) (not (enough-better (car a) (cadr a)))) (anseliminate a) => a)]
-            ;; THE ACTION INCLUDES BOTH THE THINGS TO BE DONE AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
-            (dorun (map eval (action? (car a))))
-            (print \.)
-            (terpri)
-            ;; DOBACKREF STORES AWAY DISCOURSE INFORMATION.
-            (dobackref (car a))
-            true)))
+        (let-when [a (remove nil? (map ansgen (semantics node) (repeat ambig?)))] (seq a) => nil
+            (let [a (ansorder (ansunique a))
+                ;; IF NO ANSWER IS CLEARLY BEST, ASK THE USER FOR CLARIFICATION AND TRY AGAIN.
+                a (loop-when-recur a (and (cdr a) (not (enough-better (car a) (cadr a)))) (anseliminate a) => a)]
+                ;; THE ACTION INCLUDES BOTH THE THINGS TO BE DONE AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
+                (dorun (map eval (action? (car a))))
+                (print \.)
+                (terpri)
+                ;; DOBACKREF STORES AWAY DISCOURSE INFORMATION.
+                (dobackref (car a))
+                true))))
 
-(defn- ambput [code]
-    ;; PUTS IN THE JUNK FOR DISCOURSE IF THERE IS NO AMBIGUITY, SO THERE IS
-    ;; NO NEED TO EVALUATE THE CODE A SECOND TIME WHEN GIVING THE ANSWER.
-    (if *ambig* code (plnr-junkify code)))
-
-(defn- ansbuild [rss ans plaus action rededuce]
+(defn- ansbuild [rss ans plaus action rededuce?]
     ;; BUILDS AN ANSWER NODE.
     ;; IF REDEDUCE IS NON-NIL, IT ADDS A REDEDUCTION OF THE ANSWER,
     ;; ADDING THE DISCOURSE JUNK TO THE ACTION.
@@ -6642,33 +6633,32 @@
         :plausibility plaus
         :ansrss rss
         :action (concat
-                    (if (and *ambig* rededuce (not (cq 'DECLAR)))
+                    (if (and rededuce? (not (cq 'DECLAR)))
                         (cons (list 'thval2 nil (list 'plnr-junkify (list 'plnrcode? (quotify rss)))) action)
                         action)
-                    (and (rel? rss) (not (cq 'DECLAR)) (list (list 'putprop! (quotify (rel? rss)) :refer (quotify ans)))))))
+                    (when (and (rel? rss) (not (cq 'DECLAR)))
+                        (list (list 'putprop! (quotify (rel? rss)) :refer (quotify ans)))))))
 
-(dynamic- *success*)
+(dynamic- *success*)
 
-(defn- anscommand [rss]
+(defn- anscommand [rss ambig?]
     ;; ANSCOMMAND RESPONDS TO IMPERATIVES.
     (binding [*success* nil]
         ;; PLNR-ANDORIFY COMBINES ANDS AND ORS INTO APPROPRIATE PLANNER THANDS AND THORS.
-        (let [exp (plnr-andorify rss)]
-            (putprop! rss :plnrcode exp)
-            (let [exp (ambput exp)
-                  exp (if (= (car exp) 'thand)
-                        (concat exp '((set! *success* true)))
-                        (list 'thand exp '(set! *success* true)))]
+        (let [code (plnr-andorify rss)]
+            (putprop! rss :plnrcode code)
+            (let [code (if ambig? code (plnr-junkify code))
+                  code (if (= (car code) 'thand) (concat code '((set! *success* true))) (list 'thand code '(set! *success* true)))]
                 ;; IN CASE OF MULTIPLE INTERPRETATION, THE SYSTEM USES FAILURE TO WIPE OUT THE EFFECTS OF TRYING OUT ONE OF THEM.
                 ;; BEFORE FAILING, IT MARKS DOWN WHETHER IT SUCCEEDED AND SAVES THE PLAN FROM BACKTRACKING.
                 ;; PLNR-JUNKIFY PUTS ON THE JUNK FOR SAVING THE DISCOURSE REFERENTS, ETC.
-                (thval2 nil (if *ambig* (concat exp '((thfail))) exp))
+                (thval2 nil (if ambig? (concat code '((thfail))) code))
                 ;; THE LAST ARGUMENT TO ANSBUILD CAUSES THE SYSTEM TO GO BACK THROUGH THE DEDUCTION
                 ;; TO GET THE DATABASE STRAIGHT IF THIS ANSWER IS PICKED.  IT ALSO TAKES CARE OF THE BACKREF STUFF.
                 (ansbuild rss nil
                     (if *success* (plausibility? rss) (- (plausibility? rss) 512))
                     (if *success* '((say "OK")) '((say "I CAN'T")))
-                    true)))))
+                    ambig?)))))
 
 (defn- ansdeclare [rss]
     ;; FOR DECLARATIVES.
@@ -6735,19 +6725,19 @@
         (loop-when a a
             (if (= ass (car (parsenode? (caar a)))) (car a) (recur (cdr a))))))
 
-(defn- ansgen [rss]
+(defn- ansgen [rss ambig?]
     ;; ANSGEN GENERATES AN ANSWER FOR A SINGLE INTERPRETATION.
     (cond
         (or (cq 'IMPER) (and (cq 'QUEST) (istense (parsenode? rss) 'FUTURE))) ;; FUTURE QUESTIONS ARE TREATED LIKE COMMANDS.
-            (anscommand rss)
+            (anscommand rss ambig?)
         (cq 'DECLAR)
             (or (ansdeclare rss)
                 ;; THIS STRANGE CONSTRUCTION ALLOWS US A SECOND CHANCE ON DECLARATIVES ABOUT THINGS WHICH CAN'T
                 ;; BE TOLD TO THE SYSTEM.  IF IT RUNS INTO ONE OF THEM, IT TRIES TO ANSWER IT AS A QUESTION.
                 (when' (= *oops* "THAT ISN'T THE KIND OF THING I CAN BE TOLD.") => nil
-                    (ansquest rss)))
+                    (ansquest rss ambig?)))
         (cq 'QUEST)
-            (ansquest rss)
+            (ansquest rss ambig?)
         :else
             (bug! 'ansgen "WHAT KIND OF SENTENCE IS THIS?")))
 
@@ -6778,7 +6768,7 @@
                 (putprop! (car (semantics ansnode)) :refer (cadr phrase))          ;; PUT THE REFERENT ON AS THE GUY GIVEN BY ANSWER
                 nil))))
 
-(defn- ansnorel [rss]
+(defn- ansnorel [rss ambig?]
     ;; FOR QUESTIONS WITH NO RELATIVE, LIKE "DID YOU PICK UP THE BLOCK?" OR "WHY DID YOU DO THAT?"
     (let [node (parsenode? rss)
           ;; THE TYPE SHOULD BE POLAR, WHY, WHERE, WHEN, OR HOW.
@@ -6790,35 +6780,32 @@
               code (plnr-describe (relations? rss) var (list (variable? rss)))]
             (putprop! rss :plnrcode code)
             (if (not var)
-                (let [ans (thval-mult (ambput code))]
+                (let [ans (thval-mult (if ambig? code (plnr-junkify code)) ambig?)]
                     (ansbuild rss ans
                         (+ (car ans) (plausibility? rss))
                         (cond (cadr ans) '((say "YES")) (istense node 'MODAL) '((say "I DON'T KNOW")) :else '((say "NO")))
-                        true))
-                (let-when [ans (thval-mult (plnr-findify 'ALL var (list var) (ambput code)))] ans => nil
+                        ambig?))
+                (let-when [ans (thval-mult (plnr-findify 'ALL var (list var) (if ambig? code (plnr-junkify code))) ambig?)] ans => nil
                     (ansbuild rss ans
                         ;; AN ANSWER IS VERY IMPLAUSIBILE IF IT MENTIONS AN EVENT THE SYSTEM CAN'T FIND.
                         (if (cadr ans) (+ (plausibility? rss) (car ans)) (- (plausibility? rss) 512))
                         (if (cadr ans)
                             (concat (and (= type 'POLAR) '((say "YES"))) (list (list 'evlis (list 'describevent (quotify (cadr ans)) (quotify type)))))
                             '((say "I CAN'T DISCUSS A NON-EXISTENT EVENT")))
-                        true))))))
+                        ambig?))))))
 
-(defn- ansorder [l]
+(defn- ansorder [a]
     ;; ORDERS A LIST BY PLAUSIBILITY HIGHEST FIRST.
-    (loop-when [a l] (cdr a) => l
-        (if (< (plausibility? (car a)) (plausibility? (cadr a)))
-            (let [a1 (car a)] (RPLACA a (cadr a)) (RPLACA (cdr a) a1) (ansorder l))
-            (recur (cdr a)))))
+    (sort-by (comp - plausibility?) a))
 
-(defn- ansquest [rss]
+(defn- ansquest [rss ambig?]
     ;; ANSQUEST ANSWERS ALL TYPES OF QUESTIONS BY SENDING THEM OUT TO ANSREL OR ANSNOREL DEPENDING ON WHETHER THERE IS A REL.
     (cond (or (disjuncts? rss) (conjuncts? rss))
-        (let [ans (doall (map ansquest (or (conjuncts? rss) (disjuncts? rss))))]
+        (let [ans (doall (map ansquest (or (conjuncts? rss) (disjuncts? rss)) (repeat ambig?)))]
             (ansbuild rss ans
                 (reduce + (map plausibility? ans))
                 (concat
-                    (and (not (isq (parsenode? rss) 'COMPONENT)) '((say "YOU'RE TRYING TO CONFUSE ME.")))
+                    (when-not (isq (parsenode? rss) 'COMPONENT) '((say "YOU'RE TRYING TO CONFUSE ME")))
                     (doall (mapcat (lambda [q]
                             (concat '((terpri))
                                 (list (cons 'say (eliza (let [x (parsenode? (ansrss? q))] (from (firstword x) (wordafter x))))))
@@ -6828,11 +6815,11 @@
                         ans)))
                 nil))
         (rel? rss)
-            (ansrel rss)
+            (ansrel rss ambig?)
         :else
-            (ansnorel rss)))
+            (ansnorel rss ambig?)))
 
-(defn- ansrel [rss]
+(defn- ansrel [rss ambig?]
     ;; ANSREL HANDLES ALL QUESTIONS WITH A RELATIVE NG OF ANY TYPE.
     (let-when [rel (rel? rss)] rel => (bug! 'ansrel "NO REL")
         ;; THIS IS FOR THE PART OF THE GENERATOR THAT WILL SUBSITUTE "ONE" FOR NOUN NAMES.
@@ -6843,25 +6830,25 @@
             (let [code (plnr-findify 'ALL (variable? rel) (list (variable? rel)) (plnr-describe (cons rss (relations? rel)) (variable? rel) (list (variable? rel))))]
                 (putprop! rss :plnrcode code)
                 ;; CONSING THE RSS ONTO THE THINGS TO BE DESCRIBED HAS THE EFFECT OF PUTTING THE RELATION INTO THE DESCRIPTION OF THE OBJECT.
-                ;; DISAMB PUTS IN THE JUNK IF THERE IS NO AMBIGUIT, AVOIDING HAVING TO GO THROUGH THE EVALUATION A SECOND TIME.
+                ;; DISAMB PUTS IN THE JUNK IF THERE IS NO AMBIGUITY, AVOIDING HAVING TO GO THROUGH THE EVALUATION A SECOND TIME.
                 ;; THVAL-MULT RETURNS A LIST OF A PLAUSIBILITY AND AN ANSWER.
-                (let [ans (thval-mult (ambput code)) plaus (car ans) ans (cadr ans) len (count ans)]
+                (let [ans (thval-mult (if ambig? code (plnr-junkify code)) ambig?) plaus (car ans) ans (cadr ans) len (count ans)]
                     (cond
                         (= type 'ALL)
                             (ansbuild rss ans
                                 (+ plaus (plausibility? rss))
                                 (if (nil? ans) '((say "YES")) (cons '(say "NO, NOT") (prepput rss (namelist phrase 'INDEF ans))))
-                                true)
+                                ambig?)
                         (= type 'HOWMANY)
                             (ansbuild rss ans
                                 (+ plaus (plausibility? rss))
                                 (prepput rss (namesugar len rel))
-                                true)
+                                ambig?)
                         (memq type ['WHICH 'WHAT])
                             (ansbuild rss ans
                                 (+ plaus (plausibility? rss) (if ans 512 0))
                                 (prepput rss (namelist phrase 'DEF ans))
-                                true)
+                                ambig?)
                         (= type 'INDEF)
                             (let [num (num? rel)]
                                 (ansbuild rss ans
@@ -6890,7 +6877,7 @@
                                                 (cond (< len num) '(say "YES,") :else '(say "NO,"))
                                                 (prepput rss (namesugar len rel)))
                                         :else (bug! 'ansrel "FUNNY NUMBER" num))
-                                    true))
+                                    ambig?))
                         :else (bug! 'ansrel "FUNNY TYPE" type)))))))
 
 (defn- ansthm+ [x m]
@@ -7203,7 +7190,7 @@
                 (wordprops! plural ['NOUN 'NPL] (semantics sing) (car sing)))
             (subst plural (car sing) phrase))))
 
-(defn- thval-mult [code]
+(defn- thval-mult [code ambig?]
     ;; DOES A THVAL WITH DIFFERENT VALUES OF WHO (I.E. NIL (EVERYTHING I KNOW),
     ;; 'HE (EVERYTHING HE KNOWS), AND THE PREVIOUS SENTENCE) USED TO TELL IF AN
     ;; ANSWER COULD HAVE BEEN GENERATED WITH HIS KNOWLEDGE TO SEE WHETHER HE REALLY
@@ -7211,7 +7198,7 @@
     ;; OF THE THVAL USING ALL THE KNOWLEDGE IN THE DATABASE.
     (let [ans (thval2 nil code)] (cond
         ;; THIS FEATURE IS ONLY RELEVANT IN DISCOURSE AND WHEN THERE ARE AMBIGUITIES.
-        (not (and *ambig* discourse?)) (list 0 ans)
+        (not (and ambig? discourse?)) (list 0 ans)
         ;; GIVE A VALUE OF 256 IF HE COULDN'T HAVE ANSWERED IT AT ALL.
         (not= ans (thval2 'HE code)) (list 256 ans)
         ;; PLAUSIBILITY IS 0 IF HE COULD HAVE ANSWERED IT WITH RECENTLY MENTIONED INFORMATION.
