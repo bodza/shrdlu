@@ -877,11 +877,11 @@ NIL
 
 ;; ---------------------------------------------------------------------------- anno/winograd/blockl
 
-(declare (genprefix blockl))
+(DECLARE (GENPREFIX BLOCKL))
 
 ;; ################################################################
 ;;
-;;            BLOCKL - lisp code for the BLOCKS world
+;;            BLOCKL - LISP CODE FOR THE BLOCKS WORLD
 ;;
 ;; ################################################################
 
@@ -1081,7 +1081,7 @@ NIL
 
 (DEFUN LISTIFY (X) (COND ((ATOM X) (LIST X)) (X)))
 
-(declare (*expr fn))
+(DECLARE (*EXPR FN))
 
 (DEFUN LOCGREATER (X Y FN) ((LAMBDA (XX YY)
                     (NOT (LESSP (FN (CADR XX))
@@ -1224,13 +1224,11 @@ NIL
 
 ;; ---------------------------------------------------------------------------- anno/winograd/data
 
-################################################################
-
-        DATA >
-
-   initial microplanner data base for the blocks world
-
-################################################################
+;; ####################################################################
+;;
+;;      DATA > INITIAL MICROPLANNER DATA BASE FOR THE BLOCKS WORLD
+;;
+;; ####################################################################
 
 (THFLUSH THASSERTION)
 
@@ -1367,7 +1365,7 @@ NIL
 
 ;; ---------------------------------------------------------------------------- anno/winograd/plnr
 
-(declare (genprefix plnr))
+(DECLARE (GENPREFIX PLNR))
 
 (COMMENT DO NOT GRIND THIS FILE WITH THE STANDARD GRIND)
 
@@ -1416,12 +1414,12 @@ NIL
 
 (COND ((ERRSET (AND PURE (SETQ LOW (PAGEBPORG))))) (' (NOT PURIFIED)))
 
-(DEFUN THREAD                    ;; FUNCTION FOR THE /$ READ MACRO
+(DEFUN THREAD                       ;; FUNCTION FOR THE /$ READ MACRO
 
-       ;; EXPANDS _ TO (THNV (READ)) EXPANDS A TO ASSERT  ;; EXPANDS G TO GOAL EXPANDS T TO THTBF THTRUE
-       NIL                    ; EXPANDS ? TO (THV (READ)) EXPANDS E TO (THEV
-                        ; (READ))
-  (PROG (CHAR)                    ;; EXPANDS R TO THRESTRICT
+                                    ;; EXPANDS _ TO (THNV (READ)) EXPANDS A TO ASSERT
+                                    ;; EXPANDS G TO GOAL EXPANDS T TO THTBF THTRUE
+       NIL                          ;; EXPANDS ? TO (THV (READ)) EXPANDS E TO (THEV (READ))
+  (PROG (CHAR)                      ;; EXPANDS R TO THRESTRICT
 
     ;; TREATS & - - & AS A COMMENT
     (RETURN (COND ((EQ (SETQ CHAR (READCH)) (QUOTE ?))
@@ -1449,13 +1447,13 @@ NIL
 
 (DEFUN THPUSH
        MACRO
-       (A)                                   ; (THPUSH THTREE NEWINFO) CONSES NEWINFO ONTO
-       (LIST (QUOTE SETQ)                           ;; THTREE
+       (A)                                      ;; (THPUSH THTREE NEWINFO) CONSES NEWINFO ONTO THTREE
+       (LIST (QUOTE SETQ)
          (CADR A)
          (LIST (QUOTE CONS) (CADDR A) (CADR A))))
 
 (DEFUN EVLIS
-       (X)                                   ;; EVLIS EVALS ELEMENTS OF ARG THEN RETURNS ARG
+       (X)                                      ;; EVLIS EVALS ELEMENTS OF ARG THEN RETURNS ARG
        (MAPC (FUNCTION EVAL) X))
 
 (DEFUN THPRINT2 (X) (PRINC (QUOTE / )) (PRINC X))
@@ -1464,11 +1462,10 @@ NIL
 
 (DECLARE (SPECIAL THTT THFST THTTL THLAS THNF THWH THFSTP))
 
-(DEFUN THADD                                   ;; THADD ADDS THEOREMS OR ASSERTION TO THE
+(DEFUN THADD                                    ;; THADD ADDS THEOREMS OR ASSERTION TO THE
 
-       ;; INPUT - THPL - PROPERTY LIST TO BE PLACED ON    ;; ASSERTION
-       (THTT THPL)                               ;; DATABASE INPUTS - THTT - NAME OF THM OR ACTUAL
-                                       ;; ASSERTION
+                                                ;; INPUT - THPL - PROPERTY LIST TO BE PLACED ON ASSERTION
+       (THTT THPL)                              ;; DATABASE INPUTS - THTT - NAME OF THM OR ACTUAL ASSERTION
        (PROG (THNF THWH THCK THLAS THTTL THT1 THFST THFSTP THFOO)      ;; RETURNS NIL IF ALREADY THERE ELSE RETURNS THTT
          (SETQ THCK
            (COND ((ATOM THTT)
@@ -1477,12 +1474,7 @@ NIL
               (OR (SETQ THT1 (GET THTT (QUOTE THEOREM)))
 
                   ;; IF NO THEOREM PROPERTY THE GUY MADE A MISTAKE
-                  (PROG2 (PRINT THTT) (THERT CANT
-                             THASSERT/,
-                             NO
-                             THEOREM
-                             -
-                             THADD)))
+                  (PROG2 (PRINT THTT) (THERT CANT THASSERT/, NO THEOREM - THADD)))
               (SETQ THWH (CAR THT1))
 
               ;; THWH NOW SET TO KIND OF THEOREM, LIKE THERASING
@@ -1491,8 +1483,7 @@ NIL
               ;; MAKE AN EXTRA POINTER TO THTT
               (AND THPL
 
-                   ;; IF WE HAVE A PL FOR OUR THEOREM, IT GOES ON
-                   ;; THE ATOM WHICH IS THE NAME OF THE THEOREM
+                   ;; IF WE HAVE A PL FOR OUR THEOREM, IT GOES ON THE ATOM WHICH IS THE NAME OF THE THEOREM
                    (PROG NIL
 
                      ;; GO THROUGH ITEMS ON PL ONE BY ONE
@@ -1528,6 +1519,7 @@ NIL
          ;; NECESSARY.  SINCE VARIABLES WILL IN GENERAL HAVE MANY
          ;; MORE ITEMS IN THEIR BUCKET WE WILL WANT TO DO OUR
          ;; CHECK ON A NON VARIABLE ITEM IN THE PATTERN
+
     THP1 (COND ((NULL THCK)
                 ;; THCK NIL MEANS THAT ALL THE ITEMS IN THE PATTERN ARE VARIABLES
                 ;; SO WE TRY AGAIN ONLY THIS TIME DOING EQUAL CHECK ON
@@ -1569,14 +1561,13 @@ NIL
 
 (DEFUN THAMONG
        FEXPR
-  (THA)                        ; EXAMPLE - (THAMONG $?X (THFIND ... ))
-  (COND                        ; $E - (THAMONG $E$?X (THFIND ... )) CAUSES THE
-                        ; THVALUE OF                  ; $?X    ; TO BE THE FIRST INPUT TO THAMONG. THXX SET ;; TO
-    ((EQ (CADR (SETQ THXX (THGAL (COND ((EQ (CAAR THA)    ; OLD BINDING CELL OF $?X (OR $E$?X) IF $?X
-
-                        ;; VALUES PUSHED ONTO THTREE AND THAMONG FAILS TO
-                        (QUOTE THEV))    ;; THUNASSIGNED, OLD VALUE AND LIST OF NEW
-                    (THVAL (CADAR THA)    ;; THAMONGF.
+  (THA)                             ;; EXAMPLE - (THAMONG $?X (THFIND ... ))
+  (COND                             ;; $E - (THAMONG $E$?X (THFIND ... )) CAUSES THE THVALUE OF $?X TO BE THE FIRST INPUT TO THAMONG.
+                                    ;; THXX SET TO OLD BINDING CELL OF $?X (OR $E$?X) IF $?X VALUES PUSHED ONTO THTREE AND THAMONG
+                                    ;; FAILS TO THUNASSIGNED, OLD VALUE AND LIST OF NEW THAMONGF.
+    ((EQ (CADR (SETQ THXX (THGAL (COND ((EQ (CAAR THA)
+                        (QUOTE THEV))
+                    (THVAL (CADAR THA)
                            THALIST))
                        (T (CAR THA)))
                  THALIST)))
@@ -1584,25 +1575,25 @@ NIL
      (THPUSH THTREE (LIST (QUOTE THAMONG)
               THXX
               (THVAL (CADR THA) THALIST)))
-     NIL)                    ;; IF $?X ASSIGNED, THAMONG REDUCES TO A
-    (T (MEMBER (CADR THXX) (THVAL (CADR THA) THALIST)))))    ;; MEMBERSHIP TEST
+     NIL)                                                           ;; IF $?X ASSIGNED, THAMONG REDUCES TO A MEMBERSHIP TEST
+    (T (MEMBER (CADR THXX) (THVAL (CADR THA) THALIST)))))
 
 (DECLARE (UNSPECIAL THTREE THALIST THXX))
 
 (DECLARE (SPECIAL THALIST THBRANCH THABRANCH THTREE THML))
 
-(DEFUN THAMONGF                                   ; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW
-       NIL                                   ; VALUES))
+(DEFUN THAMONGF                                                     ;; (CAR THTREE) = (THAMONG OLDBINDINGCELL (NEW VALUES))
+       NIL
        (COND (THMESSAGE (THPOPT) NIL)
-         ((CADDAR THTREE)                           ;; LIST OF NEW VALUES NON NIL
-          (RPLACA (CDADAR THTREE) (CAADDR (CAR THTREE)))           ;; REPLACE OLD VALUE WITH NEW VALUE
-          (RPLACA (CDDAR THTREE) (CDADDR (CAR THTREE)))           ;; POP NEW VALUES
-          (SETQ THBRANCH THTREE)                       ;; STORE AWAY TREE FOR POSSIBLE BACKTRACKING
-          (SETQ THABRANCH THALIST)                       ;; STORE AWAY THALIST FOR POSSIBLE BACKTRACKING
-          (THPOPT)                               ;; POP TREE
-          T)                               ;; SUCCEED
+         ((CADDAR THTREE)                                           ;; LIST OF NEW VALUES NON NIL
+          (RPLACA (CDADAR THTREE) (CAADDR (CAR THTREE)))            ;; REPLACE OLD VALUE WITH NEW VALUE
+          (RPLACA (CDDAR THTREE) (CDADDR (CAR THTREE)))             ;; POP NEW VALUES
+          (SETQ THBRANCH THTREE)                                    ;; STORE AWAY TREE FOR POSSIBLE BACKTRACKING
+          (SETQ THABRANCH THALIST)                                  ;; STORE AWAY THALIST FOR POSSIBLE BACKTRACKING
+          (THPOPT)                                                  ;; POP TREE
+          T)                                                        ;; SUCCEED
          (T (RPLACA (CDADAR THTREE) (QUOTE THUNASSIGNED))           ;; NO NEW VALUES LEFT. RETURN X TO THUNASSIGNED,
-        (THPOPT)                           ;; POP TREE AND CONTINUE FAILING.
+        (THPOPT)                                                    ;; POP TREE AND CONTINUE FAILING.
         NIL)))
 
 (DECLARE (UNSPECIAL THALIST THBRANCH THABRANCH THTREE THML))
@@ -1631,15 +1622,14 @@ NIL
 (DECLARE (UNSPECIAL THTREE THVALUE THEXP))
 
 (DEFUN THANTE FEXPR
-       (THX)                                   ;; DEFINES AND OPTIONALLY ASSERTS ANTECEDENT
-       (THDEF (QUOTE THANTE) THX))                       ; THEOREMS)
+       (THX)                                            ;; DEFINES AND OPTIONALLY ASSERTS ANTECEDENT THEOREMS
+       (THDEF (QUOTE THANTE) THX))
 
 (DECLARE (SPECIAL THTREE THTRACE THOLIST THALIST))
 
 (DEFUN THAPPLY FEXPR (L) (THAPPLY1 (CAR L)
 
-                   ;; THAPPLY1 DOES THE REAL WORK, ALL WE DO IS GET THE THEOREM OFF THE
-                   ;; PROPERTY LIST
+                   ;; THAPPLY1 DOES THE REAL WORK, ALL WE DO IS GET THE THEOREM OFF THE PROPERTY LIST
                    (GET (CAR L) (QUOTE THEOREM))
                    (CADR L)))
 
@@ -1669,8 +1659,7 @@ NIL
 (DEFUN THASS1
  (THA P)
  (PROG (THX THY1 THY TYPE PSEUDO)
-       (AND (CDR THA) (EQ (CAADR THA) (QUOTE THPSEUDO)) (SETQ PSEUDO
-                                  T))
+       (AND (CDR THA) (EQ (CAADR THA) (QUOTE THPSEUDO)) (SETQ PSEUDO T))
 
        ;; IF YOU SEE "THPSEUDO" SET FLAG "PSEUDO" TO T
        (OR (ATOM (SETQ THX (CAR THA)))
@@ -1720,8 +1709,7 @@ NIL
            (T (THREMOVE THX))))
 
     ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
-    ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE,
-    ;; OR THE ONE TO BE REMOVED, WASN'T.
+    ;; THAT IS, IF THE ITEM TO BE ADDED WAS ALREADY THERE, OR THE ONE TO BE REMOVED, WASN'T.
     (RETURN NIL))
 
        ;; TYPE IS THE KIND OF THEOREM WE WILL BE LOOKING FOR
@@ -1748,7 +1736,7 @@ NIL
 
 (DECLARE (UNSPECIAL THALIST TYPE THX THTREE THEXP THTRACE THY1 THY))
 
-(DEFUN THASSERT FEXPR (THA) (THASS1 THA T))                   ; THASS1 IS USED FOR BOTH ASSERTING AND ERASING,   ; THE "T" AS SECOND ARG TELLS IT THAT WE ARE       ;; ASSERTING.
+(DEFUN THASSERT FEXPR (THA) (THASS1 THA T))                   ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
 
 (DECLARE (SPECIAL THTREE))
 
@@ -1779,8 +1767,7 @@ NIL
 
 (DEFUN THBA
 
-       ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1
-       ;; ELEMENT PRIOR TO THE ONE ASKED FOR
+       ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR
        ;; USED ONLY BY THAD AND THREMOVE
        (TH1 TH2)
        (PROG (THP)
@@ -1865,8 +1852,7 @@ NIL
 (DEFUN THBRANCH
        NIL
 
-       ;; THBRANCH IS CALLED BY THPROGT
-       ;; AND WE ARE SUCCEEDING BACKWARDS
+       ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS
        ;; CAR THTREE IS THE THPROG MARKING
        (COND ;; THERE ARE NO MORE EXPRESSIONS TO EXECUTE IN THE THPROG
          ((NOT (CDADAR THTREE)))
@@ -1914,7 +1900,6 @@ NIL
                 (SETQ THALIST (CADAR X))
                 (SETQ THTREE (CAAR X))
                 T)
-
                    ;; THERE AREN'T ANY MORE THINGS IN THE THPROG TO TRY
                    ;; SO JUST RETURN NIL
                    (T (THPOPT) NIL)))))
@@ -2167,18 +2152,18 @@ NIL
  (THBIND (CADDR THA))
  (THPUSH THTREE
      (LIST (QUOTE THFIND)
-           (COND ((EQ (CAR THA) 'ALL) ' (1. NIL NIL))           ;; STANDARD ALL
+           (COND ((EQ (CAR THA) 'ALL) ' (1. NIL NIL))               ;; STANDARD ALL
              ((NUMBERP (CAR THA))
-              (LIST (CAR THA) (CAR THA) T))               ;; SINGLE NUMBER
-             ((NUMBERP (CAAR THA)) (CAR THA))               ;; WINOGRAD CROCK FORMAT
+              (LIST (CAR THA) (CAR THA) T))                         ;; SINGLE NUMBER
+             ((NUMBERP (CAAR THA)) (CAR THA))                       ;; WINOGRAD CROCK FORMAT
              ((EQ (CAAR THA) 'EXACTLY)
               (LIST (CADAR THA) (ADD1 (CADAR THA)) NIL))
              ((EQ (CAAR THA) 'AT-MOST)
               (LIST 1. (ADD1 (CADAR THA)) NIL))
              ((EQ (CAAR THA) 'AS-MANY-AS)
               (LIST 1. (CADAR THA) T))
-             (T (CONS (CADAR THA)                   ;; ONLY THING LEFT IS AT-LEAST
-                  (COND ((NULL (CDDAR THA)) (LIST NIL T))  ;; NO AT-MOST
+             (T (CONS (CADAR THA)                                   ;; ONLY THING LEFT IS AT-LEAST
+                  (COND ((NULL (CDDAR THA)) (LIST NIL T))           ;; NO AT-MOST
                     ((EQ (CADDAR THA) 'AT-MOST)
                      (LIST (ADD1 (CAR (CDDDAR THA)))
                        NIL))
@@ -2228,12 +2213,11 @@ NIL
 
 (DECLARE (SPECIAL B))
 
-(DEFUN THFLUSH                                   ; (THFLUSH) FLUSHES ALL ASSERTIONS AND THEOREMS
- FEXPR                                       ;; INPUT = SEQUENCE OF INDICATORS DEFAULT =
-
- ;; EFFECT = FLUSHES THE PROPERTIES OF THESE
- (A)                                       ; (THASSERTION THCONSE THANTE THERASING)
- (MAPC                                       ;; INDICATORS FROM ALL ATOMS
+(DEFUN THFLUSH                                      ;; (THFLUSH) FLUSHES ALL ASSERTIONS AND THEOREMS
+ FEXPR                                              ;; INPUT = SEQUENCE OF INDICATORS DEFAULT =
+                                                    ;; EFFECT = FLUSHES THE PROPERTIES OF THESE
+ (A)                                                ;; (THASSERTION THCONSE THANTE THERASING)
+ (MAPC                                              ;; INDICATORS FROM ALL ATOMS
   (FUNCTION
    (LAMBDA (B)
     (MAPC (FUNCTION (LAMBDA (C)
@@ -2247,7 +2231,7 @@ NIL
 
 (DECLARE (SPECIAL THXX))
 
-(DEFUN THGAL                                   ; (THGAL $?X THALIST) RETURNS THE BINDING CELL (X ; -) OF X ON THALIST
+(DEFUN THGAL                                        ;; (THGAL $?X THALIST) RETURNS THE BINDING CELL (X ;; -) OF X ON THALIST
        (X Y)
        (SETQ THXX X)
        (SASSQ (CADR X) Y (FUNCTION (LAMBDA NIL
@@ -2259,7 +2243,7 @@ NIL
 (DECLARE (SPECIAL THGENAME))
 
 (DEFUN THGENAME
-       FEXPR                                   ;; GENERATES UNIQUE NAME WITH ARG AS PREFIX
+       FEXPR                                        ;; GENERATES UNIQUE NAME WITH ARG AS PREFIX
        (X)
        (READLIST (NCONC (EXPLODE (CAR X))
             (EXPLODE (SETQ THGENAME (ADD1 THGENAME))))))
@@ -2273,11 +2257,11 @@ NIL
 
 (DEFUN THGOAL
  FEXPR
- (THA)                                       ; THA = (PATTERN RECOMMENDATION)
- (PROG (THY THY1 THZ THZ1 THA1 THA2)                       ;; PATTERN IS EITHER EXPLICIT, THE VALUE OF A
-       (SETQ THA2 (THVARSUBST (CAR THA) T))                   ;; PLANNER VARIABLE OR THVAL OF $E... THA2 =
-       (SETQ THA1 (CDR THA))                           ;; INSTANTIATED PATTERN THA1 = RECOMMENDATIONS
-       (COND ((OR (NULL THA1)                           ;; SHOULD DATA BASE BE SEARCHED TRYED IF NO RECS
+ (THA)                                                              ;; THA = (PATTERN RECOMMENDATION)
+ (PROG (THY THY1 THZ THZ1 THA1 THA2)                                ;; PATTERN IS EITHER EXPLICIT, THE VALUE OF A
+       (SETQ THA2 (THVARSUBST (CAR THA) T))                         ;; PLANNER VARIABLE OR THVAL OF $E... THA2 =
+       (SETQ THA1 (CDR THA))                                        ;; INSTANTIATED PATTERN THA1 = RECOMMENDATIONS
+       (COND ((OR (NULL THA1)                                       ;; SHOULD DATA BASE BE SEARCHED TRYED IF NO RECS
           (AND (NOT (AND (EQ (CAAR THA1) 'THANUM)
                  (SETQ THA1
                        (CONS (LIST 'THNUM
@@ -2285,17 +2269,17 @@ NIL
                          (CONS (LIST 'THDBF
                              'THTRUE)
                            (CDR THA1))))))
-               (NOT (AND (EQ (CAAR THA1) (QUOTE THNODB))       ; TRIED IF REC NOT THNODB OR (THDBF PRED)
+               (NOT (AND (EQ (CAAR THA1) (QUOTE THNODB))            ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
                  (PROG2 (SETQ THA1 (CDR THA1)) T)))
                (NOT (EQ (CAAR THA1) (QUOTE THDBF)))))
           (SETQ THA1
             (CONS (LIST (QUOTE THDBF) (QUOTE THTRUE)) THA1))))
-       (SETQ THA1 (MAPCAN (FUNCTION THTRY) THA1))               ;; THMS AND ASSERTIONS SATISFYING RECS APPENDED TO
-       (AND THTRACE (THTRACES (QUOTE THGOAL) THA2))               ;; RECS
+       (SETQ THA1 (MAPCAN (FUNCTION THTRY) THA1))                   ;; THMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
+       (AND THTRACE (THTRACES (QUOTE THGOAL) THA2))
        (COND ((NULL THA1) (RETURN NIL)))
-       (THPUSH THTREE (LIST (QUOTE THGOAL) THA2 THA1))               ; (THGOAL PATTERN MATCHES)
+       (THPUSH THTREE (LIST (QUOTE THGOAL) THA2 THA1))              ;; (THGOAL PATTERN MATCHES)
        (RPLACD (CDDAR THTREE) 262143.)
-       (RETURN NIL)))                               ;; FAILS TO THGOALF
+       (RETURN NIL)))                                               ;; FAILS TO THGOALF
 
 (DECLARE (UNSPECIAL THTREE THTRACE THZ1 THZ THY1 THY THA2))
 
@@ -2376,7 +2360,7 @@ NIL
            ((NOT (SETQ THT2 (ASSQ THNF (CDR THT1))))
 
             ;; LOOK ON THE PROPERTY LIST ENTRY TO SEE
-            ;; IF THERE IS A SUB-ENTRY FOR PATTERNS WITH THIS ATOM         ;; IN THE THNF'TH POSITION
+            ;; IF THERE IS A SUB-ENTRY FOR PATTERNS WITH THIS ATOM IN THE THNF'TH POSITION
             ;; IF NOT, HACK THE ENTRY SO THERE IS.
             ;; AGAIN THIS IMPLIES THAT THE ASSERTEE HAS NEVER
             ;; BEEN ASSERTED BEFORE
@@ -3228,11 +3212,10 @@ NIL
 
 (DEFUN THSTATE
  FEXPR
- (THINDICATORS)                                   ;; PRINTS THAT PART OF THE STATE OF THE
-                                       ;; MICRO-PLANNER WORLD SPECIFIED BY THE INDICATORS
-                                       ; IN REREADABLE FORM. NOTE THAT         ; IT IS  ;; BLIND TO ASSERTIONS THAT BEGIN WITH
- (PROG (THP)                                   ;; EITHER NUMBERS, LIST STRUCTURE, NOHASHED ATOMS
-       (PRINT (QUOTE (THDATA)))                           ;; OR NON-INTERNED ATOMS.
+ (THINDICATORS)                                     ;; PRINTS THAT PART OF THE STATE OF THE MICRO-PLANNER WORLD SPECIFIED BY THE INDICATORS
+                                                    ;; IN REREADABLE FORM. NOTE THAT IT IS BLIND TO ASSERTIONS THAT BEGIN WITH
+ (PROG (THP)                                        ;; EITHER NUMBERS, LIST STRUCTURE, NOHASHED ATOMS OR NON-INTERNED ATOMS.
+       (PRINT (QUOTE (THDATA)))
        (MAPC
     (FUNCTION
      (LAMBDA (BUCKET)
@@ -3344,15 +3327,15 @@ NIL
 
 (DECLARE (SPECIAL THTREE THOLIST THALIST))
 
-(DEFUN THTRY1                                   ;; TRIES NEXT RECOMMENDATION ON TREE FOR THGOAL
+(DEFUN THTRY1                                               ;; TRIES NEXT RECOMMENDATION ON TREE FOR THGOAL
        NIL
        (PROG (THX THY THZ THW THEOREM)
-         (SETQ THZ (CAR THTREE))                       ; = (THGOAL PATTERN EXPANDED-RECOMMENDATIONS)
-         (SETQ THY (CDDR THZ))                       ;; = RECOMMENDATIONS
+         (SETQ THZ (CAR THTREE))                            ;; = (THGOAL PATTERN EXPANDED-RECOMMENDATIONS)
+         (SETQ THY (CDDR THZ))                              ;; = RECOMMENDATIONS
          (RPLACD THY (SUB1 (CDR THY)))
     NXTREC
          (COND ((OR (NULL (CAR THY)) (ZEROP (CDR THY)))
-            (RETURN NIL)))                       ;; RECOMMENDATIONS EXHAUSTED. FAIL
+            (RETURN NIL)))                                  ;; RECOMMENDATIONS EXHAUSTED. FAIL
          (SETQ THX (CAAR THY))
          (GO (CAR THX))
     THNUM (RPLACD THY (CADR THX))
@@ -3360,18 +3343,18 @@ NIL
          (GO NXTREC)
     THDBF (SETQ THOLIST THALIST)
          (COND ((NULL (CADDR THX)) (RPLACA THY (CDAR THY))
-                       (GO NXTREC))               ;; NO MORE CANDIDATES SATISFYING THIS REC.
-           ((PROG2 0.                           ;; TRY NEXT REC
+                       (GO NXTREC))                         ;; NO MORE CANDIDATES SATISFYING THIS REC.
+           ((PROG2 0.                                       ;; TRY NEXT REC
                (AND ((CADR THX) (SETQ THW (CAADDR THX)))
                 (THMATCH1 (CADR THZ) (CAR THW)))
                (RPLACA (CDDR THX) (CDADDR THX)))
             (RETURN THW))
            (T (GO THDBF)))
     THTBF (COND ((NULL (CADDR THX)) (RPLACA THY (CDAR THY))
-                       (GO NXTREC)))               ;; NO MORE CANDIDATES SATISFYING THIS REC.
+                       (GO NXTREC)))                        ;; NO MORE CANDIDATES SATISFYING THIS REC.
          (SETQ THEOREM (CAADDR THX))
     THTBF1
-         (COND ((NOT (AND (SETQ THW                       ;; TRY NEXT REC
+         (COND ((NOT (AND (SETQ THW                         ;; TRY NEXT REC
                     (GET THEOREM (QUOTE THEOREM)))
                   (EQ (CAR THW) (QUOTE THCONSE))))
             (PRINT THEOREM)
@@ -3461,9 +3444,9 @@ NIL
 (DECLARE (SPECIAL THALIST THXX))
 
 (DEFUN THV1
- (X)                                       ; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE
- (SETQ THXX X)                                   ;; $?X RETURNS ERROR MESSAGE IF X UNBOUND OR
- (COND ((EQ (SETQ X (CADR (SASSQ X                       ;; UNASSIGNED
+ (X)                                                        ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE
+ (SETQ THXX X)                                              ;; $?X RETURNS ERROR MESSAGE IF X UNBOUND OR UNASSIGNED
+ (COND ((EQ (SETQ X (CADR (SASSQ X
                  THALIST
                  (FUNCTION (LAMBDA NIL
                            (PRINT THXX)
@@ -3479,8 +3462,8 @@ NIL
 
 (DEFUN THV
        FEXPR
-       (X)                                   ; (THV X) IS THE VALUE OF THE PLANNER VARIABLE
-       (THV1 (CAR X)))                               ;; $?X
+       (X)                                   ;; (THV X) IS THE VALUE OF THE PLANNER VARIABLE $?X
+       (THV1 (CAR X)))
 
 (DECLARE (SPECIAL THLEVEL
           THSTEP
@@ -3822,23 +3805,16 @@ NIL
 
          ;; READ IN S EXPRESSION.
          (ERRSET (COND ((EQ (SETQ /0LISTEN (READ)) (QUOTE P))
-                (RETURN T))                       ;; $P IMPLIES PROCEDE
-               ((AND (NOT (ATOM /0LISTEN))               ; ($P EXP) IMPLIES PROCEDE AND OUTPUT (EVAL EXP)
+                (RETURN T))                                         ;; $P IMPLIES PROCEDE
+               ((AND (NOT (ATOM /0LISTEN))                          ;; ($P EXP) IMPLIES PROCEDE AND OUTPUT (EVAL EXP)
                  (EQ (CAR /0LISTEN) (QUOTE P)))
                 (RETURN (EVAL (CADR /0LISTEN))))
-               (THLEVEL (PRINT (EVAL /0LISTEN)))           ;; EVAL LISTENING IF NOT AT TOP LEVEL
-               (T (PRINT (THVAL /0LISTEN THALIST)))))      ;; THVAL LISTENING AT TOP LEVEL
+               (THLEVEL (PRINT (EVAL /0LISTEN)))                    ;; EVAL LISTENING IF NOT AT TOP LEVEL
+               (T (PRINT (THVAL /0LISTEN THALIST)))))               ;; THVAL LISTENING AT TOP LEVEL
          (GO /0LISTEN)))
 
-(DECLARE (SPECIAL PURE
-          LOW
-          THXX
-          THTRACE
-          THALIST
-          THTREE
-          ERRLIST
-          THGENAME
-          THLEVEL))
+(DECLARE (SPECIAL PURE LOW THXX THTRACE THALIST THTREE ERRLIST THGENAME THLEVEL))
+
 (DEFUN THINIT
        FEXPR
        (L)
@@ -3900,7 +3876,7 @@ NIL
  (PROG (Y)
 
     ;; VARIETY OF POSSIBLE INPUT FORMATS TRANSFORMED TO STANDARD
-    ; 3 ELEMENT LIST (OBJECT-TO-BE-TRACED TRACE-CONDITION BREAK CONDITION)
+    ;; 3 ELEMENT LIST (OBJECT-TO-BE-TRACED TRACE-CONDITION BREAK CONDITION)
        (SETQ X (COND ((ATOM X) (LIST X T NIL))
              ((CDDR X) X)
              ((NULL (CDR X)) (PRINT X)
@@ -3909,7 +3885,7 @@ NIL
              ((LIST (CAR X) (CADR X) NIL))))
 
     ;; IF OBJECT-TO-BE-TRACED IS A PARTICULAR THEOREM, THEN THE TRIPLET
-    ; '(THEOREM (THSEL 'CADR)(THSEL 'CADDDR)) IS GUARANTEED TO
+    ;; '(THEOREM (THSEL 'CADR)(THSEL 'CADDDR)) IS GUARANTEED TO
     ;; BE ON THTRACE IN ADDITION TO THE STANDARD TRIPLET
        (COND ((GET (CAR X) 'THEOREM)
           (COND ((SETQ Y (ASSQ 'THEOREM THTRACE))
@@ -3942,6 +3918,7 @@ NIL
                       THTRACE)))
          ((MAPC (FUNCTION PRINT) THTRACE) (SETQ THTRACE NIL)))
        'DONE)
+
 ;; THTRACES IS ACTIVATED BY THGOAL, THASSERT, ... IF THTRACE IS NON-NIL
 ;; THF IS SET TO THE PARTICULAR CANDIDATE FOR TRACEAGE, E.G.
 ;; TO 'THGOAL IF THE PLANNER FUNCTION THGOAL ACTIVATED THTRACES
@@ -3990,6 +3967,7 @@ NIL
          (THPOPT)
          THVALUE)
      THSUCCEED)
+
 ;; THE TRACE FNS THBKPT, THGOAL, THEOREM, THASSERT, AND THERASE PUSH ONTO THE TREE
 ;; '(THTRACES NAME-OF-TRACE-POINT OPTIONAL-PRINT-OF-THVALUE (THERT)-OR-NIL)
 ;; X=THL=INSTANTIATED GOAL, ASSERTION OR ERASURE, NAME OF THE THM OR
@@ -4121,7 +4099,6 @@ NIL
             (AND ^Q (%))
             (IOC S)
             (AND IGNORE (GO UP))
-            ;;;
             (COND
              ((AND
                (COND
@@ -4208,7 +4185,7 @@ NIL
 
 (DEFUN AFTER-EACH-SENTENCE NIL
        (COND (C (WALLP C) (DP (CAR (SM C)))))
-       (TYO 12.))                                ;; form feed
+       (TYO 12.))                                ;; FORM FEED
 
 (DEFUN END-OF-FILE-CONDITION NIL
        (AND ^R (UFILE SHTRCE >))
@@ -4217,7 +4194,7 @@ NIL
 (SETQ GO-AWAY NIL MOBYTEST-IN-PROGRESS NIL)
 
 ;; ********************************************************************************
-;;                         Fancy timing package
+;;                         FANCY TIMING PACKAGE
 ;; ********************************************************************************
 
 (DEFUN SHRDLU-TIMER NIL
@@ -4264,7 +4241,7 @@ NIL
          (RETURN RESULT)))
 
 (DEFUN PARSE-STATISTICS NIL
-       (COND ((= PARSINGS 0.)                           ;; initialization
+       (COND ((= PARSINGS 0.)                           ;; INITIALIZATION
           (PUTPROP 'PARSINGS 0. 'WINS)))
        (AND RE
         (PUTPROP 'PARSINGS
@@ -4272,7 +4249,8 @@ NIL
              'WINS))
        (SETQ PARSINGS (1+ PARSINGS)))
 
-;; these next two are left over from previous incarnations
+;; THESE NEXT TWO ARE LEFT OVER FROM PREVIOUS INCARNATIONS
+
 ;; (DEFUN TIMER NIL
 ;;        (AND SH-PRINT-TIME
 ;;         (PRINT 'TIME-USED)
@@ -4281,18 +4259,18 @@ NIL
 (DEFUN TIME-SINCE (X) (QUOTIENT (- (RUNTIME) X) 1000000.0))
 
 ;; ****************************************************************
-;;         Functions that extract input from the user
+;;         FUNCTIONS THAT EXTRACT INPUT FROM THE USER
 ;; ****************************************************************
 
 (DEFUN INTEROGATE FEXPR (MESSAGE)
        (PROG (CH)
     MES  (MAPC (FUNCTION PRINT3) MESSAGE)
          (TERPRI)
-         (COND ((MEMQ (SETQ CH (READCH)) '(Y /y))
+         (COND ((MEMQ (SETQ CH (READCH)) '(Y /Y))
             (RETURN T))
-           ;;;  ((EQ CH '?)
-           ;;;   (EVAL (GET 'FLUSH 'EXPLANATION))
-           ;;;   (GO MES))
+           ;;  ((EQ CH '?)
+           ;;   (EVAL (GET 'FLUSH 'EXPLANATION))
+           ;;   (GO MES))
            (T (RETURN NIL)))))
 
 (DEFPROP DEFLIST
@@ -4305,7 +4283,7 @@ NIL
      FEXPR)
 
 ;; ****************************************************************
-;;            specialized and not so, output routines
+;;            SPECIALIZED AND NOT SO, OUTPUT ROUTINES
 ;; ****************************************************************
 
 (DEFUN % NIL                                    ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
@@ -4357,7 +4335,7 @@ NIL
          (PRINC '[)
          (PRINC X)
          (PRINC '])
-         (SETQ PLIST (plist X))
+         (SETQ PLIST (PLIST X))
     A    (COND ((MEMQ (CAR PLIST) '(PNAME VALUE)) (GO B)))
          (TERPRI)
          (TAB 4.)
@@ -4371,7 +4349,7 @@ NIL
 (DEFUN FEXPR DSAY (L) (APPLY 'SAY L))
 
 ;; ****************************************************************
-;;         functions for hand-tailored garbage collection
+;;         FUNCTIONS FOR HAND-TAILORED GARBAGE COLLECTION
 ;; ****************************************************************
 
 (DEFUN FORGET NIL
@@ -4437,7 +4415,7 @@ NIL
          (RETURN (PUTPROP A SAVE 'MAKESYM))))
 
 ;; ****************************************************************
-;;         a most complete and sophisticated break package
+;;         A MOST COMPLETE AND SOPHISTICATED BREAK PACKAGE
 ;; ****************************************************************
 
 (DEFPROP THERT ERT FEXPR)
@@ -4482,9 +4460,9 @@ NIL
                        (GO EVAL-EXP))
              (T (READCH)                       ;; SPURIOUS CHARACTER CASE
             (GO LISTEN)))))
-         ;;;
+
          (OR (ERRSET (SETQ GLOP (READ))) (GO PRINT))
-         ;;;
+
          (COND ((ATOM GLOP)
             (SETQ GLOP (OR (GET GLOP 'ABBREV) GLOP))
             (COND ((MEMQ GLOP '(T P NIL))               ;; LEAVE-LOOP CHARS
@@ -4512,7 +4490,7 @@ NIL
            (T (COND ((EQ (CAR GLOP) 'RETURN)
                  (RETURN (EVAL (CADR GLOP))))
                 (T (SETQ EXP GLOP) (GO EVAL-EXP)))))
-         ;;;
+
     EVAL-EXP
          (COND (ERT-ERRSET? (ERRSET (PRINT (EVAL EXP))))
            (T (PRINT (EVAL EXP))))
@@ -4714,13 +4692,13 @@ NIL
 
 ;; ---------------------------------------------------------------------------- anno/winograd/morpho
 
-(declare (genprefix morpho))
+(DECLARE (GENPREFIX MORPHO))
 
 ;; ********************************************************************************
 ;;
-;;                    MORPHO - code for morphological analysis
+;;                    MORPHO - CODE FOR MORPHOLOGICAL ANALYSIS
 ;;
-;;                includes ETAOIN, the input handler for the system
+;;                INCLUDES ETAOIN, THE INPUT HANDLER FOR THE SYSTEM
 ;;
 ;; ********************************************************************************
 
@@ -4731,23 +4709,23 @@ NIL
          (PRINT 'READY)
          (TERPRI)
          (AND MOBYREAD (IOC Q))
-    CHAR (COND ((EQUAL (TYIPEEK) 24.) (READCH) (ERT) (GO THRU)) ;; "cntrl-x" break left over from CMU
-                   ((= (tyipeek) 3.)
-(or (and mobyread (end-of-file-condition))
-    (bug etaoin: about to read eof)))
+    CHAR (COND ((EQUAL (TYIPEEK) 24.) (READCH) (ERT) (GO THRU)) ;; "CNTRL-X" BREAK LEFT OVER FROM CMU
+                   ((= (TYIPEEK) 3.)
+(OR (AND MOBYREAD (END-OF-FILE-CONDITION))
+    (BUG ETAOIN: ABOUT TO READ EOF)))
 )
-         (setq char (cond ((greaterp 123. (setq char (tyi)) 96.) (- char 32.))
-                  ((greaterp 91. char 64.) char)
-                  (t char))
-                  char (ascii char)
-                   ;; this little hack maps all lowercase letters into uppercase.
-           ;; a more reasonable thing to do would be to hack the chtrans
-           ;; property of the current readtable, but this was quicker to patch.
+         (SETQ CHAR (COND ((GREATERP 123. (SETQ CHAR (TYI)) 96.) (- CHAR 32.))
+                  ((GREATERP 91. CHAR 64.) CHAR)
+                  (T CHAR))
+                  CHAR (ASCII CHAR)
+                   ;; THIS LITTLE HACK MAPS ALL LOWERCASE LETTERS INTO UPPERCASE.
+           ;; A MORE REASONABLE THING TO DO WOULD BE TO HACK THE CHTRANS
+           ;; PROPERTY OF THE CURRENT READTABLE, BUT THIS WAS QUICKER TO PATCH.
                    )
-             (cond ((EQ char '/ ) (GO WORD))           ;; DELIMITER
+             (COND ((EQ CHAR '/ ) (GO WORD))           ;; DELIMITER
            ((MEMQ CHAR ALTMODE)
-            (setq char (ascii (uppercase-ify-char (tyi))))
-            (COND ((MEMQ char ALTMODE)
+            (SETQ CHAR (ASCII (UPPERCASE-IFY-CHAR (TYI))))
+            (COND ((MEMQ CHAR ALTMODE)
                (ERT)
                (GO THRU))
                                        ;; ALTMODE-ALTMODE
@@ -4777,7 +4755,7 @@ NIL
               ((EQ CHAR 'M)
                (IOC Q)
                (SETQ IGNORE NIL MOBYREAD T)
-               (GO thru))
+               (GO THRU))
               ((EQ CHAR 'I)
                (SETQ IGNORE T)
                (IOC Q)
@@ -4802,7 +4780,7 @@ NIL
                (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD T))
                (GO CHAR))
           (AND (EQ CHAR '")
-               ALREaDY-BLGING-NEWRD
+               ALREADY-BLGING-NEWRD
                (NOT (SETQ ALREADY-BLGING-NEWRD NIL))
                (GO WORD))
                                        ;; WITHIN THIS "AND" ARE ALL THE CHARACTERS THAT
@@ -5055,8 +5033,6 @@ NIL
 
 (SETQ CONSO '(B C D F G H J K L M N P Q R S T V W X Z))
 
-0.
-
 (SETQ LIQUID '(L R S Z V))
 
 (SETQ PUNCL '(/. ? : /; " !))
@@ -5075,48 +5051,48 @@ NIL
 
 ;; ---------------------------------------------------------------------------- anno/winograd/show
 
-(declare (genprefix show))
+(DECLARE (GENPREFIX SHOW))
 
-;;  quickies
+;; QUICKIES
 
-(defun shstpo nil ;; "sh-standard-printout"
-(parsings))
+(DEFUN SHSTPO NIL ;; "SH-STANDARD-PRINTOUT"
+(PARSINGS))
 
-(defun parsings nil
-(printc '/ / ratio/ of/ winning/ parses/ to/ total/ )
-(princ (get 'parsings 'wins))
-(princ '//)
-(princ parsings))
+(DEFUN PARSINGS NIL
+(PRINTC '/ / RATIO/ OF/ WINNING/ PARSES/ TO/ TOTAL/ )
+(PRINC (GET 'PARSINGS 'WINS))
+(PRINC '//)
+(PRINC PARSINGS))
 
-(defun parsetrace labels
-(cond ((= (arg nil) 0)
-       (setq parsetrace 'all))
-      (t (setq parsetrace (listify labels)))))
+(DEFUN PARSETRACE LABELS
+(COND ((= (ARG NIL) 0)
+       (SETQ PARSETRACE 'ALL))
+      (T (SETQ PARSETRACE (LISTIFY LABELS)))))
 
-(defun parsebreak labels
-(cond ((= (arg nil) 0)
-       (setq parsebreak 'all))
-      (t (setq parsebreak (listify labels)))))
+(DEFUN PARSEBREAK LABELS
+(COND ((= (ARG NIL) 0)
+       (SETQ PARSEBREAK 'ALL))
+      (T (SETQ PARSEBREAK (LISTIFY LABELS)))))
 
-(defun fancytimer off?
-(cond ((= (arg nil) 1)
-       (setq sh-print-time nil))
-      (t (setq sh-print-time 'fancy))))
+(DEFUN FANCYTIMER OFF?
+(COND ((= (ARG NIL) 1)
+       (SETQ SH-PRINT-TIME NIL))
+      (T (SETQ SH-PRINT-TIME 'FANCY))))
 
-(defun totaltime off?
-(cond ((= (arg nil) 1)
-       (setq sh-print-time nil))
-      (t (setq sh-print-time t))))
+(DEFUN TOTALTIME OFF?
+(COND ((= (ARG NIL) 1)
+       (SETQ SH-PRINT-TIME NIL))
+      (T (SETQ SH-PRINT-TIME T))))
 
-(defun smntrace off?
-(cond ((= (arg nil) 1)
-       (setq smntrace nil))
-      (t (setq smntrace t))))
+(DEFUN SMNTRACE OFF?
+(COND ((= (ARG NIL) 1)
+       (SETQ SMNTRACE NIL))
+      (T (SETQ SMNTRACE T))))
 
-(defun smnbreak off?
-(cond ((= (arg nil) 1)
-       (setq smnbreak nil))
-      (t (setq smnbreak t))))
+(DEFUN SMNBREAK OFF?
+(COND ((= (ARG NIL) 1)
+       (SETQ SMNBREAK NIL))
+      (T (SETQ SMNBREAK T))))
 
 (DEFUN LBK FEXPR (LABELS) (SETQ LABELBREAK LABELS))
 (DEFUN LABELTRACE FEXPR (A)
@@ -5930,18 +5906,7 @@ NIL
       SHOW
       (LAMBDA (X) (TREEPRINT (OR (CHARG X
                     'MARKER:
-                    '(SEMANTIC MARKER
-                           WHOSE
-                           SUBSETS
-                           ARE
-                           TO
-                           BE
-                           EXAMINED/.
-                           TYPE
-                           <LF>
-                           FOR
-                           ENTIRE
-                           TREE/.))
+                    '(SEMANTIC MARKER WHOSE SUBSETS ARE TO BE EXAMINED/. TYPE <LF> FOR ENTIRE TREE/.))
                  '#SYSTEMS)
                  'SYSTEM
                  0.)))
@@ -5964,20 +5929,7 @@ NIL
               '(NOUN VERB)
               '(OTHER TYPES MUST BE DEFINED IN LISP)))
     MAR  (OR (SETQ MARK (REQUEST 'MARKERS:
-                     '(LIST OF
-                        SEMANTIC
-                        MARKERS
-                        FOR
-                        WORD
-                        BEING
-                        DEFINED
-                        -
-                        TO
-                        SEE
-                        MARKER
-                        TREE
-                        TYPE
-                        <LF>)))
+                     '(LIST OF SEMANTIC MARKERS FOR WORD BEING DEFINED - TO SEE MARKER TREE TYPE <LF>)))
          (AND (SHOW MARKER #SYSTEMS) (GO MAR)))
          (SETQ MARK (LISTIFY MARK))
          (COND
@@ -6116,61 +6068,39 @@ NIL
 
 ;; ---------------------------------------------------------------------------- anno/winograd/setup
 
-(declare (genprefix setup))
+(DECLARE (GENPREFIX SETUP))
 
 ;; ################################################################
 ;;
-;;            SETUP - initialization file for SHRDLU
+;;            SETUP - INITIALIZATION FILE FOR SHRDLU
 ;;
 ;; ################################################################
 
-(setq parsings 0) ;; atom used in the timing package
+(SETQ PARSINGS 0) ;; ATOM USED IN THE TIMING PACKAGE
 
-(SETQ ELSE
-      T
-      SAVESENT
-      NIL
-      ALTMODE
-      (ASCII 27.)
-      DOT
-      (ASCII 46.)
-      *1
-      '[1]
-      *2
-      '[2]
-      *3
-      '[3]
-      *4
-      '[4]
-      *5
-      '[5]
-      *6
-      '[6]
-      LASTSENTNO
-      0.
-      SENTNO
-      1.
-      UNMKD
-      '(COMPONENT BOTH)
-      LASTIME
-      NIL)
+(SETQ ELSE T
+      SAVESENT NIL
+      ALTMODE (ASCII 27.)
+      DOT (ASCII 46.)
+      *1 '[1]
+      *2 '[2]
+      *3 '[3]
+      *4 '[4]
+      *5 '[5]
+      *6 '[6]
+      LASTSENTNO 0.
+      SENTNO 1.
+      UNMKD '(COMPONENT BOTH)
+      LASTIME NIL)
 
-(SETQ DPSTOP
-      NIL
-      NODE-STOP
-      NIL
-      SMN-STOP
-      NIL
-      ERT-TIME
-      0.
-      ALTMODE
-      (LIST (ASCII 27.))
-      BREAKCHARS
-      (LIST (ASCII 32.) (ASCII 13.) (ASCII 46.))
-      LINEL
-      65.
-      =LINE
-      '========================================================)
+(SETQ DPSTOP NIL
+      NODE-STOP NIL
+      SMN-STOP NIL
+      ERT-TIME 0.
+      ALTMODE (LIST (ASCII 27.))
+      BREAKCHARS (LIST (ASCII 32.) (ASCII 13.) (ASCII 46.))
+      LINEL 65.
+      =LINE '========================================================)
 
 (OR (GET 'CLAUSE 'SUBR)
     (LABELTRACE CLAUSE NG VG ADJG PREPG CONJOIN))
@@ -6208,72 +6138,41 @@ NIL
 
 ;; ************************
 
-(SETQ MAKE-VERBOSE
-      NIL
-      PARSETRACE
-      NIL
-      PARSEBREAK
-      NIL
-      PARSENODE-SEE
-      NIL
-      LABELTRACE
-      NIL
-      LABELBREAK
-      NIL
-      BUILDSEE
-      NIL
-      BUILD-SEE
-      NIL
-      PLANNERSEE
-      NIL
-      SH-PRINT-TIME
-      NIL)
+(SETQ MAKE-VERBOSE NIL
+      PARSETRACE NIL
+      PARSEBREAK NIL
+      PARSENODE-SEE NIL
+      LABELTRACE NIL
+      LABELBREAK NIL
+      BUILDSEE NIL
+      BUILD-SEE NIL
+      PLANNERSEE NIL
+      SH-PRINT-TIME NIL)
 
-(SETQ MOBYREAD
-      NIL
-      DISCOURSE
-      T
-      WANT-DISPLAY
-      NIL
-      NOMEM
-      NIL
-      IASSUME
-      T
-      TIMID
-      200.)
+(SETQ MOBYREAD NIL
+      DISCOURSE T
+      WANT-DISPLAY NIL
+      NOMEM NIL
+      IASSUME T
+      TIMID 200.)
 
 (SETQ MAKEINTERN NIL)
 
-(SETQ SH-BEFOREANSWER-PAUSE
-      NIL
-      ANS-AFTEREVALUATION-PAUSE
-      NIL
-      ANS-AFTERFORMULATION-PAUSE
-      NIL
-      EVALANS-PAUSE
-      NIL
-      NOSTOP
-      NIL
-      ANSWER?
-      T
-      SMN
-      NIL
-      DOIT
-      NIL
-      TOPLEVEL-ERRSET?
-      NIL
-      ERT-ERRSET?
-      T
-      SH-PARSE-PAUSE
-      NIL
-      SH-PARSESMNTC-PAUSE
-      NIL
-      SH-AFTERANSWER-PAUSE
-      NIL
-      PNS-BK
-      NIL
-      PLNRSEE-PAUSE
-      NIL)
+(SETQ SH-BEFOREANSWER-PAUSE NIL
+      ANS-AFTEREVALUATION-PAUSE NIL
+      ANS-AFTERFORMULATION-PAUSE NIL
+      EVALANS-PAUSE NIL
+      NOSTOP NIL
+      ANSWER?  T
+      SMN NIL
+      DOIT NIL
+      TOPLEVEL-ERRSET? NIL
+      ERT-ERRSET? T
+      SH-PARSE-PAUSE NIL
+      SH-PARSESMNTC-PAUSE NIL
+      SH-AFTERANSWER-PAUSE NIL
+      PNS-BK NIL
+      PLNRSEE-PAUSE NIL)
 
 ;; **********************************
 
@@ -6290,16 +6189,7 @@ NIL
        (QUIETMODE)
        (NORMALFEATUREMODE)
        (NOPAUSES)
-       (SETQ NOSTOP
-         T
-         ANSWER?
-         T
-         SMN
-         NIL
-         TOPLEVEL-ERRSET?
-         T
-         ERT-ERRSET
-         T)
+       (SETQ NOSTOP T ANSWER? T SMN NIL TOPLEVEL-ERRSET? T ERT-ERRSET T)
        (SETQ *RSET NIL)
        (IOC C)
        (SETQ SH-PRINT-TIME T))
@@ -6308,16 +6198,7 @@ NIL
        (QUIETMODE)
        (NORMALFEATUREMODE)
        (NOPAUSES)
-       (SETQ NOSTOP
-         NIL
-         ANSWER?
-         T
-         SMN
-         NIL
-         TOPLEVEL-ERRSET?
-         NIL
-         ERT-ERRSET
-         T)
+       (SETQ NOSTOP NIL ANSWER? T SMN NIL TOPLEVEL-ERRSET? NIL ERT-ERRSET T)
        (SETQ *RSET T)
        (IOC D))
 
@@ -6327,24 +6208,24 @@ NIL
 ;;                     INITIALIZATION ROUTINES
 ;; *****************************************************************
 
-(DEFUN INITIALSTUFF (version date note)
+(DEFUN INITIALSTUFF (VERSION DATE NOTE)
        (SUSPEND)
        (CURSORPOS 'C)
        (TERPRI)
        (PRINC 'SHRDLU/ VERSION/ )
-       (princ version)
-       (princ '/ / / )
+       (PRINC VERSION)
+       (PRINC '/ / / )
        (PRINC 'LOADED/ )
-       (PRINC date )
-       (princ '/ )
+       (PRINC DATE )
+       (PRINC '/ )
        (PRINC 'IN/ BLISP/ )
-       (princ (status lispversion))
+       (PRINC (STATUS LISPVERSION))
        (TERPRI)
        (SAY REFER COMMENTS AND QUESTIONS TO DDM)
        (TERPRI)
        (TERPRI)
-(and note (progn (terpri)(apply 'say note)
-            (terpri)(terpri)))
+(AND NOTE (PROGN (TERPRI)(APPLY 'SAY NOTE)
+            (TERPRI)(TERPRI)))
 ;;       (SAY -IF YOU ARE NEAR A DEC-340)
 ;;       (TERPRI)
 ;;       (PRINC '/ / / / / )
@@ -6360,40 +6241,29 @@ NIL
 ;;           MORE (COND ((NOT (EQ D (SETQ V (READ D))))
 ;;               (EVAL V)
 ;;               (GO MORE)))))
-;;         (T (SETQ PH-TURN-ON
-;;              NIL
-;;              GP-LINES
-;;              NIL
-;;              GP-SURFACE
-;;              NIL
-;;              GP-HANDIT
-;;              NIL
-;;              GP-NEWOBLOCAT
-;;              NIL
-;;              PH-BLOCKS
-;;              NIL)
+;;         (T (SETQ PH-TURN-ON NIL GP-LINES NIL GP-SURFACE NIL GP-HANDIT NIL GP-NEWOBLOCAT NIL PH-BLOCKS NIL)
 ;;        (GP-INITIAL)))
 ;;       (TERPRI)
        (SAY YOU ARE NOW IN A READ-EVAL-PRINT LOOP)
        (TERPRI)
        (SAY TYPE "GO/ " TO ENTER READY STATE)
        (CATCH (ERT) ABORT-PARSER)
-       (sstatus toplevel '(shrdlu))
+       (SSTATUS TOPLEVEL '(SHRDLU))
        (SHRDLU))
 
 (DEBUGMODE)
 
-(setq sh-standard-printout t smnbreak nil smntrace nil makintern t annoyance nil)
+(SETQ SH-STANDARD-PRINTOUT T SMNBREAK NIL SMNTRACE NIL MAKINTERN T ANNOYANCE NIL)
 
 (SSTATUS PAGEPAUSE T)
 
 (IOC D)
-(setq errlist nil)
+(SETQ ERRLIST NIL)
 
-(SETQ Z (status tty) w1 (car z) w2 (cadr z))
-(setq w1 (boole 7 w1 020202020202)
-      w2 (boole 7 w2 020202020202))
-(sstatus tty w1 w2)
+(SETQ Z (STATUS TTY) W1 (CAR Z) W2 (CADR Z))
+(SETQ W1 (BOOLE 7 W1 020202020202)
+      W2 (BOOLE 7 W2 020202020202))
+(SSTATUS TTY W1 W2)
 
 ;; ---------------------------------------------------------------------------- anno/winograd/progmr
 
@@ -6433,7 +6303,7 @@ NIL
 (DEFUN ONE-WORD-LEFT NIL (AND (CDR NB) (NOT (CDDR NB))))
 
 (SETQ SMNBREAKS NIL
-      ;;; a list of smnfns which will be broken at (before calling)
+      ;; A LIST OF SMNFNS WHICH WILL BE BROKEN AT (BEFORE CALLING)
       )
 
 (DEFUN CALLSM FEXPR (SEMANTIC-EXPRESSION)
@@ -6693,7 +6563,7 @@ NIL
              (PRINC REST)))
          (COND ((NULL (SETQ RE (APPLY-GRAMMAR UNIT)))           ;; THIS IS WHERE ALL THE WORK HAPPENS. IF THE
             (SETQ RE NIL)                       ;; PARSE SUCEEDS, IT WILL RETURN THE NODE THAT HAS
-            (SETQ N NBB)                       ; BEEN BUILT UP (SEE THE FUNCTION "INTERPRETATION" IN IN GINTER)
+            (SETQ N NBB)                       ;; BEEN BUILT UP (SEE THE FUNCTION "INTERPRETATION" IN IN GINTER)
             (GO LOSE)))
     SKIP (COND ((EQ N CUT))
            ((NQ SPECIAL) (EVAL (GETR 'SPECIAL N))))
@@ -6729,13 +6599,12 @@ NIL
             (AND (OR (EQ PARSEBREAK 'ALL)
                  (MEMQ UNIT PARSEBREAK))
              (ERT))))
-         (PARSE-STATISTICS)                           ;; defined in SYSCOM
+         (PARSE-STATISTICS)                           ;; DEFINED IN SYSCOM
          (SETQ LEVEL (1- LEVEL))
          (RETURN RE)))
 
 (DEFUN PARSE3 (REST P)
-       ;; PARSE3 IS CALLED TO PARSE JUST THE NEXT WORD IN THE
-       ;; SENTENCE
+       ;; PARSE3 IS CALLED TO PARSE JUST THE NEXT WORD IN THE SENTENCE
        (PROG (XP LABL RE SPECIAL NBB NODE)
          (COND ((EQ (SETQ NBB N) CUT) (MQ CUT) (RETURN NIL))
            ((NQ B-SPECIAL)                       ;; IS THE NEXT WORD MARKED SPECL?
@@ -6745,7 +6614,7 @@ NIL
                (SETQ N NBB)
                (RETURN NIL))
               ((EQ SPECIAL 'DONE) (GO DONE)))))
-         (COND ((CAR (SETQ XP REST)))                   ; IF CALL IS (PARSE NIL FOO)
+         (COND ((CAR (SETQ XP REST)))                   ;; IF CALL IS (PARSE NIL FOO)
            ((NEXTWORD? (CADR REST)) (GO OK))               ;; THEN LOOK FOR EXACT WORD "FOO"
            ((SETQ N NBB) (RETURN NIL)))                   ;; IF NOT THERE, FAIL
     LOOP (COND ((NOT (ATOM (CAR XP)))
@@ -6855,9 +6724,9 @@ NIL
        NODE)
 
 (DEFUN ROOT (X)
-       ;;; INPUT= PIECE OF SENTENCE
-       ;;; OUTPUT= ROOT OF FIRST WORD IN THAT PIECE
-       ;;; IF WORD HAS NO ROOT PROPERTY, THE ROOT == WORD
+       ;; INPUT= PIECE OF SENTENCE
+       ;; OUTPUT= ROOT OF FIRST WORD IN THAT PIECE
+       ;; IF WORD HAS NO ROOT PROPERTY, THE ROOT == WORD
        (OR (GET (CAR X) 'ROOT) (CAR X)))
 
 (DEFUN RQ FEXPR (A) (SETR 'FEATURES (SETQ FE (SETDIF FE A)) C))        ;; REMOVE THE FEATURE A FROM FEATURE LIST OF THE CURRENT NODE
@@ -6984,19 +6853,18 @@ MAJOR
             ((OR (CQ IMPER) (EQ PUNCT '!)) (GO IMPER)))
     (GO THEREINIT)
 FDEC    (FQ DECLAR)
-     ;;;
+
     THEREINIT                                   ;; CONSTRUCTIONS USING THE FUNCTION WORD "THERE"
      (: (AND (NEXTWORD? 'THERE)                       ;; ARE CHECKED FOR EXPLICITLY AND PROCESSED BY A
-         (PARSE NIL THERE)                       ; SPECIAL BLOCK OF CODE (SEE ABOVE)
+         (PARSE NIL THERE)                       ;; SPECIAL BLOCK OF CODE (SEE ABOVE)
          (FQ DECLAR))
         THERE
         NIL
         (INIT))
 
-     ;;;
     THER2 (AND (NQ PREP)
           (PARSE PREPG INIT)
-          (OR (CALLSM (SMRELATE H))                       ; MORE INITIAL (BEFORE THE SUBJECT) MODIFIERS
+          (OR (CALLSM (SMRELATE H))                       ;; MORE INITIAL (BEFORE THE SUBJECT) MODIFIERS
           (POP)))
      (AND (NQ ADV)
           (PARSE ADV TIMW)
@@ -7006,7 +6874,6 @@ FDEC    (FQ DECLAR)
           (OR (CALLSM (SMRELATE H)) (POP)))
      (PARSE NG TIME)
 
-     ;;;
      (: (EQ LOCATIONMARKER N) CLAUSETYPE INIT INPOP)
 
      ;; THE VARIABLE "LOCATIONMARKER" MARKS THE POSITION OF PTW
@@ -7020,14 +6887,13 @@ FDEC    (FQ DECLAR)
      ;; EVERYTHING IS POPPED OFF (BY THE "INPOP" CODE)
     INPOP (: (MOVE-PT C DLC) NIL (INPOP))                   ;; DOES ANYTHING REMAIN ON THE TREE?
     BICUT (CUT-BACK-ONE)                               ;; "CUT-BACK-ONE" IS THE NORMAL BACKINGUP
-     (GO INIT)                               ; MECHANISM FOR THE GRAMMAR, IT SETS PTW (POINTER
-                                       ; TO THE WORD) BACK ONE FROM WHERE IT WAS AND
+     (GO INIT)                               ;; MECHANISM FOR THE GRAMMAR, IT SETS PTW (POINTER
+                                       ;; TO THE WORD) BACK ONE FROM WHERE IT WAS AND
                                        ;; SETS "CUT" TO PTW. THE FOLLOWING GOTO TELLS
                                        ;; WHICH BLOCK OF CODE IS TO BE REPEATED.
 
-     ;;;
-     ;;; ----------- RE-EXAMINE THE CLAUSETYPE, PARTICULARLY TO CHECK FOR VERB-INITIAL IMPERATIVES
-     ;;;
+     ;; ----------- RE-EXAMINE THE CLAUSETYPE, PARTICULARLY TO CHECK FOR VERB-INITIAL IMPERATIVES
+
     CLAUSETYPE
      (: (CQ DECLAR) SUBJ NIL)
      (: (AND (NQ VB) (NQ INF) (PARSE VG IMPER) (FQ IMPER))
@@ -7036,12 +6902,12 @@ FDEC    (FQ DECLAR)
      (FQ DECLAR)
      (: (CQ IMPER) (IMPER) NIL)
 
-     ;;; *********************************************************************
-     ;;;                  TRY TO PARSE A GRAMMATICLY ACCEPTABLE SUBJECT.
-     ;;;
-     ;;;  ONCE THAT IS DONE, SET THE SUBJECT REGISTER (FOR USE BY SEMANTIC ROUTINES AND OTHER PARTS OF THE GRAMMAR)
-     ;;;  AND MOVE ONE TO THE CODE FOR WHICH LOOKS FOR THE MAIN VERB (MVB) -"VG"
-     ;;; *********************************************************************
+     ;; *********************************************************************
+     ;;                  TRY TO PARSE A GRAMMATICLY ACCEPTABLE SUBJECT.
+     ;;
+     ;;  ONCE THAT IS DONE, SET THE SUBJECT REGISTER (FOR USE BY SEMANTIC ROUTINES AND OTHER PARTS OF THE GRAMMAR)
+     ;;  AND MOVE ONE TO THE CODE FOR WHICH LOOKS FOR THE MAIN VERB (MVB) -"VG"
+     ;; *********************************************************************
 
     SUBJ (CUT END)                               ;; RESET CUTPOINT INCASE IT WAS MODIFIED BY
     SUBJ3                                   ;; PREVIOUS BACKUPS IF THE FIRST WORD INDICATES
@@ -7052,12 +6918,11 @@ FDEC    (FQ DECLAR)
         NIL
         SUBJ1)
 
-     ;;;
     SUBJ4 (: (PARSE NG SUBJ) SUBREG NIL SUBJ1)                   ;; IF PARSING THE SUBJ CAUSES THE CUT POINT TO BE
                                        ;; REACHED, THEN JUMP TO "SUBJ1" TO SEE IF WE ARE
                                        ;; IN CONDITIONS WHERE THAT IS ALLOWED
 
-     ;;;                                   ;; WHAT TO DO IF THE SUBJECT CANNOT BE DIRECTLY
+                                           ;; WHAT TO DO IF THE SUBJECT CANNOT BE DIRECTLY
                                        ;; PARSED THIS IS CHECKING FOR THE SITUATION WHERE
                                        ;; A QUESTION WORD IS ACTING AS LOGICAL SUBJECT
      (COND ((CQ REL-NOT-FOUND)                       ;; AND HAS ALREADY BEEN PARSED AS IN "WHAT IS IN
@@ -7084,14 +6949,12 @@ FDEC    (FQ DECLAR)
            (H (POP) (GO SUBJ))                       ;; POP OFF THE CLOSEST INITIAL MODIFIER AND TRY TO
            ((GO FAIL)))                           ;; PARSE A SUBJ AGAIN
 
-     ;;;
-    HEAD (: (OR (MOVE-PTW N PW (NOUN)) (MOVE-PTW N PW (PRON)))           ; COME HERE (ONLY?) TO TRY TIME PHRASE AS SUBJECT
+    HEAD (: (OR (MOVE-PTW N PW (NOUN)) (MOVE-PTW N PW (PRON)))           ;; COME HERE (ONLY?) TO TRY TIME PHRASE AS SUBJECT
         NIL
         (HEAD))                               ;; MOVE PTW TO THE CLOSEST NOUN THEN SET THE CUT
     SUB2 (: (POP) NIL FAIL)                           ;; POINT TO IT AND ATTEMPT A NEW PARSING IF
      (: (CUT PTW) INIT SUB2)                       ;; NOTHING MORE TO POP, LOSE
 
-     ;;;
     SUBJ1 (COND ((ISQ H QUOTED)                           ;; CIRCUMSTANCES UNDER WHICH IT IS ALLRIGHT TO
         (AND (ISQ H LIST) (FQ LIST))                   ;; HAVE NOTHING FOLLOWING THE SUBJECT OF THE
         (FQ QUOTED)                           ;; CLAUSE "  "MUMBLE", SAID JOHN."
@@ -7112,31 +6975,28 @@ FDEC    (FQ DECLAR)
              (SETR 'SUBJECT (GETR 'RELHEAD C) C)
              (GO VBL))))
 
-     ;;;
     SUBJ11
      (: (CUT-BACK-ONE) SUBJ3 (SUBJ11))                   ;; IF WE CAN'T CUT BACK ANY FURTHER, THEN FAIL
     SUBREG
      (SETR 'SUBJECT H C)                           ;; THIS SETS THE "SUBJECT" REGISTER OF THE CURRENT
      (GO VB)                               ;; CURRENT NODE TO WHATEVER IS POINTED TO BY "H"
-                                       ; (IN THIS CASE THAT WOULD BE THE MOST RECENTLY
-                                       ; PARSED DAUGHTER OF THE CURRENT NODE)
+                                       ;; (IN THIS CASE THAT WOULD BE THE MOST RECENTLY
+                                       ;; PARSED DAUGHTER OF THE CURRENT NODE)
 
-     ;;; ******************************************************************
-     ;;;                          PARSE A VERB GROUP
-     ;;;
-     ;;;   ONCE THE VERB GROUP IS PARSED, THE TRANSITIVITY OF THE MAIN VERBIS EXAMINED - CAUSEING THE
-     ;;;   APPROPRIATE SECTIONS OF THE CODE BELOW TO BE EXECUTED AND TO ATTEMPT TO PARSE THE REQUIRED OBJECTS
-     ;;;      ONCE ALL THE OBJECTS HAVE BEEN PARSED, THE PROGRAM JUMPS TO THE TAG "ONT", WHERE A SEMANTICS PROGRAM
-     ;;;   IS CALLED TO MAKE SENCE OUT OF EVERYTHING
-     ;;; *****************************************************************
+     ;; ******************************************************************
+     ;;                          PARSE A VERB GROUP
+     ;;
+     ;;   ONCE THE VERB GROUP IS PARSED, THE TRANSITIVITY OF THE MAIN VERBIS EXAMINED - CAUSEING THE
+     ;;   APPROPRIATE SECTIONS OF THE CODE BELOW TO BE EXECUTED AND TO ATTEMPT TO PARSE THE REQUIRED OBJECTS
+     ;;      ONCE ALL THE OBJECTS HAVE BEEN PARSED, THE PROGRAM JUMPS TO THE TAG "ONT", WHERE A SEMANTICS PROGRAM
+     ;;   IS CALLED TO MAKE SENCE OUT OF EVERYTHING
+     ;; *****************************************************************
 
     VB     (: (PARSE ADJG ADV VBAD) VB NIL (VB-ADJG))               ;; PARSE ANY INITIAL MODIFIERS
      (RQ VBLOK)                               ;; ?????
 
-     ;;;
     VBL     (: (PARSE VG) VBREG NIL)                       ;; ONCE THE VERB GROUP IS PARSED, SET THE REGISTER
 
-     ;;;
     NOVERB
      (COND ((CQ SUBJFORK) (FQ VBFORK) (GO FINDOBJ1))           ;; WHAT    TO DO IF THE VG CANNOT BE DIRECTLY
            ((ISQ H QUOTED) (FQ REL-NOT-FOUND) (GO SUBJ4))           ;; PARSED
@@ -7146,8 +7006,8 @@ FDEC    (FQ DECLAR)
         (POP)
         (GO SUBJ4))                           ;; THIS IS EXACTLY WHAT IS LOOKS LIKE. IE. AN
                                        ;; ARBITRARY, NOT TOO WELL THOUGHTOUT BACKUP
-                                       ; MECHANISM. (NEEDLESS TO SAY IT WILL GO AWAY
-                                       ; FAST)  WE HAVE BEEN UNABLE TO FIND A VERB AND
+                                       ;; MECHANISM. (NEEDLESS TO SAY IT WILL GO AWAY
+                                       ;; FAST)  WE HAVE BEEN UNABLE TO FIND A VERB AND
                                        ;; HAVE NOTICED THAT WE PARSED A CLAUSE OF SOME
                                        ;; SORT AS THE SUBJECT. HYPOTHESIS: WE
                                        ;; MISSINTERPRETED SOMETHING WHILE PARSEING THAT
@@ -7159,39 +7019,36 @@ FDEC    (FQ DECLAR)
                                        ;; BEFORE NOUN GROUPS. DEFAULT CUTTING MECHANISM
                                        ;; FOR VBL
 
-     ;;;
     VBREG   (SETR 'VG H C)
 
-     ;;; ******************************************************************
-     ;;;
-     ;;;                                   PARSE ANY OBJECTS REQUIRED BY THE VERB
-     ;;;
-     ;;; ******************************************************************
+     ;; ******************************************************************
+     ;;
+     ;;                 PARSE ANY OBJECTS REQUIRED BY THE VERB
+     ;;
+     ;; ******************************************************************
 
     VG1     (CUT END)                               ;; RESET THE CUTPOINT IN CASE ANYONE CHANGED IT
 
-     ;;;
      (: (ISQ MVB BE) BE NIL (BE))                       ;; JUMP TO "BE" PROCESSOR
 
-     ;;; There used to be a check here for a quoting MVB with
-     ;;; a quoted subject. It was deleted because it went to a tag that no longer
-     ;;; exists and doesn't seem to have any modern analogs.
-     ;;; for the original code: see "gramar 19" or earlier. It was put in by
-     ;;; Jeff Hill in the spring of 1972.
+     ;; There used to be a check here for a quoting MVB with
+     ;; a quoted subject. It was deleted because it went to a tag that no longer
+     ;; exists and doesn't seem to have any modern analogs.
+     ;; for the original code: see "gramar 19" or earlier. It was put in by
+     ;; Jeff Hill in the spring of 1972.
 
-     ;;; -------------------------------------------------   VERB-PARTICLE COMBINATIONS
-     ;;;
-     ;;;     - SUCH AS "PUT ON", "SET DOWN", ETC. -   THEIR ESSENTIAL PROPERTY IS THAT VERB AND PARTICLE
-     ;;;     CAN BE DISPLACED BY THE OBJECT.
-     ;;;        "PUT DOWN THE BLOCK."
-     ;;;        "PUT THE BLOCK DOWN."
+     ;; -------------------------------------------------   VERB-PARTICLE COMBINATIONS
+     ;;
+     ;;     - SUCH AS "PUT ON", "SET DOWN", ETC. -   THEIR ESSENTIAL PROPERTY IS THAT VERB AND PARTICLE
+     ;;     CAN BE DISPLACED BY THE OBJECT.
+     ;;        "PUT DOWN THE BLOCK."
+     ;;        "PUT THE BLOCK DOWN."
 
      (: (ISQ MVB VPRT) NIL CHECKPASV CHECKPASV)
      (: (AND (NQ PRT) (PARSE PRT)) NIL DPRT)               ;; IF THE PARTICLE IS NOT THE WORD FOLLOWING THE
      (FQ PRT)                               ;; VERB THEN IT IS SEARCHED FOR BY CODE AT "DPRT"
-                                       ; (DISPLACED PARTICLE)
+                                       ;; (DISPLACED PARTICLE)
 
-     ;;;
      (: (SETMVB (COMBINATION? (ROOT (NB MVB)) (WORD (NB H))))      ;; IS THIS A LEGITIMATE COMBINATION OF VERB AND
         CHECKPASV                               ;; PARTICLE ?
         POPRT)
@@ -7225,7 +7082,6 @@ FDEC    (FQ DECLAR)
      (FQ ACTV)                               ;; NOT PASV=ACTIVE
      (GO FINDOBJ1)
 
-     ;;;
     BE     (FQ BE)
      (AND (PARSE NIL NOT) (FQ NEG))
      (PARSE ADV VBAD)
@@ -7320,7 +7176,7 @@ FDEC    (FQ DECLAR)
      (SETR 'SUBJECT (GETR 'OBJ1 C) H)
      (GO ONT)
     CHECKIT                                   ;; CHECK FOR THE POSSIBILITY THAT THE SUBJECT WAS
-     (: (EQ (WORD (NB (GETR 'SUBJECT C))) 'IT)               ; A  DUMMY   FUNCTION WORD ( "IT" ), AS IN "IT
+     (: (EQ (WORD (NB (GETR 'SUBJECT C))) 'IT)               ;; A  DUMMY   FUNCTION WORD ( "IT" ), AS IN "IT
         NIL                                   ;; WAS NICE TO SEE HIM."Q
         ONT)                               ;; TO BE ADDED HERE:JOHN WAS EAGER/EASY TO PLEASE
      (: (OR (AND (NEXTWORD? 'TO)
@@ -7335,16 +7191,15 @@ FDEC    (FQ DECLAR)
     GOOF2   (OR GLOBAL-MESSAGE (ERTERR NEW TRANSITIVITY - SECOND OBJECT))
      (GO FAIL)
 
-     ;;; **************************************************************************************************
-     ;;;
-     ;;;                               INITIAL SEMANTIC PROCESSING
-     ;;;
-     ;;; ****************************************************************************************************
+     ;; **************************************************************************************************
+     ;;
+     ;;                               INITIAL SEMANTIC PROCESSING
+     ;;
+     ;; ****************************************************************************************************
 
     ONT     (: (CQ PASV) PONT NIL)
     ONT1 (: (CALLSM (SMCL1)) NIL (SMCL1))
 
-     ;;;
      (: (NOT (CQ REL-NOT-FOUND)) TONT NIL RETSM)               ;; IF THE FEATURE "REL-NOT-FOUND" IS PRESENT AT
                                        ;; THIS POINT, IT INDICATES THAT WE ARE IN A
      (: (ISQ (GETR 'HEAD (GETR 'RELHEAD C)) TIM1)               ;; RELATIVE CLAUSE AND MAY HAVE TO DO SOME
@@ -7354,34 +7209,33 @@ FDEC    (FQ DECLAR)
      (FQ TIMEQ)                               ;; THEN ASSUME WE HAVE FOUND OUR RELATIVE ELEMENT.
      (GO TONT)
 
-     ;;;
     PREPSHORT
      (: (AND (NQ PREP) (PARSE PREPG)) NIL (ONT-SHORT-PREP))
      (: (CALLSM (SMRELATE H)) NIL (ONT: SMRELATE PREPQ))
      (: (CQ REL-NOT-FOUND) PREPSHORT TONT (ONT-NOT-FOUND))           ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
                                        ;; AS ITS OBJECT. THE FEATURE REL-NOT-FOUND WILL
                                        ;; BE REMOVED IF THE PREPG DISCOVERS IT CAN'T FIND
-    PONT (AND (NEXTWORD? 'BY) (PARSE PREPG AGENT) (FQ AGENT))           ; AN OBJECT (THE REMOVING WILL BE DONE WHILE IN
-     (SETR 'LOGICAL-SUBJECT (GETR 'OBJ1 H) C)               ; PREPG). "LOGICAL" IE. SUBJECT IN RELATIONSHIP
+    PONT (AND (NEXTWORD? 'BY) (PARSE PREPG AGENT) (FQ AGENT))           ;; AN OBJECT (THE REMOVING WILL BE DONE WHILE IN
+     (SETR 'LOGICAL-SUBJECT (GETR 'OBJ1 H) C)               ;; PREPG). "LOGICAL" IE. SUBJECT IN RELATIONSHIP
      (GO ONT1)                               ;; TO THE PROPER SEMANTIC INTERPRETATION OF THE
-                                       ; MAIN VERB. AGENT-PREPG CAN BE PARSED (REFLECTS
-                                       ; THE OPTIONALITY OF THE CONSTRUCTION)
+                                       ;; MAIN VERB. AGENT-PREPG CAN BE PARSED (REFLECTS
+                                       ;; THE OPTIONALITY OF THE CONSTRUCTION)
 
-     ;;; ***********************************************************************************
-     ;;;                    CHECK FOR ADDITIONAL MODIFYING PHRASES
-     ;;; ***********************************************************************************
+     ;; ***********************************************************************************
+     ;;                    CHECK FOR ADDITIONAL MODIFYING PHRASES
+     ;; ***********************************************************************************
     TONT (: (SETQ POSITION-OF-PTW N) NIL RETSM RETSM)               ;; WE ARE USING THE SAME TECHNIQUE HERE AS WITH
                                        ;; THE INITIAL MODIFIERS. IE. LOOP THROUGH THE
                                        ;; POSSIBILITIES UNTILL YOU MAKE A PASS THAT ADDS
                                        ;; NOTHING NEW.
 
-     ;;; ************************************ PREPG
+     ;; ************************************ PREPG
     NPASV   (: (AND (NQ PREP) (PARSE PREPG) (CALLSM (SMRELATE H)))
         NIL
         NIL
         RETSM)
 
-     ;;; ********************************* TIMW
+     ;; ********************************* TIMW
      (: (AND (NQ TIMW)
          (PARSE ADV TIMW)
          (OR (CALLSM (SMTIME)) (GO FAIL)))
@@ -7389,7 +7243,7 @@ FDEC    (FQ DECLAR)
         NIL
         RETSM)
 
-     ;;; ************************************ ADV
+     ;; ************************************ ADV
      (: (AND (NOT (CQ BE))
          (PARSE ADJG ADV)
          (OR (CALLSM (SMRELATE H)) (GO FAIL)))
@@ -7397,13 +7251,13 @@ FDEC    (FQ DECLAR)
         NIL
         RETSM)
 
-     ;;; ************************************* TIME NOUN GROUP
+     ;; ************************************* TIME NOUN GROUP
      (: (AND (PARSE NG TIME) (OR (CALLSM (SMTIME)) (GO FAIL)))
         NIL
         NIL
         RETSM)
 
-     ;;; ************************************ PLACE
+     ;; ************************************ PLACE
      (: (AND (NQ PLACE)
          (PARSE ADV PLACE)
          (OR (CALLSM (SMPLACE)) (GO FAIL)))
@@ -7411,7 +7265,7 @@ FDEC    (FQ DECLAR)
         NIL
         RETSM)
 
-     ;;; *********************************** BINDER
+     ;; *********************************** BINDER
      (: (AND (NQ BINDER)
          (PARSE CLAUSE BOUND)
          (OR (CALLSM (SMBIND)) (GO FAIL)))
@@ -7419,7 +7273,7 @@ FDEC    (FQ DECLAR)
         NIL
         RETSM)
 
-     ;;; ************************************* TO CLAUSE (ADJUNCT)
+     ;; ************************************* TO CLAUSE (ADJUNCT)
      (: (AND (NEXTWORD? 'TO)
          (PARSE CLAUSE TO ADJUNCT)
          (OR (CALLSM (SMTOADJ)) (GO FAIL)))
@@ -7427,25 +7281,23 @@ FDEC    (FQ DECLAR)
         NIL
         RETSM)
 
-     ;;;
      (: (EQ N POSITION-OF-PTW) NIL TONT RETSM)               ;; LOOP UNTILL NOTHING ELSE CAN BE PARSED
-     (: (OR (NOT (CQ TOPLEVEL)) (NQ SPECIAL)) RETSM NIL)           ; SPECIAL WORD (E.G. COMMA AND) COULD INDICATE A
+     (: (OR (NOT (CQ TOPLEVEL)) (NQ SPECIAL)) RETSM NIL)           ;; SPECIAL WORD (E.G. COMMA AND) COULD INDICATE A
      (ERT CLAUSE: SOMETHING LEFT OVER AT TOP LEVEL)               ;; CONJUNCTION OR A BINDER
      (GO FAIL)
 
-     ;;; ***************************************************************************************
-     ;;;                                   THERE
-     ;;;
-     ;;;             AS IN:  "THERE IS A BIRD SITTING ON YOUR SHOULDER"
-     ;;;
-     ;;; ***************************************************************************************
+     ;; ***************************************************************************************
+     ;;                                   THERE
+     ;;
+     ;;             AS IN:  "THERE IS A BIRD SITTING ON YOUR SHOULDER"
+     ;;
+     ;; ***************************************************************************************
 
     THERE   (FQ THERE)
      (CUT END)
      (: (PARSE ADV TIMW) NIL NIL (THERE))                   ;; "THERE IS A BIRD.."
      (: (AND (PARSE VG) (ISQ MVB BE)) THEF NOTHE (THERE))
 
-     ;;;
     THERQ   (: (ISQ (MOVE-PT H PV (QAUX)) BE) THERQ2 NIL)               ;; IF THIS FAILS, THE THERE IS CONSIDERED TO BE
      (: (AND (NQ TIMW) (PARSE ADV TIMW)) NIL NIL (THEREQ))
      (: (AND (PARSE VG) (ISQ MVB BE)) THERQ2 NIL)
@@ -7457,14 +7309,12 @@ FDEC    (FQ DECLAR)
 ;; WITH THE SEMANTIC ROUTINES FOR BE
      (: (CQ POLAR) THEF ONT)
 
-     ;;;
     THEF (: (AND (NQ ADV) (PARSE ADV TIMW)) NIL NIL (THEF))
      (: (PARSE NG SUBJ SUBJT) NIL THERREL)
 (FQ THERE)
      (SETR 'SUBJECT H C)
      (GO ONT)
 
-     ;;;
     THERREL
      (: (MOVE-PT C U (REL-NOT-FOUND)) NIL NOTHE)
      (SETR 'SUBJECT (GETR 'RELHEAD PT) C)
@@ -7475,33 +7325,31 @@ FDEC    (FQ DECLAR)
      (AND (NQ ADV) (PARSE ADV PLACE))
      (GO THER2)
 
-     ;;; ***********************************************************************************************
-     ;;;
-     ;;;                                       IMPERATIVES
-     ;;;
-     ;;; ***********************************************************************************************
+     ;; ***********************************************************************************************
+     ;;
+     ;;                                       IMPERATIVES
+     ;;
+     ;; ***********************************************************************************************
 
     IMPER   (: (PARSE NG TIME) NIL NIL IMPOP)                   ;; MODIFIERS WHICH MAY PRECEED THE VERB
      (: (AND (NQ ADV) (PARSE ADJG ADV VBAD)) NIL NIL IMPOP)
      (: (AND (NQ ADV) (PARSE ADV TIMW)) NIL NIL IMPOP)
 
-     ;;;
     IMPE (: (PARSE VG IMPER) NIL IMPOP)
      (FQ IMPER)
      (GO VG1)
 
-     ;;;
     IMPOP   (: (POP NIL) IMPE (IMPOP))
 
-     ;;; **************************************************************************************
-     ;;;
-     ;;;                                    QUESTIONS
-     ;;;
-     ;;; **************************************************************************************
+     ;; **************************************************************************************
+     ;;
+     ;;                                    QUESTIONS
+     ;;
+     ;; **************************************************************************************
 
     QUEST   (FQ QUEST)
 
-     ;;; **************************** PREP QUESTION
+     ;; **************************** PREP QUESTION
      (: (NQ PREP) NIL NGQUES)
      (: (PARSE PREPG) NIL NGQUES (PREPQ-INCOMPLETE))           ;; "ON WHICH BLOCK DID YOU PUT IT?"
      (: (ISQ H QUEST) NIL QUEST)                       ;; IF THE PREPG ISN'T THE QUESTION, TRY AGAIN "ON
@@ -7509,9 +7357,9 @@ FDEC    (FQ DECLAR)
                                        ;; MAKE USE OF THE COMMA CLUE. PREPQ IS HANDLED
      (GO POLAR)                               ;; MUCH LIKE QADJS LIKE WHEN AND WHERE THE REST OF
                                        ;; THE QUESTION HAS THE SAME SYNTAX AS A POLAR
-                                       ; (YES-NO).
+                                       ;; (YES-NO).
 
-     ;;; **************************** NOUN GROUP QUESTION
+     ;; **************************** NOUN GROUP QUESTION
     NGQUES
      (: (PARSE NG QUEST) NGQST NIL)                       ;; "WHICH ONE IS THE MURDURER?"
      (: (OR (AND (NEXTWORD? 'HOW)
@@ -7528,7 +7376,6 @@ FDEC    (FQ DECLAR)
      (CALLSM (SMADJQSHORT))                           ;; IF ALL THE SENTENCE CONSISTS OF IS THE QUESTION
     ADJQS   (GO RETURN)                               ;; ADJECTIVE THEN WE SHOULD RETURN DIRECTLY
 
-     ;;;
     NGQST   (SETR 'RELHEAD H C)
     NGQST2
      (CUT END)
@@ -7539,9 +7386,9 @@ FDEC    (FQ DECLAR)
      ;; TEMPORARY AMBIGUITY IN THE INTERPRETATION OF CERTAIN VERB
      ;; WHICH IS ELIMINATED WHEN MORE CONSTITUENTS OF THE CLAUSE
      ;; HAVE BEEN PARSED.  CONSIDER SENTENCES LIKE:
-     ;;;        WHICH BOX CONTAINS A RED BLOCK?
-     ;;;        WHICH HAND HAS THE M&M'S?
-     ;;;        WHICH HAND HAS HE BEEN HAVING TROUBLE WITH?
+     ;;        WHICH BOX CONTAINS A RED BLOCK?
+     ;;        WHICH HAND HAS THE M&M'S?
+     ;;        WHICH HAND HAS HE BEEN HAVING TROUBLE WITH?
      ;; A THIS POINT IN THE CLAUSE PROGRAM WE HAVE PARSED THE
      ;; FIRST NG AND ARE ABOUT TO PARSE THE VERB GROUP.  IN THE
      ;; FIRST SENTENCE WE WILL NEVER HAVE ANY PROBLEM BECAUSE THE
@@ -7571,18 +7418,16 @@ FDEC    (FQ DECLAR)
         THERQ
         SUBF)                               ;; "ARE THERE....?"
 
-     ;;;
     SUBF (: (PARSE NG SUBJ)                           ;; PARSE THE SUBJECT OF ANYTHING LIKE: "DID THE
                                        ;; WOMAN GET THE JOB?" IF SUCCESSFUL, CONTINUE AT
                                        ;; "SUBREG" IN THE NORMAL PART OF THE CLAUSE
-                                       ; PROGRAM (RESETTING THE SUBJECT REGISTER)  (THE
-        SUBREG                               ; BEGINNING OF THE VERB GROUP SECTION). "SUBJ1"
+                                       ;; PROGRAM (RESETTING THE SUBJECT REGISTER)  (THE
+        SUBREG                               ;; BEGINNING OF THE VERB GROUP SECTION). "SUBJ1"
         NIL                                   ;; WORRIES ABOUT WHAT SHOULD HAPPEN IF THE SUBJECT
         SUBJ1)                               ;; SEEMS TO FINISH THE SENTENCE
      (RQ REL-NOT-FOUND)
      (GO BE)
 
-     ;;; ************ POLAR
     POLAR   (: (AND (NQ VB)
          (PARSE VB AUX (QAUX))
          (SETR 'QAUX H C)
@@ -7594,7 +7439,6 @@ FDEC    (FQ DECLAR)
      (FQ POLR2)
      (GO QUEST2)
 
-     ;;;
     QCHOP   (ERT CLAUSE: QCHOP)
      (: (POPTO CLAUSE BOUND) BICUT (QCHOP))
 
@@ -7627,19 +7471,18 @@ FDEC    (FQ DECLAR)
            ((CQ ING) (GO ING))
            (T (MQ RSNG-TYPE) (GO FAIL)))
 
-     ;;; --------------- BINDER  ---------------
+     ;; --------------- BINDER  ---------------
     BOUND   (: (PARSE BINDER) NIL (BOUND) (BINDER))
      (SETQ LOCATIONMARKER N)                       ;; DO THIS TO ACT LIKE MAJOR DECLARATIVE CLAUSE
      (GO FDEC)                               ;; "FDEC" IS NEAR THE TOP OF THE MAJOR CLAUSE
 
-     ;;; --------------- RSQ  ---------------
+     ;; --------------- RSQ  ---------------
     RSQ     (SETR 'RELHEAD (MOVE-PT C U (NG)) C)
      (: (CQ PREPREL) NIL RSQ2)
      (PARSE PREPG PRONREL)                           ;; THIS CALL IS BASED ON INFORMATION PASSED FROM
-     (SETR 'QADJ H c)                               ;; FAR AWAY AND EXPLAINED IN DETAIL IN THE CODE
+     (SETR 'QADJ H C)                               ;; FAR AWAY AND EXPLAINED IN DETAIL IN THE CODE
      (GO REPORT)                               ;; FOR PREPOSITION GROUPS
 
-     ;;;
     RSQ2 (COND ((PARSE VG EN PASV)                       ;; HAVING DETERMINED THAT THE VERB IS PASSIVE IF
         (OR (ISQ MVB TRANS) (GO FAIL))                   ;; IT WERE NOT ALSO TRANSITIVE, THEN WE WOULDN'T
         (SETR 'SUBJECT (GETR 'RELHEAD C) C)               ;; KNOW WHAT TO DO WITH WHATEVER WAS PARSED AS A
@@ -7656,7 +7499,6 @@ FDEC    (FQ DECLAR)
            ((PARSE NG SUBJ) (FQ REL-NOT-FOUND) (GO SUBREG))
            (T (GO FAIL)))                           ;; THIS REALLY ISN'T AN RSQ
 
-     ;;;
     REL     (SETR 'SUBJECT (GETR 'RELHEAD C) C)
      (: (PARSE VG) VG1 NIL)                           ;; OUR FIRST HYPOTHESIS, THAT THE SUBJECT WAS THE
                                        ;; RELWORD, WAS JUST PROVEN WRONG SINCE WE CANNOT
@@ -7665,7 +7507,7 @@ FDEC    (FQ DECLAR)
      (GO SUBJ)                               ;; "...WHICH MARY THOUGHT WAS CHAUVANISTIC" AS
                                        ;; OPPOSED TO "...WHICH WAS CHAUVANISTIC"
 
-     ;;; --------------- TO  ---------------
+     ;; --------------- TO  ---------------
     TO     (: (AND (CQ COMPONENT) (PARSE VG TO TODEL)) VG1 NIL)           ;; "I WANTED TO DANCE AND SING"
      (: (NEXTWORD? 'FOR) NIL TO1)                       ;; THIS IS EXPERIMENTAL
      (PARSE NIL FOR)                           ;; PLEASE CHECK OUT ANY FOR-CLAUSES YOU CAN THINK
@@ -7674,7 +7516,7 @@ FDEC    (FQ DECLAR)
      (SETR 'SUBJECT H C)
     TO1     (: (PARSE VG TO) VG1 (TO))
 
-     ;;; --------------- ING  ---------------
+     ;; --------------- ING  ---------------
     ING     (: (MOVE-PTW N NW (ING)) NIL FAIL)
      (: (OR (NQ ING)
         (CQ OBJ2)
@@ -7687,15 +7529,15 @@ FDEC    (FQ DECLAR)
         (ING))
      (: (PARSE VG ING) VG1 (ING))
 
-     ;;; --------------- REPORT ---------------
+     ;; --------------- REPORT ---------------
     REPORT
      (AND (NEXTWORD? 'THAT) (PARSE NIL THAT) (FQ THAT))
      (SETQ LOCATIONMARKER N)                       ;; DO THIS TO ACT LIKE MAJOR DECLARATIVE CLAUSE
      (GO FDEC)
 
-     ;;; **************************************************************
-     ;;;                            RETURN
-     ;;; **************************************************************
+     ;; **************************************************************
+     ;;                            RETURN
+     ;; **************************************************************
 
     RETSM   (OR (CALLSM (SMCL2)) (GO FAIL))
      (GO RETURN))
@@ -7704,7 +7546,6 @@ FDEC    (FQ DECLAR)
      NIL
     ENTERING-NG
 
-     ;;;
     NGSTART                                   ;; EXAMINE INITIAL FEATURES AND JUMP TO
      (COND ((CQ RELWD) (GO RELWD))                       ;; CORRESPONDING SPECIAL BLOCKS OF CODE
            ((CQ QUEST) (GO QUEST))
@@ -7715,7 +7556,6 @@ FDEC    (FQ DECLAR)
            ((NQ EVERPRON) (GO EVERPRON))
            ((NQ PRON) (GO PRON)))
 
-     ;;;
     LOOK (COND ((NQ DET) (GO DET))                       ;; THIS POINT MAY BE JUMPED BACK TO
            ((NQ NUM) (GO NUM))
            ((OR (NQ ING) (NQ EN) (NQ ADJ)) (GO ADJ))
@@ -7729,9 +7569,9 @@ FDEC    (FQ DECLAR)
         (GO QUEST))
            ((MQ START) (GO FAIL)))
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; IF YOU CAN PARSE ANY OF THESE SMALL THINGS, YOU'RE DONE
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
     START                                   ;; PARSE A PROPER NOUN
     PROPN   (PARSE PROPN)
      (FQ DEF PROPNG)
@@ -7740,9 +7580,8 @@ FDEC    (FQ DECLAR)
     PROPS   (OR (CALLSM (SMPROP)) (GO FAIL))                   ;; EXAMINE ITS SEMANTICS
      (: (ISQ H POSS) POSS PRAG)
 
-     ;;;
-     ;;; -------------- PRONOUNS ---------------
-     ;;;
+     ;; -------------- PRONOUNS ---------------
+
     PRON (: (PARSE PRON POSS) POSS NIL RED2)                   ;; IS IT POSSESSIVE?
     PRON2   (: (CQ NPRON) (NPRON) NIL)
      (: (OR (AND (CQ SUBJ) (PARSE PRON SUBJ))               ;; CHECK SUBJECTIVE OR OBJECTIVE
@@ -7758,9 +7597,8 @@ FDEC    (FQ DECLAR)
      (TRNSF NS NPL NFS NEG)                           ;; MODIFY PN FEATURES TO CORRECT
      (GO RETURN)                               ;; NUMBER...
 
-     ;;;
-     ;;; --------------  ...ANYTHING, SOMETHING, ...  --------------
-     ;;;
+     ;; --------------  ...ANYTHING, SOMETHING, ...  --------------
+
     TPRON   (PARSE TPRON)
      (FQ TPRON)
      (MOVE-PT H)
@@ -7769,39 +7607,32 @@ FDEC    (FQ DECLAR)
      (AND NN (NQ ADJ) (PARSE ADJ))
      (GO SMNG)
 
-     ;;;
-     ;;; ----- WHATEVER, WHENEVER, WHEVER....
-     ;;;
+     ;; ----- WHATEVER, WHENEVER, WHEVER....
+
     EVERPRON
      (: (AND (PARSE PRON EVERPRON) (CALLSM (SMPRON H))) NIL FAIL)
      (: (AND (PARSE CLAUSE RSQ NOREL) (CALLSM (SMRELATE H)))
         RETSM
         FAIL)
 
-     ;;;
-     ;;; -------------- AS ---------------
-     ;;;
     AS     (: (AND (PARSE NIL AS) (PARSE NUMD NUMDAS) NN (PARSE NIL AS))
         NUMD2
         (AS)
         (AS))
 
-     ;;;
-     ;;; -------------- AT + NUM ---------------
-     ;;;
+     ;; -------------- AT + NUM ---------------
+
     AT     (: (AND (PARSE NIL AT) (PARSE NUMD NUMDAT)) NIL (AT) (AT))
     NUMD2   (: (AND (PARSE NUM) (FQ NUM NUMD)) DET1 (NUMD2) INCOM)
 
-     ;;;
-     ;;; -------------- OTHER NUMBER WORDS ---------------
-     ;;;
+     ;; -------------- OTHER NUMBER WORDS ---------------
+
     NUMD (: (PARSE NUMD NUMDAN) NIL ND3 INCOM)
      (: (PARSE NIL THAN) NUMD2 INCOM POPCOM)
     ND3     (: (PARSE NUMD NUMDALONE) NUMD2 (NUMD) (NUMD))
 
-     ;;;
-     ;;; -------------- TIME WORDS ---------------
-     ;;;
+     ;; -------------- TIME WORDS ---------------
+
     TIME (: (AND (NQ TIME) (PARSE NOUN TIME)) RETSM NIL)
      (: (MOVE-PTW N NW (TIM1)) LOOK (TIME))
     TIMORD
@@ -7810,11 +7641,12 @@ FDEC    (FQ DECLAR)
         RETURN
         FAIL)
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; THE MAINSTREAM......  -MORE CMPLICATED NG TYPES
-     ;;; -------------------------------------------------
-     ;;;
-     ;;; -------------- PARSE A DETERMINER ---------------
+     ;; -------------------------------------------------
+
+     ;; -------------- PARSE A DETERMINER ---------------
+
     DET     (PARSE DET)
      (FQ DET)
      (MOVE-PT H)                               ;; SHIFT PTR TO THE DETERMINER
@@ -7823,9 +7655,8 @@ FDEC    (FQ DECLAR)
         (BUG)
         INCOM)
 
-     ;;;
-     ;;; -------------- INDETERMINATE ---------------
-     ;;;
+     ;; -------------- INDETERMINATE ---------------
+
     IND     (: (AND (EQ (WORD (NB H)) 'ALL)
          (EQ (WORD N) 'THE)
          (PARSE DET)
@@ -7835,9 +7666,8 @@ FDEC    (FQ DECLAR)
         (THE))
      (: (AND (ISQ H QNTFR) (FQ QNTFR)) QNUM NIL)
 
-     ;;;
-     ;;; -------------- ORDINALS AND NUMBERS ---------------
-     ;;;
+     ;; -------------- ORDINALS AND NUMBERS ---------------
+
     ORD     (: (AND (PARSE ORD) (FQ ORD)) NIL NUM INCOM)
      (: (AND (NEXTWORD? 'OF)                       ;; TWELTH OF OCTOBER...
          (ISQ (MOVE-PTW N NW) MONTH)
@@ -7868,22 +7698,18 @@ FDEC    (FQ DECLAR)
         (NUMD)
         INCOM)
 
-     ;;;
      (: (EQ (WORD (NB H)) 'NO) ADJ NIL)                   ;; CHECKS FOR WORD "NO"
 
-     ;;;
-     ;;; -------------- PREPG WITH "OF" ---------------
-     ;;;
+     ;; -------------- PREPG WITH "OF" ---------------
+
     OF     (: (AND (NQ OF) (PARSE PREPG OF)) SMOF NONE)               ;; "FIVE OF THE BLOCKS"
     SMOF (FQ OF)
      (: (OR (CALLSM (SMNGOF)) (NOT (POP))) RETSM INCOM)
 
-     ;;;
     NONE (: (EQ (WORD (NB H)) 'NONE) INCOM ADJ)
 
-     ;;;
-     ;;; ------------PARSE ALL THE ADJECTIVES ---------
-     ;;;
+     ;; ------------PARSE ALL THE ADJECTIVES ---------
+
     ADJ     (: (PARSE ADJ) NIL EPR INCOM)
      (AND (ISQ H COMPAR)
           (FQ COMPARATIVE-MODIFIER)
@@ -7897,9 +7723,8 @@ FDEC    (FQ DECLAR)
           (FQ OF)
           (GO RETSM))
 
-     ;;;
-     ;;; --------------PARSE ALL THE CLASIFIERS ---------------
-     ;;;
+     ;; --------------PARSE ALL THE CLASIFIERS ---------------
+
     CLASF   (: (OR (PARSE VB ING (CLASF))                       ;; TRIES TO PARSE THE LARGEST POSSIBLE NG FIRST
         (PARSE VB EN (CLASF))
         (PARSE CLASF))
@@ -7907,17 +7732,14 @@ FDEC    (FQ DECLAR)
         NIL
         REDUC)
 
-     ;;;
-     ;;; -------------- AND FINALLY...... THE NOUN ---------------
-     ;;;
+     ;; -------------- AND FINALLY...... THE NOUN ---------------
+
     NOUN (: (PARSE NOUN) NIL RED2)
 
-     ;;;
      (: (AND (CQ TIME) (NOT (ISQ H TIM1))) RED1 NIL)
 
-     ;;;
-     ;;; -------------- MODIFY FEATURES FOR NUMBER AND SUCH --------------
-     ;;;
+     ;; -------------- MODIFY FEATURES FOR NUMBER AND SUCH --------------
+
      (SETQ T1 FE)
      (COND ((AND (ISQ H MASS) (OR (CQ PART) (NOT (CQ DET))))
         (FQ MASS)))
@@ -7928,36 +7750,31 @@ FDEC    (FQ DECLAR)
         (TRNSF NPL MASS)))
      (: (MEET FE '(NS NPL PART MASS)) NIL RED0)
 
-     ;;; ******************  "...A BIGGER BLOCK THAN...."
+     ;; ******************  "...A BIGGER BLOCK THAN...."
      (: (NEXTWORD? 'THAN) NIL SMNG)
      (FQ THAN)                               ;; THE PRESENCE OF THIS FEATURE IS NOTED BELOW AND
                                        ;; IN ADJG
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; AT THIS POINT SMNG1 IS CALLED FOR PRELIMINARY CHECKS AND
      ;; ANALYSIS BEFORE CHECKING QUALIFIERS
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
     SMNG
 
-     ;;;
      (SETR 'HEAD H C)                           ;; SET HEAD REGISTER TO THE NOUN
 
-     ;;;
      (: (AND (CQ OBOFJ) (NOT (CQ DEF))) FAIL NIL)               ;; JUST PARSED
      (OR (CALLSM (SMNG1)) (GO FAIL))
      (: (NOT (ISQ H POSS)) NIL POSS RETSM)                   ;; CHECK FOR POSSIVE
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; POSSIBLE QUALIFIERS
-     ;;; -------------------------------------------------
-     ;;;
-     ;;; **********"....A BIGGER BLOCK THAN..."
+     ;; -------------------------------------------------
+
+     ;; **********"....A BIGGER BLOCK THAN..."
      (: (AND (CQ THAN) (PARSE ADJG)) NIL RSQ-TO)
      (: (CALLSM (SMRELATE H)) RETSM FAIL)
 
-     ;;;
-     ;;; -------------- RSQ TO ---------------
-     ;;;
     RSQ-TO
      (: (AND (NEXTWORD? 'TO)
          (MEET FE '(COMP SUBJ))
@@ -7966,14 +7783,13 @@ FDEC    (FQ DECLAR)
         RETSM
         NIL)
 
-     ;;;
-     ;;; -------------- AS OR COMPARATIVE ---------------
-     ;;;
+     ;; -------------- AS OR COMPARATIVE ---------------
+
      (: (AND (OR (NEXTWORD? 'AS) (NQ COMPAR))
          (PARSE ADJG THANNEED))
         NIL
         PREPNG)                               ;; WHAT IS THE REASON FOR THE EXISTANCE OF THIS
-     (AND (NULL N)                               ; STRANGE ANIMAL (ALSO THE ONEBELOW) -- CHECK
+     (AND (NULL N)                               ;; STRANGE ANIMAL (ALSO THE ONEBELOW) -- CHECK
           (CQ SUBJ)                               ;; THEM OVER AND HACK THEM PROPERLY
           (ISQ (MOVE-PT C PV) AUX)
           (ISQ PT BE)
@@ -7982,9 +7798,8 @@ FDEC    (FQ DECLAR)
                                        ;; WNAT "THE BLOCK ON THE TABLE" AS A CONSTITUENT.
                                        ;; I ADMIT ITS A HACK.
 
-     ;;;
-     ;;; -------------- ANY SORT OR PREPOSITION GROUP --------------
-     ;;;
+     ;; -------------- ANY SORT OR PREPOSITION GROUP --------------
+
     PREPNG
      (: (AND (NQ PREP)
          (NOT (OR (AND (NQ PLACE) (CQ NOLOC))
@@ -8002,7 +7817,6 @@ FDEC    (FQ DECLAR)
           (GO POPRET))
      (: (CALLSM (SMRELATE H)) RSQ-TO POPRET RETSM)
 
-     ;;;
     DISGRSQ
 
      ;; CHECK FOR DISGUISED RSQ CLAUSES BY READING THE FAILURE
@@ -8011,9 +7825,8 @@ FDEC    (FQ DECLAR)
      (SETQ MES (CDR MES))
      (: (PARSE CLAUSE RSQ PREPREL) PREPNG (RSQ-PREPREL) RETSM)
 
-     ;;;
-     ;;; -------------- ANY OTHER RSQ ---------------
-     ;;;
+     ;; -------------- ANY OTHER RSQ ---------------
+
     RSQ     (: (AND (ISQ (MOVE-PT C U) POLR2)
          (CQ SUBJ)
          (NQ VB)
@@ -8024,17 +7837,13 @@ FDEC    (FQ DECLAR)
      (: (PARSE CLAUSE RSQ) NIL RETSM)
      (: (CALLSM (SMRELATE H)) RETSM POPRET)
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; THE ENTIRE NG SHOULD HAVE BEEN PROCESSED BY THIS POINT
-     ;;; -------------------------------------------------
-     ;;;
-     ;;;
-     ;;;
-     ;;;
-     ;;;
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
+
+     ;; -------------------------------------------------
      ;; IF AT FIRST YOU DON'T SUCEED.......
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
     RED0 (SETQ FE T1)
     RED1 (POP)
     RED2 (COND ((NULL H) (MQ NO) (GO FAIL))
@@ -8045,19 +7854,17 @@ FDEC    (FQ DECLAR)
         (POP)
         (GO PRON2))
            ((AND (NULL (CDR H)) (CQ DEFPOSS)) (GO POSSDEF))
-           ((AND (CQ QUEST) (NULL (CDR H))) (GO QDETCHECK))           ; (CDR H) = T IF THERE IS ONLY ONE DAUGHTER TO
+           ((AND (CQ QUEST) (NULL (CDR H))) (GO QDETCHECK))           ;; (CDR H) = T IF THERE IS ONLY ONE DAUGHTER TO
            ((ISQ H ADJ) (GO EPR))                       ;; THE CURRENT NODE
            ((NOT (ISQ H CLASF)) (GO INCOM)))
     REDUC   (POP)
      (: (AND (NULL H) (NQ PROPN)) PROPN NOUN)
 
-     ;;;
     POPCOM
      (POP)
 
-     ;;;
-     ;;; -------------- INCOMPLETE PHRASES ---------------
-     ;;;
+     ;; -------------- INCOMPLETE PHRASES ---------------
+
     INCOM   (FQ INCOM)
      (: (AND (ISQ H DET) (ISQ H INCOM) (CALLSM (SMINCOM)))
         RETURN
@@ -8072,9 +7879,9 @@ FDEC    (FQ DECLAR)
         (GO EVERPRON)))
      (GO FAIL)
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; POSSESSIVE HANDLER
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
 
     POSS (OR (CALLSM (SMNG2)) (GO FAIL))
     POSS2   (: (CQ INGSUBJ) RETSM NIL)
@@ -8093,13 +7900,12 @@ FDEC    (FQ DECLAR)
         NIL
         (BUG))
      (: (OR (NOT NN) (ISQ H DEFPOSS)) NIL ORD)
-possdef                            ;; the placement of this tag is a guess. The original is lost, assuming that it ever existed
+POSSDEF                            ;; THE PLACEMENT OF THIS TAG IS A GUESS. THE ORIGINAL IS LOST, ASSUMING THAT IT EVER EXISTED
      (RQ POSES DET DEF)
      (FQ POSSDEF NS NPL)
 
-     ;;;
-     ;;; -------------- RELATIVES---------------
-     ;;;
+     ;; -------------- RELATIVES---------------
+
     QUEST   (: (PARSE NIL HOW) NIL QDET FAIL)
      (: (PARSE NIL MANY) NIL FAIL INCOM)
      (FQ DET NPL INDEF HOWMANY)
@@ -8110,25 +7916,22 @@ possdef                            ;; the placement of this tag is a guess. The 
         INCOM)
     QPRON   (: (PARSE PRON QPRON) PRON3 FAIL)
 
-     ;;;
     RELWD   (: (AND (PARSE PRONREL)
          (CALLSM (SMSET (SM (MOVE-PT C U U (NG))))))           ;; SET SM TO THE NOUNGROUP DIRECTLY UPSTAIRS
         RETURN
         NIL)
 
-     ;;;
     POPRET
      (POP)
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; RETURN AFTER CALLING SMNG2 TO PROCESS THE COMPLETED NOUN GROUP
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
     RETSM   (OR (CALLSM (SMNG2)) (GO TRYA))
      (GO RETURN)
 
-     ;;;
-     ;;; -------------- YOU PROBABLY GOOFED, CUT AND TRY AGAIN. --------------
-     ;;;
+     ;; -------------- YOU PROBABLY GOOFED, CUT AND TRY AGAIN. --------------
+
     TRYA (: (ISQ H NOUN) NIL (TRYA))
      (POP)
      (CUT N)
@@ -8140,9 +7943,9 @@ possdef                            ;; the placement of this tag is a guess. The 
 (PDEFINE VG
      (TENSE)
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; CHECK INITIAL FEATURES TO SEE IF SOME SPECIAL TYPE OF VG IS WANTED
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
 
     ENTERING-VG
      (COND ((CQ TO) (GO TO))
@@ -8151,9 +7954,8 @@ possdef                            ;; the placement of this tag is a guess. The 
            ((CQ IMPER) (GO IMPER))
            ((ISQ (MOVE-PT C U) POLR2) (GO POLR2)))               ;; CHECKS IF THE CLAUSE IS MARKED AS POLR2
 
-     ;;;
-     ;;; -------------- DISPATCH TABLE FOR EXAMINEING THE FIRST WORD ---------------
-     ;;;
+     ;; -------------- DISPATCH TABLE FOR EXAMINEING THE FIRST WORD ---------------
+
     NEW                                       ;; PARSE THE FIRST WORD WITH APPROPRIATE FEATURES
      (COND ((NOT (NQ VB)) (MQ VB) (GO FAIL))               ;; AND JUMP TO CODE THAT KNOWS WHAT SHOULD BE
            ((AND (NQ DO) (PARSE VB AUX DO)) (GO DO))           ;; LOOKED FOR NEXT IN EACH CASE
@@ -8163,40 +7965,28 @@ possdef                            ;; the placement of this tag is a guess. The 
            ((AND (NQ HAVE) (PARSE VB AUX HAVE)) (GO HAVE))
            ((NOT (PARSE VB (MVB))) (MQ VB) (GO FAIL)))
 
-     ;;;
-     ;;; -------------- SIMPL ---------------
-     ;;;
     SIMPLE
      (MOVE-PT C DLC)                           ;; MOVE PT DOWN FROM THE CURRENT NODE BEING PARSED
-     (TRNSF VPL INF V3PS)                           ; (VG) AND ACROSS TO THE MOST RECENTLY PARSED
+     (TRNSF VPL INF V3PS)                           ;; (VG) AND ACROSS TO THE MOST RECENTLY PARSED
      (SETQ TENSE (COND ((AND (ISQ PT PRESENT) (ISQ PT PAST))       ;; DAUGHTER. IN THIS CASE THAT DAUGHTER WAS PARSED
                 '(PAST-PRESENT))                   ;; IN THE DISPATCH TABLE JUST ABOVE
                ((ISQ PT PAST) '(PAST))
                (T '(PRESENT))))
      (GO REV)
 
-     ;;;
-     ;;; -------------- TO ---------------
-     ;;;
     TO     (FQ NAGR)                               ;; "NAGR" MARKS THAT SUBJECT AND MAIN VERB NEED
      (: (AND (PARSE NIL NOT) (FQ NEG)) NIL NIL (NOT))           ;; NOT AGREE IN NUMBER AND PERSON AND INSURES THAT
      (: (OR (PARSE NIL TO) (CQ TODEL)) NIL (TO) (TO))           ;; THE AGREEMENT CHECKER AT THE END OF THE PROGRAM
-                                       ; ("REV") WILL NOT BE APPLIED "TODEL" MUST BE
+                                       ;; ("REV") WILL NOT BE APPLIED "TODEL" MUST BE
      (SETQ TENSE '(INFINITIVE))                       ;; GIVEN AS AN INITIAL FEATURE OR ELSE THIS
      (GO MODAL2)                               ;; STATEMENT FAILS TENSE IS USED TO HOLD THE TENSE
                                        ;; WHILE IT IS BEING COLLECTED.
 
-     ;;;
-     ;;; -------------- EN ---------------
-     ;;;
     EN     (FQ NAGR)
      (: (AND (PARSE NIL NOT) (FQ NEG)) NIL NIL (NOT))
      (SETQ TENSE '(PAST))
      (: (AND (PARSE VB EN (MVB)) (SETMVB H) (FQ PASV)) RETSM FAIL) ;; DONE AT "EN2"
 
-     ;;;
-     ;;; -------------- ING ---------------
-     ;;;
     ING     (FQ NAGR)
      (: (AND (PARSE NIL NOT) (FQ NEG)) NIL NIL (NOT))
     INGADV
@@ -8204,37 +7994,28 @@ possdef                            ;; the placement of this tag is a guess. The 
      (SETQ TENSE '(PRESENT))
      (GO BE2)
 
-     ;;;
-     ;;; -------------- IMPER ---------------
-     ;;;
     IMPER   (: (AND (PARSE VB DO NEG INF) (FQ NEG)) NIL NIL (DONT))
      (: (AND (PARSE VB (MVB) INF) (SETMVB H) (CALLSM (SMVG)))
         RETURN
         (IMPER))                               ;; MVB IS BOUND BY CLAUSE
 
-     ;;;
-     ;;; -------------- POLR2 ---------------
-     ;;;
     POLR2                                   ;; THE CLAUSE COULD ONLY BE MARKED AS "POLR2"
-     (OR (SETQ PT (GETR 'QAUX (MOVE-PT C U)))               ; ("DID THE...?") IF AN AUX OF SOME VERIETY HAD
+     (OR (SETQ PT (GETR 'QAUX (MOVE-PT C U)))               ;; ("DID THE...?") IF AN AUX OF SOME VERIETY HAD
          (AND (BUG VG:POLR2) (GO FAIL)))                   ;; ALREADY BEEN PARSED, IF THAT IS NOT THE CASE,
      (SETQ H (LIST (CAR PT)))                       ;; THEN WE HAVE A BUG IN THE PROGRAM SOMEWHERE SET
      (TRNSF NEG)                               ;; THE INITIAL DAUGHTER OF THE VG TO BE THE
      (COND ((ISQ H DO) (GO DO))                       ;; PREVIOUSLY PARSED AUX MARK THE VG AS NEG IF
-           ((ISQ H MODAL) (GO MODAL))                   ; APPROPRIATE (SEE PROGMR FILE FOR THE OPPERATION
-           ((ISQ H WILL) (GO WILL))                       ; OF THIS FUNCTION) DISPATCH TABLE , CHECKING THE
+           ((ISQ H MODAL) (GO MODAL))                   ;; APPROPRIATE (SEE PROGMR FILE FOR THE OPPERATION
+           ((ISQ H WILL) (GO WILL))                       ;; OF THIS FUNCTION) DISPATCH TABLE , CHECKING THE
            ((ISQ H BE) (GO BE))                       ;; AUX
            ((ISQ H HAVE) (GO HAVE)))
      (ERT BUG VG:POLR2VB)                           ;; NOTHING BUT UNGRAMATICAL NONSENSE SHOULD REACH
      (GO FAIL)                               ;; THIS POINT
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; PROCESSING OF VB'S NOT SPECIALLY MARKED FOR BY INITIAL FEATURES
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
 
-     ;;;
-     ;;; -------------- DO ---------------
-     ;;;
     DO     (FQ DO)
      (MOVE-PT C DLC)                           ;; MOVE TO THE "DO"
      (TRNSF VPL NEG INF V3PS)                       ;; ARRANGE ITS FEATURES
@@ -8244,15 +8025,11 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; REMAIN BEFORE THE CUT POINT, AND TO THE SECOND
                                        ;; TAG IF THERE ARE NONE
 
-     ;;;
     DO2     (: (AND (PARSE NIL NOT) (FQ NEG)) NIL NIL (NOT))
     ADV2 (: (OR (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV2 NIL (ADV))
      (: (PARSE VB (MVB) INF) NIL MVB)                   ;; "MVB" ARRANGES FOR A CHECK TO INSURE THAT THE
      (GO REV)                               ;; VERB BEING PARSED CAN BE A MAIN VERB
 
-     ;;;
-     ;;; -------------- MODAL ---------------
-     ;;;
     MODAL   (FQ NAGR MODAL)
      (SETQ TENSE '(MODAL))
      (GOCOND MODAL2 INCOMP)
@@ -8260,23 +8037,16 @@ possdef                            ;; the placement of this tag is a guess. The 
      (: (AND (PARSE NIL NOT) (FQ NEG)) NIL NIL (NOT))
     ADV3 (: (OR (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV3 NIL (ADV))
 
-     ;;;
      (COND ((PARSE VB BE INF) (GOCOND BE2 MVB))               ;; DISPATCH TABLE FOR THE NEXT VERB
            ((PARSE VB HAVE INF) (GOCOND HAV2 MVB))
            ((PARSE VB INF (MVB)) (GO REV))
            (T (GO INCOMP)))
 
-     ;;;
-     ;;; ---------------- WILL --------------
-     ;;;
     WILL (FQ NAGR)
      (SETQ TENSE '(FUTURE))
      (GOCOND MODAL2 INCOMP)                           ;; THE SAME POSSIBILITIES FOR THE NEXT VERB APPLY
                                        ;; AFTER BOTH WILL AND MODALS
 
-     ;;;
-     ;;; -------------- BE ---------------
-     ;;;
     BE     (MOVE-PT C DLC)                           ;; POINT TO WHAT WAS JUST PARSED
      (TRNSF VPL INF V3PS VFS)
      (SETQ TENSE (COND ((ISQ PT PAST) '(PAST))
@@ -8285,11 +8055,10 @@ possdef                            ;; the placement of this tag is a guess. The 
     BE2     (: (AND (PARSE NIL NOT) (FQ NEG)) NIL NIL (NOT))
     ADV4 (: (OR (PARSE ADV TIMW) (PARSE ADV VBAD)) ADV4 NIL (ADV))
 
-     ;;;
      (COND ((AND (NEXTWORD? 'GOING) (PARSE VB)) (GO GOING))           ;; "...WILL BE GOING TO..."
            ((AND (NQ BE) (PARSE VB ING))                   ;; "BE BEING"
         (SETQ TENSE (CONS 'PRESENT TENSE))
-        (GO EN2))                           ; AS IN "BE BEING X'EN(ED)"
+        (GO EN2))                           ;; AS IN "BE BEING X'EN(ED)"
            ((AND (NQ ING) (PARSE VB ING (MVB)))               ;; "BE X'ING"
         (SETQ TENSE (CONS 'PRESENT TENSE))
         (GO REV))
@@ -8300,19 +8069,13 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; WHOEVER CALLED US AND TRY TO PARSE IT
                                        ;; DIFFERENTLY
 
-     ;;;
-     ;;; -------------- EN2 ---------------
-     ;;;
     EN2     (: (PARSE VB EN (MVB)) NIL MVBE)                   ;; THIS ASKS -DO WE HAVE A VERB IN ITS EN FORM
-                                       ; WHICH CAN ACT AS A MAIN VERB (IN WHICH CASE IT
-     (FQ PASV)                               ; IS MARKED AS PASSIVE AND WE RETURN)OTHERWISE
+                                       ;; WHICH CAN ACT AS A MAIN VERB (IN WHICH CASE IT
+     (FQ PASV)                               ;; IS MARKED AS PASSIVE AND WE RETURN)OTHERWISE
      (GO REV)                               ;; CHECK IF THE VERB BEING POINTED AT IS A
                                        ;; LEGITIMATE FORM OF "BE" IN ITS MAIN VERB SENSE
                                        ;; - WHICH IS DONE AT "MVBE"
 
-     ;;;
-     ;;; -------------- GOING ---------------
-     ;;;
     GOING   (: (PARSE NIL TO) NIL GOI)
      (: (NQ INF) GOING2 NIL NIL)
      (POP)
@@ -8324,20 +8087,14 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; AND WE SHOULD RUN THROUGH THE DISPATCH TABLE AT
                                        ;; "MODAL2" TO DETERMINE HOW TO CONTINUE
 
-     ;;;
-     ;;; -------------- MVBE ---------------
-     ;;;
     MVBE (: (ISQ (MOVE-PT H PV (VB)) AUX) NIL MVB)               ;; MOVE TO EARLIER AND EARLIER DAUGHTERS  UNTILL
      (: (ISQ PT BE) NIL (MVBE))                       ;; YOU REACH A VERB WHICH IS A "QAUX" - IF THERE
                                        ;; ARE NONE THEN CONTINUE AT "MVB" IF WHAT YOU ARE
-                                       ; POINTING TO (THE "QAUX") IS NOT A FORM OF "BE",
+                                       ;; POINTING TO (THE "QAUX") IS NOT A FORM OF "BE",
      (SETMVB PT)                               ;; THEN FAIL BECAUSE OF THE UNGRAMATICALITY OF THE
      (GO REV)                               ;; CONSTRUCTION OF "BE"'S OTHERWISE MARK IT AS THE
                                        ;; MVB AND PREPARE TO RETURN
 
-     ;;;
-     ;;; -------------- HAVE ---------------
-     ;;;
     HAVE (MOVE-PT C DLC)
      (TRNSF VPL INF V3PS VFS)
      (SETQ TENSE (COND ((ISQ PT PAST) (FQ NAGR) '(PAST))
@@ -8352,24 +8109,18 @@ possdef                            ;; the placement of this tag is a guess. The 
      (SETQ TENSE (CONS 'PAST TENSE))                   ;; "HAVE KISSED"
      (GO REV)
 
-     ;;;
-     ;;; -------------- INCOM ---------------
-     ;;;
     INCOMP
      (FQ INCOMP)
      (GO FAIL)
 
-     ;;;
-     ;;; -------------- MVB ---------------
-     ;;;
     MVB     (: (EQ (FE MVB) (FE H)) MVB2 NIL)
      (POP VB)                               ;; POP OFF EVERY THING UNTILL YOU REACH A VERB
      (: (PARSE VB (MVB)) NIL (MVB))
     MVB2 (GO REV)
 
-     ;;; -------------------------------------------------
-     ;;;            CHECK AGREEMENT BETWEEN SUBJECT AND MAIN VERB
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
+     ;;            CHECK AGREEMENT BETWEEN SUBJECT AND MAIN VERB
+     ;; -------------------------------------------------
 
     REV     (SETR 'TENSE TENSE C)
      (AND NN (PARSE NIL NOT) (FQ NEG))
@@ -8384,16 +8135,15 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; DISTINGUISHING FEATURE IS AGREEMENT WITH THE
                                        ;; VERB
 
-     ;;;
      (SETQ T3 NIL)                               ;; T3 WILL ACT AS A SWITCH AT "NAGR BELOW. NOTE
                                        ;; THAT IT IS EXPLICITLY SET BY THE CODE BELOW BY
-                                       ; THE FOLLOWING CRITERIA;   IF T3 IS NON-NIL THEN
+                                       ;; THE FOLLOWING CRITERIA;   IF T3 IS NON-NIL THEN
                                        ;; SUBJECT AND VERB HAVE BEEN DETERMINED TO AGREE
                                        ;; IF IT IS NIL THEN THEY WILL BE CONSIDERED TO
                                        ;; AGREE ONLY IF THE FEATURE "PAST-PRESENT" IS ON
      (COND ((ISQ PT NFS)                           ;; THE MVB, IN WHICH CASE, THIS IS EVIDENCE THAT
         (OR (SETQ T3 (MEET FE '(VFS INF))) (GO NAGR)))           ;; THE PROPER CHOISE OF TENSE IS PAST - WHERE
-           ((ISQ PT CLAUSE) (OR (SETQ T3 (CQ V3PS)) (GO NAGR)))    ; AGREEMENT IS IRRELEVANT (SEE BELOW AT "NAGR")
+           ((ISQ PT CLAUSE) (OR (SETQ T3 (CQ V3PS)) (GO NAGR)))    ;; AGREEMENT IS IRRELEVANT (SEE BELOW AT "NAGR")
            ((OR (ISQ PT NS) (ISQ PT MASS))
         (OR (AND (CQ V3PS) (SETQ T3 T))
             (FESET PT (SETDIF (FE PT) '(NS MASS))))))
@@ -8401,18 +8151,12 @@ possdef                            ;; the placement of this tag is a guess. The 
         (OR (AND (MEET FE '(INF VPL)) (SETQ T3 T))
             (FESET PT (SETDIF (FE PT) '(PART NPL))))))
 
-     ;;;
-     ;;; -------------- NAGR ---------------
-     ;;;
     NAGR (: (OR T3
         (AND (EQUAL '(PAST-PRESENT) TENSE)               ;; NOTES WHETHER VERB AND SUBJECT WERE FOUND TO
              (SETQ TENSE '(PAST))))                   ;; AGREE AND FAILS UNLESS A SPECIAL CONDITION
         NIL                                   ;; EXISTS AS NOTED DIRECTLY ABOVE
         (NAGR))
 
-     ;;;
-     ;;; -------------- NAUX ---------------
-     ;;;
     NAUX (SETMVB (OR (MOVE-PT H PV (MVB)) MVB))
      (: (AND (CQ NAUX)
          (ISQ (MOVE-PT H PV (VB)) AUX)
@@ -8425,15 +8169,12 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; BY SEEING IF THE VG CONTAINS ONLY ONE VERB,
                                        ;; WHICH IS AN AUX.
 
-     ;;;
-     ;;; -------------- POPV ---------------
-     ;;;
     POPV (ERT POPV)
      (GO FAIL)
 
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
      ;; RETURN AND CHECK SEMANTICS
-     ;;; -------------------------------------------------
+     ;; -------------------------------------------------
 
     RETSM   (: (CALLSM (SMVG)) RETURN FAIL))
 
@@ -8441,10 +8182,8 @@ possdef                            ;; the placement of this tag is a guess. The 
      NIL
     ENTERING-PREPG
 
-     ;;;
     ADV     (: (AND (NQ PREPADV) (PARSE ADV PREPADV)) ADV NIL (PREPADV))  ;; CHECK FOR ANY INITIAL MODIFING ADVERBS
 
-     ;;;
      (: (COND ((CQ AGENT) (NEXTWORD? 'BY))                   ;; EXAMINE THE INITIAL FEATURES OF THE PREPG TO
           ((CQ LOC) (NQ PLACE))                       ;; CHECK FOR CONSTRAINTS ON THE PREPOSITION
           ((CQ Q) (NOT (NQ MOTOR)))
@@ -8452,19 +8191,19 @@ possdef                            ;; the placement of this tag is a guess. The 
         NIL
         (PREP))                               ;; FAIL IF THE CONSTRAINTS AREN'T MET
 
-     ;;; ---------------------------------------------
+     ;; ---------------------------------------------
      ;; PARSE THE PREPOSITION
-     ;;; ---------------------------------------------
+     ;; ---------------------------------------------
 
      (: (PARSE PREP) NIL (PREP))
      (MOVE-PT H)
      (TRNSF PLACE TIME)                           ;; THIS IS NOT  EXACTLY RIGHT,SINCE  "ON WHAT DAY"
                                        ;; IS NOT "PLACE"
 
-     ;;; AT THIS POINT THE POSSIBILITIES ARE:
-     ;;;   1. THERE ARE NO MORE WORDS AND THE PREP IS "SHORT"
-     ;;;   2. YOU HAVE A MULTIPLE WORD PREPOSITION
-     ;;;   3. IT IS INDEED A SINGLE WORD PREP, PARSE ITS OBJECT
+     ;; AT THIS POINT THE POSSIBILITIES ARE:
+     ;;   1. THERE ARE NO MORE WORDS AND THE PREP IS "SHORT"
+     ;;   2. YOU HAVE A MULTIPLE WORD PREPOSITION
+     ;;   3. IT IS INDEED A SINGLE WORD PREP, PARSE ITS OBJECT
 
      (SETQ T1 H)                               ;; SAVE THE PREPOSITION JUST PARSED IN CASE IT IS
      (AND (NQ PREP2)                           ;; ONLY THE FIRST WORD OF A MULTIPLE WORD
@@ -8476,43 +8215,41 @@ possdef                            ;; the placement of this tag is a guess. The 
              (PARSE PREP2)
              (PARSE PREP2)))
 
-          ;;;
           (SETQ T1 (BUILDNODE (FE T1) NB N 'WORD (SM T1)))           ;; CREATE NODE FOR THE COMPOUND WORD
-          (SETR 'PARENT C T1))                       ;
+          (SETR 'PARENT C T1))
      (: (ISQ H NEED2) (NEED2) NIL)                       ;; FAIL IF LAST PARSED NEEDS ANOTHER WORD
 
-     ;;;                                   ;; GIVE IT A PARENT
+                                           ;; GIVE IT A PARENT
      (SETR 'HEAD T1 C)                           ;; SET THE REGESTER "PREP" TO THE CONSTITUENT JUST
                                        ;; PARSED - IF IT WAS A MULTIPLE-WORD-PREP THEN
      (OR NN (GO SHORT))                           ;; "PREP" IS SET TO THE NODE WHICH CONTAINS THE
                                        ;; ENTIRE FORM NN POINTS TO WHATEVER WORDS ARE
                                        ;; LEFT BEFORE THE CUT POINT
 
-     ;;;
-     ;;; ---------- ADD FEATURES TO THE PREPG DEPENDING ON THE PREPOSITION PARSED --------
-     ;;;
+     ;; ---------- ADD FEATURES TO THE PREPG DEPENDING ON THE PREPOSITION PARSED --------
+
      (COND ((EQ (WORD H) 'BY) (FQ AGENT)))
 
-     ;;; ----------------------------------------------------
+     ;; ----------------------------------------------------
      ;; PARSE THE OBJECT TO THE PREPOSITION
-     ;;; ----------------------------------------------------
-     ;;;                                   ;; CERTAIN RESTRICTIONS PLACED ON THE POSSIBLE
+     ;; ----------------------------------------------------
+                                           ;; CERTAIN RESTRICTIONS PLACED ON THE POSSIBLE
     QUEST   (: (CQ QUEST) NIL NG)                           ;; NOUN GROUPS THAT IT CAN TAKE - HENSE THE
                                        ;; SPECIAL CALL TO PARSE AS ABOVE, IF THE PREPG IS
-     (: (PARSE NG QUEST OBJ) OBJR (PREPQUEST))               ; MARKED WITH THE FEATURE "QUEST" (INDICATING
+     (: (PARSE NG QUEST OBJ) OBJR (PREPQUEST))               ;; MARKED WITH THE FEATURE "QUEST" (INDICATING
      (: (AND (CQ OF) (PARSE NG OFOBJ)) OBJR NIL)               ;; THAT IT SHOULD CONTAIN THE QUESTION ELEMENT OF
-    NG     (: (PARSE NG OBJ) OBJR NIL)                       ; THE CLAUSE) THEN WE PARSE IT SPECIALLY SIMPLE
+    NG     (: (PARSE NG OBJ) OBJR NIL)                       ;; THE CLAUSE) THEN WE PARSE IT SPECIALLY SIMPLE
     REL     (: (NEXTWORD? 'WHICH) NIL REST)                   ;; NOUN GROUP - NO RESTRICTIONS
      (: (ISQ (MOVE-PT U) CLAUSE) NIL (PREP-WHICH))               ;; IF THE NEXT WORD IS A RELWORD, SUCH AS "WHICH"
                                        ;; OR "WHOM", THEN A FAIRLY STRICT SET OF
                                        ;; CONSTRAINTS APPLY. THE PREPG IS REQUIRED TO BE
-                                       ; WITHIN A RANK-SHIFTED-QUALIFIER CLAUSE (RSQ)
+                                       ;; WITHIN A RANK-SHIFTED-QUALIFIER CLAUSE (RSQ)
                                        ;; WHERE IT CAN APPEAR AT PRACTICLY ANY POINT -"OF
                                        ;; WHOM WERE YOU SPEAKING" - "GIVE THE THE
                                        ;; MANUSCRIPT, THE LETTERING ON THE COVER OF WHICH
                                        ;; IS LARGER THAN PROSCRIBED IN THE GOVERNMENT
-                                       ; MANUAL" (HONEST - I HAD ONE OF THOSE IN A
-                                       ; LINGUITICS CLASS). IT IS MOST LIKELY THAT THE
+                                       ;; MANUAL" (HONEST - I HAD ONE OF THOSE IN A
+                                       ;; LINGUITICS CLASS). IT IS MOST LIKELY THAT THE
                                        ;; CONSTRUCTION WILL APPEAR AT THE START OF THE
                                        ;; CLAUSE AND THAT ACCORDINGLY, THE NOUNGROUP
                                        ;; PROGRAM WHICH SAW IT WILL HAVE INITIALLY ASKED
@@ -8521,14 +8258,14 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; PREPG FAILS WITH THE MESSAGE "PREP-WHICH" IF IT
                                        ;; IS NOT EXPLICITLY WITHIN AN RSQ. THE FAILURE
                                        ;; MESSAGE IS READ BY THE NG PROGRAM WHICH THEN
-     (: (ISQ PT PRONREL) NIL PRONREL)                   ; CHANGES ITS REQUEST FROM (PARSE PREPG Q)  TO
-     (SETQ MES (CDR MES))                           ; (PARSE CLAUSE RSQ PREPREL), WHICH SHOULD PICK
+     (: (ISQ PT PRONREL) NIL PRONREL)                   ;; CHANGES ITS REQUEST FROM (PARSE PREPG Q)  TO
+     (SETQ MES (CDR MES))                           ;; (PARSE CLAUSE RSQ PREPREL), WHICH SHOULD PICK
                                        ;; UP THE BOTHERSOME PREPG AS AN INITIAL MODIFIER
                                        ;; TO THE CLAUSE AND DEAL WITH IT APPROPRIATELY
-                                       ; RESET THE FAILURE MESSAGE LIST (WE KNOW TO DO
+                                       ;; RESET THE FAILURE MESSAGE LIST (WE KNOW TO DO
      (GO P-RELWRD)                               ;; THIS BECAUSE THE "PRONREL" AS AN INITIAL
     PRONREL                                   ;; FEATURE OF THE CLAUSE IMPLICATES THE PASSAGE OF
-     (REMOVE-F-PT 'REL-NOT-FOUND PT)                   ; THE PROS CESS DESCRIBED ABOVE)
+     (REMOVE-F-PT 'REL-NOT-FOUND PT)                   ;; THE PROS CESS DESCRIBED ABOVE)
      (ADD-F-PT 'PRONREL PT)
     P-RELWRD
      (PARSE NG RELWD OBJ)
@@ -8538,9 +8275,6 @@ possdef                            ;; the placement of this tag is a guess. The 
     OBJR (SETR 'OBJ1 H C)                           ;; THE HIGHER NOUNGROUP
      (GO RETT)
 
-     ;;;
-     ;;; -----------------SHORT---------------
-     ;;;
     SHORT   (: (MEET FE '(NOSHORT Q)) (SHORT) NIL)
      (OR (ISQ (MOVE-PT C U) REL-NOT-FOUND)
          (ISQ (GETR 'QUESTION-ELEMENT PT) QADJ)
@@ -8555,9 +8289,7 @@ possdef                            ;; the placement of this tag is a guess. The 
      ;; RELWORD.  IF THERE IS NO RELWORD THEN THE PREPG FAILS
      ;; AFTER SENDING UP A COMPLAINING MESSAGE.
 
-     ;;;
-     ;;; ----------------------  FINAL CHECKS, AND  RETURN --------------------
-     ;;;
+     ;; ----------------------  FINAL CHECKS, AND  RETURN --------------------
     RETT
 
      ;; CHECK IF THIS PREPG SHOULD BE MARKED AS CONTAINING A
@@ -8568,7 +8300,6 @@ possdef                            ;; the placement of this tag is a guess. The 
                (MOVE-PT H H PV (QUEST))))               ;; COMPONENT FOR THE FEATURE "QUEST"
           (FQ QUEST))
 
-     ;;;
      (: (CALLSM (SMADJG-PREPG)) RETURN FAIL))
 
 (PDEFINE ADJG
@@ -8591,12 +8322,11 @@ possdef                            ;; the placement of this tag is a guess. The 
      (GO THAN)                               ;; BLOCK THAN THAT ONE..." "HEAD REFERS TO THE
                                        ;; ADJG'S HEAD ADJECTIVE
 
-     ;;;
     DISP (: (AND (NQ AS) (PARSE NIL AS)) AS NIL (AS))
      (: (AND (NQ AS) (PARSE NIL AS)) AS NIL (AS))
      (: (NEXTWORD? 'HOW) HOW ADV)
 
-     ;;; ---------------- HOW + ADJG ------
+     ;; ---------------- HOW + ADJG ------
     HOW     (: (AND (PARSE NIL HOW) (FQ QUEST)) NIL FAIL FAIL)
      (: (AND (PARSE ADJ) (FQ ADJ) (SETR 'HEAD H C))
         RETSM
@@ -8610,11 +8340,11 @@ possdef                            ;; the placement of this tag is a guess. The 
     ADJ     (: (COND ((CQ ADV) (PARSE ADV VBAD)) (T (PARSE ADJ)))
         NIL
         (ADJ))                               ;; IF THE CUT POINT WAS REACHED THEN NO MORE
-     (: (SETR 'HEAD H C) NIL NIL RETSM)                   ; PROCESSING (SUCH AS COMPAR BELOW) IS POSSIBLE.
+     (: (SETR 'HEAD H C) NIL NIL RETSM)                   ;; PROCESSING (SUCH AS COMPAR BELOW) IS POSSIBLE.
 
-     ;;; ---------------------------------------
+     ;; ---------------------------------------
      ;; COMPARATIVES
-     ;;; --------------------------------------- IF THE FEATURE
+     ;; --------------------------------------- IF THE FEATURE
      ;; "COMPAR" IS ALREADY ON THE LIST, OR IF THE JUST PARSED
      ;; ADJECTIVE CAN HAVE THAT FEATURE, THEN ATTEMPT TO PARSE
      ;; SOME SORT OF COMPARATIVE CONSTRUCTION (ASSUMING THAT
@@ -8625,20 +8355,20 @@ possdef                            ;; the placement of this tag is a guess. The 
                                        ;; POINT THEN THE POSSIBILITY OF MORE COMPLICATED
                                        ;; FORMS IS CHECKED FOR
 
-     ;;; ----------------- THAN ----------
+     ;; ----------------- THAN ----------
     THAN (COND ((NOT NN) (GO RETSM)))
      (: (PARSE NIL THAN) NIL RETSM (THAN))
      (RQ THANNEED)                               ;; THE FEATURE "THANNEEED" MARKS THAT THE WORD
      (FQ THAN)                               ;; "THAN" IS EXPLICITLY  REQUIRED IN THE PHRASE.
      (GO SUBJ)
 
-     ;;; ------------------- AS -------
+     ;; ------------------- AS -------
     AS     (FQ AS)
      (RQ THANNEED)
      (: (AND (PARSE ADJ) (SETR 'HEAD H C)) NIL (ADJ) RETSM)
      (: (PARSE NIL AS) SUBJ RETSM (AS))
 
-     ;;; -------------- FIND A SUBJECT FOR THE COMPARATIVE
+     ;; -------------- FIND A SUBJECT FOR THE COMPARATIVE
      ;; IE.  "AS BIG AS ..." , "BIGGER THAN ..."
     SUBJ (: (PARSE NG SUBJ COMPAR) NIL (THAN))
      (: (SETR 'OBJ1 H C) NIL NIL RETSM)
@@ -8665,7 +8395,7 @@ possdef                            ;; the placement of this tag is a guess. The 
      (GO ADJ)                               ;; ADVERBS, POP OFF THE FINAL ADV AND TRY TO
                                        ;; REPARSE IT AS AN ADJECTIVE
 
-     ;;; ---------------------- FINAL CHECKS ON COMPARATIVES    (SEMANTIC AND OTHERWISE)
+     ;; ---------------------- FINAL CHECKS ON COMPARATIVES    (SEMANTIC AND OTHERWISE)
     RETSM   (: (CQ THANNEED) (THANNEED) NIL)                   ;; IF ONE OF THE WORDS PARSED REQUIRED A "THAN",
      (: (CALLSM (SMADJG-PREPG)) RETURN (SMADJ)))               ;; FAIL IF ONE WAS NOT FOUND.
 
@@ -9010,8 +8740,7 @@ possdef                            ;; the placement of this tag is a guess. The 
                  T))
            (ADJ (OBJECT
             (MARKERS: (#PHYSOB #BIG)
-             PROCEDURE: ((#MORE #SIZE *** (128. 128.
-                                128.)))))))
+             PROCEDURE: ((#MORE #SIZE *** (128. 128. 128.)))))))
     FEATURES (ADJ))
 
 (DEFS BLACK SEMANTICS ((ADJ (#COLOR #BLACK))) FEATURES (ADJ))
@@ -9362,8 +9091,7 @@ possdef                            ;; the placement of this tag is a guess. The 
                  T))
            (ADJ (OBJECT
             (MARKERS: (#PHYSOB #BIG)
-             PROCEDURE: ((#MORE #SIZE *** (128. 128.
-                                128.)))))))
+             PROCEDURE: ((#MORE #SIZE *** (128. 128. 128.)))))))
     FEATURES (ADJ))
 
 (DEFS LEAST
@@ -10647,7 +10375,7 @@ MARKERS: (#PLACE)
 
 ;; ---------------------------------------------------------------------------- anno/winograd/smspec
 
-(declare (genprefix smspec))
+(DECLARE (GENPREFIX SMSPEC))
 
 ;; ############################################################
 ;;
@@ -10921,12 +10649,12 @@ MARKERS: (#PLACE)
 ;; -------------------------------------------
 
 (DEFUN SMIT (PRONOUN)
-                                       ; PRONOUN IS (IT THEY ONE)
+                                       ;; PRONOUN IS (IT THEY ONE)
        (PROG (CANDIDATES AMBIGUITIES)
                                        ;; A NODE LIST OF POSSIBLE
          (OR DISCOURSE (ERT SMIT: DISCOURSE SWITCH NOT ON))
                                        ;; REFERENTS
-         (AND MVB; IS THIS A "DO IT!" COMMAND?
+         (AND MVB                   ;; IS THIS A "DO IT!" COMMAND?
           (ISQ MVB DO)
           (CQ OBJ1)
           (RETURN (SMSET LASTEVENT)))
@@ -10981,9 +10709,9 @@ MARKERS: (#PLACE)
             (AND SM (RETURN SM))))
          (SMIT2 (GETR 'SUBJECT LASTSENT) 192.)
          (SMIT2 (PARSENODE? LASTREL) 128.)
-                                       ; TRY REL (I.E. QUESTION FOCUS
+                                       ;; TRY REL (I.E. QUESTION FOCUS
          (MOVE-PT LASTSENT DLC)
-                                       ; ) OF THE LAST SENTENCE. GO
+                                       ;; ) OF THE LAST SENTENCE. GO
     UP   (COND ((NOT (MOVE-PT PV (NG))) (GO ON))
            (ELSE (SMIT2 PT 64.)))
                                        ;; THROUGH TOP LEVEL NG'S OF
@@ -10993,15 +10721,15 @@ MARKERS: (#PLACE)
          (MAP (FUNCTION (LAMBDA (ANSNODE) (SMIT2 ANSNODE 0.)))
                                        ;; REFERENT MAP DOWN THE ANSREF
               ANSNAME))
-                                       ; (NG'S IN LAST ANSWER)
+                                       ;; (NG'S IN LAST ANSWER)
          (OR SM  ;; IF WE HAVEN'T YET FOUND A
          (MAP
           (FUNCTION (LAMBDA (BACKNODE) (SMIT2 BACKNODE 0.)))
                                        ;; REFERENT MAP DOWN THE
           BACKREF2))
-                                       ; BACKREF2 (NG'S IN LAST
+                                       ;; BACKREF2 (NG'S IN LAST
     DONE (PUTPROP PRONOUN CANDIDATES 'BIND)
-                                       ; SENTENCE) LIST
+                                       ;; SENTENCE) LIST
          (OR (CDR SM) (REMPROP (CAR SM) 'AMBIGUITIES=))
          (RETURN SM)))
 
@@ -11009,9 +10737,9 @@ MARKERS: (#PLACE)
        (AND
     NODE           ;; MAKE SURE NODE IS REALLY
     (GETR 'HEAD NODE)
-                                       ; THERE  QUEST NODES (SUCH AS
+                                       ;; THERE  QUEST NODES (SUCH AS
     (NOT (MEMQ (CAR NODE) CANDIDATES))
-                                       ; "WHAT") OR OTHER NODES WITHOUT HEAD NOUNS ARE
+                                       ;; "WHAT") OR OTHER NODES WITHOUT HEAD NOUNS ARE
     (COND ((EQ PRONOUN 'IT)
                                        ;; NOT SUITABLE FOR REFERENTS  MAKE SURE THAT NODE
            (AND (ISQ NODE NS) (NOT (ISQ NODE PRONG))))
@@ -11056,7 +10784,7 @@ MARKERS: (#PLACE)
                                        ;; DONE SO THAT IF VARIBLE IS BOUND, PLANNER
                        (VARIABLE? REFERENT-OSS))))))
                                        ;; GENERATOR WILL USE IT  RELATION SAYS
-       (SM NODE)); THAT THIS OSS "REFERS" TO
+       (SM NODE))                   ;; THAT THIS OSS "REFERS" TO
       SM))))     ;; THE OSS WHOSE VARIABLE NAME IS GIVEN END OF BUILD
 
 (DEFUN SMNGOF NIL
@@ -11113,7 +10841,7 @@ MARKERS: (#PLACE)
        ;; EACH POSSIBLE INTERPRETATION OF THE NOUN.  IT THEN CYCLES
        ;; THROUGH ALL THE GOODIES IN FROUNT OF THE HEAD NOUN, EVALING
        ;; THEIR DEFINITIONS.  THE FREE VARIABLE "SM" IS USED TO KEEP
-       ;; THE LIST OF OSS'S DURING THIS ENTIRE PROCESS.  ;; NOTE THE
+       ;; THE LIST OF OSS'S DURING THIS ENTIRE PROCESS.  NOTE THE
        ;; SPECIAL HANDLING OF TPRONS (ANYTHING SOMETHING ETC.) AND OF
        ;; SUPERLATIVE AND COMPARATIVE ADJECTIVES.
 
@@ -11141,7 +10869,6 @@ MARKERS: (#PLACE)
              (COND ((CQ HOWMANY) 'HOWMANY)
                    ((CQ QDET) 'WHICH))))
 
-         ;;;
          (SMSET (LIST (BUILD OSSNODE=
                  (MAKESYM 'OSS)
                  PARSENODE=
@@ -11207,7 +10934,7 @@ MARKERS: (#PLACE)
                                        ;; DON'T USE FAKEY ANSWER NAME
         (GETR 'HEAD C)
                                        ;; NODES FOR REFERENCE  QUEST
-        DISCOURSE; NODES ARE NOT SUITABLE
+        DISCOURSE                   ;; NODES ARE NOT SUITABLE
         (SETQ BACKREF (CONS (CAR C) BACKREF)))
                                        ;; REFERENTS SAVE THIS NG AWAY
        (SMSET (MAPBLAND (FUNCTION SMNG3) SM)))
@@ -11253,14 +10980,12 @@ MARKERS: (#PLACE)
            ((MEMQ (NUMBER? OSS) '(NPL SG-PL)))
            ((ERT SMNG3= SCREWY NUMBER PROPERTY OF OSS)))
 
-         ;;;
          (PUTPROP OSS CANDIDATES 'REFER=)
     DONE (RETURN OSS)
 
-         ;;;
-    TOOFEW       ; WE DIDN'T FIND ANY (OR
+    TOOFEW       ;; WE DIDN'T FIND ANY (OR
          (COND ((OR (NULL DISCOURSE) (NULL WHO))
-                                       ; ENOUGH) REFERENTS FOR THE NG
+                                       ;; ENOUGH) REFERENTS FOR THE NG
             (SETQ GLOBAL-MESSAGE (APPEND '(I DON/'T
                              KNOW
                              WHAT
@@ -11277,9 +11002,9 @@ MARKERS: (#PLACE)
             (SETQ GLOBAL-MESSAGE (APPEND '(I DON/'T
                              KNOW
                              WHICH)
-                                       ; EVERYTHING (OR EVERYTHING
+                                       ;; EVERYTHING (OR EVERYTHING
                          (CDR (FROM NB N))
-                                       ; THAT "HE" KNOWS ABOUT)
+                                       ;; THAT "HE" KNOWS ABOUT)
                          '(YOU MEAN/.)))
                                        ;; THEN FAIL
             (RETURN NIL)))
@@ -11448,8 +11173,8 @@ MARKERS: (#PLACE)
 (DEFUN SMCL1 NIL
        (PROG (SMSUB SMOB1 SMOB2 SMOBL SMCOMP RELLIST)
 
-         ;;;        SET UP GLOBAL VARIABLES WHICH CONSIST OF POINTERS TO THE SEMANTIC DEFINITIONS
-         ;;;     OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB
+         ;;        SET UP GLOBAL VARIABLES WHICH CONSIST OF POINTERS TO THE SEMANTIC DEFINITIONS
+         ;;     OF THE VARIOUS NOUN-GROUPS (ALSO RSNG'S) REQUIRED BY THE TRANSITIVITY OF THE VERB
          (SETQ SMSUB
            (COND ((SETQ SMSUB (GETR 'LOGICAL-SUBJECT C))
               (SM SMSUB))
@@ -11467,14 +11192,14 @@ MARKERS: (#PLACE)
          (SETQ SMCOMP (SM (GETR 'COMP C)))
                                        ;; NATURALLY SEVERAL OF THESE
          (OR SMSUB
-                                       ; GLOBAL VARIABLES (BOUND IN
+                                       ;; GLOBAL VARIABLES (BOUND IN
          (AND (MEET '(THERE ITRNS) FE)
                                        ;; THIS PROG AND ACCESSED IN
               (GO CHECK)))
-                                       ; DEEPER ONES) ARE NIL AT THIS POINT IN THE
+                                       ;; DEEPER ONES) ARE NIL AT THIS POINT IN THE
                ;; PROCEDURE. THE FOLLOWING CHECKS ARE PRIMARILY
          (OR SMOB1
-                                       ; FOR DEBUGGING PURPOSES (HENSE THE "ERT")
+                                       ;; FOR DEBUGGING PURPOSES (HENSE THE "ERT")
          (AND (OR (CQ TRANS) (NOT (CQ CLAUSE))) (GO CHECK)))
                                        ;; TO INSURE THAT THE NON-NIL
          (OR (AND SMOB1 SMOB2) (AND (CQ TRANS2) (GO CHECK)))
@@ -11505,10 +11230,8 @@ MARKERS: (#PLACE)
               (ERTERR SMCL1 -- POLAR REL DOESN/'T MATCH))
           (SETQ RELLIST X))
 
-         ;;;
          (SETQ TIME (GETR 'TIME (MOVE-PT C U (CLAUSE))))
 
-         ;;;
          (SETQ SENSE-OF-VERB
                                        ;; THIS REFERS TO THE SEMANTIC
            (COND ((CQ PREPG)
@@ -11536,14 +11259,13 @@ MARKERS: (#PLACE)
                               C))))))))
          (SMSET (EVAL SENSE-OF-VERB))
                                        ;; THIS DETERMINES THE APPROPRIATE SEMANTIC
-               ; INTERPRETATION(S) FOR THE CLAUSE BY CHECKING
+               ;; INTERPRETATION(S) FOR THE CLAUSE BY CHECKING
                ;; THE RESTRICTIONS OF EACH DEFINITION AGAINST THE
                ;; MARKERS OF THE VARIOUS CANDIDATES FOR SMSUB,
                ;; SMOB1, ETC.  THE VALUE OF THE EVALUATION IS A
                ;; LIST OF RELAT ION-SEMANTIC-STRUCTURES, ONE FOR
                ;; EACH PLAUSIBLE INTERPRETATION
 
-         ;;;
          (MAP (FUNCTION SMCL-MODIFIERS) H)
                                        ;; SMCL-MODIFIERS WILL EXAMINE
          (RETURN SM)))
@@ -11553,8 +11275,7 @@ MARKERS: (#PLACE)
                ;; ON THE ESTABLISHED SM, THE PARSING TREE, OR
                ;; ANYTHINGELSE THAT WOULD BE APPROPRIATE THE
                ;; VALUE OF SMCL1 IS NON-NIL ONLY IF SOME
-               ;; REASONABLE MEANING HAS BEEN FOUND FOR THE
-                                       ;; CLAUSE
+               ;; REASONABLE MEANING HAS BEEN FOUND FOR THE CLAUSE
 
 (DEFUN SMCL2 NIL
        ;; THERE USED TO BE A CALL TO SMPREPREL AT THIS POINT, BUT IT
@@ -11573,17 +11294,13 @@ MARKERS: (#PLACE)
        ;; AS MODIFIERS OR FOR THEIR SIDE-EFFECTS
        (COND ((NULL (GET WORD-BEING-INTERPRETED 'FEATURES)))
                                        ;; IF THE CONSTITUENT HAS A NULL FEATURE LIST THEN
+                                         ;; IT IS A FUNCTION WORD (IE. (PARSE NIL FOR)) WHICH SHOULD BE IGNORED
 ;;         ((OR (ISQ WORD-BEING-INTERPRETED VG)
-;;                                       ; IT IS A FUNCTION WORD (IE. (PARSE
 ;;          (ISQ WORD-BEING-INTERPRETED AUX))
-;;                                       ; NIL FOR)) WHICH SHOULD BE
 ;;          (AND (ISQ WORD-BEING-INTERPRETED NEG)
-;;                                       ;; IGNORED
 ;;           (FQ NEG)
-;;           (buildrss word-being-interpreted
-;;                 'neg 'neg)))
-;;                                       ;; THIS HAS THEEFFECT OF CHECKING IFTHEVERB IS
-;;               ;; NEGATIVE AND THEN ARRANGING THAT THE FEAURE
+;;           (BUILDRSS WORD-BEING-INTERPRETED 'NEG 'NEG)))
+;;                                       ;; THIS HAS THEEFFECT OF CHECKING IFTHEVERB IS NEGATIVE AND THEN ARRANGING THAT THE FEAURE
          ((MEET FE '(THERE LOBJ COMP PRT SUBJ OBJ1 OBJ2)))
                                        ;; LIST OF THEWHOLE CLAUSE AND OF ITS MEANING
          ((ISQ WORD-BEING-INTERPRETED NG)
@@ -11605,8 +11322,7 @@ MARKERS: (#PLACE)
            (SMTIME)))
          ((ISQ WORD-BEING-INTERPRETED PREPG)
           (OR (ISQ WORD-BEING-INTERPRETED AGENT)
-                                       ;; IN WHICH CASE IT WAS ALREADY
-                                       ;; PROCESSED MIGHT GO AWAY IN A
+                                       ;; IN WHICH CASE IT WAS ALREADY PROCESSED MIGHT GO AWAY IN A
           (ERT SMCL-MOD BADPREPG)))
                                        ;; FEW DAYS BUG CHATCHER
          ((ISQ WORD-BEING-INTERPRETED QADJ)
@@ -11614,7 +11330,6 @@ MARKERS: (#PLACE)
           (EVAL (SM WORD-BEING-INTERPRETED))))
                                        ;; MIGHT WANT TO CHANGE THAT
 
-         ;;;
          ((ISQ WORD-BEING-INTERPRETED BOUND))
                                        ;; THE REST ARE HOOKS FOR WHEN
          ((ISQ WORD-BEING-INTERPRETED BINDER))
@@ -11628,23 +11343,13 @@ MARKERS: (#PLACE)
 (DEFUN SMBIND NIL
        (PROG (TSS EVENT START END)
          (AND (CDR (SM H))
-                                       ;; does the sm have more than
-          (ERT I
-               DON/'T
-               KNOW
-               WHAT
-               TO
-               DO
-               WITH
-               AMBIGUOUS
-               BOUND
-               CLAUSES))
-                                       ;; one value???
+                                        ;; DOES THE SM HAVE MORE THAN ONE VALUE???
+          (ERT I DON/'T KNOW WHAT TO DO WITH AMBIGUOUS BOUND CLAUSES))
          (COND ((ISQ (MOVE-PT H DF) TIME)
-                                       ;; dispatch table to match the appropriate action
-               ;; with each binder  move to the first word of the
-               ; clause (to the binder) and check for the feature time
-            ;; (maybe also check for the sm being marked as an event???)
+                                        ;; DISPATCH TABLE TO MATCH THE APPROPRIATE ACTION
+                                        ;; WITH EACH BINDER  MOVE TO THE FIRST WORD OF THE
+                                        ;; CLAUSE (TO THE BINDER) AND CHECK FOR THE FEATURE TIME
+                                        ;; (MAYBE ALSO CHECK FOR THE SM BEING MARKED AS AN EVENT???)
             (SETQ TSS (GETR 'TIME C))
             (OR (SETQ EVENT (FINDEVENTS (CAR (SM H))))
             (GLOBAL-ERR '(NO SUCH THING EVER HAPPENED)))
@@ -11665,7 +11370,7 @@ MARKERS: (#PLACE)
 
 ;; ---------------------------------------------------------------------------- anno/winograd/smutil
 
-(declare (genprefix smutil))
+(DECLARE (GENPREFIX SMUTIL))
 
 ;; ############################################################
 ;;
@@ -11859,7 +11564,7 @@ MARKERS: (#PLACE)
                         PARAPHRASE:
                         MARKERS:)
                 'RELATION)
-                                       ; (EVAL ...) DECODES KEYWORD ARGUMENTS. SETQQ
+                                       ;; (EVAL ...) DECODES KEYWORD ARGUMENTS. SETQQ
                                        ;; EFFECTIVLY QUOTES BOTH PAIRS
         ;; RESTRICTIONS: IS EXPANDED HERE PUTING IN IMPLICIT
         ;; REGISTER REFERENCES SO THAT IT CAN BE UNIFORMLY
@@ -11872,9 +11577,9 @@ MARKERS: (#PLACE)
                              (EVAL (CAR X)))
                         X)
                     (COND ((ATOM (CAR %MARKL))
-                                       ; RESTRICTIONS IN THE DEFINITION, E.G. (#PHYSOB
+                                       ;; RESTRICTIONS IN THE DEFINITION, E.G. (#PHYSOB
                            %MARKL)
-                                       ; #RED).    %RESTRICTNAM IS A NAME LIKE SMSUB,
+                                       ;; #RED).    %RESTRICTNAM IS A NAME LIKE SMSUB,
                           ((CONS %RESTRICTNAM
                                        ;; SMOBL, SMCOMP, .... WHICH REFERS TO REGISTERS
                              %MARKL)))))
@@ -11963,7 +11668,7 @@ MARKERS: (#PLACE)
              (PLAUSIBILITY? SMOB1)
                                        ;; FUNCTION %PLNRPHRASE IS ONE CHUNK OF CONDENSED
              (PLAUSIBILITY? SMOB2)
-                                       ; PLANNER CODE LIKE (#COLOR *** #RED)
+                                       ;; PLANNER CODE LIKE (#COLOR *** #RED)
              (OR (EVAL PLAUSIBILITY:) 0.))
            AMBIGUITIES=
            (APPEND
@@ -11982,29 +11687,27 @@ MARKERS: (#PLACE)
     SMOBL
     SMCOMP))
 
-1.
-
 ;; ===========================================================
 
 (DEFUN DOBACKREF (ANSWER)
        ;; CALLED WHEN THE PROCESSING OF A SENTENCE IS COMPLETED.
        ;; SETS UP VARIABLES SO THAT NEXT SENTENCE MAY REFER TO GOODIES
        ;; IN THIS SENTENCE.
-       ;;; DOES THE FOLLOWING:
-       ;;;    1. SET LASTREL TO REL OF THIS SENTENCE
-       ;;;    2. SET LASTEVENT TO THE EVENT DESCRIBED IN THIS SENTENCE
-       ;;;       FOR REFERENCE OF "DO IT!" COMMAND.
-       ;;;    3. SET LASTANSEVENT TO THE EVENT DESCRIBED IN THE
-       ;;;       ANSWER OF THIS SENTENCE. FOR REFERENCE OF "THAT"
-       ;;;       IN QUERY: "WHY DID YOU DO THAT?"
-       ;;;    4. SET BACKREF2 TO BACKREF AND (!!!) GO THROUGH ALL
-       ;;;       THINGS ON BACKREF AND SET THEIR REFER(ENT)= PROPERTY
-       ;;;       TO THE BIND OF THEIR VARIABLES. ALSO MAKE SURE EACH
-       ;;;       NG NODE ON BACKREF POINT TO THE RIGHT OSS IN ITS SM.
-       ;;;       THIS ENSURES THAT EACH OSS POINTS TO THE ACTUAL
-       ;;;       THING IT WAS ASSUMED TO REFER TO.
-       ;;;    5. REMOVE THE BIND PROPERTY OF PRONOUNS (IT THEY) USED
-       ;;;       IN THIS SENTENCE AND MAKE IT THEIR LASTBIND PROPERTY.
+       ;; DOES THE FOLLOWING:
+       ;;    1. SET LASTREL TO REL OF THIS SENTENCE
+       ;;    2. SET LASTEVENT TO THE EVENT DESCRIBED IN THIS SENTENCE
+       ;;       FOR REFERENCE OF "DO IT!" COMMAND.
+       ;;    3. SET LASTANSEVENT TO THE EVENT DESCRIBED IN THE
+       ;;       ANSWER OF THIS SENTENCE. FOR REFERENCE OF "THAT"
+       ;;       IN QUERY: "WHY DID YOU DO THAT?"
+       ;;    4. SET BACKREF2 TO BACKREF AND (!!!) GO THROUGH ALL
+       ;;       THINGS ON BACKREF AND SET THEIR REFER(ENT)= PROPERTY
+       ;;       TO THE BIND OF THEIR VARIABLES. ALSO MAKE SURE EACH
+       ;;       NG NODE ON BACKREF POINT TO THE RIGHT OSS IN ITS SM.
+       ;;       THIS ENSURES THAT EACH OSS POINTS TO THE ACTUAL
+       ;;       THING IT WAS ASSUMED TO REFER TO.
+       ;;    5. REMOVE THE BIND PROPERTY OF PRONOUNS (IT THEY) USED
+       ;;       IN THIS SENTENCE AND MAKE IT THEIR LASTBIND PROPERTY.
        (PROG (ANSRSS)
          (SETQ ANSRSS (GET ANSWER 'ANSRSS=))
          (SETQ BACKREF2 BACKREF)
@@ -12047,8 +11750,7 @@ MARKERS: (#PLACE)
                 'REFER=))))
            BACKREF2))
 
-         ;;; A FEW MISSING PIECES
-         ;;; GO HERE
+         ;; A FEW MISSING PIECES GO HERE
          ))
 
 ;; ======================================================I
@@ -12069,12 +11771,12 @@ THE WAY IT WAS.  HENCE THIS
 (DEFUN ITERATE FEXPR (%L)
        ;; GENERALIZED MAPPING FUNCTION.  APPLIES FUNCTION TO THE
        ;; CARTESIAN PRODUCT OF N LISTS GIVEN AS ARGUMENTS.
-       ;;; INPUTS:
-       ;;;     (CAR %L)     FUNCTIONAL ARGUMENT.  FUNCTION OF N ARGS WHERE
-       ;;;                  N IS THE NUMBER OF LISTS GIVEN.
-       ;;;     (CDR %L)     THE N LISTS
-       ;;;
-       ;;; VALUE:
+       ;; INPUTS:
+       ;;     (CAR %L)     FUNCTIONAL ARGUMENT.  FUNCTION OF N ARGS WHERE
+       ;;                  N IS THE NUMBER OF LISTS GIVEN.
+       ;;     (CDR %L)     THE N LISTS
+       ;;
+       ;; VALUE:
        ;; THE RESULT OF APPLYING THE FUNCTION IS MAPBLANDED TOGETHER.
        ;; THAT IS IF EACH APPLICATION RESULTS IN AN ATOM, THE
        ;; RESULTING LIST IS A LIST OF ATOMS, IF EACH APPLICATION
@@ -12091,10 +11793,10 @@ THE WAY IT WAS.  HENCE THIS
 (DEFUN ITERATEX (F L)
        ;; EXPANDS CALL ON ITERATE INTO A TAILORED SET OF MAPBLAND
        ;; CALLS WHICH DO THE APPROPRIATE COMPUTATION WHEN EVALUATED
-       ;;; INPUTS:
-       ;;;      F      FUNCTION OF N ARGUMENTS
-       ;;;      L      LIST OF N LISTS WHICH F IS TO BE APPLIED TO
-       ;;; VALUE:
+       ;; INPUTS:
+       ;;      F      FUNCTION OF N ARGUMENTS
+       ;;      L      LIST OF N LISTS WHICH F IS TO BE APPLIED TO
+       ;; VALUE:
        ;; TAILORED FUNCTION
        (COND ((NULL L) (CONS (EVAL F) %XL))
          ((LIST 'MAPBLAND
@@ -12103,12 +11805,12 @@ THE WAY IT WAS.  HENCE THIS
                 (LIST (SETQ %X
                                        ;; %X IS USED TO STORE THE VARIABLE NAME WHICH IT
                         (GENSYM)
-                                       ; GETS FROM (GENSYM)
+                                       ;; GETS FROM (GENSYM)
                         %XL
                                        ;; %XL IS USED TO SAVE A LIST OF ALL  OF THE
                         (NCONC %XL (CONS %X NIL))
                                        ;; VARIABLE NAMES SO FAR SO THAT THEY CAN BE GIVEN
-               ; TO THE FUNCTION AT THE END (CONS %X NIL)
+               ;; TO THE FUNCTION AT THE END (CONS %X NIL)
                         %X
                                        ;; CREATES A SHINY NEW CELL WHICH IS BOLTED ONTO
                         %X))
@@ -12117,7 +11819,7 @@ THE WAY IT WAS.  HENCE THIS
                                        ;; NECESSARY BECAUSE SETQ RETURNS AS ITS VALUE THE
             (OR (CAR L) '(NIL))))))
                                        ;; RESULT OF THE LAST PAIR THAT IT PROCESSES.  A
-               ; RUSE. PUTS (NIL) IN PLACE OF NIL AS A LIST TO
+               ;; RUSE. PUTS (NIL) IN PLACE OF NIL AS A LIST TO
                ;; PREVENT MAPBLAND FROM QUITTNG.
 
 ;; ============================================================================
@@ -12129,15 +11831,15 @@ THE WAY IT WAS.  HENCE THIS
        ;; LOOKS THE SAME -- ONE BIG NIL-LESS LIST OF ALL THE
        ;; APPLICATIONS OF THE FUNCTION FN.  THE PURPOSE IN THIS IS SO
        ;; THAT THE FUNCTION CAN BE EASILY NESTED.
-       ;;; INPUTS:
-       ;;;     FN  -  FUNCTION OF ONE ARGUMENT TO BE APPLIED TO EACH ELEMENT IN
+       ;; INPUTS:
+       ;;     FN  -  FUNCTION OF ONE ARGUMENT TO BE APPLIED TO EACH ELEMENT IN
        ;; L
-       ;;;     L   -  LIST
-       ;;; VALUE:
-       ;;;     IF (FN L) IS AN ATOM, THEN A LIST OF ATOMS
-       ;;;     IF (FN L) IS A LIST, THEN ALL THE LISTS APPENDED, THAT IS A LIST
+       ;;     L   -  LIST
+       ;; VALUE:
+       ;;     IF (FN L) IS AN ATOM, THEN A LIST OF ATOMS
+       ;;     IF (FN L) IS A LIST, THEN ALL THE LISTS APPENDED, THAT IS A LIST
        ;; OF ATOMS.
-       ;;;     IF (FN L) IS NIL, THEN ALL TRACE DISAPPEARS (SAVE FOR
+       ;;     IF (FN L) IS NIL, THEN ALL TRACE DISAPPEARS (SAVE FOR
        ;; SIDE-EFFECTS).
        (PROG (ANS F)
          (AND (NULL L) (SETQ L '(NIL)))
@@ -12153,12 +11855,12 @@ THE WAY IT WAS.  HENCE THIS
 
 (DEFUN MAPC2 (FN L)
        ;; MAPPING FUNCTION FOR GOING 2 AT A TIME THROUGH A LIST
-       ;;; INPUTS:
-       ;;;     FN   -   FUNCTION OF TWO ARGUMENTS
-       ;;;     L    -   LIST (ESPECIALLY ATTRIBUTE
+       ;; INPUTS:
+       ;;     FN   -   FUNCTION OF TWO ARGUMENTS
+       ;;     L    -   LIST (ESPECIALLY ATTRIBUTE
        ;; VALUE TYPE LIST)
-       ;;; VALUE:
-       ;;;       LIST (LIKE MAPCAR) OF FN APPLIED TO
+       ;; VALUE:
+       ;;       LIST (LIKE MAPCAR) OF FN APPLIED TO
        ;; TOP TWO ELEMENTS
        (PROG (DUMMY) ;; DUMMY IS USED TO ESCAPE FROM A SYSTEM ERROR
     A    (COND ((NULL L) (RETURN T)))
@@ -12193,26 +11895,26 @@ THE WAY IT WAS.  HENCE THIS
                                        ;; %DEFL IS THE LIST OF DEFINITION SENSES
        ;; CONSTRUCTS OSS FOR GARDEN VARIETY NOUNS AND ADJECTIVES.
        ;; USED IN DEFINITIONS.
-       ;;; INPUTS:
+       ;; INPUTS:
        ;; INPUTS ARE IN KEYWORD FORMAT (ATTRIBUTE-VALUE PAIRS).  THE
        ;; KEYWORD IS NOT EVALUATED BUT ITS VLUE IS.  POSIBLE KEYWORDS:
-       ;;;     MARKERS:            LIST OF SEMANTIC MARKERS
-       ;;;     PLAUSIBILITY:       EVALS TO INTEGER FROM 0 TO 1000 INDICATING RELATIVE
-       ;;;                         LIKLIHOOD OF THIS DEFINITION SENSE
-       ;;;     DET:                ****I'M TOO LAZY TOO LOKK THIS UP NOW
+       ;;     MARKERS:            LIST OF SEMANTIC MARKERS
+       ;;     PLAUSIBILITY:       EVALS TO INTEGER FROM 0 TO 1000 INDICATING RELATIVE
+       ;;                         LIKLIHOOD OF THIS DEFINITION SENSE
+       ;;     DET:                ****I'M TOO LAZY TOO LOKK THIS UP NOW
                                        ;; FILL IN DET********************
-       ;;; FREE VARIABLE INPUT:
-       ;;;     SM  -  A LIST OF CURRENT OSS'S WITH WHICH THE TO-BE-CREATED ONES
-       ;;;            MUST BE COMPATIBLE
-       ;;; VALUE:
-       ;;;     A NEW LIST OF OSS'S TO TAKE THE PLACE OF THE OLD ONE.
-       ;;; SIDE-EFFECTS:
+       ;; FREE VARIABLE INPUT:
+       ;;     SM  -  A LIST OF CURRENT OSS'S WITH WHICH THE TO-BE-CREATED ONES
+       ;;            MUST BE COMPATIBLE
+       ;; VALUE:
+       ;;     A NEW LIST OF OSS'S TO TAKE THE PLACE OF THE OLD ONE.
+       ;; SIDE-EFFECTS:
        ;; SM IS RESET TO THE VALUE OF OBJECT
-       ;;;  A SET OF OSS'S ARE CREATED AT THE GLOBAL LEVEL
+       ;;  A SET OF OSS'S ARE CREATED AT THE GLOBAL LEVEL
        (PROG (%VARNAM)
                                        ;; PROG TO DECLARE VARIABLE
          (OR SM (SETQ %VARNAM (MAKESYM 'X)))
-                                       ; IF SM IS EMPTY (AS IN THE CASE OF A HEAD) MAKE
+                                       ;; IF SM IS EMPTY (AS IN THE CASE OF A HEAD) MAKE
          (RETURN ;; A NEW VARIABLE SYSMBOL, OTHERWISE THE
           (SMSET ;; APPROPRIATE %VARNAM WILL BE DECIDED INSIDE THE
            (ITERATE
@@ -12362,7 +12064,7 @@ THE WAY IT WAS.  HENCE THIS
        ;; STATEMENTS.  MODE IS DEFINED TO BE <MODE> IN THE
        ;; MICRO-PLANNER DESCRIPTION OF THFIND (SEE AI MEMO #203A) BODY
        ;; IS A SINGLE PLANNER EXPRESSION (POSSIBLY A THAND OR THPROG)
-       ;;;
+
        (COND ((EQ (CAR BODY) 'THAND) (SETQ BODY (CDR BODY)))
          ((EQ (CAR BODY) 'THPROG)
           (SETQ VARLIST (APPEND VARLIST (CADR BODY)))
@@ -12410,7 +12112,7 @@ THE WAY IT WAS.  HENCE THIS
        ;; AS THE FIRST STATEMENT OF THE THFIND.  IF THERE IS ALREADY A
        ;; THAMONG EXPRESSION IN THE THFIND THEN MUNG JUST CLOBBERS THE
        ;; LIST IN THAT THAMONG.
-       ;;;
+
        (CONS
     (CAR FINDEXPR)
     (CONS (CADR FINDEXPR)
@@ -12428,7 +12130,7 @@ THE WAY IT WAS.  HENCE THIS
 
 (DEFUN PLNR-NOTIFY (NEG? %PLNRPHRASE)
 
-       ;;; PUTS IN THNOT
+       ;; PUTS IN THNOT
        (COND ((NOT NEG?) %PLNRPHRASE)
          ((EQ (CAR %PLNRPHRASE) 'THNOT) (CADR %PLNRPHRASE))
                                        ;; BUT ELIMINATE DOUBLE NEGATIVES.
@@ -12478,19 +12180,19 @@ THE WAY IT WAS.  HENCE THIS
        ;; FUNCTION WHICH SUBSTITUTES THE PROPER PARSE TIME VARIABLES
        ;; FOR #1, #2, #3, AND *** IN THE PLANNER SHCEMAS FROM
        ;; DICTIONARY DEFINITIONS.
-       ;;; INPUTS:
-       ;;;     %ME    - OSS FOR CURRENT OBJECT
-       ;;;     %PLNRPHRASE - A PHRASE FROM THE DICTIONARY IN WHICH SUBSTITUTIONS ARE TO BE MADE
-       ;;; FREE VARIABLE INPUTS:
-       ;;;     #1, #2, #3, CORRESPOND TO POSITIONS IN THE
-       ;;; RESTRICTION LIST OF THE DEFINITION. EACH POINTS TO A SINGLE OSS
-       ;;; OR NIL IF NOT APPLICABLE.
-       ;;;     SMSUB     - ONE OSS FROM SMSUB REGISTER
-       ;;;     SMOB1    - ONE OSS FROM SMOB1 REGISTER
-       ;;;     SMOB2    - ONE OSS FROM SMOB2 REGISTER
-       ;;;     *TIME      - CURRENT TIME
-       ;;; VALUE:
-       ;;; THE CONDENSED PLANNER CODE AFTER THE SUBSTITUTIONS HAVE BEEN MADE
+       ;; INPUTS:
+       ;;     %ME    - OSS FOR CURRENT OBJECT
+       ;;     %PLNRPHRASE - A PHRASE FROM THE DICTIONARY IN WHICH SUBSTITUTIONS ARE TO BE MADE
+       ;; FREE VARIABLE INPUTS:
+       ;;     #1, #2, #3, CORRESPOND TO POSITIONS IN THE
+       ;; RESTRICTION LIST OF THE DEFINITION. EACH POINTS TO A SINGLE OSS
+       ;; OR NIL IF NOT APPLICABLE.
+       ;;     SMSUB     - ONE OSS FROM SMSUB REGISTER
+       ;;     SMOB1    - ONE OSS FROM SMOB1 REGISTER
+       ;;     SMOB2    - ONE OSS FROM SMOB2 REGISTER
+       ;;     *TIME      - CURRENT TIME
+       ;; VALUE:
+       ;; THE CONDENSED PLANNER CODE AFTER THE SUBSTITUTIONS HAVE BEEN MADE
        (MAPCAR (FUNCTION (LAMBDA (%ELEMENT)
                                        ;; %ELEMENT IS AN ATOM OF THE PHRASE
                  (COND ((MEMQ %ELEMENT
@@ -12522,8 +12224,8 @@ THE WAY IT WAS.  HENCE THIS
                       '(NIL NIL))))
                                        ;; RELATION DEPENDING ON THE NUMBER OF ARGUMENTS
                    (%ELEMENT)))))))
-                                       ; THIS INSTANCE OF IT HAS.  (LENGTH ...) COMPUTES
-               ; THE NUMBER OF ARGUMENTS + 1 AND THE (ASSQ ...)
+                                       ;; THIS INSTANCE OF IT HAS.  (LENGTH ...) COMPUTES
+               ;; THE NUMBER OF ARGUMENTS + 1 AND THE (ASSQ ...)
                ;; RETRIEVES THE
 APPROPRIATE RECOMMENDATION USING
                ;; THIS NUMBER.  IF THERE IS NO SUCH  NUMBER,
@@ -12884,11 +12586,11 @@ APPROPRIATE RECOMMENDATION USING
                          (LIST %NAME)))))))
     UP   (COND ((EQ %X '?)
             (PRINT %CHECKLIST)
-            (SETQ %X (ERT foo: setqqcheck ????))
+            (SETQ %X (ERT FOO: SETQQCHECK ????))
             (GO UP))
                                        ;; A QUESTION MARK GETS THE LIST OF POSSIBILITIES
                ;; PRINTED OUT, THEN LETS YOU TRY AGAIN.  TO DO
-               ; THIS YOU MUST TYPE (RETURN '?) AT THE  ERT.  IF
+               ;; THIS YOU MUST TYPE (RETURN '?) AT THE  ERT.  IF
                ;; YOU RETURN ANY OTHER VALUE, IT ASSUMES THIS IS
            ((SETQ %LIST (CONS %X (CDR %LIST))) (GO GO)))))
                                        ;; THE VARIABLE NAME INTENDED, OTHERWISE IT JUST
@@ -12897,22 +12599,22 @@ APPROPRIATE RECOMMENDATION USING
 ;; ===========================================================
 
 (DEFUN THVAL2 (WHO AA)
-       (PROG (RESULT X mplnr-ttime m-gc)
+       (PROG (RESULT X MPLNR-TTIME M-GC)
          (SETQ THLEVEL '(T))
          (SETQ X (SETQ RESULT '(NIL)))
          (AND PLANNERSEE
           (DISP AA)
           PLNRSEE-PAUSE
           (ERT FOR PLANNER))
-(and (not (eq result x))
-     (return result))
-(setq mplnr-ttime (runtime) m-gc (status gctime))
-(setq result (thval aa '((ev command))))
-(setq mplnr-time (timer mplnr-ttime (runtime)))
-(or (= m-gc (status gctime))
-    (setq mplnr-time (difference mplnr-time (timer m-gc (status gctime)))
-          gc (status gctime)))
-(return result)
+(AND (NOT (EQ RESULT X))
+     (RETURN RESULT))
+(SETQ MPLNR-TTIME (RUNTIME) M-GC (STATUS GCTIME))
+(SETQ RESULT (THVAL AA '((EV COMMAND))))
+(SETQ MPLNR-TIME (TIMER MPLNR-TTIME (RUNTIME)))
+(OR (= M-GC (STATUS GCTIME))
+    (SETQ MPLNR-TIME (DIFFERENCE MPLNR-TIME (TIMER M-GC (STATUS GCTIME)))
+          GC (STATUS GCTIME)))
+(RETURN RESULT)
 ))
 
 ;; ===========================================================
@@ -12926,12 +12628,11 @@ APPROPRIATE RECOMMENDATION USING
 
 (DEFUN CHECK (NEW-MARKERS MARKERS SYSTEMS)
 
-       ;;;
        ;; TAKES A LIST OF NEW MARKERS AND CHECKS FOR COMPATIBILITY
        ;; WITH THE EXISTING MARKERS AND SYSTEMS (AS GIVEN BY ARGS
        ;; MARKERS AND SYSTEMS).  IF COMPATIBLE, RETURNS A TWO-LIST OF
        ;; THE NEW MARKERS AND SYSTEMS, ELSE RETURNS NIL
-       ;;;
+
        (PROG NIL
     LOOP (COND ((NULL NEW-MARKERS)
             (RETURN (LIST MARKERS SYSTEMS)))
@@ -12945,14 +12646,13 @@ APPROPRIATE RECOMMENDATION USING
 
 (DEFUN CHECKAMARKER (MARKER)
 
-       ;;;
-       ;;; CHECKS A SINGLE MARKER FOR COMPATIBILITY
-       ;;; USES FREE VARIABLES:
-       ;;;    SYSTEMS - THE SYSTEM LIST SO FAR
-       ;;;    MARKERS - THE MARKER LIST SO FAR
-       ;;; IF SUCCESSFULL, THE MARKER AND ITS SYSTEM(S) ARE APPENDED
-       ;;; TO THESE FREE VARIBLES
-       ;;;
+       ;; CHECKS A SINGLE MARKER FOR COMPATIBILITY
+       ;; USES FREE VARIABLES:
+       ;;    SYSTEMS - THE SYSTEM LIST SO FAR
+       ;;    MARKERS - THE MARKER LIST SO FAR
+       ;; IF SUCCESSFULL, THE MARKER AND ITS SYSTEM(S) ARE APPENDED
+       ;; TO THESE FREE VARIBLES
+
        (PROG (NEW-SYSTEMS)
          (COND ((MEMQ MARKER MARKERS) (RETURN T)))
                                        ;; IF MARKER ALREADY THERE, FINE
@@ -12998,11 +12698,11 @@ APPROPRIATE RECOMMENDATION USING
 
 ;; ---------------------------------------------------------------------------- anno/winograd/smass
 
-(declare (genprefix smass))
+(DECLARE (GENPREFIX SMASS))
 
 ;; ################################################################
 ;;
-;;            SMASS  -  semantic access functions
+;;            SMASS  -  SEMANTIC ACCESS FUNCTIONS
 ;;
 ;; ################################################################
 
@@ -13028,7 +12728,7 @@ APPROPRIATE RECOMMENDATION USING
        (GET X 'ANSRSS=))
 
 (DEFUN DETERMINER? (X)
-       ;;;     ACCESS FUNCTION. GETS DET OF AN OSS.
+       ;;     ACCESS FUNCTION. GETS DET OF AN OSS.
        (GET X 'DETERMINER=))
 
 (DEFUN END? (TSS)
@@ -13045,7 +12745,7 @@ APPROPRIATE RECOMMENDATION USING
        (GET %XSS 'MODIFIERS=))
 
 (DEFUN NEGATIVE? (%XSS)
-       ;;; ACCESS FUNCTION FOR OSS
+       ;; ACCESS FUNCTION FOR OSS
        (GET %XSS 'NEGATIVE=))
 
 (DEFUN NUMBER? (OSS)
@@ -13133,11 +12833,11 @@ APPROPRIATE RECOMMENDATION USING
 
 ;; ---------------------------------------------------------------------------- anno/winograd/newans
 
-(declare (genprefix newans))
+(DECLARE (GENPREFIX NEWANS))
 
 ;; ################################################################
 ;;
-;;         NEWANS - (new) Answering component
+;;         NEWANS - (NEW) ANSWERING COMPONENT
 ;;
 ;; ################################################################
 
@@ -13149,7 +12849,7 @@ APPROPRIATE RECOMMENDATION USING
        (PROG (ANSLIST AMBIG)                            ;; ANSLIST IS THE LIST OF POSSIBLE ANSWERS. AMBIG
          (SETQ ANSNAME NIL)                           ;; IS A FLAG SET IF THERE IS A POSSIBLE AMBIGUITY
          (SETQ AMBIG (CDR (SM NODE)))                   ;; CLEAR OUT ANSWER NAMES SAVED FOR
-         (SETQ ANSLIST                           ; BACKREF(ERENCE) ..I.E. MORE THAN ONE RSS FOR
+         (SETQ ANSLIST                           ;; BACKREF(ERENCE) ..I.E. MORE THAN ONE RSS FOR
            (ANSORDER (ANSUNIQUE (MAPCAR 'ANSGEN               ;; THE SENTENCE.
                         (SM NODE)))))           ;; ANSGEN GENERATES AN ANSWER FOR EACH
     CHOOSE                                   ;; INTERPRETATION. ANSUNIQUE TAKES OUT REDUNDANT
@@ -13158,7 +12858,7 @@ APPROPRIATE RECOMMENDATION USING
                          (CADR ANSLIST))))           ;; REMAINING ONES BY PLAUSIBILITY.
             (SETQ ANSLIST (ANSELIMINATE ANSLIST))
             (GO CHOOSE)))                       ;; IF NO ANSWER IS CLEARLY BEST, ASK THE USER FOR
-         (or annoyance (PRINT *3))                           ;; CLARIFICATION AND TRY AGAIN.
+         (OR ANNOYANCE (PRINT *3))                           ;; CLARIFICATION AND TRY AGAIN.
 TEST-LOOP
          (AND ANS-AFTERFORMULATION-PAUSE  (ERT ANSWER HAS BEEN DETERMINED))
          (EVLIS (ACTION? (CAR ANSLIST)))                   ;; THE ACTION INCLUDES BOTH THE THINGS TO BE DONE
@@ -13233,7 +12933,7 @@ TEST-LOOP
              (COND (AMBIG (APPEND EXP '((THFAIL))))           ;; IN CASE OF MULTIPLE INTERPRETATION, THE SYSTEM
                (T EXP)))                       ;; USES FAILURE TO WIPE OUT THE EFFECTS OF TRYING
          (RETURN                               ;; OUT ONE OF
-          (ANSBUILD (COND (SUCCESS (PLAUSIBILITY? RSS))           ;                   ;; THEM. BEFORE
+          (ANSBUILD (COND (SUCCESS (PLAUSIBILITY? RSS))                               ;; THEM. BEFORE
                   (T (DIFFERENCE (PLAUSIBILITY? RSS)       ;; FAILING IT MARKS DOWN WHETHER IT SUCCEEDED AND
                          512.)))               ;; SAVES THE PLAN FROM BACKTRACKING. PLNR-JUNKIFY
             (COND (SUCCESS (APPEND (REVERSE PLAN2)           ;; PUTS ON THE JUNK FOR SAVING THE DISCOURSE
@@ -13338,9 +13038,9 @@ TEST-LOOP
 
 (DEFUN PARSE-ASSOC (OSS AMBIG-LIST)
 
-       ;;; PARSE-ASSOC GOES THRU AMBIG-LIST LOOKING FOR AN INTERPRETATION
-       ;;; WITH THE SAME PARSE NODE
-       ;;;
+       ;; PARSE-ASSOC GOES THRU AMBIG-LIST LOOKING FOR AN INTERPRETATION
+       ;; WITH THE SAME PARSE NODE
+
        (PROG (ASS)
          (SETQ ASS (CAR (PARSENODE? OSS)))
     LOOP (COND ((NULL AMBIG-LIST) (RETURN NIL))
@@ -13392,7 +13092,7 @@ TEST-LOOP
        ;; ENDS WITH THE HEAD NOUN OF THE PHRASE.  NOTE THAT ANSNAME IS
        ;; CALLED BEFORE ONEIFYING AND ITIFYING AND THE REST OF THAT
        ;; CRAP.
-       ;;;
+       ;;
        ;; ANSNAME WORKS BY CALLED PARSE NG ON THE FIRST COMMAND OF
        ;; THE LIST.  IT WANTS TO HAVE A PARSENODE AND AN OSSNODE BUILT
        ;; UP FOR THE OBJECTS.  HOWEVER, IT DOES NOT WANT REFERENT
@@ -13400,16 +13100,16 @@ TEST-LOOP
        ;; REFERENT.  THE FEATURE "ANSNAME" IS ADDED TO THE INITIAL NG
        ;; PARSE LIST SPECIFICALLY SO SMNG3 WILL IGNORE THIS NOUN
        ;; GROUP.
-       ;;;
+       ;;
        ;; THE WAY ANSNAME WORKS IS THE DECLARE A LOT OF THE RELAVENT
        ;; PARSE FREE VARIABLES SO THAT IT LOOKS A LITTLE LIKE SHRDLU.
        ;; THE CRITICAL VARIABLES ARE:
-       ;;; CUT - WHICH TELLS THE NG GUY HOW FAR TO GO.
-       ;;; N - WHICH CONTAINS THE CURRENT SENTENCE.
-       ;;; C - WHICH CONTAINS THE PARENT OF THE NEXT NODE.
-       ;;;     WE WANT C TO BE NIL TO STOP THE NG PROGRAM FROM
-       ;;;    CRAWLING OVER THE PARSE TREE.
-       ;;;
+       ;; CUT - WHICH TELLS THE NG GUY HOW FAR TO GO.
+       ;; N - WHICH CONTAINS THE CURRENT SENTENCE.
+       ;; C - WHICH CONTAINS THE PARENT OF THE NEXT NODE.
+       ;;     WE WANT C TO BE NIL TO STOP THE NG PROGRAM FROM
+       ;;    CRAWLING OVER THE PARSE TREE.
+
        (PROG (ANSNODE C N CUT)
          (SETQ N (CDAAR PHRASE))                       ;; CDR IS TO REMOVE "SAY"
          (SETQ ANSNODE (PARSE2 '(NG ANSNAME) T))               ;; THE T SAYS NOT TO ATTACH THIS TO THE TREE
@@ -13840,8 +13540,8 @@ TEST-LOOP
         (MOVE-PT DLC PV (NOUN))
         (FROM (NB NODE) (N PT))))                       ;; EVERYTHING UP TO THE NOUN, FOR EXAMPLE "THE RED
                                        ;; BLOCK" IN "THE RED BLOCK WHICH..." NOTE THAT
-                                       ; NODE IS ACTUALLY A LIST OF NODE (A PROPER
-                                       ; GRAMMAR POINTER).
+                                       ;; NODE IS ACTUALLY A LIST OF NODE (A PROPER
+                                       ;; GRAMMAR POINTER).
 
 ;; ############################################################
 
@@ -13905,8 +13605,8 @@ TEST-LOOP
          (SETQ PLNR-FORM
            (CAR (CADDR (CADADR (GET EVENT
                         'THASSERTION))))           ;; THE THASSERTION PROPERTY IS A LIST THAT
-           VERB                               ; TYPICALLY LOOKS LIKE  "(NIL (2 (3 1 ((#GRASP
-           (CUTOFF (CAR PLNR-FORM))                   ; :E2 :B6)))))"
+           VERB                               ;; TYPICALLY LOOKS LIKE  "(NIL (2 (3 1 ((#GRASP
+           (CUTOFF (CAR PLNR-FORM))                   ;; :E2 :B6)))))"
            OBJ1
            (CADDR PLNR-FORM)
            OBJ2
@@ -13915,7 +13615,7 @@ TEST-LOOP
          (COND ((EQ VERB 'CLEARTOP)
             (CONS (SAYIFY (VBFIX 'CLEAN NIL))               ;; SAYIFY WRAPS THE FUNCTION "SAY" ARROUND A LIST
               (PRON-PRT 'OFF OBJ1)))               ;; OF WORDS AND RETURNS THE RESULTING S-EXPRESSION
-           ((EQ VERB 'GET-RID-OF)                   ; NAMELIST-EVALED '(NIL) 'DEF  RETURNS A LIST (!!!) OF
+           ((EQ VERB 'GET-RID-OF)                   ;; NAMELIST-EVALED '(NIL) 'DEF  RETURNS A LIST (!!!) OF
             (CONS (SAYIFY (VBFIX 'GET T)               ;; S-EXPRESSIONS
                   'RID
                   'OF)
@@ -13965,8 +13665,8 @@ TEST-LOOP
              (QUOTIFY ONE)
              (QUOTIFY SPEC)
              (QUOTIFY LISTX)))))                   ;; A TYPICAL CALL WOULD RESULT IN A VALUE OF
-                                       ; ((EVLIS (LISTNAMES '(A RED BLOCK) 'INDEF '(:B1
-                                       ; :B7)))) WHICH WOULD BE EVALUATED LATER. NOTE
+                                       ;; ((EVLIS (LISTNAMES '(A RED BLOCK) 'INDEF '(:B1
+                                       ;; :B7)))) WHICH WOULD BE EVALUATED LATER. NOTE
                                        ;; THAT LISTNAMES WILL IN TURN PRODUCE A LIST OF
                                        ;; EXPRESSIONS TO BE EVALUATED, WHICH WILL BE
                                        ;; CAUGHT BY THE EVLIS.  CONFUSING?
@@ -14003,56 +13703,55 @@ TEST-LOOP
 
 (DEFUN NAMEOBJ (ITEM SPEC)
 
-       ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO
-       ;; BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF
+       ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF
        (PROG (TYPE: TYPELIST TYPE NAME: COLOR: COLORLIST SIZE:
           SIZELIST CUBE NAME X)
          (AND (SETQ X (ASSOC ITEM
                  '((:SHRDLU I) (:FRIEND YOU))))
-          (RETURN (LIST (ANSAY (CDR X)) (LIST ITEM))))           ;;  SPECIAL CASE CHECK
+          (RETURN (LIST (ANSAY (CDR X)) (LIST ITEM))))              ;;  SPECIAL CASE CHECK
          (THVAL2 NIL
              '(THGOAL (#NAMEOBJ) (THUSE TC-NAMEOBJ)))
          (OR TYPELIST
          (ERT NAMEOBJ -- OBJECT WITH NO #IS ASSERTION))
-         (DISPUT TYPE:)                           ;; DISPUT CHECKS TO SEE IF DISCOURSE IS BEING
-         (COND ((EQ (SETQ TYPE (CADDAR TYPE:)) '#NAME)           ;; KEPT, AND IF SO PUTS THE RELEVANT SENTENCE
-            (RETURN (LIST (ANSAY (LIST ITEM)) (LIST ITEM))))   ;; NUMBER AS A PROPERTY ON THE ASSERTION. A NAME
-           ((MEMQ '#PROPERTY (GET TYPE 'SYS))               ;; IS ITS OWN NAME
+         (DISPUT TYPE:)                                             ;; DISPUT CHECKS TO SEE IF DISCOURSE IS BEING
+         (COND ((EQ (SETQ TYPE (CADDAR TYPE:)) '#NAME)              ;; KEPT, AND IF SO PUTS THE RELEVANT SENTENCE
+            (RETURN (LIST (ANSAY (LIST ITEM)) (LIST ITEM))))        ;; NUMBER AS A PROPERTY ON THE ASSERTION. A NAME
+           ((MEMQ '#PROPERTY (GET TYPE 'SYS))                       ;; IS ITS OWN NAME
             (RETURN (LIST (ANSAY (LIST (CUTOFF ITEM)))
-                  (LIST ITEM))))               ;; CUTOFF CUTS THE # OFF OF NAMES LIKE #RED AND
-           ((NOT (CDR TYPELIST))                   ;; #POINTED WHICH ARE USED FOR PROPERTIES.
+                  (LIST ITEM))))                                    ;; CUTOFF CUTS THE # OFF OF NAMES LIKE #RED AND
+           ((NOT (CDR TYPELIST))                                    ;; #POINTED WHICH ARE USED FOR PROPERTIES.
             (RETURN (LIST (ANSAY (LIST 'THE
                            (CUTOFF TYPE)))
-                  (LIST ITEM))))               ; THERE IS ONLY ONE OBJECT OF THIS TYPE (E.G.
-           (CUBE (SETQ NAME '(CUBE)))                   ; TABLE, BOX, HAND)
-           ((SETQ NAME (LIST (CUTOFF TYPE)))))               ;; E.G. #BLOCK BECOMES BLOCK.
+                  (LIST ITEM))))                                    ;; THERE IS ONLY ONE OBJECT OF THIS TYPE (E.G.
+           (CUBE (SETQ NAME '(CUBE)))                               ;; TABLE, BOX, HAND)
+           ((SETQ NAME (LIST (CUTOFF TYPE)))))                      ;; E.G. #BLOCK BECOMES BLOCK.
          (AND NAME:
           (RETURN (LIST (ANSAY (LIST 'THE
                          (CAR NAME)
                          'NAMED
                          (CADDAR NAME:)))
-                (LIST ITEM))))                   ;; E.G. THE BLOCK NAMED SUPERBLOCK.
-         (DISPUT COLOR:)                           ;; IF WE HAVEN'T RETURNED YET, COLOR
+                (LIST ITEM))))                                      ;; E.G. THE BLOCK NAMED SUPERBLOCK.
+         (DISPUT COLOR:)                                            ;; IF WE HAVEN'T RETURNED YET, COLOR
          (SETQ NAME (CONS (CUTOFF (CADDAR COLOR:)) NAME))           ;; WILL BE NEEDED TO FULLY DESCRIBE THE OBJECT.
          (OR (CDR COLORLIST)
          (RETURN (LIST (ANSAY (CONS 'THE NAME))
-                   (LIST ITEM))))                   ;; THERE ARE NO OTHERS OF THE SAME COLOR. IF THERE
-         (SETQ NAME (CONS SIZE: NAME))                   ;; ARE, WE MUST USE SIZE AS WELL
+                   (LIST ITEM))))                                   ;; THERE ARE NO OTHERS OF THE SAME COLOR. IF THERE
+         (SETQ NAME (CONS SIZE: NAME))                              ;; ARE, WE MUST USE SIZE AS WELL
          (RETURN
           (LIST
            (COND
         ((NULL (CDR SIZELIST))
-         (ANSAY (CONS 'THE NAME)))                   ;; THE SIZE MANAGES TO FINISH SPECIFYING IT.
+         (ANSAY (CONS 'THE NAME)))                                  ;; THE SIZE MANAGES TO FINISH SPECIFYING IT.
         ((EQ SPEC 'INDEF)
-         (ANSAY (CONS 'A NAME)))                   ;; IN THE INDEFINITE CASE WE DON'T CARE IF THIS
-        ((SETQ X (THVAL2 NIL                       ;; ISN'T A FULL SPECIFICATION.
+         (ANSAY (CONS 'A NAME)))                                    ;; IN THE INDEFINITE CASE WE DON'T CARE IF THIS
+        ((SETQ X (THVAL2 NIL                                        ;; ISN'T A FULL SPECIFICATION.
                  '(THFIND ALL
                       $?X
                       (X (Y ITEM))
                       ($G (#SUPPORT $?Y $?X)))))
          (CONS (APPEND '(SAY THE) NAME)
                (CONS '(SAY WHICH SUPPORTS)
-                 (LISTNAMES NIL 'INDEF X))))           ;; IF IT SUPPORTS ANYTHING, NAME THEM.
+                 (LISTNAMES NIL 'INDEF X))))                        ;; IF IT SUPPORTS ANYTHING, NAME THEM.
         ((CONS
           (APPEND '(SAY THE) NAME)
           (CONS
@@ -14063,7 +13762,7 @@ TEST-LOOP
                    '(THFIND ALL
                         $?X
                         (X (Y ITEM))
-                        ($G (#AT $?X ?))           ;; MAKE SURE IT IS AN ITEM WITH A LOCATION.
+                        ($G (#AT $?X ?))                            ;; MAKE SURE IT IS AN ITEM WITH A LOCATION.
                         ($G (#LOC #RIGHT $?Y $?X)
                         (THUSE TC-LOC)))))
               (LISTNAMES NIL 'INDEF X))
@@ -14073,35 +13772,34 @@ TEST-LOOP
 ;; ############################################################
 
 (DEFPROP TC-NAMEOBJ
-     (THCONSE ((X ITEM) TYPE COLOR NAME SIZE Y Z)               ;; PLANNER IS CALLED TO SEE HOW MANY OBJECTS FIT
-          (#NAMEOBJ)                           ;; VARIOUS FORMS OF THE DESCRIPTION  IT USES
-          ($G (#IS $?X $?TYPE))                       ;; FAILURE TO LOOP THROUGH THEM, SUCCESSIVELY
-          (SETQ TYPE: THVALUE)                       ;; FILTERING THEM THROUGH GOALS IN WHICH THEY ARE
-          (OR (SETQ CUBE (AND (EQ $?TYPE '#BLOCK)           ;; FORCED TO MATCH THE CHOSEN ITEM  THIS IS VALUE
-                      (#EQDIM $?X)))               ;; IS THE ENTIRE TYPE ASSERTION FOR
-              T)                           ;; SPECIAL CHECK TO CALL EQUIDIMENSIONAL BLOCKS
-          (THCOND (($G (#NAME $?X $?NAME))               ;; "CUBE" THE OR IS TO PREVENT PLANNER FROM
-               (SETQ NAME THVALUE))                   ;; FAILING THE CHOSEN OBJECT.  IT IS SAVED SO THE
-              (($G (#IS $?Y $?TYPE))               ;; SENTENCE NUMBER CAN BE PUT ON ITS PROPERTY LIST
-               (OR (NOT CUBE) (#EQDIM $?Y))               ;; IF THE FACT IS USED IN THE DESCRIPTION.  IF THE
-               (SETQ TYPELIST (CONS $?Y TYPELIST))           ;; ITEM HAS A NAME, NO MORE IS NEEDED. FIND
-               ($G (#COLOR $?X $?COLOR))               ;; SOMETHING ELSE OF THE SAME TYPE. NOTE THAT THIS
-               (SETQ COLOR: THVALUE)               ;; WILL FIND THE ITEM ITSELF ALONG WITH THE OTHERS
-               ($G (#COLOR $?Y $?COLOR))               ;; AND THUS PUT IT ON THE LIST.  THIS KEEPS A LIST
-               (SETQ COLORLIST (CONS $?Y COLORLIST))       ;; OF ALL THE OBJECTS WHICH MAKE IT THIS FAR.
-               (SETQ SIZE: (NAMESIZE (SIZE $?X)))           ;; NOTE THAT SINCE IT IS SETQ INSTEAD OF THSETQ,
-               (EQ SIZE: (NAMESIZE (SIZE $?Y)))           ;; BACKUP DOESN'T UNDO IT. ANYTHING WHICH MAKES IT
-               (SETQ SIZELIST (CONS $?Y SIZELIST))           ;; THIS FAR IS BOTH THE SAME TYPE AND THE SAME
-               (THFAIL))))                       ;; COLOR WE DON'T WANT TO CHECK FOR EXACT EQUALITY
-     THEOREM)                               ;; OF SIZE, JUST WHETHER THEY WOULD BE CALLED THE
-                                       ;; SAME THING.  THE THFAIL SENDS IT BACK UP
-                                       ;; SEARCHING FOR MORE.
+     (THCONSE ((X ITEM) TYPE COLOR NAME SIZE Y Z)                   ;; PLANNER IS CALLED TO SEE HOW MANY OBJECTS FIT
+          (#NAMEOBJ)                                                ;; VARIOUS FORMS OF THE DESCRIPTION  IT USES
+          ($G (#IS $?X $?TYPE))                                     ;; FAILURE TO LOOP THROUGH THEM, SUCCESSIVELY
+          (SETQ TYPE: THVALUE)                                      ;; FILTERING THEM THROUGH GOALS IN WHICH THEY ARE
+          (OR (SETQ CUBE (AND (EQ $?TYPE '#BLOCK)                   ;; FORCED TO MATCH THE CHOSEN ITEM  THIS IS VALUE
+                      (#EQDIM $?X)))                                ;; IS THE ENTIRE TYPE ASSERTION FOR
+              T)                                                    ;; SPECIAL CHECK TO CALL EQUIDIMENSIONAL BLOCKS
+          (THCOND (($G (#NAME $?X $?NAME))                          ;; "CUBE" THE OR IS TO PREVENT PLANNER FROM
+               (SETQ NAME THVALUE))                                 ;; FAILING THE CHOSEN OBJECT.  IT IS SAVED SO THE
+              (($G (#IS $?Y $?TYPE))                                ;; SENTENCE NUMBER CAN BE PUT ON ITS PROPERTY LIST
+               (OR (NOT CUBE) (#EQDIM $?Y))                         ;; IF THE FACT IS USED IN THE DESCRIPTION.  IF THE
+               (SETQ TYPELIST (CONS $?Y TYPELIST))                  ;; ITEM HAS A NAME, NO MORE IS NEEDED. FIND
+               ($G (#COLOR $?X $?COLOR))                            ;; SOMETHING ELSE OF THE SAME TYPE. NOTE THAT THIS
+               (SETQ COLOR: THVALUE)                                ;; WILL FIND THE ITEM ITSELF ALONG WITH THE OTHERS
+               ($G (#COLOR $?Y $?COLOR))                            ;; AND THUS PUT IT ON THE LIST.  THIS KEEPS A LIST
+               (SETQ COLORLIST (CONS $?Y COLORLIST))                ;; OF ALL THE OBJECTS WHICH MAKE IT THIS FAR.
+               (SETQ SIZE: (NAMESIZE (SIZE $?X)))                   ;; NOTE THAT SINCE IT IS SETQ INSTEAD OF THSETQ,
+               (EQ SIZE: (NAMESIZE (SIZE $?Y)))                     ;; BACKUP DOESN'T UNDO IT. ANYTHING WHICH MAKES IT
+               (SETQ SIZELIST (CONS $?Y SIZELIST))                  ;; THIS FAR IS BOTH THE SAME TYPE AND THE SAME
+               (THFAIL))))                                          ;; COLOR WE DON'T WANT TO CHECK FOR EXACT EQUALITY
+     THEOREM)                                                       ;; OF SIZE, JUST WHETHER THEY WOULD BE CALLED THE
+                                                                    ;; SAME THING.  THE THFAIL SENDS IT BACK UP SEARCHING FOR MORE.
 
 ;; ############################################################
 
 (DEFUN NAMESIZE (X)
-       (OR (NUMBERP X) (SETQ X (APPLY 'PLUS X)))               ;; ACCEPTS EITHER SINGLE NUMBER OR LIST OF
-       (COND ((GREATERP X 383.) 'LARGE)                       ;; DIMENSIONS.
+       (OR (NUMBERP X) (SETQ X (APPLY 'PLUS X)))               ;; ACCEPTS EITHER SINGLE NUMBER OR LIST OF DIMENSIONS.
+       (COND ((GREATERP X 383.) 'LARGE)
          (T 'SMALL)))
 
 ;; ############################################################
@@ -14124,25 +13822,13 @@ TEST-LOOP
 ;; ############################################################
 
 (DEFUN NOTELL NIL
-       (GLOBAL-ERR THAT
-           ISN
-           'T
-           THE
-           KIND
-           OF
-           THING
-           I
-           CAN
-           BE
-           TOLD))
+       (GLOBAL-ERR THAT ISN 'T THE KIND OF THING I CAN BE TOLD))
 
 ;; ############################################################
 
 (DEFUN ONECHECK (ITEM)
-
        ;; CHECKS TO SEE IF A SUBSTITUTE "ONE" CAN BE USED.  ITEM IS A
-       ;; SINGLE "SAY" PHRASE.  "PHRASE" IS A FREE VARIABLE IN
-       ;; LISTNAMES
+       ;; SINGLE "SAY" PHRASE.  "PHRASE" IS A FREE VARIABLE IN LISTNAMES
        (PROG (ANS OLD NEW)
          (AND (EQUAL PHRASE '(NIL))
           (SETQ PHRASE (CAR ITEM))
@@ -14173,7 +13859,6 @@ TEST-LOOP
 ;; ############################################################
 
 (DEFUN ORDNAME (NUM)
-
        ;; NAME AN ORDINAL
        (COND ((EQUAL NUM 1.) 'ONCE)
          ((EQUAL NUM 2.) 'TWICE)
@@ -14185,16 +13870,15 @@ TEST-LOOP
 ;; ############################################################
 
 (DEFUN PLNR-ANDORIFY (RSS)
-
        ;; TURNS AN RSS INTO A COLLECTION OF PLANNER CODE FOR A COMMAND
        (COND ((AND? RSS)
           (PLNR-PROGIFY NIL
                 (MAPCAR 'PLNR-ANDORIFY
                     (AND? RSS))))
          ((OR? RSS)
-          ;;; (PLNR-ORIFY NIL
-          ;;;            (MAPCAR 'PLNR-ANDORIFY (OR? RSS)))
-          (ert sorry, plnr-orify not written))
+          ;; (PLNR-ORIFY NIL
+          ;;            (MAPCAR 'PLNR-ANDORIFY (OR? RSS)))
+          (ERT SORRY, PLNR-ORIFY NOT WRITTEN))
          ((PLNR-PROGIFY NIL
                 (MAPCAR 'PLNR-GOALIFY
                     (RELATIONS? RSS))))))
@@ -14213,9 +13897,7 @@ TEST-LOOP
 ;; ############################################################
 
 (DEFUN PLURALIZE (ITEM NUM)
-
-       ;; CONVERTS A SINGULAR NOUNPHRASE OR "ONCE" STATEMENT INTO
-       ;; PLURAL.
+       ;; CONVERTS A SINGULAR NOUNPHRASE OR "ONCE" STATEMENT INTO PLURAL.
        (COND ((GREATERP 2. NUM) ITEM)
          (T (COND ((MEMQ 'A (CAR ITEM))
                (CONS (PLURALMAKE (SUBST (NAMENUM NUM)
@@ -14255,10 +13937,10 @@ TEST-LOOP
        ;; (IE. "CLEAR OFF THE BLOCK." VS. "CLEAR IT OFF" SINCE "CLEAR OFF IT."
        ;; IS UNGRAMMATICAL AND "CLEAR THE BLOCK OFF." WOULD NOT BE
        ;; APPROPRIATE IN CASES OF HEAVY-NP'S)
-       ;;;
+       ;;
        ;; AT THE MOMENT, FOR SIMPLICITY'S SAKE, I'VE IGNORED THE
        ;; PROBLEM AND THE PARTICLE IS ALWAYS PUT BEFORE THE NG.
-       ;;;
+
        (CONS (LIST 'SAY PARTICLE)
          (NAMELIST-EVALED  '(NIL) 'DEF NG)))
 
@@ -14281,16 +13963,16 @@ TEST-LOOP
        ;; DATA BASE.
        (PROG (ANS)
          (SETQ ANS (THVAL2 NIL CODE))
-         (OR (AND AMBIG DISCOURSE) (RETURN (LIST 0. ANS)))           ;; THIS FEATURE IS ONLY RELEVANT IN DISCOURSE AND
-         (OR (EQUAL ANS (THVAL2 'HE CODE))                   ;; WHEN THERE ARE AMBIGUITIES.
-         (RETURN (LIST 256. ANS)))                   ;; GIVE A VALUE OF 400 IF HE COULDN'T HAVE
+         (OR (AND AMBIG DISCOURSE) (RETURN (LIST 0. ANS)))      ;; THIS FEATURE IS ONLY RELEVANT IN DISCOURSE AND
+         (OR (EQUAL ANS (THVAL2 'HE CODE))                      ;; WHEN THERE ARE AMBIGUITIES.
+         (RETURN (LIST 256. ANS)))                              ;; GIVE A VALUE OF 400 IF HE COULDN'T HAVE
          (RETURN (COND ((EQUAL ANS
-                   (THVAL2 (LIST (*DIF SENTNO 2.)      ;; ANSWERED IT AT ALL.
+                   (THVAL2 (LIST (*DIF SENTNO 2.)               ;; ANSWERED IT AT ALL.
                          (ADD1 SENTNO))
                        CODE))
-                (LIST 0. ANS))                   ;; PLAUSIBILITY IS 0 IF HE COULD HAVE ANSWERED IT
-               ((LIST 128. ANS))))))               ;; WITH RECENTLY MENTIONED INFORMATION. 200 IF HE
-                                       ;; COULD ANSWER IT BUT NOT WITH RECENT INFO.
+                (LIST 0. ANS))                                  ;; PLAUSIBILITY IS 0 IF HE COULD HAVE ANSWERED IT
+               ((LIST 128. ANS))))))                            ;; WITH RECENTLY MENTIONED INFORMATION. 200 IF HE
+                                                                ;; COULD ANSWER IT BUT NOT WITH RECENT INFO.
 
 ;; ############################################################
 
@@ -14424,14 +14106,14 @@ TEST-LOOP
                           (FUNCTION SASS))))
                (RETURN T))
                (SAY /
-BY)               (PRINC (COND ((EQ X (Quote IT)) (Quote "IT"))
-                    ((MEMQ (Quote THEY) (FROM SENT NIL))
-                     (Quote "THEY"))
-                    ((Quote "THEM"))))
+BY)               (PRINC (COND ((EQ X (QUOTE IT)) (QUOTE "IT"))
+                    ((MEMQ (QUOTE THEY) (FROM SENT NIL))
+                     (QUOTE "THEY"))
+                    ((QUOTE "THEM"))))
                (SAY , I ASSUME YOU)
-               (PRINC (Quote MEAN))
+               (PRINC (QUOTE MEAN))
                (MAPC (FUNCTION PRINT2) (PARAP XX))
-               (RETURN (PRINC (Quote /./
+               (RETURN (PRINC (QUOTE /./
 )))))    EXPR)
 
 ;; ############################################################
@@ -14489,7 +14171,7 @@ BY)               (PRINC (COND ((EQ X (Quote IT)) (Quote "IT"))
           (FUNCTION (LAMBDA (X)
                 (AND (CADR X)
                      (SET (CAR X)
-                      (ert undef-fn: names NAMES (LISTIFY (CADR X))
+                      (ERT UNDEF-FN: NAMES NAMES (LISTIFY (CADR X))
                          'EV)))))
           (CDR THALIST))
          (SETQ ANSBACK2 (OR ANSBACK T))
@@ -14511,26 +14193,26 @@ BY)               (PRINC (COND ((EQ X (Quote IT)) (Quote "IT"))
 ;;           (COND ((OR (EQ X (GET (Q IT) (Q LASTT)))
 ;;              (EQ X (GET (Q THEY) (Q LASTT))))
 ;;              (Q (THE SAME THING)))
-;;             ((ert iassume: some implementation dependant code used to
-;; be executed at this point and no one has figured out yet quite what it was
-;; trying to accomplish/. sorry/, you lose))
-;;                     ;;; ( SETQ Y
-;;             ;;;       (SUBLIS '((YOU #777777
-;;             ;;;              PNAME
-;;             ;;;              (-29527900160.))
-;;             ;;;             (I #777777 PNAME (-20603830272.))
-;;             ;;;             (ARE #777777
-;;             ;;;              PNAME
-;;             ;;;              (-33499906048.)))
-;;             ;;;           (OR (FASSOC (FUNCTION CADDDR)
-;;             ;;;                   X
-;;             ;;;                   BACKREF
-;;             ;;;                   (FUNCTION NILL))
-;;             ;;;               (FASSOC (FUNCTION CADDDR)
-;;             ;;;                   X
-;;             ;;;                   BACKREF2
-;;             ;;;                   (FUNCTION NILL)))))
-;;             ;;;  (FROM (CADR Y) (CADDR Y)))
+;;             ((ERT IASSUME: SOME IMPLEMENTATION DEPENDANT CODE USED TO
+;; BE EXECUTED AT THIS POINT AND NO ONE HAS FIGURED OUT YET QUITE WHAT IT WAS
+;; TRYING TO ACCOMPLISH/. SORRY/, YOU LOSE))
+;;                     ;; ( SETQ Y
+;;             ;;       (SUBLIS '((YOU #777777
+;;             ;;              PNAME
+;;             ;;              (-29527900160.))
+;;             ;;             (I #777777 PNAME (-20603830272.))
+;;             ;;             (ARE #777777
+;;             ;;              PNAME
+;;             ;;              (-33499906048.)))
+;;             ;;           (OR (FASSOC (FUNCTION CADDDR)
+;;             ;;                   X
+;;             ;;                   BACKREF
+;;             ;;                   (FUNCTION NILL))
+;;             ;;               (FASSOC (FUNCTION CADDDR)
+;;             ;;                   X
+;;             ;;                   BACKREF2
+;;             ;;                   (FUNCTION NILL)))))
+;;             ;;  (FROM (CADR Y) (CADDR Y)))
 ;;             ((ERT IASSUME))))
 ;;     (RETURN (COND ((MEMQ (CAR Y)
 ;;                  (Q (THE THOSE THIS THAT THESE YOUR MY)))
@@ -14581,14 +14263,13 @@ BY)               (PRINC (COND ((EQ X (Quote IT)) (Quote "IT"))
 
 ;; ---------------------------------------------------------------------------- anno/winograd/cgram
 
-(declare (genprefix cgram))
+(DECLARE (GENPREFIX CGRAM))
 
-################################################################
-
-        CGRAM >
-
-    the regular grammar after going through the precompiler
-################################################################
+;; #################################################################
+;;
+;;  CGRAM > THE REGULAR GRAMMAR AFTER GOING THROUGH THE PRECOMPILER
+;;
+;; #################################################################
 
 (DEFUN CLAUSE NIL
        (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT POSITION-OF-PRTMVB LOCATIONMARKER
@@ -16067,7 +15748,7 @@ REMEMBER/ TO/ UFILE
 ;;    UNBOUND PAREN CAUSES THE FILE TO BE TERMINATED TOO SOON, YOU'LL
 ;;    NEVER NOTICE)
 
-(comment symbol 5000)   ;; this file can now be used as a lisp init file via. the jcl line
+(COMMENT SYMBOL 5000)   ;; THIS FILE CAN NOW BE USED AS A LISP INIT FILE VIA. THE JCL LINE
 
 (SETQ *RSET T)
 
@@ -16103,12 +15784,12 @@ REMEMBER/ TO/ UFILE
              15000
              SYMBOL
               15000
-                     array 500 ))
+                     ARRAY 500 ))
        (SETQ PURE NIL)
 ;;       (MAPC 'LOADER '(PLNR THTRAC))
 ;;       (THINIT)
 ;;       (SETQ THINF NIL THTREE NIL THLEVEL NIL)
-;;       (setq errlist nil)   ;; removes micro-planner's fangs
+;;       (SETQ ERRLIST NIL)   ;; REMOVES MICRO-PLANNER'S FANGS
        (MAPC 'LOADER '(SYSCOM MORPHO SHOW))
        (MAPC 'LOADER '(PROGMR GINTER GRAMAR DICTIO))
        (MAPC 'LOADER '(SMSPEC SMASS SMUTIL))
@@ -16117,14 +15798,14 @@ REMEMBER/ TO/ UFILE
        (FASLOAD TRACE FASL COM COM)
 ;;       (FASLOAD GRAPHF FASL DSK SHRDL1)
        (LOADER 'SETUP)
-;;       (fasload grindef fasl com com)
+;;       (FASLOAD GRINDEF FASL COM COM)
        'CONSTRUCTION/ COMPLETED)
 
-;; this now loads all of SHRDLU except the blocks world code, microplanner, and the
-;; answering capability.    - the shift to bibop lisp seems to have crippled microplanner
-;; in a non-obvious way, and the answering code is useless without the blocks world.
+;; THIS NOW LOADS ALL OF SHRDLU EXCEPT THE BLOCKS WORLD CODE, MICROPLANNER, AND THE
+;; ANSWERING CAPABILITY.    - THE SHIFT TO BIBOP LISP SEEMS TO HAVE CRIPPLED MICROPLANNER
+;; IN A NON-OBVIOUS WAY, AND THE ANSWERING CODE IS USELESS WITHOUT THE BLOCKS WORLD.
 
-(loadshrdlu)
+(LOADSHRDLU)
 
 ;; ---------------------------------------------------------------------------- anno/winograd/loader
 
@@ -16168,10 +15849,10 @@ REMEMBER/ TO/ UFILE
 (DEFUN FLOAD FEXPR (SPECS)
    (TERPRI)
    (PRINC (CAR SPECS))
-   (princ '/ )
+   (PRINC '/ )
    (PRINC (CADR SPECS))
    (OR (ERRSET (APPLY 'FASLOAD SPECS))
-       (ERT lossage in loading - try again ?)))
+       (ERT LOSSAGE IN LOADING - TRY AGAIN ?)))
 
 (SETQ VERSION-FILES NIL)
 
@@ -16181,12 +15862,12 @@ REMEMBER/ TO/ UFILE
              15000
              SYMBOL
               15000
-                     array 500 ))
+                     ARRAY 500 ))
        (SETQ PURE NIL)
        (MAPC 'LOADER '(PLNR THTRAC))
        (THINIT)
        (SETQ THINF NIL THTREE NIL THLEVEL NIL)
-       (setq errlist nil)   ;; removes micro-planner's fangs
+       (SETQ ERRLIST NIL)   ;; REMOVES MICRO-PLANNER'S FANGS
        (MAPC 'LOADER '(SYSCOM MORPHO SHOW))
        (MAPC 'LOADER '(PROGMR GINTER GRAMAR DICTIO))
        (MAPC 'LOADER '(SMSPEC SMASS SMUTIL))
@@ -16195,30 +15876,27 @@ REMEMBER/ TO/ UFILE
        (FASLOAD TRACE FASL COM COM)
        (FASLOAD GRAPHF FASL DSK SHRDL1)
        (LOADER 'SETUP)
-       (fasload grindef fasl com com)
+       (FASLOAD GRINDEF FASL COM COM)
        'CONSTRUCTION/ COMPLETED)
 
-(defun loadparser nil
-    (mapc 'loader '(syscom morpho show))
-    (mapc 'loader '(progmr ginter gramar dictio))
-    (loader 'setup)
-    (load parser > dsk shrdl1)        ; load is defined on ddm;*load >
-    'complete-call-setup-num-date)
+(DEFUN LOADPARSER NIL
+    (MAPC 'LOADER '(SYSCOM MORPHO SHOW))
+    (MAPC 'LOADER '(PROGMR GINTER GRAMAR DICTIO))
+    (LOADER 'SETUP)
+    (LOAD PARSER > DSK SHRDL1)        ;; LOAD IS DEFINED ON DDM;*LOAD >
+    'COMPLETE-CALL-SETUP-NUM-DATE)
 
-(DEFUN PARSER-compiled NIL
+(DEFUN PARSER-COMPILED NIL
     (SETQ PURE NIL)
     (FLOAD FASL SYSCOM DSK SHRDL1)
     (FLOAD FASL MORPHO DSK SHRDL1)
     (FLOAD FASL SHOW DSK SHRDL1)
-    ;;;
     (FLOAD FASL PROGMR DSK SHRDL1)
     (FLOAD FASL GRAMAR DSK SHRDL1)
     (LOADER 'DICTIO)
-    ;;;
     (FLOAD TRACE FASL COM COM)
     (FLOAD FASL SETUP DSK SHRDL1)
-    ;;;
-    (load parser > dsk shrdl1)
+    (LOAD PARSER > DSK SHRDL1)
     'PARSER-LOADED)
 
 (DEFUN SHRDLU-COMPILED ()
@@ -16228,7 +15906,7 @@ REMEMBER/ TO/ UFILE
     (FLOAD FASL SHOW DSK SHRDL1)
 ;;
     (FLOAD FASL PROGMR DSK SHRDL1)
-    (FLOAD FASL gRAMar  DSK SHRDL1)
+    (FLOAD FASL GRAMAR  DSK SHRDL1)
     (LOADER 'DICTIO)
 ;;
     (FLOAD FASL SMSPEC DSK SHRDL1)
@@ -16241,7 +15919,7 @@ REMEMBER/ TO/ UFILE
     (LOADER 'THTRAC)
     (THINIT)
     (SETQ THINF NIL THTREE NIL THLEVEL NIL)
-    (setq errlist nil)
+    (SETQ ERRLIST NIL)
     (FLOAD FASL BLOCKL DSK SHRDL1)
     (LOADER 'BLOCKP)
     (LOADER 'DATA)
@@ -16253,12 +15931,11 @@ REMEMBER/ TO/ UFILE
 
 ;; ---------------------------------------------------------------------------- anno/winograd/macros
 
-################################################################
-
-        .MACR 21
-
-   a precompiler for programmer code
-################################################################
+;; ################################################################
+;;
+;;              A PRECOMPILER FOR PROGRAMMER CODE
+;;
+;; ################################################################
 
 (DEFUN LIST-NO-NILS FEXPR (ELEMENTS)
        (DO ((TAKEUP-REEL)
@@ -16341,7 +16018,7 @@ REMEMBER/ TO/ UFILE
           (RETURN (LIST EXP
                 (LIST 'AND
                       'LABELTRACE
-                      (LIST 'PASSING (list 'quote exp))))))
+                      (LIST 'PASSING (LIST 'QUOTE EXP))))))
          ((EQ (CAR EXP) 'GOCOND)
           (RETURN (LIST (LIST 'COND
                       (LIST 'NN
@@ -16428,42 +16105,41 @@ REMEMBER/ TO/ UFILE
 
 ;; ################################################################
 ;;
-;;      PARSER - setup file for parsing system in programmar
+;;      PARSER - SETUP FILE FOR PARSING SYSTEM IN PROGRAMMAR
 ;;
 ;; ################################################################
 
-(defun setup (gram-num date)
-    (suspend)
-    (cursorpos 'c)
-    (terpri)
-    (princ 'shrdlu/'/s/ P/a/r/s/e/r/ / / )
-    (princ '/u/s/i/n/g/ /g/r/a/m/m/a/r/ )
-    (princ gram-num)
-    (terpri)
-    (princ date)
-    (princ '/ / lisp/ )
-    (princ (status lispversion))
-    (terpri)
-    (terpri)
-    (say this is a read-eval-print loop)
-    (say type "go/ " to enter ready state)
-    (catch (ert) abort-parser)
-    (sstatus toplevel '(parser))
-    (parser))
+(DEFUN SETUP (GRAM-NUM DATE)
+    (SUSPEND)
+    (CURSORPOS 'C)
+    (TERPRI)
+    (PRINC 'SHRDLU/'/S/ P/A/R/S/E/R/ / / )
+    (PRINC '/U/S/I/N/G/ /G/R/A/M/M/A/R/ )
+    (PRINC GRAM-NUM)
+    (TERPRI)
+    (PRINC DATE)
+    (PRINC '/ / LISP/ )
+    (PRINC (STATUS LISPVERSION))
+    (TERPRI)
+    (TERPRI)
+    (SAY THIS IS A READ-EVAL-PRINT LOOP)
+    (SAY TYPE "GO/ " TO ENTER READY STATE)
+    (CATCH (ERT) ABORT-PARSER)
+    (SSTATUS TOPLEVEL '(PARSER))
+    (PARSER))
 
-(setq makeintern t ;;;  switch for interning the atoms created for the node structure
-  sh-standard-printout nil ;;;  switch for evaluating display functions in the function SHSTPO (the SHOW file)
-  sh-afteranswer-pause t  ;;;   switch for causing a break after each sentence is processed
+(SETQ MAKEINTERN T          ;; SWITCH FOR INTERNING THE ATOMS CREATED FOR THE NODE STRUCTURE
+  SH-STANDARD-PRINTOUT NIL  ;; SWITCH FOR EVALUATING DISPLAY FUNCTIONS IN THE FUNCTION SHSTPO (THE SHOW FILE)
+  SH-AFTERANSWER-PAUSE T    ;; SWITCH FOR CAUSING A BREAK AFTER EACH SENTENCE IS PROCESSED
     )
 
-(setq annoyance t  ;;;  turns off the [1] printouts in SHRDLU
- smn t ;;;   turns off evaluation by real smn-fns
+(SETQ ANNOYANCE T   ;; TURNS OFF THE [1] PRINTOUTS IN SHRDLU
+ SMN T              ;; TURNS OFF EVALUATION BY REAL SMN-FNS
 )
 
-(setq car t cdr t ;;;  annoying patch to keep *RSET happy
-     )
+(SETQ CAR T CDR T)  ;; ANNOYING PATCH TO KEEP *RSET HAPPY
 
-(DEFUN parser NIL
+(DEFUN PARSER NIL
        (PROG (ERT-TIME END AMB TIMAMB BOTH BACKREF BACKREF2 ANSNAME
           LASTREL WHO PT PTW SENT PUNCT IGNORE H N NB FE SM RE
           MES MESP C CUT CURTIME STATE GLOBAL-MESSAGE LEVEL
@@ -16492,7 +16168,6 @@ REMEMBER/ TO/ UFILE
             (AND ^Q (%))
             (IOC S)
             (AND IGNORE (GO UP))
-            ;;;
             (COND
              ((AND
                (COND
@@ -16506,9 +16181,9 @@ REMEMBER/ TO/ UFILE
               (SETQ NB SENT)
               (SETQ H (H C))
               (SETQ INTERPRETATION (SM C))
-(terpri)
-(princ 'time/ spent/ parsing/ )
-(princ p-time))
+(TERPRI)
+(PRINC 'TIME/ SPENT/ PARSING/ )
+(PRINC P-TIME))
              ((PRINT *3)
               (APPLY 'SAY
                  (OR GLOBAL-MESSAGE
@@ -16520,33 +16195,31 @@ REMEMBER/ TO/ UFILE
           ABORT-PARSER)
          (GO CATCH-LOOP)))
 
-(DEFUN ETAOIN NIL
-;;  has a patch added to permit online definition
-;;  of an unknown word's syntactic features
+(DEFUN ETAOIN NIL ;; HAS A PATCH ADDED TO PERMIT ONLINE DEFINITION OF AN UNKNOWN WORD'S SYNTACTIC FEATURES
 
-       (PROG (WORD NEWWORD CHAR ALTN ALREADY-BLGING-NEWWRD WRD LAST features
+       (PROG (WORD NEWWORD CHAR ALTN ALREADY-BLGING-NEWWRD WRD LAST FEATURES
           NEXT Y WORD1 X RD POSS)
     THRU (SETQ SENT (SETQ WORD (SETQ PUNCT (SETQ POSS NIL))))
          (PRINT 'READY)
          (TERPRI)
          (AND MOBYREAD (IOC Q))
-    CHAR (COND ((EQUAL (TYIPEEK) 24.) (READCH) (ERT) (GO THRU)) ;; "cntrl-x" break left over from CMU
-                   ((= (tyipeek) 3.)
-(or (and mobyread (end-of-file-condition))
-    (bug etaoin: about to read eof)))
+    CHAR (COND ((EQUAL (TYIPEEK) 24.) (READCH) (ERT) (GO THRU)) ;; "CNTRL-X" BREAK LEFT OVER FROM CMU
+                   ((= (TYIPEEK) 3.)
+(OR (AND MOBYREAD (END-OF-FILE-CONDITION))
+    (BUG ETAOIN: ABOUT TO READ EOF)))
 )
-         (setq char (cond ((greaterp 123. (setq char (tyi)) 96.) (- char 32.))
-                  ((greaterp 91. char 64.) char)
-                  (t char))
-                  char (ascii char)
-                   ;; this little hack maps all lowercase letters into uppercase.
-           ;; a more reasonable thing to do would be to hack the chtrans
-           ;; property of the current readtable, but this was quicker to patch.
+         (SETQ CHAR (COND ((GREATERP 123. (SETQ CHAR (TYI)) 96.) (- CHAR 32.))
+                  ((GREATERP 91. CHAR 64.) CHAR)
+                  (T CHAR))
+                  CHAR (ASCII CHAR)
+                   ;; THIS LITTLE HACK MAPS ALL LOWERCASE LETTERS INTO UPPERCASE.
+           ;; A MORE REASONABLE THING TO DO WOULD BE TO HACK THE CHTRANS
+           ;; PROPERTY OF THE CURRENT READTABLE, BUT THIS WAS QUICKER TO PATCH.
                    )
-             (cond ((EQ char '/ ) (GO WORD))           ;; DELIMITER
+             (COND ((EQ CHAR '/ ) (GO WORD))           ;; DELIMITER
            ((MEMQ CHAR ALTMODE)
-            (setq char (ascii (uppercase-ify-char (tyi))))
-            (COND ((MEMQ char ALTMODE)
+            (SETQ CHAR (ASCII (UPPERCASE-IFY-CHAR (TYI))))
+            (COND ((MEMQ CHAR ALTMODE)
                (ERT)
                (GO THRU))
                                        ;; ALTMODE-ALTMODE
@@ -16576,7 +16249,7 @@ REMEMBER/ TO/ UFILE
               ((EQ CHAR 'M)
                (IOC Q)
                (SETQ IGNORE NIL MOBYREAD T)
-               (GO thru))
+               (GO THRU))
               ((EQ CHAR 'I)
                (SETQ IGNORE T)
                (IOC Q)
@@ -16601,7 +16274,7 @@ REMEMBER/ TO/ UFILE
                (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD T))
                (GO CHAR))
           (AND (EQ CHAR '")
-               ALREaDY-BLGING-NEWRD
+               ALREADY-BLGING-NEWRD
                (NOT (SETQ ALREADY-BLGING-NEWRD NIL))
                (GO WORD))
                                        ;; WITHIN THIS "AND" ARE ALL THE CHARACTERS THAT
@@ -16650,9 +16323,10 @@ REMEMBER/ TO/ UFILE
            ((GO CUT)))
          (GO WRD)
 
-         ;;; --------------------------------------------
-         ;;;              MORPHOLOGY CODE
-         ;;; -------------------------------------------
+         ;; --------------------------------------------
+         ;;              MORPHOLOGY CODE
+         ;; -------------------------------------------
+
     CUT  (COND ((STA WORD '(T " N))
             (SETQ RD (CDDDR WORD))
             (SETQ WORD (CONS '* WORD))
@@ -16743,9 +16417,9 @@ REMEMBER/ TO/ UFILE
           ((EQ (CAR RD) 'E) (SETQ RD (CDR RD)) (GO TRY))
           ((GO NO)))
 
-         ;;; ---------------------------------------------------
-         ;;;  BUILD UP THE PROCESSED LIST OF WORDS TO BE RETURNED
-         ;;; ---------------------------------------------------
+         ;; ---------------------------------------------------
+         ;;  BUILD UP THE PROCESSED LIST OF WORDS TO BE RETURNED
+         ;; ---------------------------------------------------
     WRD  (SETQ
           SENT
           (COND (POSS (COND ((OR (MEMQ 'NOUN
@@ -16798,23 +16472,23 @@ REMEMBER/ TO/ UFILE
          (PRINC WRD)
          (PRINC '/ "/.)
          (TERPRI)
-(cond (define-online
-(terpri)
-(say what are its syntactic features?)
-(setq features (read))
-(buildword wrd features 'dummy wrd)
-(terpri)
-(mapc '(lambda (w) (print2 w)) (reverse sent))
-(print2 wrd)
-(princ '/ )
-(go char)
+(COND (DEFINE-ONLINE
+(TERPRI)
+(SAY WHAT ARE ITS SYNTACTIC FEATURES?)
+(SETQ FEATURES (READ))
+(BUILDWORD WRD FEATURES 'DUMMY WRD)
+(TERPRI)
+(MAPC '(LAMBDA (W) (PRINT2 W)) (REVERSE SENT))
+(PRINT2 WRD)
+(PRINC '/ )
+(GO CHAR)
 ))
          (SAY PLEASE TYPE <LF> AND CONTINUE THE SENTENCE/.)
     NOGO (OR (EQUAL (TYI) 10.) (GO NOGO))
          (SETQ PUNCT NIL WORD NIL)
          (GO DO)))
 
-(defun build fexpr (foo)
- ;;;  this is a semantic function which packages semantic nodes
- t)
+(DEFUN BUILD FEXPR (FOO)
+ ;;  THIS IS A SEMANTIC FUNCTION WHICH PACKAGES SEMANTIC NODES
+ T)
 
