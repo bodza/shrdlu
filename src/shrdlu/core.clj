@@ -140,7 +140,7 @@
 (defn- bug! [message] (throw (Error. message)))
 (defn- oops! [message] (set! *oops* message) (throw (RuntimeException. message)))
 
-(declare topcenter abs atab clear diff half endtime ev findspace goal grow locgreater memorend memory occupier order packo packon packord size starthistory startime support tcent tfind timechk evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert thassertf thassertt thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therase therasef theraset therasing thfail thfinalize thfind thfindf thfindt thflush thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thnv thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thstate thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thval thvar? thvars2 thvarsubst thvsetq %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 grammar! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel pop* popto previous rebuild root rq semantics trnsf word conjo comma cantake canparse !bethere !beint both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !loc2 !name !notice !on !propdefine !role !stackup smtime smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref evalcheck iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime plnr-var compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare topcenter abs atab clear diff half endtime ev findspace goal grow locgreater memorend memory occupier order packo packon packord size starthistory startime support tcent tfind timechk evlis thadd thamong thamongf thand thandf thandt thante thapply thapply1 thass1 thassert thassertf thassertt thasval thbind thbi1 thbranch thbranchun thcond thcondf thcondt thconse thdef thdo thdo1 thdob therase therasef theraset therasing thfail thfinalize thfind thfindf thfindt thflush thgal thgo thgoal thgoalf thgoalt thip thmatch2 thcheck thunion thmatch1 thmatchlist thmungf thmungt thnofail thnohash thnot thnv thor thor2 thorf thort thpopt thprog thproga thprogf thprogt thpure thputprop threm1 thrembindf thrembindt thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thstate thsucceed thtae thtag thtagf thtagt thtrue thtry1 thtry thundof thundot thunique thv1 thv thval thvar? thvars2 thvarsubst thvsetq %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 grammar! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse parse2 parse3 parserel pop* popto previous rebuild root rq semantics trnsf word conjo comma cantake canparse !bethere !beint both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !loc2 !name !notice !on !propdefine !role !stackup smtime smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref evalcheck iterate* iteratex mapbland mapc2 mumble object valueput plnr-junkify plnr-junkify2 plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime plnr-var compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers checkamarker findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthmadd ansthmelement ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -2616,73 +2616,88 @@
 (defn- nextword? [n w] (= (car n) w))
 
 (defn- parse [& a]
-    (if (memq (car a) '(NG CLAUSE VG PREPG ADJG)) (PARSE2 a (memq 'TOPLEVEL a)) (PARSE3 a nil)))
+    (if (memq (car a) '(NG CLAUSE VG PREPG ADJG)) (parse2 a (memq 'TOPLEVEL a)) (parse3 a nil)))
 
-(§ defn- PARSE2 [rest' p]
+(defn- parse2 [rest' p]
     ;; THIS FUNCTION CALLS THE PROGRAMMAR FUNCTION INDICATED BY THE FIRST MEMBER OF REST - A FEATURE LIST.
     ;; THE PARAMETER P INDICATES WHETHER PARSE2 IS BEING CALLED FROM THE TOPLEVEL.
     ;; IF P IS TRUE, PARSE2 DOES NOT APPEND THE NODE JUST PARSED TO THE PARSING TREE.
-    ;; PARSE2 WILL CALL EITHER A COMPILED OR INTERPRETED VERSION OF THE GRAMMAR PROGRAM.
     (when (not= *n* *cut*)
-        (binding [*rest* rest' *end* *cut* *parent* *c* *re* nil *special* nil]
+        (binding [*rest* rest' *end* *cut* *parent* *c* *re* nil]
             (set! *nn* true)
-            (let [unit (car *rest*) nbb *n*]
-                (when (nq 'B-SPECIAL)
-                    (eval (getr *n* 'B-SPECIAL)))
-                (condp = *special*
-                    'SKIP nil
-                    'DONE (GO DONE)
-                    'LOSE (do (set! *n* nbb) (GO LOSE))
-                    ;; THIS IS WHERE ALL THE WORK HAPPENS.
-                    ;; IF THE PARSE SUCCEEDS, IT WILL RETURN THE NODE THAT HAS BEEN BUILT UP.
-                    (when-not (set! *re* (apply-grammar unit))
-                        (set! *n* nbb) (GO LOSE)))
-                 (when (and (not= *n* *cut*) (nq 'SPECIAL))
-                    (eval (getr *n* 'SPECIAL)))
-            DONE (when-not p
-                    (set! *fe* (getprop (car *c*) 'FEATURES))
-                    (set! *h* (concat *re* *h*))
-                    ;; REBUILDS THE HIGHER LEVEL NODE TO INCORPORATE THE DAUGHTER THAT WAS JUST PARSED,
-                    ;; EXCEPT IN THE CASE WHERE THIS NODE IS THE TOPLEVEL.
-                    (rebuild *c* *fe* *nb* *n* *h* *sm*))
-            LOSE (set! *nn* (not= *n* *cut*))
+            (let [unit (car *rest*) nbb *n*
+                  ? (when (nq 'B-SPECIAL)
+                        (binding [*special* nil]
+                            (eval (getr *n* 'B-SPECIAL))
+                            (condp = *special*
+                                'SKIP :skip
+                                'DONE :done
+                                'LOSE (do (set! *n* nbb) :lose)
+                                nil)))
+                  ;; THIS IS WHERE ALL THE WORK HAPPENS.
+                  ;; IF THE PARSE SUCCEEDS, IT WILL RETURN THE NODE THAT HAS BEEN BUILT UP.
+                  ? (or ? (when-not (set! *re* (apply-grammar unit))
+                            (set! *n* nbb)
+                            :lose))
+                  ? (or (when (not= ? :skip) ?)
+                        (when (and (not= *n* *cut*) (nq 'SPECIAL))
+                            (eval (getr *n* 'SPECIAL))
+                            nil))
+                  ? (or (when (not= ? :done) ?)
+                        (when-not p
+                            (set! *fe* (getprop (car *c*) 'FEATURES))
+                            (set! *h* (concat *re* *h*))
+                            ;; REBUILDS THE HIGHER LEVEL NODE TO INCORPORATE THE DAUGHTER THAT WAS JUST PARSED,
+                            ;; EXCEPT IN THE CASE WHERE THIS NODE IS THE TOPLEVEL.
+                            (rebuild *c* *fe* *nb* *n* *h* *sm*)
+                            nil))]
+                (set! *nn* (not= *n* *cut*))
                 *re*))))
 
-(§ defn- PARSE3 [rest' p]
+(defn- parse3 [rest' p]
     ;; PARSE3 IS CALLED TO PARSE JUST THE NEXT WORD IN THE SENTENCE.
     (when' (not= *n* *cut*) => (do (m! 'CUT) nil)
-        (binding [*rest* rest' *re* nil *special* nil]
-            (let [nbb *n*]
-                (when (nq 'B-SPECIAL)
-                    (eval (getr *n* 'B-SPECIAL))
-                    (condp = *special*
-                        'SKIP (GO SKIP)
-                        'DONE (GO DONE)
-                        'LOSE (do (set! *n* nbb) (RETURN nil))
-                        nil))
+        (binding [*rest* rest' *re* nil]
+            (let-when [nbb *n*
+                  ? (when (nq 'B-SPECIAL)
+                        (binding [*special* nil]
+                            (eval (getr *n* 'B-SPECIAL))
+                            (condp = *special*
+                                'SKIP :skip
+                                'DONE :done
+                                'LOSE (do (set! *n* nbb) :lose)
+                                nil)))
+            ] (not= ? :lose) => nil
                 ;; IF CALL IS (PARSE NIL FOO), THEN LOOK FOR EXACT WORD "FOO".
                 ;; IF NOT THERE, FAIL.
-                (let [labl nil a *rest*]
-                    (cond (car a) (loop [a a]
-                                ;; IF THE FEATURE IS NOT AN ATOM, JUST ADD THE FEATURE TO THE LIST.
-                                (cond (not (term? (car a))) (SETQ labl (cons (caar a) labl))
-                                    (or (= (car a) 'NULL) (memq (car a) (features *n*)) (memq (car a) '(COMPONENT BOTH))) true
-                                    :else (do (m! (car a)) (set! *n* nbb) (RETURN nil)))
-                                (when (cdr a) (recur (cdr a))))
-                        (nextword? *n* (cadr a)) nil
-                        :else (do (set! *n* nbb) (RETURN nil))))
-                (set! *re*
-                    (buildnode (meet (concat (features *n*) labl) (getprop (car *rest*) 'ELIM)) *n* (cdr *n*) 'WORD
-                        (or (nil? (car *rest*)) (and (nil? (semantics *n*)) (undefined *n*)) (cadr (sassq (car *rest*) (semantics *n*) #(undefined *n*))))))
-                (set! *n* (cdr *n*))
-            SKIP (set! *nn* (not= *n* *cut*))
-                (when (and *nn* (nq 'SPECIAL))
-                    (eval (getr *n* 'SPECIAL)))
-            DONE (setr *re* 'PARENT *c*)
-                (when-not p
-                    (set! *h* (concat *re* *h*))
-                    (rebuild *c* *fe* *nb* *n* *h* *sm*))
-                *re*))))
+                (let-when [? (or ?
+                            (let-when [a *rest* [? f]
+                                    (cond (car a)
+                                        (loop [f nil a a]
+                                            ;; IF THE FEATURE IS NOT AN ATOM, JUST ADD THE FEATURE TO THE LIST.
+                                            (let [[? f]
+                                                    (cond (not (term? (car a))) [nil (cons (caar a) f)]
+                                                        (or (= (car a) 'NULL) (memq (car a) (features *n*)) (memq (car a) '(COMPONENT BOTH))) [nil f]
+                                                        :else (do (m! (car a)) (set! *n* nbb) [:lose nil]))]
+                                                (recur-if (and (not ?) (cdr a)) [f (cdr a)] => [? f])))
+                                    (nextword? *n* (cadr a)) [nil nil]
+                                    :else (do (set! *n* nbb) [:lose nil]))
+                            ] (not ?) => ?
+                                (set! *re*
+                                    (buildnode (meet (concat (features *n*) f) (getprop (car *rest*) 'ELIM)) *n* (cdr *n*) 'WORD
+                                        (or (nil? (car *rest*)) (and (nil? (semantics *n*)) (undefined *n*)) (cadr (sassq (car *rest*) (semantics *n*) #(undefined *n*))))))
+                                (set! *n* (cdr *n*)))
+                                nil)
+                ] (not= ? :lose) => nil
+                    (let [? (or (when (not= ? :skip) ?)
+                                (when (and (set! *nn* (not= *n* *cut*)) (nq 'SPECIAL))
+                                    (eval (getr *n* 'SPECIAL))
+                                    nil))]
+                        (setr *re* 'PARENT *c*)
+                        (when-not p
+                            (set! *h* (concat *re* *h*))
+                            (rebuild *c* *fe* *nb* *n* *h* *sm*))
+                        *re*))))))
 
 (defn- parserel [a b node]
     (loop [a a] (when (some? a)
@@ -4427,12 +4442,12 @@
             (or (flushme) (GO LOSE2))
             (fq! 'NEGBUT))
         (| (cond (memq (car *rest*) '(ADJ NUM NOUN PREP VB ADV))
-                (PARSE3 (concat *rest* '(COMPONENT)) nil)
+                (parse3 (concat *rest* '(COMPONENT)) nil)
             (memq (car *rest*) '(NG PREPG ADJG))
-                (and (not (cq 'OFOBJ)) (PARSE2 (concat *rest* '(COMPONENT)) nil))
+                (and (not (cq 'OFOBJ)) (parse2 (concat *rest* '(COMPONENT)) nil))
             (= (car *rest*) 'CLAUSE)
                 (let [*lastsent* (if (isq *h* 'MAJOR) *h* *lastsent*) auxfe (meet (features *h*) '(DECLAR IMPER))]
-                    (and (PARSE2 (concat *rest* auxfe '(COMPONENT)) nil)
+                    (and (parse2 (concat *rest* auxfe '(COMPONENT)) nil)
                         (or (not auxfe) (f! (car auxfe)))
                         (setr *c* 'TIME (getr *h* 'TIME)))))             ;; MARK COMPOUND CLAUSE AS TO DECLAR/IMPER FOR ANSGEN
             nil
@@ -4618,8 +4633,8 @@
                 (cut *end*)
                 (set! *both* *ptw*)                                         ;; SAVE POINTER TO THE WORD AFTER THE MATCHING WORD
                 (set! *re* (cond
-                    (memq (car *rest*) '(PREP ADV)) (PARSE3 *rest* true)
-                    (memq (car *rest*) '(NG PREPG ADJG CLAUSE)) (PARSE2 *rest* true)))
+                    (memq (car *rest*) '(PREP ADV)) (parse3 *rest* true)
+                    (memq (car *rest*) '(NG PREPG ADJG CLAUSE)) (parse2 *rest* true)))
                 (< (count *n*) (count *both*)))                             ;; FAIL UNLESS WE PARSED BEYOND MATCHING WORD
             (set! *special* 'SKIP)
             (do (set! *re* nil) (set! *n* nbb) nil)))))
@@ -7161,7 +7176,7 @@
     ;; C   - WHICH CONTAINS THE PARENT OF THE NEXT NODE.
     ;;       WE WANT C TO BE NIL TO STOP THE NG PROGRAM FROM CRAWLING OVER THE PARSE TREE.
     (binding [*c* nil *n* (cdaar phrase) *cut* nil] ;; CDR IS TO REMOVE "SAY"
-        (let [ansnode (PARSE2 '(NG ANSNAME) true)]                     ;; THE T SAYS NOT TO ATTACH THIS TO THE TREE
+        (let [ansnode (parse2 '(NG ANSNAME) true)]                     ;; THE T SAYS NOT TO ATTACH THIS TO THE TREE
             (when' ansnode => (ert "ANSNAME: FAILURE TO PARSE ANSWER NAME, BUT IF YOU ONLY EXPECT THE ANSWER TO BE AN ADJ, PROCEED THIS AND DON'T WORRY")
                 (set! *ansname* (concat ansnode *ansname*))                     ;; LEAVE NODE AROUND IT ACCESSABLE PLACE
                 (putprop! (car (semantics ansnode)) 'REFER= (cadr phrase))          ;; PUT THE REFERENT ON AS THE GUY GIVEN BY ANSWER
@@ -8738,11 +8753,11 @@ UP
         (and (term? *prev*) (move-ptw 'N 'NW '(= (word *ptw*) *prev*)) (cut *ptw*))
         (and (or (= *prev* 'BUT) (= (cadr *prev*) 'BUT)) (nextword? *n* 'NOT) (or (flushme) (GO LOSE2)) (fq! 'NEGBUT))
         (when-not (cond
-            (memq (car *rest*) '(ADJ NUM NOUN PREP VB ADV)) (PARSE3 (concat *rest* '(COMPONENT)) nil)
-            (memq (car *rest*) '(NG PREPG ADJG)) (and (not (cq 'OFOBJ)) (PARSE2 (concat *rest* '(COMPONENT)) nil))
+            (memq (car *rest*) '(ADJ NUM NOUN PREP VB ADV)) (parse3 (concat *rest* '(COMPONENT)) nil)
+            (memq (car *rest*) '(NG PREPG ADJG)) (and (not (cq 'OFOBJ)) (parse2 (concat *rest* '(COMPONENT)) nil))
             (= (car *rest*) 'CLAUSE)
                 (let [*lastsent* (if (isq *h* 'MAJOR) *h* *lastsent*) auxfe (meet (features *h*) '(DECLAR IMPER))]
-                    (and (PARSE2 (concat *rest* auxfe '(COMPONENT)) nil) (or (not auxfe) (f! (car auxfe))) (setr *c* 'TIME (getr *h* 'TIME)))))
+                    (and (parse2 (concat *rest* auxfe '(COMPONENT)) nil) (or (not auxfe) (f! (car auxfe))) (setr *c* 'TIME (getr *h* 'TIME)))))
             (GO LOSE2))
         (cut *end*)
         (cond (not (term? *prev*)) (GO RETSM)
