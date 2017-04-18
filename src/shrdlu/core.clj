@@ -140,7 +140,7 @@
 (defn- setr [node register value] (putprop! (car node) register value))
 (defn- getr [node register] (getprop (car node) register))
 
-(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 thass1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES thsel %sent DA DISP DP forget ert bug global-err ERTEX combination? findb from meet mod setdif sta union TAB uppercase-ify-char ETAOIN propname buildword undefined passing pev TELLCHOICE SHOWCHOICE SHOWTELL QUERY onoff request treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN smnewpropn SMCONJ SMCONJ2 SMVG smpron smvaux smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 smone3 smposs smposs2 smrelate SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
+(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 thass1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES thsel %sent DA DISP DP forget ert bug global-err ERTEX combination? findb from meet mod setdif sta union TAB uppercase-ify-char ETAOIN propname buildword undefined passing pev TELLCHOICE SHOWCHOICE SHOWTELL QUERY onoff request treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN smnewpropn smconj smconj2 SMVG smpron smvaux smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 smone3 smposs smposs2 smrelate SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX mapbland mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
 
 #_(ns shrdlu.plnr)
 
@@ -5248,7 +5248,7 @@
                 (let [common (getprop 'VB 'ELIM)]
                     (MAP #(SETQ common (meet common (features %))) *h*)
                     (feset *c* (union common (features *c*)))))
-        (| (SMCONJ) RETURN (CONJOINß SMCONJ)))             ;; THEN MARK AS A LIST
+        (| (smconj *h*) RETURN (CONJOINß)))             ;; THEN MARK AS A LIST
 
 (defn- doublequoter [] (apply-grammar 'PARSEQUOTED))
 
@@ -6481,36 +6481,27 @@
 
 (defn- smnewpropn [] (smset (list (newcopy 'NAME-OSS))))
 
-(§ defn- SMCONJ []
-    ;; FOR ALL CONJOINED THINGS -- IT CURRENTLY ONLY HANDLES THINGS
-    ;; WHICH HAVE AN OSS OR RSS STRUCTURE AS THEIR SEMANTICS.  THIS
-    ;; DOES NOT INCLUDE SINGLE WORDS OF MOST TYPES.  IT USES RECURSION.
-    (let [%SM nil] (SMCONJ2 nil *h*) (smset %SM)))
+(defn- smconj [node]
+    ;; FOR ALL CONJOINED THINGS -- IT CURRENTLY ONLY HANDLES THINGS WHICH HAVE AN OSS OR RSS STRUCTURE AS THEIR SEMANTICS.
+    ;; THIS DOES NOT INCLUDE SINGLE WORDS OF MOST TYPES.  IT USES RECURSION.
+    (smset (smconj2 nil nil node)))
 
-(§ defn- SMCONJ2 [INTERPLIST restlist]
-    ;; INTERPLIST IS THE LIST OF INTERPRETATIONS FOR THE CONJUNCTS
-    ;; HANDLED SO FAR -- THIS FUNCTION WILL BE CALLED ONCE FOR EACH
-    ;; POSSIBLE COMBINATION.  THE MARKERS FOR THE CONJOINED
-    ;; STRUCTURE ARE THOSE OF THE FIRST CONJUNCT -- NEEDS MORE
-    ;; SOPHISTICATION.  RESTLIST IS THE REST OF NODES YET TO BE HANDLED.
-    (let [%X nil]
-        (when-not restlist
-            (RETURN (SETQ %SM
-                (cons (BUILD
-                        RSSNODE= (and (rss? INTERP) (gensym 'RSS))
-                        OSSNODE= (and (oss? INTERP) (gensym 'OSS))
-                        MARKERS= (markers? INTERP)
-                        SYSTEMS= (systems? INTERP)
-                        REL= (rel? INTERP)
-                        AND= (and (or (cq 'BUT) (cq 'AND)) INTERPLIST)
-                        OR= (and (or (cq 'OR) (cq 'NOR)) INTERPLIST))
-                    %SM))))
-        ;; WHEN THERE IS NO RESTLIST, WE HAVE LOOPED TO THE END OF THE LIST OF CONJUNCTS, AND THE RESULTING INTERPRETATION IS OK.
-        ;; THE MAPPING IS DOWN THE LIST OF INTERPRETATIONS FOR A SINGLE CONJUNCT WHILE THE RECURSION GETS US DOWN THE LIST OF CONJUNCTS.
-        ;; THUS WE GET EVERY POSSIBLE COMBINATION OF THE INTERPRETATIONS. -- ISN'T LISP SUPER-DUPER-WONDERFUL!
-        ;; NOTICE THAT INTERP IS GETTING PICKED UP AS A FREE VARIABLE BY SMCONJ2, EVEN THOUGH IT IS BOUND ONLY INSIDE A MAPCAR INSIDE SMCONJ2.
-        ;; THIS WORKS BECAUSE THE CLAUSE CONTAINING IT CAN NEVER GET CALLED EXCEPT BY RECURSION,
-        (dorun (map (lambda [INTERP] (SMCONJ2 (cons INTERP INTERPLIST) (cdr restlist))) (semantics restlist)))))
+(defn- smconj2 [i a l]
+    ;; A IS THE LIST OF INTERPRETATIONS FOR THE CONJUNCTS HANDLED SO FAR -- THIS FUNCTION WILL BE CALLED ONCE FOR EACH POSSIBLE COMBINATION.
+    ;; THE MARKERS FOR THE CONJOINED STRUCTURE ARE THOSE OF THE FIRST CONJUNCT -- NEEDS MORE SOPHISTICATION.
+    ;; L IS THE REST OF NODES YET TO BE HANDLED.
+    ;; WHEN THERE IS NO L, WE HAVE LOOPED TO THE END OF THE LIST OF CONJUNCTS, AND THE RESULTING INTERPRETATION IS OK.
+    ;; THE MAPPING IS DOWN THE LIST OF INTERPRETATIONS FOR A SINGLE CONJUNCT WHILE THE RECURSION GETS US DOWN THE LIST OF CONJUNCTS.
+    ;; THUS WE GET EVERY POSSIBLE COMBINATION OF THE INTERPRETATIONS. -- ISN'T LISP SUPER-DUPER-WONDERFUL!
+    (if l (doall (mapcat #(smconj2 % (cons % a) (cdr l)) (semantics l)))
+        (list (BUILD
+            RSSNODE= (when (rss? i) (gensym 'RSS))
+            OSSNODE= (when (oss? i) (gensym 'OSS))
+            MARKERS= (markers? i)
+            SYSTEMS= (systems? i)
+            REL= (rel? i)
+            AND= (when (or (cq 'BUT) (cq 'AND)) a)
+            OR= (when (or (cq 'OR) (cq 'NOR)) a)))))
 
 (§ defn- SMVG [] ;; CALLED INSIDE ANY VG
     (let [TSS (getr (MOVE-PT 'C 'U '(CLAUSE)) 'TIME) tense nil]
@@ -6531,7 +6522,7 @@
 
 (defn- smpron [node]
     (eval (semantics node))
-    (when (nil? *sm*)
+    (when-not *sm*
         (set! *global-message* (str "I DON'T KNOW WHAT \"" (from (firstword *h*) (wordafter *h*)) "\" REFERS TO")))
     *sm*)
 
@@ -6636,7 +6627,7 @@
                     (when (isq *pt* 'DEF)
                         (add-f-pt 'INDEF *pt*)
                         (remove-f-pt 'DEF *pt*)
-                        (dorun (map (lambda [INTERP] (putprop! INTERP 'DETERMINER= '((EXACTLY 1) INDEF nil))) (semantics *pt*))))
+                        (dorun (map #(putprop! % 'DETERMINER= '((EXACTLY 1) INDEF nil)) (semantics *pt*))))
                     (RETURN *sm*))
             (or (MOVE-PT 'C 'U '(BOUND) 'U) (MOVE-PT 'C 'U '(and (isq *pt* 'CLAUSE) (isq *pt* 'COMPONENT)) 'U 'DLC))
                 (do (SMIT2 (getr *pt* 'OBJ2) 0)
@@ -6696,7 +6687,7 @@
     ;; SINCE THE OBJECT OF THE "OF" MUST BE DEFINITE (SYNTACTICALLY) AND HAS ALREADY BEEN PROCESSED,
     ;; THE PLANNER CODE BUILT IS JUST A THAMONG EXPRESSION OF THE LIST
     ;; OF POSSIBLE REFERENTS OF THE "OF" OBJECT.
-    (smset (MAPBLAND
+    (smset (mapbland
         (lambda [OFOSS]
             (BUILD
                 OSSNODE= (gensym 'OSS)
@@ -6782,7 +6773,7 @@
         (getr *c* 'HEAD)
         discourse?
         (set! *backref* (cons (car *c*) *backref*)))
-    (smset (MAPBLAND #'SMNG3 *sm*)))
+    (smset (mapbland #'SMNG3 *sm*)))
 
 (§ defn- SMNG3 [oss]
     ;; TAKES AN OSS AS ARGUMENT AND TRIES TO FIND ITS REFERENCE IF THE NOUN GROUP IS DEFINITE.
@@ -7299,8 +7290,8 @@
     ;; VALUE:
     ;;  TAILORED FUNCTION
     (if (nil? l) (cons (eval fun) %XL)
-        (list 'MAPBLAND
-            (list 'FUNCTION (list 'LAMBDA
+        (list 'mapbland
+            (list 'lambda
                 ;; %X IS USED TO STORE THE VARIABLE NAME WHICH IT GETS FROM (GENSYM)
                 ;; %XL IS USED TO SAVE A LIST OF ALL OF THE VARIABLE NAMES SO FAR SO
                 ;; THAT THEY CAN BE GIVEN TO THE FUNCTION AT THE END (CONS %X NIL).
@@ -7309,10 +7300,10 @@
                 ;; THE RESULT OF THE LAST PAIR THAT IT PROCESSES.  A RUSE. PUTS (NIL)
                 ;; IN PLACE OF NIL AS A LIST TO PREVENT MAPBLAND FROM QUITTNG.
                 (list (SETQ %X (gensym) %XL (concat %XL (cons %X nil)) %X %X))
-                (ITERATEX fun (cdr l))))
+                (ITERATEX fun (cdr l)))
             (or (car l) '(nil)))))
 
-(§ defn- MAPBLAND [fun l]
+(defn- mapbland [fun l]
     ;; THIS IS THE INSTAMATIC CAMERA FUNCTION.  NO MATTER WHAT YOU PUT INTO THE FUNCTION,
     ;; IT AUTOMATICALLY ADJUSTS INTERNALLY TO THE AVAILABLE LIGHT SO THAT WHAT COMES OUT
     ;; THE END ALWAYS LOOKS THE SAME -- ONE BIG NIL-LESS LIST OF ALL THE APPLICATIONS OF
@@ -7325,9 +7316,9 @@
     ;;     IF (FUN L) IS AN ATOM, THEN A LIST OF ATOMS.
     ;;     IF (FUN L) IS A LIST, THEN ALL THE LISTS APPENDED, THAT IS A LIST OF ATOMS.
     ;;     IF (FUN L) IS NIL, THEN ALL TRACE DISAPPEARS (SAVE FOR SIDE-EFFECTS).
-    (loop [ANS nil l (if (nil? l) '(nil) l)]
-        (let [x (fun (car l)) ANS (cond (nil? x) ANS (term? x) (concat ANS (cons x nil)) :else (concat ANS x)) l (cdr l)]
-            (if l (recur ANS l) ANS))))
+    (loop [a nil l (if (nil? l) '(nil) l)]
+        (let [x (fun (car l)) a (cond (nil? x) a (term? x) (concat a (cons x nil)) :else (concat a x)) l (cdr l)]
+            (if l (recur a l) a))))
 
 (defn- mapc2 [fun l]
     ;; MAPPING FUNCTION FOR GOING 2 AT A TIME THROUGH A LIST.
@@ -7928,7 +7919,7 @@
                     (if (and *ambig* REDEDUCE (not (cq 'DECLAR)))
                         (cons (list 'thval2 nil (list 'plnr-junkify (list 'plnrcode? (list 'quote RSS)))) ACTION)
                         ACTION)
-                    (and (rel? RSS) (not (cq 'DECLAR)) (list (list 'putprop! (quotify (rel? RSS)) (quotify 'REFER=) (quotify ANS)))))))
+                    (and (rel? RSS) (not (cq 'DECLAR)) (list (list 'putprop! (quotify (rel? RSS)) (quotify 'REFER=) (quotify ANS)))))))
 
 (§ defn- ANSCOMMAND [RSS]
     ;; ANSCOMMAND RESPONDS TO IMPERATIVES.
@@ -8008,7 +7999,7 @@
             (terpri)
             (GO READ))
         (SETQ POSSIBILITIES (nth POSSIBILITIES (dec xx)))
-        (MAPBLAND (lambda [ANS]
+        (mapbland (lambda [ANS]
             (SETQ xx (parse-assoc (caar AMB) (ambiguities? (ansrss? ANS))))
             (when (or (not xx) (= xx POSSIBILITIES)) ANS))
         anslist)))
@@ -8563,7 +8554,7 @@ GO  (let [x l]
     (binding [*ans2* ans2']
         (cond
             (refer? oss) (atomify (refer? oss))
-            (and? oss) (MAPBLAND #(let [_ (findchoose % x *ans2*)] (set! *ans2* (concat _ *ans2*)) _) (and? oss))
+            (and? oss) (mapbland #(let [_ (findchoose % x *ans2*)] (set! *ans2* (concat _ *ans2*)) _) (and? oss))
             (or? oss) (loop-when [a (or? oss)] a (or (findchoose (car a) x *ans2*) (recur (cdr a))))
             :else
                 (let [bind- #(let [_ (reverse %)] (when (term? (variable? oss)) (putprop! (variable? oss) 'BIND _)) (atomify _))
@@ -9710,7 +9701,7 @@ RETSM
         (and (> (count *h*) 2) (fq! 'LIST))
         (cond (or (cq 'NG) (cq 'NOUN)) (if (cq 'AND) (fq! 'NPL) (do (MOVE-PT 'H) (trnsf 'NPL 'NS 'MASS 'NFS)))
             (cq 'VB) (let [common (getprop 'VB 'ELIM)] (MAP #(SETQ common (meet common (features %))) *h*) (feset *c* (union common (features *c*)))))
-        (if (SMCONJ) (GO RETURN) (GO FAIL (m! 'CONJOINß)))
+        (if (smconj *h*) (GO RETURN) (GO FAIL (m! 'CONJOINß)))
 FAIL
         (set! *mes* *me*)
         (set! *n* (or (wordafter *re*) *nb*))
