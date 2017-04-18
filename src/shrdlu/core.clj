@@ -1907,41 +1907,39 @@
                                     'RANDOM (list (half (- (+ (caar v) (caadr v)) (car size))) (half (- (+ (cadar v) (cadadr v)) (cadr size))) level)
                                     'PACK (list (caar v) (cadar v) level))))))))))
 
-(defn- grow [loc _min _max obj]
+(defn- grow [[loc1 loc2 loc3] [min1 min2] [max1 max2] obj]
     (let [obj (listify obj) m (atom {})]
         (when-not (or
-                (neg? (caar (swap! m assoc :xl (list (list (- (car loc) (car _min)) nil)))))
-                (neg? (caar (swap! m assoc :xh (list (list (- (car _max) (car loc)) nil)))))
-                (neg? (caar (swap! m assoc :yl (list (list (- (cadr loc) (cadr _min)) nil)))))
-                (neg? (caar (swap! m assoc :yh (list (list (- (cadr _max) (cadr loc)) nil)))))
-                (nil? (ERRSET (dorun (map (lambda [a]
-                        (when (and (not (memq (car a) obj)) (< (caadr a) (car _max)) (< (cadadr a) (cadr _max)))
-                            (let-when [x (+ (caadr a) (caaddr a))] (< (car _min) x)
-                                (let-when [y (+ (cadadr a) (cadr (caddr a)))] (< (cadr _min) y)
-                                    (when (< (caddr loc) (+ (caddr (cadr a)) (caddr (caddr a))))
-                                        (cond
-                                            (< (car loc) (caadr a)) (swap! m update :xh #(order (list (- (caadr a) (car loc)) (car a)) %))
-                                            (< x (car loc))         (swap! m update :xl #(order (list (- (car loc) x) (car a)) %))
-                                            :else                   (swap! m update :xo #(cons (car a) %)))
-                                        (cond
-                                            (< (cadr loc) (cadadr a)) (swap! m update :yh #(order (list (- (cadadr a) (cadr loc)) (car a)) %))
-                                            (< y (cadr loc))          (swap! m update :yl #(order (list (- (cadr loc) y) (car a)) %))
-                                            (memq (car a) (:xo @m)) (ERR nil)
-                                            :else                     (swap! m update :yo #(cons (car a) %)))
-                                        nil)))))
-                        ATABLE)))))
+                (neg? (let [n (- loc1 min1)] (swap! m assoc :xl [[n nil]]) n))
+                (neg? (let [n (- max1 loc1)] (swap! m assoc :xh [[n nil]]) n))
+                (neg? (let [n (- loc2 min2)] (swap! m assoc :yl [[n nil]]) n))
+                (neg? (let [n (- max2 loc2)] (swap! m assoc :yh [[n nil]]) n))
+                (not-every? nil? (map (lambda [a]
+                        (when (and (not (memq (car a) obj)) (< (caadr a) max1) (< (cadadr a) max2))
+                            (let-when [x (+ (caadr a) (caaddr a))] (< min1 x)
+                                (let-when [y (+ (cadadr a) (cadr (caddr a)))] (< min2 y)
+                                    (when (< loc3 (+ (caddr (cadr a)) (caddr (caddr a))))
+                                        (let [_ (cond
+                                                    (< loc1 (caadr a))      (swap! m update :xh #(order [(- (caadr a) loc1) (car a)] %))
+                                                    (< x loc1)              (swap! m update :xl #(order [(- loc1 x) (car a)] %))
+                                                    :else                   (swap! m update :xo #(cons (car a) %)))
+                                              ? (cond
+                                                    (< loc2 (cadadr a))     (swap! m update :yh #(order [(- (cadadr a) loc2) (car a)] %))
+                                                    (< y loc2)              (swap! m update :yl #(order [(- loc2 y) (car a)] %))
+                                                    (memq (car a) (:xo @m)) nil
+                                                    :else                   (swap! m update :yo #(cons (car a) %)))]
+                                            (when-not ? :abort)))))))
+                        ATABLE)))
             (loop []
                 (let [g (min (caar (:xl @m)) (caar (:xh @m)) (caar (:yl @m)) (caar (:yh @m)))]
                     (if (== g 1024)
-                        (list
-                            (list (- (car loc) (cadar (:xl @m))) (- (cadr loc) (cadar (:yl @m))))
-                            (list (+ (car loc) (cadar (:xh @m))) (+ (cadr loc) (cadar (:yh @m)))))
-                        (do (dorun (map (lambda [y z w]
-                                (let-when [x (get @m w)] (<= (caar x) g)
-                                    (if (and (cadar x) (not (memq (cadar x) (get @m y))))
-                                        (swap! m assoc z (cons (cadar x) (get @m z)) w (cdr x))
-                                        (RPLACA x (list 2000 (caar x))))
-                                    nil))
+                        [[(- loc1 (cadar (:xl @m))) (- loc2 (cadar (:yl @m)))]
+                         [(+ loc1 (cadar (:xh @m))) (+ loc2 (cadar (:yh @m)))]]
+                        (do (dorun (map (lambda [x y z]
+                                (let-when [z' (get @m z)] (<= (caar z') g)
+                                    (if (and (cadar z') (not (memq (cadar z') (get @m x))))
+                                        (swap! m assoc y (cons (cadar z') (get @m y)) z (cdr z'))
+                                        (swap! m assoc z (cons [2000 (caar z')] (cdr z'))))))
                                 [:yo :yo :xo :xo]
                                 [:xo :xo :yo :yo]
                                 [:xl :xh :yl :yh]))
