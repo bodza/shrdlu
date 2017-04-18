@@ -82,7 +82,8 @@
     ([s] `(def ~(vary-meta s assoc :dynamic true :private true)))
     ([s i] `(def ~(vary-meta s assoc :dynamic true :private true) ~i)))
 
-(dynamic- *thtime*)
+(dynamic- *thtime* 0)
+
 (dynamic- *tree*)
 (dynamic- *vars*)
 (dynamic- *o'vars*)
@@ -121,14 +122,9 @@
 (dynamic- *sm*)
 (dynamic- *re*)
 (dynamic- *c*)
-(dynamic- *cut*)
 
 (dynamic- *parent*)
 (dynamic- *special*)
-
-(dynamic- *nn*)
-
-(dynamic- *tmp*)
 
 (dynamic- *position-of-prt*)
 (dynamic- *mvb*)
@@ -137,8 +133,6 @@
 (dynamic- *position-of-ptw*)
 (dynamic- *tense*)
 (dynamic- *prev*)
-
-(dynamic- *labeltrace*)
 
 (dynamic- *num*)
 (dynamic- *word-being*)
@@ -150,8 +144,7 @@
 (dynamic- *smcomp*)
 (dynamic- *rellist*)
 
-(dynamic- *grasplist*)
-(dynamic- *eventlist*)
+(dynamic- *grasplist* nil)
 
 (dynamic- *handat* [32 0 0])
 
@@ -189,7 +182,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo1 thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thip thmatch2 thcheck thunion thmatch1 thmatchlist thmung'f thmung't thnofail thnohash thnot thor thor2 thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm1 thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mumble object plnr-junkify plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thadd* thadd thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo1 thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thip thmatch2 thcheck thunion thmatch1 thmatchlist thmung'f thmung't thnofail thnohash thnot thor thor2 thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm1 thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj smconj2 smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit smit2 smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mumble object plnr-junkify plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -205,6 +198,9 @@
     (dorun (map eval a))
     a)
 
+(defn- thadd* [& a]
+    (doseq [% a] (thadd % nil)))
+
 (dynamic- *thtt*)
 (dynamic- *thnf*)
 (dynamic- *thwh*)
@@ -212,9 +208,7 @@
 (dynamic- *thttl*)
 (dynamic- *thfst*)
 (dynamic- *thfstp*)
-(dynamic- *thal*)
 (dynamic- *thon*)
-(dynamic- *thbs*)
 
 (defn- thadd [thtt' thpl]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
@@ -792,6 +786,8 @@
                 ;; JUST EVAL EVERYTHING ON THML, THAT IS A LIST OF EXPRESSIONS, TO UNASSIGN THE VARIABLES.
                 (do (dorun (map eval @a'undo)) false)))))
 
+(dynamic- *thal*)
+
 (defn- thmatchlist [thtb thwh]
     ;; THTB IS A PATTERN WHICH EVENTUALLY IS TO BE MATCHED.
     ;; THWH SAYS IF IT IS AN ASSERTION, CONSEQUENT THEOREM, ETC.
@@ -917,24 +913,25 @@
 
 (defn- thpure [x] (not-any? thvar? x))
 
-(defn- thputprop [ato ind val]
-    (thpush! *tree* ['THMUNG [(list 'putprop! (quotify ato) (quotify ind) (quotify (getprop ato ind)))]])
-    (putprop! ato ind val))
+(defn- thputprop [x y z]
+    (thpush! *tree* ['THMUNG [(list 'putprop! (quotify x) (quotify y) (quotify (getprop x y)))]])
+    (putprop! x y z))
+
+(defn- thremprop [x y]
+    (thpush! *tree* ['THMUNG [(list 'putprop! (quotify x) (quotify y) (quotify (getprop x y)))]])
+    (remprop! x y))
+
+(defn- thrembind'f [] (set! *vars* (cadar *tree*)) (thpop! *tree*) nil)
+
+(defn- thrembind't [] (set! *vars* (cadar *tree*)) (thpop! *tree*) *value*)
 
 (defn- assq- [x a ?]
     ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR.
     (loop [a a]
         (if (= (if ? (cadr a) (caadr a)) x) a (let [a (cdr a)] (when (cdr a) (recur a))))))
 
-(defn- threm1 [x]
+(defn- threm1 [x t i n b]
     ;; THREM1 IS ROUGHLY THE SAME AS THIP, BUT FOR REMOVING ASSERTIONS FROM THE DATABASE,
-    ;; HENCE ALL COMMENTS WILL BE GUIDES TO THE CORRESPONDENCE BETWEEN THREM1 AND THIP.
-    ;; THB = THI IN THIP.
-    (set! *thnf* (inc *thnf*))
-    ;; THA AND THA1 DO THE WORK OF THT1 IN THIP.
-    ;; THA1 = THT2,
-    ;; THA3 = THT3,
-    ;; THA4, THA5, THONE, AND THPC ARE NEW.
     (let-when [[x _]
             (cond (and (term? x) (not (= x '?)) (not (number? x))) [x nil]
                 (or (= x '?) (thvar? x)) (if *thfst* [nil 'THVRB] ['THVRB nil])
@@ -943,66 +940,46 @@
         ;; ALL THE REST SERVES THE SAME PURPOSE AS THE SECOND COND IN THIP.
         ;; IT WAS ORIGINALLY WRITTEN AS A SINGLE COND, BUT THE COMPILER BARFED ON IT,
         ;; SO IT WAS BROKEN UP INTO BITE SIZE PIECES.
-        (let-when [a1 (getprop x *thwh*)] a1
+        (let-when [a1 (getprop x t)] a1
             (if (= a1 'thnohash) 'THBQF
-                (let-when [a2 (assq- *thnf* a1 nil)] a2
-                    (let-when [a3 (assq- *thal* (cadr a2) nil)] a3
-                        (let-when [? (not= *thwh* :thassertion) a4 (cadr a3)
-                              a5 (if (or *thfst* *thfstp*) (assq- *thbs* (cdr a4) ?) (assq- (if ? *thon* (car *thon*)) (cdr a4) ?))] a5
-                            (let [thone (cadr a5)]
+                (let-when [a2 (assq- i a1 nil)] a2
+                    (let-when [a3 (assq- n (cadr a2) nil)] a3
+                        (let-when [? (not= t :thassertion) a4 (cadr a3)
+                              a5 (if (or *thfst* *thfstp*) (assq- b (cdr a4) ?) (assq- (if ? *thon* (car *thon*)) (cdr a4) ?))] a5
+                            (let [a6 (cadr a5)]
                                 (RPLAC (cdr a5) (cddr a5))
                                 (if-not (== (cadr a4) 1)
                                     (do (RPLAC (cadr a4) (dec (cadr a4)))
-                                        thone)
+                                        a6)
                                     (do (RPLAC (cdr a3) (cddr a3))
                                         (when-not (cdadr a2)
                                             (RPLAC (cdr a2) (cddr a2))
                                             (when-not (cdr a1)
-                                                (remprop! x *thwh*)))
-                                        thone))))))))))
+                                                (remprop! x t)))
+                                        a6))))))))))
 
-(defn- thrembind'f [] (set! *vars* (cadar *tree*)) (thpop! *tree*) nil)
-
-(defn- thrembind't [] (set! *vars* (cadar *tree*)) (thpop! *tree*) *value*)
-
-(defn- thremove [thb]
+(defn- thremove [b]
     ;; THREMOVE IS ANALOGOUS TO THADD EXCEPT IT REMOVES RATHER THAN ADDS.
-    ;; AS WITH THREM1, ALL COMMENTS WILL EXPLICATE THE ANALOGY, SO ONE SHOULD FIRST BECOME FAMILIAR WITH THADD.
-    ;; THB = THTT IN THADD.
-    ;; THREMOVE TAKES ONLY ONE ARG SINCE THE PROPERTY LIST FOR THE ASSERTION PLAYS NO ROLE IN REMOVING THE ASSERTION.
-    ;; THB1 AND THON TOGETHER SHARE THE WORK OF THT1 AND THCK IN THADD.  THAL = THLAS.  THBS = THTTL.
-    (binding [*thwh* nil *thnf* nil *thal* nil *thon* nil *thbs* nil *thfst* nil *thfstp* nil]
-        ;; THE STRUCTURE OF THE TWO PROGRAMS IS VIRTUALLY IDENTICAL.
-        (let [a (if (term? thb)
-                    (let [x (getprop thb :theorem)]
-                        (set! *thbs* thb)
-                        (set! *thwh* (car x))
-                        (caddr x))
-                    (do (set! *thwh* :thassertion)
-                        (set! *thbs* thb)))]
-            (set! *thnf* 0)
-            (set! *thal* (count a))
+    ;; IT TAKES ONLY ONE ARG SINCE THE PROPERTY LIST FOR THE ASSERTION PLAYS NO ROLE IN REMOVING THE ASSERTION.
+    (binding [*i* nil *thon* nil *thfst* nil *thfstp* nil]
+        (let [[t a] (if (term? b) (let [x (getprop b :theorem)] [(car x) (caddr x)]) [:thassertion b]) n (count a)]
+            (set! *i* 0)
             (set! *thfst* true)
             (loop [a' nil a a]
-                (cond (nil? a)
-                        (do (set! *thnf* 0)
-                            (set! *thfst* nil)
-                            (set! *thfstp* true)
-                            (recur nil a'))
-                    (nil? (set! *thon* (threm1 (car a))))
-                        nil
-                    (memq *thon* ['THBQF 'THVRB])
-                        (recur (concat a' (list (when (= *thon* 'THVRB) (car a)))) (cdr a))
-                    :else
-                        (do (set! *thfst* nil)
-                            (dorun (map threm1 (cdr a)))
-                            (set! *thnf* 0)
-                            (dorun (map threm1 a'))
-                            *thon*))))))
-
-(defn- thremprop [ato ind]
-    (thpush! *tree* ['THMUNG [(list 'putprop! (quotify ato) (quotify ind) (quotify (getprop ato ind)))]])
-    (remprop! ato ind))
+                (if (nil? a)
+                    (do (set! *i* 0) (set! *thfst* nil) (set! *thfstp* true) (recur nil a'))
+                    (do (set! *thon* (do (set! *i* (inc *i*)) (threm1 (car a) t *i* n b)))
+                        (cond
+                            (nil? *thon*)
+                                nil
+                            (memq *thon* ['THBQF 'THVRB])
+                                (recur (concat a' (list (when (= *thon* 'THVRB) (car a)))) (cdr a))
+                            :else
+                                (do (set! *thfst* nil)
+                                    (doseq [x (cdr a)] (set! *i* (inc *i*)) (threm1 x t *i* n b))
+                                    (set! *i* 0)
+                                    (doseq [x a'] (set! *i* (inc *i*)) (threm1 x t *i* n b))
+                                    *thon*))))))))
 
 (defq- threstrict [& a]
     (let [x (thgal (car a) *vars*)]
@@ -1393,7 +1370,7 @@
         '(thgoal (!MOVEHAND2 ($? y)) [:thnodb] [:thuse TC-MOVEHAND2])
         '(thassert (!GRASPING ($? x)))
         '(memorend ($? ev) '(!GRASP ($? ev) ($? x)))
-        '(thsetq *grasplist* (cons (list *thtime* ($? x)) *grasplist*))
+        '(thsetq *grasplist* (cons [*thtime* ($? x)] *grasplist*))
         '(thor (GRASP ($? x)) (and (UNGRASP) nil))])
 
 (putprop! 'TC-LOC :theorem
@@ -1435,7 +1412,7 @@
                 (thassert (!AT ($? x) ($? z)) [:thuse TA-AT TA-SUPP TA-CONTAIN])
                 (thgoal (!MOVEHAND2 ($? y)) [:thnodb] [:thuse TC-MOVEHAND2])
                 (thputprop ($? x) :history
-                    (cons (list *thtime* ($? z) (cadar (or (thval '(thgoal (!SUPPORT ($? y) ($? x))) (cons ['y :thunassigned] *vars*)) [[nil 'ßHAND]])) nil)
+                    (cons [*thtime* ($? z) (cadar (or (thval '(thgoal (!SUPPORT ($? y) ($? x))) (cons ['y :thunassigned] *vars*)) [[nil 'ßHAND]])) nil]
                         (getprop ($? x) :history))))
             ((thgoal (!MOVEHAND2 ($? y)) [:thnodb] [:thuse TC-MOVEHAND2])))])
 
@@ -1842,8 +1819,7 @@
     '(((thgoal (!CLEARTOP ($? *))) (thnot (thgoal (!IS ($? *) !PYRAMID))))
      ((thnot (thgoal (!IS ($? *) !PYRAMID))))))
 
-(dorun (map #(thadd % nil)
-    ['TC-CALL 'TC-CLEARTOP 'TC-GET-RID-OF 'TC-GRASP 'TC-NAME 'TC-NOTICE 'TC-PACK 'TC-PICKUP 'TC-PUTIN 'TC-PUTON 'TC-RAISEHAND 'TC-STACKUP 'TC-UNGRASP 'TC-ON 'TC-PHYSOB]))
+(§ thadd* 'TC-CALL 'TC-CLEARTOP 'TC-GET-RID-OF 'TC-GRASP 'TC-NAME 'TC-NOTICE 'TC-PACK 'TC-PICKUP 'TC-PUTIN 'TC-PUTON 'TC-RAISEHAND 'TC-STACKUP 'TC-UNGRASP 'TC-ON 'TC-PHYSOB)
 
 #_(ns shrdlu.blockl)
 
@@ -2286,6 +2262,9 @@
 (defn- parent [node] (getr node :parent))
 (defn- root [node] (or (getr node :root) (word node)))
 
+(dynamic- *cut*)
+(dynamic- *nn*)
+
 (defn- cut [a]
     (loop [b *n*]
         (cond
@@ -2439,16 +2418,18 @@
 ;;
 ;; #############################################################
 
+(def- labeltrace nil)
+
 (defn- passing [x]
     (cond
-        (term? *labeltrace*) (when *labeltrace* (terpri) (print "PASSING" x) true)
-        (memq x *labeltrace*) (do (terpri) (print "PASSING" x) true)))
+        (term? labeltrace) (when labeltrace (terpri) (print "PASSING" x) true)
+        (memq x labeltrace) (do (terpri) (print "PASSING" x) true)))
 
 (defn- spread1 [e]
     (cond (term? e)
-            (list (quotify e) (list 'when '*labeltrace* (list 'passing (quotify e))))
+            (list (quotify e) (list 'when 'labeltrace (list 'passing (quotify e))))
         (= (car e) 'quote)
-            (list (quotify (cadr e)) (list 'when '*labeltrace* (list 'passing (quotify (cadr e)))))
+            (list (quotify (cadr e)) (list 'when 'labeltrace (list 'passing (quotify (cadr e)))))
         (= (car e) '|)
             (let [predicate (cadr e) t1 (caddr e) t2 (cadddr e) t3 (caddddr e)
                   go- #(if-not (string? %) (list 'GO %) (list 'GO ''FAIL (list 'm! %)))
@@ -2460,6 +2441,8 @@
                     (and (nil? t1) (nil? t2) t3) (list 'when (list 'and predicate (list 'not '*nn*)) (go- t3))
                     (and (nil? t1) (nil? t2) (nil? t3)) (bug! 'grammar "I-AM-A-TAG"))))
         :else (list e)))
+
+(dynamic- *tmp*)
 
 (defn- grammar [a]
     (list 'defn- (car a) '[]
@@ -7271,93 +7254,92 @@
     ['ßTABLE '!DISPLAY '!TABLE [0 0 0] [512 512 0] 'BLACK]
     ['ßBOX '!DISPLAY '!BOX [384 384 0] [254 254 192] 'WHITE]])
 
-(§ dorun (map #(thadd % nil) [
-    '(!IS ßB1 !BLOCK)
-    '(!IS ßB2 !PYRAMID)
-    '(!IS ßB3 !BLOCK)
-    '(!IS ßB4 !PYRAMID)
-    '(!IS ßB5 !PYRAMID)
-    '(!IS ßB6 !BLOCK)
-    '(!IS ßB7 !BLOCK)
-    '(!IS ßB10 !BLOCK)
+(§ thadd*
+    ['!IS 'ßB1 '!BLOCK]
+    ['!IS 'ßB2 '!PYRAMID]
+    ['!IS 'ßB3 '!BLOCK]
+    ['!IS 'ßB4 '!PYRAMID]
+    ['!IS 'ßB5 '!PYRAMID]
+    ['!IS 'ßB6 '!BLOCK]
+    ['!IS 'ßB7 '!BLOCK]
+    ['!IS 'ßB10 '!BLOCK]
 
-    '(!IS !RED !COLOR)
-    '(!IS !BLUE !COLOR)
-    '(!IS !GREEN !COLOR)
-    '(!IS !WHITE !COLOR)
-    '(!IS !BLACK !COLOR)
+    ['!IS '!RED '!COLOR]
+    ['!IS '!BLUE '!COLOR]
+    ['!IS '!GREEN '!COLOR]
+    ['!IS '!WHITE '!COLOR]
+    ['!IS '!BLACK '!COLOR]
 
-    '(!IS !RECTANGULAR !SHAPE)
-    '(!IS !ROUND !SHAPE)
-    '(!IS !POINTED !SHAPE)
+    ['!IS '!RECTANGULAR '!SHAPE]
+    ['!IS '!ROUND '!SHAPE]
+    ['!IS '!POINTED '!SHAPE]
 
-    '(!IS ßSHRDLU !ROBOT)
-    '(!IS ßFRIEND !PERSON)
-    '(!IS ßHAND !HAND)
+    ['!IS 'ßSHRDLU '!ROBOT]
+    ['!IS 'ßFRIEND '!PERSON]
+    ['!IS 'ßHAND '!HAND]
 
-    '(!AT ßB1 [64 64 0])
-    '(!AT ßB2 [64 64 64])
-    '(!AT ßB3 [256 0 0])
-    '(!AT ßB4 [416 416 1])
-    '(!AT ßB5 [320 64 128])
-    '(!AT ßB6 [0 192 0])
-    '(!AT ßB7 [0 160 192])
-    '(!AT ßB10 [192 416 0])
+    ['!AT 'ßB1 [64 64 0]]
+    ['!AT 'ßB2 [64 64 64]]
+    ['!AT 'ßB3 [256 0 0]]
+    ['!AT 'ßB4 [416 416 1]]
+    ['!AT 'ßB5 [320 64 128]]
+    ['!AT 'ßB6 [0 192 0]]
+    ['!AT 'ßB7 [0 160 192]]
+    ['!AT 'ßB10 [192 416 0]]
 
-    '(!SUPPORT ßB1 ßB2)
-    '(!SUPPORT ßB3 ßB5)
-    '(!SUPPORT ßB6 ßB7)
+    ['!SUPPORT 'ßB1 'ßB2]
+    ['!SUPPORT 'ßB3 'ßB5]
+    ['!SUPPORT 'ßB6 'ßB7]
 
-    '(!CLEARTOP ßB2)
-    '(!CLEARTOP ßB4)
-    '(!CLEARTOP ßB5)
-    '(!CLEARTOP ßB7)
-    '(!CLEARTOP ßB10)
+    ['!CLEARTOP 'ßB2]
+    ['!CLEARTOP 'ßB4]
+    ['!CLEARTOP 'ßB5]
+    ['!CLEARTOP 'ßB7]
+    ['!CLEARTOP 'ßB10]
 
-    '(!MANIP ßB1)
-    '(!MANIP ßB2)
-    '(!MANIP ßB3)
-    '(!MANIP ßB4)
-    '(!MANIP ßB5)
-    '(!MANIP ßB6)
-    '(!MANIP ßB7)
-    '(!MANIP ßB10)
+    ['!MANIP 'ßB1]
+    ['!MANIP 'ßB2]
+    ['!MANIP 'ßB3]
+    ['!MANIP 'ßB4]
+    ['!MANIP 'ßB5]
+    ['!MANIP 'ßB6]
+    ['!MANIP 'ßB7]
+    ['!MANIP 'ßB10]
 
-    '(!SUPPORT ßTABLE ßB1)
-    '(!SUPPORT ßTABLE ßB3)
-    '(!SUPPORT ßBOX ßB4)
-    '(!SUPPORT ßTABLE ßB10)
-    '(!SUPPORT ßTABLE ßB6)
-    '(!SUPPORT ßTABLE ßBOX)
+    ['!SUPPORT 'ßTABLE 'ßB1]
+    ['!SUPPORT 'ßTABLE 'ßB3]
+    ['!SUPPORT 'ßBOX 'ßB4]
+    ['!SUPPORT 'ßTABLE 'ßB10]
+    ['!SUPPORT 'ßTABLE 'ßB6]
+    ['!SUPPORT 'ßTABLE 'ßBOX]
 
-    '(!AT ßBOX [384 384 0])
-    '(!IS ßBOX !BOX)
-    '(!IS ßTABLE !TABLE)
-    '(!CONTAIN ßBOX ßB4)
+    ['!AT 'ßBOX [384 384 0]]
+    ['!IS 'ßBOX '!BOX]
+    ['!IS 'ßTABLE '!TABLE]
+    ['!CONTAIN 'ßBOX 'ßB4]
 
-    '(!SHAPE ßB1 !RECTANGULAR)
-    '(!SHAPE ßB3 !RECTANGULAR)
-    '(!SHAPE ßB2 !POINTED)
-    '(!SHAPE ßB4 !POINTED)
-    '(!SHAPE ßB5 !POINTED)
-    '(!SHAPE ßB6 !RECTANGULAR)
-    '(!SHAPE ßB7 !RECTANGULAR)
-    '(!SHAPE ßB10 !RECTANGULAR)
+    ['!SHAPE 'ßB1 '!RECTANGULAR]
+    ['!SHAPE 'ßB3 '!RECTANGULAR]
+    ['!SHAPE 'ßB2 '!POINTED]
+    ['!SHAPE 'ßB4 '!POINTED]
+    ['!SHAPE 'ßB5 '!POINTED]
+    ['!SHAPE 'ßB6 '!RECTANGULAR]
+    ['!SHAPE 'ßB7 '!RECTANGULAR]
+    ['!SHAPE 'ßB10 '!RECTANGULAR]
 
-    '(!color ßB1 !RED)
-    '(!color ßB2 !GREEN)
-    '(!color ßB3 !GREEN)
-    '(!color ßB4 !BLUE)
-    '(!color ßB5 !RED)
-    '(!color ßB6 !RED)
-    '(!color ßB7 !GREEN)
-    '(!color ßB10 !BLUE)
-    '(!color ßBOX !WHITE)
-    '(!color ßTABLE !BLACK)
+    ['!color 'ßB1 '!RED]
+    ['!color 'ßB2 '!GREEN]
+    ['!color 'ßB3 '!GREEN]
+    ['!color 'ßB4 '!BLUE]
+    ['!color 'ßB5 '!RED]
+    ['!color 'ßB6 '!RED]
+    ['!color 'ßB7 '!GREEN]
+    ['!color 'ßB10 '!BLUE]
+    ['!color 'ßBOX '!WHITE]
+    ['!color 'ßTABLE '!BLACK]
 
-    '(!CALL ßSHRDLU SHRDLU)
-    '(!CALL ßFRIEND YOU)
-]))
+    ['!CALL 'ßSHRDLU 'SHRDLU]
+    ['!CALL 'ßFRIEND 'YOU])
 
 (defn- showscene []
     (terpri)
@@ -7385,17 +7367,17 @@
 (putprop! 'EE :end 0)
 (putprop! 'EE :type '!START)
 
+(dynamic- *eventlist* '(EE))
+
+(§ thadd* ['!START 'EE 'ßDIALOG])
+
 (defn -main [& args]
     ;; LOAD '(PLNR SYSCOM MORPHO PROGMR GRAMAR DICTIO SMSPEC SMASS SMUTIL NEWANS BLOCKS DATA)
-    (binding [*grasplist* nil *eventlist* '(EE)
-              *thtime* 0 *tree* nil *vars* '((nil nil)) *o'vars* '((nil nil))
-              *oops* nil
+    (binding [*oops* nil
               *lastsentno* 0 *lastsent* nil *sentno* 1
               *sent* nil *punct* nil
-              *end* nil *both* nil *backref* nil *backref2* nil *ansname* nil *lastrel* nil *who* nil *pt* nil *ptw* nil *h* nil *n* nil *nb* nil *fe* nil *sm* nil *re* nil *mes* nil *c* nil *cut* nil
-              *labeltrace* nil]
+              *end* nil *both* nil *backref* nil *backref2* nil *ansname* nil *lastrel* nil *who* nil *pt* nil *ptw* nil *h* nil *n* nil *nb* nil *fe* nil *sm* nil *re* nil *mes* nil *c* nil *cut* nil]
 
-        (thadd '(!START EE ßDIALOG) nil)
         (dorun (map #(when (getprop (car %) :thassertion)
                 (putprop! (car %) :history (list (list 0 (cadr %) (cadar (thval '(thgoal (!SUPPORT ($? x) ($? y))) (list ['x :thunassigned] ['y (car %)])))))))
             ATABLE))
