@@ -66,7 +66,20 @@
 (defn- cdddar [l] (cdr (cddar l)))
 (defn- cddddr [l] (cdr (cdddr l)))
 
+(defn- caaddar [l] (car (caddar l)))
+(defn- caadddr [l] (car (cadddr l)))
+(defn- cadadar [l] (car (cdadar l)))
+(defn- cadaddr [l] (car (cdaddr l)))
+(defn- caddadr [l] (car (cddadr l)))
+(defn- cadddar [l] (car (cdddar l)))
 (defn- caddddr [l] (car (cddddr l)))
+(defn- cdaddar [l] (cdr (caddar l)))
+(defn- cdddadr [l] (cdr (cddadr l)))
+
+(defn- caaddaar [l] (caar (cddaar l)))
+(defn- caddaddr [l] (cadr (cdaddr l)))
+
+(defn- caaddadadr [l] (caaddr (cadadr l)))
 
 (defn- llast [l] (let [x (last l)] (when x (list x))))
 
@@ -171,7 +184,16 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd* thadd thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo1 thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thip thmatch2 thcheck thunion thmatch1 thmatch thmung'f thmung't thnofail thnohash thnot thor thor2 thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm1 thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thadd thadd* thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo1 thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thip thmatch2 thcheck thunion thmatch1 thmatch thmung'f thmung't thnofail thnohash thnot thor thor2 thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm1 thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+
+(putprop! 'EE :why :command)
+(putprop! 'EE :start 0)
+(putprop! 'EE :end 0)
+(putprop! 'EE :type '!START)
+
+(dynamic- *eventlist* '(EE))
+
+(thadd* ['!START 'EE 'ßDIALOG])
 
 #_(ns shrdlu.plnr)
 
@@ -187,22 +209,19 @@
     (dorun (map eval a))
     a)
 
-(defn- thadd* [& a]
-    (doseq [% a] (thadd %)))
-
 (defn- thip [x t i n f p b b']
     ;; THIP IS THE WORKHORSE FOR THADD.
     ;; THI IS AN ITEM FROM THE ASSERTION OR PATTERN OF THE THEOREM BEING ENTERED.
     (let-when [[x _]
-            (cond (and (term? x) (not (= x '?)) (not (number? x))) [x nil]
+            (cond (and (term? x) (not (= x '?)) (not (number? x))) [x nil]
                 ;; SEE IF THI IS A VARIABLE.
                 ;; IF WE ARE DOING THIS FOR THE FIRST TIME, DON'T CONSIDER VARIABLES.
                 ;; FOR EXPLANATION WHY, SEE THADD.
-                (or (= x '?) (thvar? x)) (if f [nil 'THVRB] ['THVRB nil])
+                (or (= x '?) (thvar? x)) (if f [nil 'thvrb] ['thvrb nil])
                 ;; OTHERWISE THI IS SOMETHING WITH NO PROPERTY LIST LIKE A NUMBER, OR LIST.
                 ;; RETURNING THVRB TO THADD TELLS IT THAT EVERYTHING IS OK SO FAR,
                 ;; BUT NOTHING WAS DONE ON THIS ITEM.
-                :else [nil 'THVRB])
+                :else [nil 'thvrb])
     ] (nil? _) => _
         ;; THWH IS THE NAME OF THE PROPERTY TO LOOK UNDER ON THE ATOM.
         ;; IF THIS PROPERTY IS NOT THERE, THEN WE MUST PUT IT THERE.
@@ -210,11 +229,11 @@
         (let-when [a1 (getprop x t)] a1 => (do (putprop! x t [nil [i [n 1 b']]]) 'thok)
             ;; IF THE PROPERTY IS "THNOHASH", WE SHOULD NOT BOTHER TO INDEX UNDER THIS ATOM,
             ;; SO JUST RETURN TO THADD.
-            (if (= a1 'thnohash) 'THBQF
+            (if (= a1 'thnohash) 'thbqf
                 ;; LOOK ON THE PROPERTY LIST ENTRY TO SEE IF THERE IS A SUB-ENTRY FOR PATTERNS WITH THIS ATOM IN THE THNF'TH POSITION.
                 ;; IF NOT, HACK THE ENTRY SO THERE IS.
                 ;; AGAIN THIS IMPLIES THAT THE ASSERTEE HAS NEVER BEEN ASSERTED BEFORE.
-                (let-when [a2 (assq i (cdr a1))] a2 => (do (concat a1 [[i [n 1 b']]]) 'thok)
+                (let-when [a2 (assq i (cdr a1))] a2 => (do (putprop! x t (into a1 [[i [n 1 b']]])) 'thok)
                     ;; NOW LOOK WITHIN THE SUB-ENTRY FOR A SUB-SUB-ENTRY.
                     ;; I.E. THOSE PATTERNS WHICH ARE ALSO OF THE CORRECT TOTAL LENGTH.
                     ;; THLAS IS A VARIABLE FROM THADD WHICH GIVES THE LENGTH OF THE ASSERTEE.
@@ -234,14 +253,14 @@
 
 (defn- thadd [b]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE DATABASE.
-    ;; THTT = NAME OF THM OR ACTUAL ASSERTION.
+    ;; THTT = NAME OF THEOREM OR ACTUAL ASSERTION.
     ;; RETURNS NIL IF ALREADY THERE, ELSE RETURNS THTT.
     ;; IF THTT IS ATOMIC, WE ARE ASSERTING A THEOREM.
     (let [[t a b']
             (if (term? b)
                 (let-when [a (getprop b :theorem)] a => (bug! 'thadd "CAN'T THASSERT, NO THEOREM" b)
                     [(car a) (caddr a) b])
-                [:thassertion b (list b)])
+                [:thassertion b [b]])
           ;; THLAS IS THE NUMBER OF TOP LEVEL ITEMS.
           n (count a)]
         ;; THNF IS COUNTER SAYING WHICH ATOM WE ARE FILING UNDER.
@@ -265,7 +284,10 @@
                         (loop-when-recur [a a'      i 1]       a [(cdr a) (inc i)] (thip (car a) t i n nil p b b'))
                         b')
                 ;; OTHERWISE WE GO AROUND AGAIN, STILL LOOKING FOR A NON VARIABLE ITEM TO DO THE EQ CHECK.
-                o (recur (concat a' (list (when (= o 'THVRB) (car a)))) (cdr a) (inc i) f p))))))
+                o (recur (concat a' (list (when (= o 'thvrb) (car a)))) (cdr a) (inc i) f p))))))
+
+(defn- thadd* [& a]
+    (doseq [% a] (thadd %)))
 
 (defq- thamong [& a]
     ;; EXAMPLE - (THAMONG ($? X) (THFIND ... ))
@@ -748,7 +770,7 @@
                                     (recur l l1 l2 a i)))
                             ;; THVRB IS THE ATOM WHICH HAS THE BUCKET FOR VARIABLES.
                             ;; WE WILL NOW LOOK TO SEE IF THERE ARE ANY THEOREMS WHICH HAVE A VARIABLE IN THE CORRECT POSSITION.
-                            (let [a2 (getprop 'THVRB t)
+                            (let [a2 (getprop 'thvrb t)
                                   a2 (cond (not a2) '(0 0)
                                         :else (let [a2 (assq i (cdr a2))] (cond
                                         (not a2) '(0 0)
@@ -847,15 +869,15 @@
 (defn- threm1 [x t i n f p b o]
     ;; THREM1 IS ROUGHLY THE SAME AS THIP, BUT FOR REMOVING ASSERTIONS FROM THE DATABASE.
     (let-when [[x _]
-            (cond (and (term? x) (not (= x '?)) (not (number? x))) [x nil]
-                (or (= x '?) (thvar? x)) (if f [nil 'THVRB] ['THVRB nil])
-                :else [nil 'THVRB])
+            (cond (and (term? x) (not (= x '?)) (not (number? x))) [x nil]
+                (or (= x '?) (thvar? x)) (if f [nil 'thvrb] ['thvrb nil])
+                :else [nil 'thvrb])
     ] (nil? _) => _
         ;; ALL THE REST SERVES THE SAME PURPOSE AS THE SECOND COND IN THIP.
         ;; IT WAS ORIGINALLY WRITTEN AS A SINGLE COND, BUT THE COMPILER BARFED ON IT,
         ;; SO IT WAS BROKEN UP INTO BITE SIZE PIECES.
         (let-when [a1 (getprop x t)] a1
-            (if (= a1 'thnohash) 'THBQF
+            (if (= a1 'thnohash) 'thbqf
                 (let-when [a2 (assq- i a1 nil)] a2
                     (let-when [a3 (assq- n (cadr a2) nil)] a3
                         (let-when [? (not= t :thassertion) a4 (cadr a3) a5 (if (or f p) (assq- b (cdr a4) ?) (assq- (if ? o (car o)) (cdr a4) ?))] a5
@@ -876,8 +898,8 @@
     (let [[t a] (if (term? b) (let [a (getprop b :theorem)] [(car a) (caddr a)]) [:thassertion b]) n (count a)]
         (loop-when [a' nil a a i 1 f true p nil o nil] a => (recur nil a' 1 nil true o)
             (let-when [o (threm1 (car a) t i n f p b o)] o => nil
-                (if (memq o ['THBQF 'THVRB])
-                    (recur (concat a' (list (when (= o 'THVRB) (car a)))) (cdr a) (inc i) f p o)
+                (if (memq o ['thbqf 'thvrb])
+                    (recur (concat a' (list (when (= o 'thvrb) (car a)))) (cdr a) (inc i) f p o)
                     (do (loop-when-recur [a (cdr a) i (inc i)] a [(cdr a) (inc i)] (threm1 (car a) t i n nil p b o))
                         (loop-when-recur [a a'      i 1]       a [(cdr a) (inc i)] (threm1 (car a) t i n nil p b o))
                         o))))))
@@ -1758,7 +1780,7 @@
     '(((thgoal [!CLEARTOP ($? *)]) (thnot (thgoal [!IS ($? *) !PYRAMID])))
      ((thnot (thgoal [!IS ($? *) !PYRAMID])))))
 
-(§ thadd* 'TC-CALL 'TC-CLEARTOP 'TC-GET-RID-OF 'TC-GRASP 'TC-NAME 'TC-NOTICE 'TC-PACK 'TC-PICKUP 'TC-PUTIN 'TC-PUTON 'TC-RAISEHAND 'TC-STACKUP 'TC-UNGRASP 'TC-ON 'TC-PHYSOB)
+(thadd* 'TC-CALL 'TC-CLEARTOP 'TC-GET-RID-OF 'TC-GRASP 'TC-NAME 'TC-NOTICE 'TC-PACK 'TC-PICKUP 'TC-PUTIN 'TC-PUTON 'TC-RAISEHAND 'TC-STACKUP 'TC-UNGRASP 'TC-ON 'TC-PHYSOB)
 
 #_(ns shrdlu.blockl)
 
@@ -4183,7 +4205,7 @@
 
 (putprop! 'BE :features ['INT 'AUX 'VB 'BE 'INF])
 (putprop! 'BE :semantics [['VB
-    [['THERE #(relation [:restrictions [[['!THING] #(= (quantifier? *smsub*) 'INDEF)]]])]
+    [['THERE (fn [] (relation [:restrictions [[['!THING] #(= (quantifier? *smsub*) 'INDEF)]]]))]
      ['INT (fn [] (or (relation
                     [:restrictions [[['!PHYSOB]] ['*smcomp* ['!PROPERTY]]]
                         :procedure #(let [prop (meet (getprop '!PROPERTY :system) (markers? *smcomp*))] (if prop [[(car prop) '*1* '*2*]] [['*2* '*1*]]))]
@@ -7175,7 +7197,7 @@
     ['ßTABLE '!DISPLAY '!TABLE [0 0 0] [512 512 0] 'BLACK]
     ['ßBOX '!DISPLAY '!BOX [384 384 0] [254 254 192] 'WHITE]])
 
-(§ thadd*
+(thadd*
     ['!IS 'ßB1 '!BLOCK]
     ['!IS 'ßB2 '!PYRAMID]
     ['!IS 'ßB3 '!BLOCK]
@@ -7282,15 +7304,6 @@
         nil))
 
 #_(ns shrdlu.init)
-
-(putprop! 'EE :why :command)
-(putprop! 'EE :start 0)
-(putprop! 'EE :end 0)
-(putprop! 'EE :type '!START)
-
-(dynamic- *eventlist* '(EE))
-
-(§ thadd* ['!START 'EE 'ßDIALOG])
 
 (defn -main [& args]
     ;; LOAD '(PLNR SYSCOM MORPHO PROGMR GRAMAR DICTIO SMSPEC SMASS SMUTIL NEWANS BLOCKS DATA)
