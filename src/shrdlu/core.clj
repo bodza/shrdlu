@@ -123,14 +123,6 @@
 (dynamic- *parent*)
 (dynamic- *special*)
 
-(dynamic- *position-of-prt*)
-(dynamic- *mvb*)
-(dynamic- *locationmarker*)
-(dynamic- *subj-vb-backup-type1*)
-(dynamic- *position-of-ptw*)
-(dynamic- *tense*)
-(dynamic- *prev*)
-
 (dynamic- *num*)
 (dynamic- *word-being*)
 
@@ -179,7 +171,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd* thadd thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo1 thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thip thmatch2 thcheck thunion thmatch1 thmatch thmung'f thmung't thnofail thnohash thnot thor thor2 thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm1 thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref iterate* iteratex mapbland mumble object plnr-junkify plnr-thconsify plnr-findify plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thadd* thadd thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo1 thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thip thmatch2 thcheck thunion thmatch1 thmatch thmung'f thmung't thnofail thnohash thnot thor thor2 thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm1 thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv1 thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !role !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -2119,6 +2111,8 @@
 ;;
 ;; ###########################################################
 
+(dynamic- *mvb*)
+
 (defn- setmvb [node]
     (let [save *pt*]
         (set! *mvb* node)                              ;; IF THERE ARE SEVERAL CLAUSES ACTIVE AT THE
@@ -2416,6 +2410,11 @@
     (grammar a))
 
 #_(ns shrdlu.gramar)
+
+(dynamic- *position-of-prt*)
+(dynamic- *locationmarker*)
+(dynamic- *subj-vb-backup-type1*)
+(dynamic- *position-of-ptw*)
 
 (grammar! CLAUSE [*position-of-prt* nil *mvb* nil *locationmarker* nil *subj-vb-backup-type1* nil *position-of-ptw* nil]
 
@@ -3516,6 +3515,8 @@
         (smset nil)
         (GO 'NGSTART))
 
+(dynamic- *tense*)
+
 (grammar! VG [*tense* nil]
 
     ;; ##################################################################
@@ -4020,6 +4021,8 @@
     (let [? (conjo)]
         (cond ? ?                                                    ;; IF COMMA IS PART OF CONJOINED STRUCTURE, GREAT
             (isq *re* 'INIT) (do (flushme) true))))                    ;; IF COMMA FOLLOWS INITIAL-TYPE PHRASE, FLUSH IT AND CONTINUE DIRECT ADDRESS JAZZ
+
+(dynamic- *prev*)
 
 (grammar! CONJOIN [*prev* nil]
 
@@ -4559,7 +4562,7 @@
 (putprop! 'ON-TOP-OF :semantics !on)
 
 (putprop! 'ONE :features ['NUM 'NOUN 'NS])
-(putprop! 'ONE :semantics [['NOUN smone] ['NUM 1]])
+(putprop! 'ONE :semantics [['NOUN #(smone *h*)] ['NUM 1]])
 
 (putprop! 'ONLY :features ['NUMD 'NUMDALONE])
 (putprop! 'ONLY :semantics [['NUMD #(vector 'EXACTLY *num*)]])
@@ -5341,7 +5344,7 @@
             :determiner [1 'DEF nil]
             :parsenode node
             :variable (gensym 'X)
-            :relations [(list '!NAME name (word (firstword *h*)))]))))
+            :relations [['!NAME name (word (firstword *h*))]]))))
     (smng2 node))
 
 (defn- smadjqshort [] (bug! 'smadjqshort "NOT WRITTEN YET"))
@@ -5398,7 +5401,7 @@
                     :determiner [(if (isq *c* 'NPL) 'NPL 'NS) 'INDEF nil]
                     ;; DONE SO THAT IF VARIBLE IS BOUND, PLANNER GENERATOR WILL USE IT.
                     ;; RELATION SAYS THAT THIS OSS "REFERS" TO THE OSS WHOSE VARIABLE NAME IS GIVEN.
-                    :relations [(list '!REFERS (variable? x))])))
+                    :relations [['!REFERS (variable? x)]])))
                 (semantics node)))
             *sm*))))
 
@@ -5489,7 +5492,7 @@
                 :parsenode node
                 :variable (gensym 'X)
                 :markers (when (cq 'TPRON) ['!VAGUE '!PHYSOB '!THING])
-                :relations (when (cq 'TPRON) [(list '!PHYSOB name)])
+                :relations (when (cq 'TPRON) [['!PHYSOB name]])
                 :determiner [(cond
                                 (cq 'NUMD) (binding [*num* (semantics (move-pt :h [:pv 'NUM]))] (eval (semantics (move-pt :h [:pv 'NUMD]))))
                                 (cq 'NUM) (semantics (move-pt :h [:pv 'NUM]))
@@ -5506,7 +5509,7 @@
                                 (cq 'QDET) 'WHICH)]))))
         (set! *word-being* *h*)
         (cond (isq *h* 'TPRON) true
-            (cq 'INCOM) (do (smone) true)
+            (cq 'INCOM) (do (smone *h*) true)
             :else (smset (eval (semantics *word-being*))))
         (loop []
             (when *sm*
@@ -5578,8 +5581,8 @@
                     ] (not ?) => nil
                         (recur finder)))))))
 
-(defn- smone []
-    (loop [x (loop-when [a *h*] a
+(defn- smone [a]
+    (loop [x (loop-when a a
                 (let [w (root (firstword a)) x (getprop w :contrast)]
                     (if x (list x w) (recur (cdr a)))))]
         (cond (and (move-pt :c :u [:u 'NG]) (smone2 (list (car *pt*)) x)) *sm*
@@ -5930,7 +5933,7 @@
                                 :relmarkers *relmarkers*
                                 :plausibility (+ (plausibility? *smsub*) (plausibility? *smob1*) (plausibility? *smob2*) (or (eval plausibility) 0))
                                 :ambiguities (concat (ambiguities? *1*) (ambiguities? *2*) (ambiguities? *3*) (when paraphrase (list (list name paraphrase *word-being*))))))))))))
-        a *smsub* *smob1* *smob2* *smobl* *smcomp*))
+        'a '*smsub* '*smob1* '*smob2* '*smobl* '*smcomp*))
 
 (defn- dobackref [answer]
     ;; CALLED WHEN THE PROCESSING OF A SENTENCE IS COMPLETED.
@@ -5966,52 +5969,6 @@
         ;; A FEW MISSING PIECES GO HERE
         nil))
 
-(dynamic- *%X*)
-(dynamic- *%XL*)
-
-(defq- iterate* [& l]
-    ;; GENERALIZED MAPPING FUNCTION.
-    ;;  APPLIES FUNCTION TO THE CARTESIAN PRODUCT OF N LISTS GIVEN AS ARGUMENTS.
-    ;;
-    ;; INPUTS:
-    ;;     (CAR %L)     FUNCTIONAL ARGUMENT.
-    ;;                  FUNCTION OF N ARGS WHERE N IS THE NUMBER OF LISTS GIVEN.
-    ;;     (CDR %L)     THE N LISTS.
-    ;;
-    ;; VALUE:
-    ;;  THE RESULT OF APPLYING THE FUNCTION IS MAPBLANDED TOGETHER, THAT IS
-    ;;  IF EACH APPLICATION RESULTS IN AN ATOM, THE RESULTING LIST
-    ;;  IS A LIST OF ATOMS.  IF EACH APPLICATION RESULTS IN A LIST OF ATOMS,
-    ;;  THE RESULT IS STILL A LIST OF ATOMS.  IF THE APPLICATION RESULTS
-    ;;  IN NIL, THE NIL VANISHES FROM THE RESULTANT LIST.
-    ;;
-    ;; THIS SHOULD BECOME A MACRO SO THAT ITERATE TAILORS A MAPPING FUNCTION
-    ;; FOR EACH APPLICATION WHICH IS THEN COMPILED.
-    (binding [*%X* nil *%XL* nil] (eval (iteratex (car l) (cdr l)))))
-
-(defn- iteratex [fun l]
-    ;; EXPANDS CALL ON ITERATE INTO A TAILORED SET OF MAPBLAND
-    ;; CALLS WHICH DO THE APPROPRIATE COMPUTATION WHEN EVALUATED.
-    ;; INPUTS:
-    ;;      FUN    FUNCTION OF N ARGUMENTS
-    ;;      L      LIST OF N LISTS WHICH FUN IS TO BE APPLIED TO
-    ;; VALUE:
-    ;;  TAILORED FUNCTION
-    (if (nil? l) (cons (eval fun) *%XL*)
-        (do (set! *%X* (gensym)) (set! *%XL* (concat *%XL* (cons *%X* nil)))
-            (list 'mapbland
-                (list 'lambda
-                    ;; %X IS USED TO STORE THE VARIABLE NAME WHICH IT GETS FROM (GENSYM)
-                    ;; %XL IS USED TO SAVE A LIST OF ALL OF THE VARIABLE NAMES SO FAR SO
-                    ;; THAT THEY CAN BE GIVEN TO THE FUNCTION AT THE END (CONS %X NIL).
-                    ;; CREATES A SHINY NEW CELL WHICH IS BOLTED ONTO THE BACK END OF %XL
-                    ;; BY NCONC.  THIS PAIR IS NECESSARY BECAUSE SETQ RETURNS AS ITS VALUE
-                    ;; THE RESULT OF THE LAST PAIR THAT IT PROCESSES.  A RUSE. PUTS (NIL)
-                    ;; IN PLACE OF NIL AS A LIST TO PREVENT MAPBLAND FROM QUITTNG.
-                    (list *%X*)
-                    (iteratex fun (cdr l)))
-                (or (car l) '(nil))))))
-
 (defn- mapbland [fun l]
     ;; THIS IS THE INSTAMATIC CAMERA FUNCTION.  NO MATTER WHAT YOU PUT INTO THE FUNCTION,
     ;; IT AUTOMATICALLY ADJUSTS INTERNALLY TO THE AVAILABLE LIGHT SO THAT WHAT COMES OUT
@@ -6025,19 +5982,41 @@
     ;;     IF (FUN L) IS AN ATOM, THEN A LIST OF ATOMS.
     ;;     IF (FUN L) IS A LIST, THEN ALL THE LISTS APPENDED, THAT IS A LIST OF ATOMS.
     ;;     IF (FUN L) IS NIL, THEN ALL TRACE DISAPPEARS (SAVE FOR SIDE-EFFECTS).
-    (loop [a nil l (if (nil? l) '(nil) l)]
-        (let [x (fun (car l)) a (cond (nil? x) a (term? x) (concat a (cons x nil)) :else (concat a x)) l (cdr l)]
+    (loop [a nil l (or l '(nil))]
+        (let [x (fun (car l)) a (cond (nil? x) a (term? x) (concat a (cons x nil)) :else (concat a x)) l (cdr l)]
             (if l (recur a l) a))))
 
-(defn- mumble [x]
-    ;; MUMBLE IS THE PLANNER FILTER FOR LOOKING AT ASSERTIONS TO SEE WHEN THEY WERE MENTIONED
-    ;; IN THE DIALOG.  IT USES THE FREE VARIABLE "WHO" TO DECIDE WHAT TO LOOK FOR.
-    ;; WHO IS EITHER NIL (USE ANYTHING), "HE" (USE ANYTHING WHICH HAS BEEN MENTIONED), OR A LIST
-    ;; OF TWO SENTENCE NUMBERS, MIN AND MAX (USE ANY WHO PROPERTY WHICH IS ON OR BETWEEN THEM).
-    ;; THE WHO PROPERTY OF ANY ASSERTION IS A SENTENCE NUMBER WHEN IT WAS MOST RECENTLY MENTIONED.
-    (or (nil? *who*)
-        (let [x (getprop x :who)]
-            (cond (= *who* 'HE) x x (<= (car *who*) x (cadr *who*))))))
+(defn- iter- [fun l a]
+    ;; EXPANDS INTO A TAILORED SET OF MAPBLAND CALLS WHICH DO THE APPROPRIATE COMPUTATION WHEN EVALUATED.
+    ;; INPUTS:
+    ;;      FUN - FUNCTION OF N ARGUMENTS
+    ;;      L   - LIST OF N LISTS WHICH FUN IS TO BE APPLIED TO
+    ;; VALUE:
+    ;;  TAILORED FUNCTION.
+    (when' l => (cons fun a)
+        ;; %X IS USED TO STORE THE VARIABLE NAME WHICH IT GETS FROM (GENSYM)
+        ;; %XL IS USED TO SAVE A LIST OF ALL OF THE VARIABLE NAMES SO FAR SO
+        ;; THAT THEY CAN BE GIVEN TO THE FUNCTION AT THE END (CONS %X NIL).
+        ;; CREATES A SHINY NEW CELL WHICH IS BOLTED ONTO THE BACK END OF %XL
+        ;; BY NCONC.  THIS PAIR IS NECESSARY BECAUSE SETQ RETURNS AS ITS VALUE
+        ;; THE RESULT OF THE LAST PAIR THAT IT PROCESSES.  A RUSE.  PUTS (NIL)
+        ;; IN PLACE OF NIL AS A LIST TO PREVENT MAPBLAND FROM QUITTNG.
+        (let [x (gensym)]
+            (list 'mapbland (list 'lambda [x] (iter- fun (cdr l) (concat a (cons x nil)))) (or (car l) '(nil))))))
+
+(defn- iterate* [fun & l]
+    ;; GENERALIZED MAPPING FUNCTION.
+    ;;  APPLIES FUNCTION TO THE CARTESIAN PRODUCT OF N LISTS GIVEN AS ARGUMENTS.
+    ;; INPUTS:
+    ;;     FUN - FUNCTION OF N ARGS WHERE N IS THE NUMBER OF LISTS GIVEN
+    ;;     L   - THE N LISTS
+    ;; VALUE:
+    ;;  THE RESULT OF APPLYING THE FUNCTION IS MAPBLANDED TOGETHER, THAT IS
+    ;;  IF EACH APPLICATION RESULTS IN AN ATOM, THE RESULTING LIST
+    ;;  IS A LIST OF ATOMS.  IF EACH APPLICATION RESULTS IN A LIST OF ATOMS,
+    ;;  THE RESULT IS STILL A LIST OF ATOMS.  IF THE APPLICATION RESULTS
+    ;;  IN NIL, THE NIL VANISHES FROM THE RESULTANT LIST.
+    (eval (iter- fun l nil)))
 
 (defn- object [& a]
     ;; %DEFL IS THE LIST OF DEFINITION SENSES.
@@ -6046,7 +6025,7 @@
     ;;
     ;; INPUTS:
     ;;  INPUTS ARE IN KEYWORD FORMAT (ATTRIBUTE-VALUE PAIRS).
-    ;;  THE KEYWORD IS NOT EVALUATED BUT ITS VLUE IS.
+    ;;  THE KEYWORD IS NOT EVALUATED BUT ITS VALUE IS.
     ;; POSSIBLE KEYWORDS:
     ;;     MARKERSß            LIST OF SEMANTIC MARKERS
     ;;     PLAUSIBILITYß       EVALS TO INTEGER FROM 0 TO 512 INDICATING RELATIVE LIKELIHOOD OF THIS DEFINITION SENSE
@@ -6079,7 +6058,7 @@
                         ;; THE OSS NAME PROVIDES A UNIQUE LABEL FOR WHERE THE AMBIGUITY OCCURRED FOR LATER COMPARISON.
                         :ambiguities (concat (ambiguities? oss) (when paraphrase (list (list oss paraphrase *word-being*))))
                         :plausibility (+ (or (eval plausibility) 0) (plausibility? oss))))))
-            *sm* a)))
+            '*sm* 'a)))
 
 ;; ######################################################
 ;;
@@ -6136,6 +6115,17 @@
         (= (car x) '>) (inc (cadr x))
         (= (car x) '<) (list 0 (cadr x) nil)
         :else (bug! 'plnr-findspec "FUNNY SPECIFICATION" x)))
+
+(defn- mumble [x]
+    ;; MUMBLE IS THE PLANNER FILTER FOR LOOKING AT ASSERTIONS TO SEE WHEN THEY WERE MENTIONED
+    ;; IN THE DIALOG.  IT USES THE FREE VARIABLE "WHO" TO DECIDE WHAT TO LOOK FOR.
+    ;; WHO IS EITHER NIL (USE ANYTHING), "HE" (USE ANYTHING WHICH HAS BEEN MENTIONED), OR A LIST
+    ;; OF TWO SENTENCE NUMBERS, MIN AND MAX (USE ANY WHO PROPERTY WHICH IS ON OR BETWEEN THEM).
+    ;; THE WHO PROPERTY OF ANY ASSERTION IS A SENTENCE NUMBER WHEN IT WAS MOST RECENTLY MENTIONED.
+    (let [w *who*]
+        (or (nil? w)
+            (let [x (getprop x :who)]
+                (cond (= w 'HE) x x (<= (car w) x (cadr w)))))))
 
 (defn- plnr-goalify [a]
     ;; TAKES A PLNRPHRASE AND MAKES A THGOAL STATEMENT OUT OF IT UNLESS
@@ -6862,10 +6852,8 @@
                                 :else (list (car word))))))
                 (firstword node))))))
 
-(def- timid 200)
-
 (defn- enough-better [ans1 ans2]
-    (> (plausibility? ans1) (+ (plausibility? ans2) timid)))
+    (< (+ (plausibility? ans2) 200) (plausibility? ans1)))
 
 (defn- findmother [word node]
     ;; FINDMOTHER TAKES A PLACE IN THE SENTENCE AND A GRAMMAR NODE (BOTH ARE ACTUALLY LISTS)
@@ -7311,9 +7299,9 @@
               *sent* nil *punct* nil
               *end* nil *both* nil *backref* nil *backref2* nil *ansname* nil *lastrel* nil *who* nil *pt* nil *ptw* nil *h* nil *n* nil *nb* nil *fe* nil *sm* nil *re* nil *mes* nil *c* nil *cut* nil]
 
-        (dorun (map #(when (getprop (car %) :thassertion)
-                (putprop! (car %) :history (list (list 0 (cadr %) (cadar (thval '(thgoal [!SUPPORT ($? x) ($? y)]) (list ['x :thunassigned] ['y (car %)])))))))
-            ATABLE))
+        (doseq [% ATABLE]
+            (when (getprop (car %) :thassertion)
+                (putprop! (car %) :history [[0 (cadr %) (cadar (thval '(thgoal [!SUPPORT ($? x) ($? y)]) [['x :thunassigned] ['y (car %)]]))]])))
 
         (loop []
             (set! *oops* nil)
