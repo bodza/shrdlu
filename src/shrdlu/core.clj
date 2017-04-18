@@ -2401,8 +2401,6 @@
     (loop [a a] (when (some? a)
         (if (and (isq node (caar a)) (apply parse 'CLAUSE 'RSNG (concat (cdar a) b))) *h* (recur (cdr a))))))
 
-(dynamic- *pop*)
-
 (defn- pop* [& a]
     (if (and a (car a))
         (when (apply popto a) (pop*))
@@ -2410,9 +2408,7 @@
             (set! *h* (cdr *h*))
             (rebuild *c* *fe* *nb* *n* *h* *sm*)
             (set! *nn* (not= *n* *cut*))
-            (do (set! *pop* nil)
-                (dorun (map* (lambda [b] (ERRSET (when *n* (dorun (map* #(and (= % (firstword b)) (ERR)) *n*)) (set! *pop* (cons (car b) *pop*))))) *backref*))
-                (set! *backref* *pop*))
+            (set! *backref* (when *n* (into nil (remove nil? (map* (lambda [b] (when (not-any? #(= % (firstword b)) (map* *n*)) (car b))) *backref*)))))
             true)))
 
 (defn- popto [& a]
@@ -5990,7 +5986,7 @@
                                     (let [x (if (term? (car marks)) marks (cons name marks))] (SET num (eval (car x))) x))
                                 '(*smsub* *smob1* *smob2*) restrictions '(*1* *2* *3*)))]
                         ;; CHECK THAT THIS DEFINITION SENSE MEETS ALL OF THE RESTRICTIONS SET FORTH IN THE DEFINITION UNDER RESTRICTIONSß.
-                        (when (ERRSET
+                        (when (ERRSET
                                 ;; ENCLOSED IN A ERRSET SO THAT THE FAILURE OF A CHECK CAN CAUSE IMMEDIATE ESCAPE FROM THE MAPC
                                 ;; AND HENCE TO THE AND WHICH CUTS OFF ALL FURTHER PROCESSING OF THIS DEFINITION SENSE.
                                 ;; TEMPORARY STORAGE ON THE PROPERTY LIST OF TEMP USED TO AVOID SEARCHING FOR THESE ITEMS ON THE
@@ -6352,7 +6348,7 @@
 (defn- relfind [node]
     ;; LOOKS FOR THE REL OF A POLAR
     (binding [*rel* nil]
-        (ERRSET
+        (ERRSET
             ;; IT GOES FROM THE BEGINNING OF THE SENTENCE LOOKING FOR AN INDEFINITE NG,
             ;; EITHER AT THE TOP LEVEL OR AS A FIRST LEVEL PREPOBJ, BUT NOT A COMPLEMENT.
             (dorun (map* (lambda [x]
