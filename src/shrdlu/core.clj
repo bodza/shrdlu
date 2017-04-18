@@ -53,7 +53,6 @@
 (defmacro dynamic- [s] `(def ~(vary-meta s assoc :dynamic true :private true)))
 
 (dynamic- *thtime*)
-(dynamic- *thtrace*)
 (dynamic- *thtree*)
 (dynamic- *thxx*)
 (dynamic- *thalist*)
@@ -139,7 +138,7 @@
 (defn- bug! [message] (throw (Error. message)))
 (defn- oops! [message] (set! *oops* message) (throw (RuntimeException. message)))
 
-(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 thass1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES thsel %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime smnewnoun smnewpropn smconj smconj2 SMVG smpron smvaux smplace smtoadj smprop SMADJG-PREPG SMIT smit2 smngof smng1 smng2 SMNG3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? BUILD newcopy RELATION dobackref evalcheck ITERATE ITERATEX mapbland mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 plnr-thconsify PLNR-FINDIFY plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE relfind ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ansgen ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 thass1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ %sent forget combination? findb from meet mod setdif sta union uppercase-ify-char ETAOIN propname buildword undefined passing spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime smnewnoun smnewpropn smconj smconj2 SMVG smpron smvaux smplace smtoadj smprop SMADJG-PREPG SMIT smit2 smngof smng1 smng2 SMNG3 smone smone2 smone3 smposs smposs2 smrelate SMCL1 smcl2 smcl-modifiers smbind smbinder istense imperf? BUILD newcopy RELATION dobackref evalcheck ITERATE ITERATEX mapbland mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 plnr-thconsify PLNR-FINDIFY plnr-findspec plnr-goalify plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE relfind ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER findevents checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ansgen ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
 
 #_(ns shrdlu.plnr)
 
@@ -289,10 +288,9 @@
 (defn- thapply1 [thm thb dat]
     ;; MAKE SURE THE THEOREM PATTERN MATCHES THE GOAL
     (if (and (thbind (cadr thb)) (thmatch1 dat (caddr thb)))
-        (do (when *thtrace* (THTRACES 'THEOREM thm))
-            ;; AS FAR AS THTREE GOES, ALL THEOREMS LOOK LIKE THPROG, AND
-            ;; WHEN YOU COME DOWN TO IT, THEY ALL ACT LIKE THPROGS.
-            (thpush *thtree* (list 'THPROG (cddr thb) nil (cddr thb)))
+        ;; AS FAR AS THTREE GOES, ALL THEOREMS LOOK LIKE THPROG, AND
+        ;; WHEN YOU COME DOWN TO IT, THEY ALL ACT LIKE THPROGS.
+        (do (thpush *thtree* (list 'THPROG (cddr thb) nil (cddr thb)))
             ;; CALL THE MAIN THPROG WORKHORSE.
             (thproga)
             true)
@@ -310,8 +308,6 @@
             ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED.
             (when-not (or ? pseudo)
                 (terpri) (pr thx) (bug! "IMPURE ASSERTION OR ERASURE - THASS1"))
-            (when (and *thtrace* (not pseudo))
-                (THTRACES (if p 'THASSERT 'THERASE) thx))
             (let [a (if pseudo (cddr a) (cdr a))
                   ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST.
                   ;; WE ARE NOW GOING TO PHYSICALLY ADD OR REMOVE ITEM.
@@ -389,9 +385,6 @@
 
 (defn- thbi1 [x]
     (if (term? x) (list x 'THUNASSIGNED) (list (car x) (eval (cadr x)))))
-
-(§ defq- THBKPT [a]
-    (or (and *thtrace* (THTRACES 'THBKPT a)) *thvalue*))
 
 (defn- thbranch []
     ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS.
@@ -634,7 +627,6 @@
                         (not (= (caar tha1) 'THDBF))))
                 (SETQ tha1 (cons (list 'THDBF 'thtrue) tha1)))
             (SETQ tha1 (doall (mapcat thtry tha1)))                      ;; THMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
-            (when *thtrace* (THTRACES 'THGOAL *tha2*))
             (when tha1
                 (thpush *thtree* (list 'THGOAL *tha2* tha1))                    ;; (THGOAL PATTERN MATCHES)
                 (RPLACD (cddar *thtree*) 262143))
@@ -1460,158 +1452,6 @@
 (putprop! 'THUNDO 'THSUCCEED thundot)
 (putprop! 'THMESSAGE 'THSUCCEED thmessaget)
 (putprop! 'THREMBIND 'THSUCCEED thrembindt)
-
-#_(ns shrdlu.thtrac)
-
-;; SYSTEM FUNCTIONS SUCH AS THGOAL, THASSERT, THERASE AND THEOREM
-;; (ALL THMS) ARE TRACED IF THEY ARE ON "THTRACE".
-;; THTRACES1 PUTS THEM THERE AND THUNTRACE TAKES THEM OFF.
-
-;; THTRACE IS INITIALLY SET TO NIL BY TS PLNR.
-
-(defn- thtrace [& a] (dorun (map thtrace1 a)))
-
-(§ defn- thtrace1 [x]
-    ;; VARIETY OF POSSIBLE INPUT FORMATS TRANSFORMED TO STANDARD 3 ELEMENT LIST
-    ;; (OBJECT-TO-BE-TRACED TRACE-CONDITION BREAK-CONDITION)
-    (let [x (cond
-                (term? x) (list x true nil)
-                (cddr x) x
-                (some? (cdr x)) (list (car x) (cadr x) nil)
-                :else (do (terpri) (pr x) (-print "BAD FORMAT") (RETURN nil)))
-          y nil
-    ]
-        ;; IF OBJECT-TO-BE-TRACED IS A PARTICULAR THEOREM, THEN THE TRIPLET
-        ;; '(THEOREM (THSEL 'CADR) (THSEL 'CADDDR))
-        ;; IS GUARANTEED TO BE ON THTRACE IN ADDITION TO THE STANDARD TRIPLET.
-        (when (getprop (car x) 'THEOREM)
-            (SETQ y (assq 'THEOREM *thtrace*))
-            (if y
-                (RPLACD y '((thsel THL cadr) (thsel THL caddr)))
-                (set! *thtrace* (list x (concat '(THEOREM (thsel THL cadr) (thsel THL caddr)) *thtrace*)))))
-        ;; THTRACE IS UPDATED.  IF THE OBJECT-TO-BE-TRACED IS ALREADY ON THTHRACE, THEN
-        ;; THE TRACE AND BREAK CONDITIONS ARE UPDATED, ELSE THE WHOLE TRIPLET IS PLACED ON THTRACE.
-        (SETQ y (assq (car x) *thtrace*))
-        (if y (RPLACD y (cdr x)) (set! *thtrace* (cons x *thtrace*)))
-        x))
-
-;; THUNTRACE REMOVES ELEMENTS OF ITS ARG FROM THTRACE.
-;; IF NOT GIVEN ANY ARGS, THUNTRACE SETS THTRACE TO NIL.
-
-(defn- thuntrace [& a]
-    (when *thtrace*
-        (let [! #(do (terpri) (pr %)) ! (if a #(if (memq (car %) a) (! %) %) !) ? (doall (filter ! *thtrace*))]
-            (set! *thtrace* (when (seq ?) ?))))
-    'done)
-
-;; THTRACES IS ACTIVATED BY THGOAL, THASSERT, ... IF THTRACE IS NON-NIL,
-;; THF IS SET TO THE PARTICULAR CANDIDATE FOR TRACEAGE, E.G. TO 'THGOAL
-;; IF THE PLANNER FUNCTION THGOAL ACTIVATED THTRACES.
-;; THL = THE INSTANTIATED ARG OF THF. SEE DESC OF X ON NEXT PAGE.
-
-(§ defn- THTRACES [thf thl]
-    (let [THY nil THZ nil THB nil]
-        (and
-            ;; THY SET TO TRIPLET ON THTRACE. IF NOT THERE, NO TRACING
-            (SETQ THY (assq thf *thtrace*))
-            ;; IF BOTH TRACE AND BREAK ARE FALSE, DON'T TRACE
-            ;; SIDE EFFECT - THB SET TO VALUE OF BREAK
-            (or (SETQ THB (THVAL (caddr THY) *thalist*)) (THVAL (cadr THY) *thalist*))
-            ;; THZ IS SET TO THE TRACE FUNCTION FOR THE OBJECT-TO-BE-TRACED
-            (or (SETQ THZ (getprop thf 'THTRACE)) (bug! "THTRACES - TRACE LOSSAGE"))
-            ;; THE TRACE FUNCTION IS EXECUTED
-            (THZ thl THB)
-            ;; IF THB IS NON-NIL, BREAK
-            THB
-            (ert nil))
-        nil))
-
-;; THE CAR OF THE TREE IS '(THTRACES NAME-OF-TRACE-POINT OPTIONAL-PRINT-OF-THVALUE (THERT)-OR-NIL)
-;; THUS, THESE TWO FNS PRINT THE NAME OF THE TRACE POINT, "FAIL"-OR-"SUCCEED"
-;; PRINT THVALUE IF ANY, AND FINALLY BREAK IF (THERT) IS PRESENT, THEN POP THE TREE
-
-(putprop! 'THTRACES 'THFAIL
-    (lambda []
-        (terpri)
-        (pr (cadar *thtree*))
-        (print " FAILED ")
-        (evlis (cddar *thtree*))
-        (thpopt)
-        nil))
-
-(putprop! 'THTRACES 'THSUCCEED
-    (lambda []
-        (terpri)
-        (pr (cadar *thtree*))
-        (print " SUCCEEDED ")
-        (evlis (cddar *thtree*))
-        (thpopt)
-        *thvalue*))
-
-;; THE TRACE FNS THBKPT, THGOAL, THEOREM, THASSERT, AND THERASE PUSH ONTO THE TREE
-;; '(THTRACES NAME-OF-TRACE-POINT OPTIONAL-PRINT-OF-THVALUE (THERT)-OR-NIL)
-;; X = THL = INSTANTIATED GOAL, ASSERTION OR ERASURE, NAME OF THE THM, OR MESSAGE OF THE BREAKPOINT
-
-(putprop! 'THBKPT 'THTRACE
-    (lambda [x b]
-        (thpush *thtree* (list 'THTRACES (gensym 'B) (and b '(ert nil))))
-        (terpri)
-        (print "PASSING BKPT ")
-        (pr (cadar *thtree*))
-        (print \space)
-        ;; BY SETTING THBRANCH AND THABRANCH, A TRIPLE IS CREATED BY THVAL FOR BACKTRACKING.
-        ;; THEN, THE TREE IS POPPED TO PREVENT THTRACES FROM TYPING OUT THE MEANINGLESS
-        ;; THAT THE BREAKPOINT SUCCEEDED.
-        (set! *thbranch* *thtree*)
-        (set! *thabranch* *thalist*)
-        (thpopt)
-        (pr x)))
-
-(putprop! 'THGOAL 'THTRACE
-    (lambda [x b]
-        (thpush *thtree* (list 'THTRACES (gensym 'G) '(and *thvalue* (pr *thvalue*)) (and b '(ert nil))))
-        (terpri)
-        (print "TRYING GOAL ")
-        (pr (cadar *thtree*))
-        (print \space)
-        (pr x)))
-
-(putprop! 'THEOREM 'THTRACE
-    (lambda [x b]
-        (thpush *thtree* (list 'THTRACES x '(and *thvalue* (pr *thvalue*)) (and b '(ert nil))))
-        (terpri)
-        (print "ENTERING THEOREM ")
-        (pr x)))
-
-(putprop! 'THASSERT 'THTRACE
-    (lambda [x b]
-        (thpush *thtree* (list 'THTRACES (gensym 'A) (and b '(ert nil))))
-        (terpri)
-        (print "ASSERTING ")
-        (pr (cadar *thtree*))
-        (print \space)
-        (pr x)))
-
-(putprop! 'THERASE 'THTRACE
-    (lambda [x b]
-        (thpush *thtree* (list 'THTRACES (gensym 'E) (and b '(ert nil))))
-        (terpri)
-        (print "ERASING ")
-        (pr (cadar *thtree*))
-        (print \space)
-        (pr x)))
-
-;; FOR THE TRACE-OBJECT 'THEOREM, IF ANY SPECIFIC THMS ARE TRACED, '(THSEL 'CADR) AND '(THSEL 'CADDDR)
-;; ARE THE TRACE AND BREAK PREDICATES.  HENCE THTRACES CAUSES THESE EXPR'S TO BE THVALED.  THL IS SET
-;; TO THE SECOND ARG OF THTRACES WHICH IN THIS CASE IS PRESUMABLY THE NAME OF THE PARTICULAR THM THAT
-;; ACTIVATED THTRACES.  THSEL FIRST CHECKS TO SEE WHETHER THIS THM IS INDEPENDENTLY ON THTRACE.  IF NOT,
-;; IT DOES NO MORE.  BUT IF IT IS, THX GETS SET TO THE THM'S TRIPLET.  THEN THX GETS SET TO EITHER THE
-;; TRACE (ARG = 'CADR) OR THE BREAK (ARG = 'CADDDR) CONDITION OF THE TRIPLET.  FINALLY, THESE CONDITIONS
-;; ARE THVALED, THUS THSEL SERVES THE PURPOSE OF REFERENCING THE TRACE AND BREAK PREDICATES OF PARTICULAR
-;; THMS ON THTRACE.
-
-(defn- thsel [thl fun]
-    (let-when [x (assq thl *thtrace*)] x (let-when [x (fun x)] x (THVAL x *thalist*))))
 
 #_(ns shrdlu.blockp)
 
@@ -9273,9 +9113,9 @@ RETURN
 #_(ns shrdlu.init)
 
 (defn -main [& args]
-    ;; LOAD '(PLNR THTRAC SYSCOM MORPHO PROGMR GRAMAR DICTIO SMSPEC SMASS SMUTIL NEWANS BLOCKS DATA)
+    ;; LOAD '(PLNR SYSCOM MORPHO PROGMR GRAMAR DICTIO SMSPEC SMASS SMUTIL NEWANS BLOCKS DATA)
     (binding [*grasplist* nil *eventlist* nil
-              *thtime* 0 *thtrace* nil *thtree* nil *thxx* nil *thalist* '((nil nil)) *tholist* '((nil nil))
+              *thtime* 0 *thtree* nil *thxx* nil *thalist* '((nil nil)) *tholist* '((nil nil))
               *oops* nil
               *lastsentno* 0 *lastsent* nil *sentno* 1
               *sent* nil *punct* nil
