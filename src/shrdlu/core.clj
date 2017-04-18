@@ -140,7 +140,7 @@
 (defn- setr [node register value] (putprop! (car node) register value))
 (defn- getr [node register] (getprop (car node) register))
 
-(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 THASS1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES THSEL %sent DA DISP DP forget ert bug global-err ERTEX combination? findb from meet mod setdif sta union TAB uppercase-ify-char ETAOIN propname buildword undefined passing pev TELLCHOICE SHOWCHOICE SHOWTELL QUERY onoff request treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN smnewpropn SMCONJ SMCONJ2 SMVG smpron smvaux smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 SMONE3 SMPOSS SMPOSS2 SMRELATE SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce FINDCHOOSE vbfix CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
+(declare topcenter abs atab clear diff half endtime ev FINDSPACE goal GROW locgreater MEMOREND memory occupier order PACKO packon packord size starthistory startime support tcent tfind timechk evlis thadd THAMONG thamongf THAND thandf thandt THANTE THAPPLY thapply1 THASS1 THASSERT thassertf thassertt THASVAL thba thbind thbi1 THBKPT thbranch thbranchun THCOND thcondf thcondt THCONSE thdef THDO thdo1 thdob THERASE therasef theraset THERASING THFAIL thfail? thfail?f thfail?t THFINALIZE THFIND thfindf thfindt thflush thgal THGO THGOAL thgoalf thgoalt THIP THMATCH2 thcheck thunion thmatch1 THMATCHLIST THMESSAGE thmessagef thmessaget thmungf thmungt thnofail THNOHASH THNOT THNV THOR thor2 thorf thort thpopt THPROG thproga thprogf thprogt thpure thputprop THREM1 thrembindf thrembindt thremove thremprop THRESTRICT THRETURN thrplaca thrplacas THURPLACA thrplacd thrplacds THURPLACD THSETQ thsgal thstate THSUCCEED thtae THTAG thtagf thtagt thtrue THTRY1 thtry thundof thundot THUNIQUE thv1 THV THVAL thvar? THVARS2 THVARSUBST THVSETQ thtrace thtrace1 thuntrace THTRACES THSEL %sent DA DISP DP forget ert bug global-err ERTEX combination? findb from meet mod setdif sta union TAB uppercase-ify-char ETAOIN propname buildword undefined passing pev TELLCHOICE SHOWCHOICE SHOWTELL QUERY onoff request treeprint charg SHOW TELL showmove DEFINE HELP spread1 PDEFINE setmvb add-f-pt remove-f-pt one-word-left MOVE-PT MOVE-PTW apply-grammar buildnode cq cut cut-back-one f! features feset flushme following fq! daughters isq m! wordafter firstword nextword nextword? nq parent parse PARSE2 PARSE3 parserel POP POPTO previous PTFIND rebuild root rq secondword? semantics trnsf word conjo comma doublequoter CANTAKE CANPARSE !BETHERE !BEINT BOTH thank !BLUEPRINT !BUILD !COLOR !CLEANOFF !DEFINE !DEFINITION !EQDIM !GRASP !HAVE !IN !LOC !LOC2 !NAME !NOTICE !ON !PROPDEFINE !ROLE !STACKUP smtime SMNEWNOUN smnewpropn SMCONJ SMCONJ2 SMVG smpron smvaux smplace smtoadj SMPROP SMADJ SMADJG-PREPG SMIT SMIT2 SMNGOF SMNG1 SMNG2 SMNG3 SMONE SMONE2 smone3 smposs smposs2 smrelate SMCL1 SMCL2 SMCL-MODIFIERS SMBIND smbinder istense imperf? BUILD newcopy RELATION DOBACKREF evalcheck ITERATE ITERATEX MAPBLAND mapc2 mumble OBJECT valueput plnr-junkify plnr-junkify2 PLNR-THCONSIFY PLNR-FINDIFY plnr-findspec PLNR-GOALIFY plnr-mung plnr-notify plnr-newbody plnr-progify plnr-numrel plnr-numsub plnr-recommendify PLNR-REMTIME plnr-var COMPARE-BUILD findmeasure MEASURE PLNR-DESCRIBE RELFIND ordmake COMPARE-PROC EXPAND erqset SETQQCHECK thval2 who check-markers CHECKAMARKER FINDEVENTS checkrel action? ambiguities? and? ansrss? determiner? end? markers? modifiers? negative? num? or? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ambput ANSBUILD ANSCOMMAND ANSDECLARE ANSELIMINATE parse-assoc ANSGEN ANSNAME ANSNOREL ANSORDER ANSQUEST ANSREL ANSTHM ANSTHMADD ansthmelement ansunique cutoff describevent disput ELIZA enough-better FINDMOTHER headpart LISTNAMES pron-prt nameaction namelist namelist-evaled namenum ansay NAMEOBJ namesize namesugar notell ONECHECK ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce FINDCHOOSE vbfix CLAUSE NG VG PREPG ADJG CONJOIN SHRDLU)
 
 #_(ns shrdlu.plnr)
 
@@ -3572,13 +3572,13 @@
     THER2
         (and (nq 'PREP)
             (parse 'PREPG 'INIT)
-            (or (SMRELATE *h*) (POP)))                       ;; MORE INITIAL (BEFORE THE SUBJECT) MODIFIERS
+            (or (smrelate *h*) (POP)))                       ;; MORE INITIAL (BEFORE THE SUBJECT) MODIFIERS
         (and (nq 'ADV)
             (parse 'ADV 'TIMW)
             (or (SMADVERB) (POP)))
         (and (nq 'ADV)
             (parse 'ADJG 'ADV 'VBAD)
-            (or (SMRELATE *h*) (POP)))
+            (or (smrelate *h*) (POP)))
         (parse 'NG 'TIME)
 
         (| (= *locationmarker* *n*) CLAUSETYPE INIT INPOP)
@@ -3926,7 +3926,7 @@
 
     PREPSHORT
         (| (and (nq 'PREP) (parse 'PREPG)) nil (ONT-SHORT-PREP))
-        (| (SMRELATE *h*) nil (ONTß SMRELATE PREPQ))
+        (| (smrelate *h*) nil (ONTß SMRELATE PREPQ))
         (| (cq 'REL-NOT-FOUND) PREPSHORT TONT (ONT-NOT-FOUND))       ;; WE HAVE A PREP TO TAKE THE UNATTACHED RELATIVE
                                                                     ;; AS ITS OBJECT. THE FEATURE REL-NOT-FOUND WILL
                                                                     ;; BE REMOVED IF THE PREPG DISCOVERS IT CAN'T FIND
@@ -3947,7 +3947,7 @@
                                                                     ;; NOTHING NEW.
 
     NPASV
-        (| (and (nq 'PREP) (parse 'PREPG) (SMRELATE *h*))                                  ;; PREPG
+        (| (and (nq 'PREP) (parse 'PREPG) (smrelate *h*))                                  ;; PREPG
             nil
             nil
             RETSM)
@@ -3955,7 +3955,7 @@
             nil
             nil
             RETSM)
-        (| (and (not (cq 'BE)) (parse 'ADJG 'ADV) (or (SMRELATE *h*) (GO FAIL)))            ;; ADV
+        (| (and (not (cq 'BE)) (parse 'ADJG 'ADV) (or (smrelate *h*) (GO FAIL)))            ;; ADV
             nil
             nil
             RETSM)
@@ -4315,7 +4315,7 @@
         (| (and (parse 'PRON 'EVERPRON) (smpron *h*))
             nil
             FAIL)
-        (| (and (parse 'CLAUSE 'RSQ 'NOREL) (SMRELATE *h*))
+        (| (and (parse 'CLAUSE 'RSQ 'NOREL) (smrelate *h*))
             RETSM
             FAIL)
 
@@ -4486,10 +4486,10 @@
     ;; #################################################
 
         (| (and (cq 'THAN) (parse 'ADJG)) nil RSQ-TO)                 ;; "...A BIGGER BLOCK THAN..."
-        (| (SMRELATE *h*) RETSM FAIL)
+        (| (smrelate *h*) RETSM FAIL)
 
     RSQ-TO
-        (| (and (nextword? *n* 'TO) (meet *fe* '(COMP SUBJ)) (parse 'CLAUSE 'RSQ 'TO) (or (SMRELATE *h*) (GO POPRET)))
+        (| (and (nextword? *n* 'TO) (meet *fe* '(COMP SUBJ)) (parse 'CLAUSE 'RSQ 'TO) (or (smrelate *h*) (GO POPRET)))
             RETSM
             nil)
 
@@ -4503,7 +4503,7 @@
             (isq (MOVE-PT 'C 'PV) 'AUX)
             (isq *pt* 'BE)
             (GO POPRET))                                            ;; AVOIDS ATTACHING MODIFIER WHEN IT GOBBLES TO
-        (| (SMRELATE *h*) RSQ-TO POPRET RETSM)               ;; MUCH E.G. IS THE BLOCK ON THE TABLE? DOESN'T
+        (| (smrelate *h*) RSQ-TO POPRET RETSM)               ;; MUCH E.G. IS THE BLOCK ON THE TABLE? DOESN'T
                                                                     ;; WANT "THE BLOCK ON THE TABLE" AS A CONSTITUENT.
                                                                     ;; I ADMIT ITS A HACK.
 
@@ -4524,7 +4524,7 @@
             (isq *pt* 'BE)
             (not (isq (MOVE-PT 'U) 'NGQ))
             (GO POPRET))
-        (| (SMRELATE *h*) RSQ-TO POPRET RETSM)
+        (| (smrelate *h*) RSQ-TO POPRET RETSM)
 
     ;; CHECK FOR DISGUISED RSQ CLAUSES BY READING THE FAILURE MESSAGES SENT UP FROM PREPG.
 
@@ -4540,7 +4540,7 @@
             RETSM
             nil)
         (| (parse 'CLAUSE 'RSQ) nil RETSM)
-        (| (SMRELATE *h*) RETSM POPRET)
+        (| (smrelate *h*) RETSM POPRET)
 
     ;; -------------------------------------------------
     ;; THE ENTIRE NG SHOULD HAVE BEEN PROCESSED BY THIS POINT
@@ -6764,7 +6764,7 @@
                 (do (SMADJ WORD-BEING-INTERPRETED)
                     (GO =>))
             (isq WORD-BEING-INTERPRETED 'POSS)
-                (do (SMPOSS)
+                (do (smposs)
                     (GO =>)))
         (GO =>)))
 
@@ -6857,7 +6857,7 @@
         ;; IF X IS EMPTY, FAIL.
         ;; TRY TO SEE IF FIRST NG OF X SATIFIES CONTRAST AND/OR COULD BE REFERENT, ELSE TRY NEXT NG IN X
         (loop-when x x => (RETURN nil)
-            (SETQ WORD-BEING-INTERPRETED (SMONE3 x))
+            (SETQ WORD-BEING-INTERPRETED (smone3 x CONTRAST))
             (or WORD-BEING-INTERPRETED (recur (cdr x))))
         ;; AT THIS POINT WORD-BEING-INTERPRETED IS (SHOULD BE) A
         ;; LIST A WORD NODES OF THE NG WHICH IS THE REFERENT FOR
@@ -6875,33 +6875,26 @@
                 (recur)))
         *sm*))
 
-(§ defn- SMONE3 [ONENG]
-    ;; SMONE3 TAKES AN NG WHICH IS A POSSIBLE REFERENT FOR "ONE".
-    ;; IT FIRST CUTS THE NG TO BE ONLY (NOUN ADJ ... ADJ ETC) I.E.
-    ;; IT STRIPS OF QUALIFYING PHRASES.  IF THERE IS NO CONTRAST,
-    ;; THEN THIS MUNGED NG IS RETURNED AS THE REFERENT.  IF THERE
-    ;; IS A CONTRAST, THEN IT CHECKS TO SEE IF THE NG SATISFIES
-    ;; THAT CONTRAST.
-    (let [NGWORDS nil x nil]
-        (or (isq ONENG 'NG)
-            (bug "SMONE3: ONE REFERENT IS NOT A NG"))
-        (SETQ NGWORDS (daughters ONENG))
-    LOOP (COND ((nil? NGWORDS) (RETURN nil))                        ;; FAIL, IF NG HAS NO NOUN HEAD
-            ((isq NGWORDS 'NOUN))                                    ;; IF FIND NOUN HEAD OF NG, WIN
-            (:else (SETQ NGWORDS (cdr NGWORDS)) (GO LOOP)))
-        (or CONTRAST (RETURN NGWORDS))                              ;; IF THERE IS NO CONTRAST, REFERENT WINS BY DEFAULT
-        (SETQ x (reverse NGWORDS))
-    LOOK (COND ((and (= (car CONTRAST) (getprop (root (firstword x)) 'CONTRAST)) (not (= (cadr CONTRAST) (root (firstword x)))))
-                (RETURN (reverse (cdr x))))
-            ((SETQ x (cdr x)) (GO LOOK))
-            (:else (RETURN nil)))))                                  ;; FAIL, IF NO WORD SUPPLIES CONTRAST
+(defn- smone3 [a contrast]
+    ;; SMONE3 TAKES AN NG, WHICH IS A POSSIBLE REFERENT FOR "ONE".
+    ;; IT FIRST CUTS THE NG TO BE ONLY (NOUN ADJ ... ADJ ETC), I.E. IT STRIPS OF QUALIFYING PHRASES.
+    ;; IF THERE IS NO CONTRAST, THEN THIS MUNGED NG IS RETURNED AS THE REFERENT.
+    ;; IF THERE IS A CONTRAST, THEN IT CHECKS TO SEE IF THE NG SATISFIES THAT CONTRAST.
+    (when-not (isq a 'NG)
+        (bug "SMONE3: ONE REFERENT IS NOT A NG"))
+    (let-when [a (loop-when-recur [a (daughters a)] (and a (not (isq a 'NOUN))) [(cdr a)] => a)] (and a contrast) => a
+        (loop [a (reverse a)]
+            (let [x (root (firstword a))]
+                (cond (and (= (car contrast) (getprop x 'CONTRAST)) (not= (cadr contrast) x))
+                        (reverse (cdr a))
+                    (cdr a) (recur (cdr a)))))))
 
-(§ defn- SMPOSS []
-    (let [x (SMPOSS2 *c* (MOVE-PT 'H 'PV '(POSS)))]
-        (and x (SMRELATE x))))
+(defn- smposs []
+    (let [x (smposs2 *c* (MOVE-PT 'H 'PV '(POSS)))]
+        (and x (smrelate x))))
 
-(§ defn- SMPOSS2 [headnode modnode]
-    (let [*sm* nil SMSUB (semantics modnode) SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST (RETQ AMOB1 (semantics headnode))]
+(defn- SMPOSS2 [headnode modnode]
+    (let [*sm* nil SMSUB (semantics modnode) SMOB1 nil SMOB2 nil SMOBL nil SMCOMP nil RELLIST (SETQ SMOB1 (semantics headnode))]
         (smset '(!HAVE))
         (and *sm* (let [x (gensym 'NODE)] (and x (putprop! x 'SEMANTICS *sm*) (list x))))))
 
@@ -6909,7 +6902,7 @@
 ;; WHICH HAS ALREADY BEEN SEMANTICALLY PROCESSED.  ITS SM CONTAINS THE OSS'S FOR WHOSE DOING THE POSSESSING.
 ;; THE SM CURRENTLY ACTIVE IS THE THING BEING POSSESSED.
 
-(§ defn- SMRELATE [node]
+(defn- smrelate [node]
     ;; RELATES A DESCRIPTIVE RSS TO ANOTHER RSS OR OSS ADDING IT
     ;; TO THE LIST OF RELATIONS.  IT TAKES THE LIST OF SS IN SM,
     ;; AND REPLACES SM WITH THE NEW LIST OF MODIFIED SS'S.  THE
@@ -6918,9 +6911,9 @@
     ((lambda [x] (and x (smset x)))
         (doall (map (lambda [RSS]
             (let [REL (rel? RSS)]
-                (or (memq REL *sm*)
+                (when-not (memq REL *sm*)
                     (bug "SMRELATE - TO WHOM?"))
-                (RETURN (BUILD
+                (BUILD
                     OSSNODE= (and (oss? REL) (gensym 'OSS))
                     RSSNODE= (and (rss? REL) (gensym 'RSS))
                     MARKERS= (or (and (relmarkers? RSS) (car (relmarkers? RSS))) (markers? REL))
@@ -6932,7 +6925,7 @@
                     NEGATIVE= (negative? REL)
                     DETERMINER= (determiner? REL)
                     RELATIONS= (cons RSS (relations? REL))
-                    REL= (rel? REL)))))
+                    REL= (rel? REL))))
             (semantics node)))))
 
 (§ defn- SMCL1 []
@@ -8680,9 +8673,9 @@ THEREINIT
         (when (and (nextword? *n* 'THERE) (parse nil 'THERE) (fq! 'DECLAR)) (if *nn* (GO THERE) (GO FAIL (m! 'INIT))))
 THER2
         (when *labeltrace* (passing 'THER2))
-        (and (nq 'PREP) (parse 'PREPG 'INIT) (or (SMRELATE *h*) (POP)))
+        (and (nq 'PREP) (parse 'PREPG 'INIT) (or (smrelate *h*) (POP)))
         (and (nq 'ADV) (parse 'ADV 'TIMW) (or (SMADVERB) (POP)))
-        (and (nq 'ADV) (parse 'ADJG 'ADV 'VBAD) (or (SMRELATE *h*) (POP)))
+        (and (nq 'ADV) (parse 'ADJG 'ADV 'VBAD) (or (smrelate *h*) (POP)))
         (parse 'NG 'TIME)
         (if (= *locationmarker* *n*) (if *nn* (GO CLAUSETYPE) (GO INPOP)) (GO INIT))
 INPOP
@@ -8869,7 +8862,7 @@ TIMEQ
 PREPSHORT
         (when *labeltrace* (passing 'PREPSHORT))
         (when-not (and (nq 'PREP) (parse 'PREPG)) (GO FAIL (m! 'ONT-SHORT-PREP)))
-        (when-not (SMRELATE *h*) (GO FAIL (m! 'ONTß)))
+        (when-not (smrelate *h*) (GO FAIL (m! 'ONTß)))
         (if (cq 'REL-NOT-FOUND) (if *nn* (GO PREPSHORT) (GO FAIL (m! 'ONT-NOT-FOUND))) (GO TONT))
 PONT
         (when *labeltrace* (passing 'PONT))
@@ -8881,9 +8874,9 @@ TONT
         (when-not (set! *position-of-ptw* *n*) (GO RETSM))
 NPASV
         (when *labeltrace* (passing 'NPASV))
-        (when (and (nq 'PREP) (parse 'PREPG) (SMRELATE *h*) (not *nn*)) (GO RETSM))
+        (when (and (nq 'PREP) (parse 'PREPG) (smrelate *h*) (not *nn*)) (GO RETSM))
         (when (and (nq 'TIMW) (parse 'ADV 'TIMW) (or (smtime) (GO FAIL)) (not *nn*)) (GO RETSM))
-        (when (and (not (cq 'BE)) (parse 'ADJG 'ADV) (or (SMRELATE *h*) (GO FAIL)) (not *nn*)) (GO RETSM))
+        (when (and (not (cq 'BE)) (parse 'ADJG 'ADV) (or (smrelate *h*) (GO FAIL)) (not *nn*)) (GO RETSM))
         (when (and (parse 'NG 'TIME) (or (smtime) (GO FAIL)) (not *nn*)) (GO RETSM))
         (when (and (nq 'PLACE) (parse 'ADV 'PLACE) (or (smplace) (GO FAIL)) (not *nn*)) (GO RETSM))
         (when (and (nq 'BINDER) (parse 'CLAUSE 'BOUND) (or (SMBIND) (GO FAIL)) (not *nn*)) (GO RETSM))
@@ -9124,7 +9117,7 @@ TPRON
 EVERPRON
         (when *labeltrace* (passing 'EVERPRON))
         (when-not (and (parse 'PRON 'EVERPRON) (smpron *h*)) (GO FAIL))
-        (if (and (parse 'CLAUSE 'RSQ 'NOREL) (SMRELATE *h*)) (GO RETSM) (GO FAIL))
+        (if (and (parse 'CLAUSE 'RSQ 'NOREL) (smrelate *h*)) (GO RETSM) (GO FAIL))
 AS
         (when *labeltrace* (passing 'AS))
         (if (and (parse nil 'AS) (parse 'NUMD 'NUMDAS) *nn* (parse nil 'AS) *nn*) (GO NUMD2) (GO FAIL (m! 'AS)))
@@ -9230,13 +9223,13 @@ SMNG
         (or (SMNG1) (GO FAIL))
         (when (isq *h* 'POSS) (if *nn* (GO POSS) (GO RETSM)))
         (when-not (and (cq 'THAN) (parse 'ADJG)) (GO RSQ-TO))
-        (if (SMRELATE *h*) (GO RETSM) (GO FAIL))
+        (if (smrelate *h*) (GO RETSM) (GO FAIL))
 RSQ-TO
         (when *labeltrace* (passing 'RSQ-TO))
-        (when (and (nextword? *n* 'TO) (meet *fe* '(COMP SUBJ)) (parse 'CLAUSE 'RSQ 'TO) (or (SMRELATE *h*) (GO POPRET))) (GO RETSM))
+        (when (and (nextword? *n* 'TO) (meet *fe* '(COMP SUBJ)) (parse 'CLAUSE 'RSQ 'TO) (or (smrelate *h*) (GO POPRET))) (GO RETSM))
         (when-not (and (or (nextword? *n* 'AS) (nq 'COMPAR)) (parse 'ADJG 'THANNEED)) (GO PREPNG))
         (and (nil? *n*) (cq 'SUBJ) (isq (MOVE-PT 'C 'PV) 'AUX) (isq *pt* 'BE) (GO POPRET))
-        (if (SMRELATE *h*) (if *nn* (GO RSQ-TO) (GO RETSM)) (GO POPRET))
+        (if (smrelate *h*) (if *nn* (GO RSQ-TO) (GO RETSM)) (GO POPRET))
 PREPNG
         (when *labeltrace* (passing 'PREPNG))
         (when-not (and (nq 'PREP) (not (or (and (nq 'PLACE) (cq 'NOLOC)) (and (cq 'OBJ1) (isq *mvb* 'TRANSL) (not (isq (MOVE-PT 'C 'U) 'QUEST))))) (parse 'PREPG 'Q)) (GO DISGRSQ))
@@ -9246,7 +9239,7 @@ PREPNG
             (isq *pt* 'BE)
             (not (isq (MOVE-PT 'U) 'NGQ))
             (GO POPRET))
-        (if (SMRELATE *h*) (if *nn* (GO RSQ-TO) (GO RETSM)) (GO POPRET))
+        (if (smrelate *h*) (if *nn* (GO RSQ-TO) (GO RETSM)) (GO POPRET))
 DISGRSQ
         (when *labeltrace* (passing 'DISGRSQ))
         (when-not (= (car *mes*) 'PREP-WHICH) (GO RSQ))
@@ -9256,7 +9249,7 @@ RSQ
         (when *labeltrace* (passing 'RSQ))
         (when (and (isq (MOVE-PT 'C 'U) 'POLR2) (cq 'SUBJ) (nq 'VB) (not (cq 'SUBJT)) (not (isq *pt* 'QADJ))) (GO RETSM))
         (when-not (parse 'CLAUSE 'RSQ) (GO RETSM))
-        (if (SMRELATE *h*) (GO RETSM) (GO POPRET))
+        (if (smrelate *h*) (GO RETSM) (GO POPRET))
 RED0
         (when *labeltrace* (passing 'RED0))
         (set! *fe* *tmp*)
