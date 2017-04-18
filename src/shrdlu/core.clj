@@ -136,24 +136,11 @@
 (DEFPROP TC-FINDSPACE
     (THCONSE (SURF SIZE OBJ SPACE)
         (#FINDSPACE $?SURF $?SIZE $?OBJ $?SPACE)
-        (THOR (AND (NOT (MEMQ $?SURF '(:BOX :TABLE)))
-                (NOT (GET '#NOCLEAR 'THASSERTION))
-                (THSETQ $_SPACE (FINDSPACE 'CENTER
-                        $?SURF
-                        $?SIZE
-                        $?OBJ)))
-        (AND (OR (EQ $?SURF ':BOX)
-                (AND (NOT (EQ $?SURF ':TABLE))
-                    (GET '#NOCLEAR
-                    'THASSERTION)))
-                (THSETQ $_SPACE (FINDSPACE 'PACK
-                        $?SURF
-                        $?SIZE
-                        $?OBJ)))
-        (THSETQ $_SPACE (FINDSPACE 'RANDOM
-                        $?SURF
-                        $?SIZE
-                        $?OBJ))))
+        (THOR (AND (NOT (MEMQ $?SURF '(:BOX :TABLE))) (NOT (GET '#NOCLEAR 'THASSERTION))
+            (THSETQ $_SPACE (FINDSPACE 'CENTER $?SURF $?SIZE $?OBJ)))
+        (AND (OR (EQ $?SURF ':BOX) (AND (NOT (EQ $?SURF ':TABLE)) (GET '#NOCLEAR 'THASSERTION)))
+            (THSETQ $_SPACE (FINDSPACE 'PACK $?SURF $?SIZE $?OBJ)))
+        (THSETQ $_SPACE (FINDSPACE 'RANDOM $?SURF $?SIZE $?OBJ))))
     THEOREM)
 
 (DEFPROP TC-GET-RID-OF
@@ -162,15 +149,13 @@
         (OR NOMEM (THVSETQ $_EV $?WHY))
     =>  (THCOND ((NULL $?X))
             ((ATOM $?X)
-            (MEMORY)
-            (THGOAL (#FINDSPACE :TABLE $E (SIZE $?X) $?X $_Y)
-                (THUSE TC-FINDSPACE))
-            (THGOAL (#PUT $?X $?Y) (THNODB) (THUSE TC-PUT))
-            (MEMOREND (#GET-RID-OF $?EV $?X)))
-            ((THGOAL (#GET-RID-OF $E (CAR $?X))
-                (THUSE TC-GET-RID-OF))
-            (OR (THSETQ $_X (CDR $?X)) (THSUCCEED THEOREM))
-            (THGO =>))))
+                (MEMORY)
+                (THGOAL (#FINDSPACE :TABLE $E (SIZE $?X) $?X $_Y) (THUSE TC-FINDSPACE))
+                (THGOAL (#PUT $?X $?Y) (THNODB) (THUSE TC-PUT))
+                (MEMOREND (#GET-RID-OF $?EV $?X)))
+            ((THGOAL (#GET-RID-OF $E (CAR $?X)) (THUSE TC-GET-RID-OF))
+                (OR (THSETQ $_X (CDR $?X)) (THSUCCEED THEOREM))
+                (THGO =>))))
     THEOREM)
 
 (DEFPROP TC-GRASP
@@ -182,9 +167,7 @@
         (THGOAL (#CLEARTOP $?X) (THUSE TC-CLEARTOP))
         (THCOND ((THGOAL (#GRASPING $_Y))
             (THOR (THGOAL (#UNGRASP) (THNODB) (THUSE TC-UNGRASP))
-                (THGOAL (#GET-RID-OF $?Y)
-                    (THNODB)
-                    (THUSE TC-GET-RID-OF))))
+                (THGOAL (#GET-RID-OF $?Y) (THNODB) (THUSE TC-GET-RID-OF))))
             ((THSUCCEED)))
         (THSETQ $_Y (TOPCENTER $?X))
         (THGOAL (#MOVEHAND2 $?Y) (THNODB) (THUSE TC-MOVEHAND2))
@@ -202,14 +185,8 @@
         (THOR (THGOAL (#MANIP $?Y)) (THGOAL (#IS $?Y #BOX)))
         (THOR (THGOAL (#MANIP $?Z)) (THGOAL (#IS $?Z #BOX)))
         (NOT (EQ $?Y $?Z))
-        (LOCGREATER $?Y $?Z ((LAMBDA (X) (COND ((EQ X '#RIGHT)
-                            'CAR)
-                            ((EQ X '#BEHIND)
-                            'CADR)
-                            ((EQ X '#ABOVE)
-                            'CADDR)
-                            ((ERT TC-LOC))))
-                    $?X)))
+        (LOCGREATER $?Y $?Z
+            ((LAMBDA (X) (COND ((EQ X '#RIGHT) 'CAR) ((EQ X '#BEHIND) 'CADR) ((EQ X '#ABOVE) 'CADDR) ((ERT TC-LOC)))) $?X)))
     THEOREM)
 
 (DEFPROP TC-MAKESPACE
@@ -219,9 +196,8 @@
         (MEMORY)
     => (THAND (THGOAL (#SUPPORT $?SURF $_X))
             (THGOAL (#GET-RID-OF $?X) (THUSE TC-GET-RID-OF)))
-        (THOR (THGOAL (#FINDSPACE $?SURF $?SIZE $?OBJ $?SPACE)
-            (THUSE TC-FINDSPACE))
-        (THGO =>))
+        (THOR (THGOAL (#FINDSPACE $?SURF $?SIZE $?OBJ $?SPACE) (THUSE TC-FINDSPACE))
+            (THGO =>))
         (MEMOREND (#MAKESPACE $?EV $?SURF)))
     THEOREM)
 
@@ -238,14 +214,10 @@
         (THCOND
             ((EQUAL HANDAT $?Y) (THSUCCEED THEOREM))
             ((THGOAL (#GRASPING $?X))
-                (THVSETQ $_Z
-                    (PROG (X Y)
+                (THVSETQ $_Z (PROG (X Y)
                     (SETQ X (ATAB $?X))
-                    (AND (CLEAR (SETQ Y (DIFF $?Y
-                                    (TCENT '(0 0 0) (CADDR X))))
-                            (LIST (CAADDR X)
-                                (CADADR (CDR X))
-                                (DIFFERENCE 512 (CADDR Y)))
+                    (AND (CLEAR (SETQ Y (DIFF $?Y (TCENT '(0 0 0) (CADDR X))))
+                            (LIST (CAADDR X) (CADADR (CDR X)) (DIFFERENCE 512 (CADDR Y)))
                             (CAR X))
                         (RETURN Y))))
                 (THGOAL (#AT $?X $_W))
@@ -269,28 +241,20 @@
     (THCONSE (Y LOC)
         (#MOVEHAND2 $?Y)
         (COND ((EQUAL $?Y HANDAT) (THSUCCEED THEOREM))
-        ((AND (LESSP 31 (CAR $?Y) 609)
-                (LESSP -1 (CADR $?Y) 609)
-                (LESSP -1 (CADDR $?Y) 513))))
+            ((AND (LESSP 31 (CAR $?Y) 609) (LESSP -1 (CADR $?Y) 609) (LESSP -1 (CADDR $?Y) 513))))
         (THVSETQ $_LOC HANDAT)
         (THSETQ HANDAT $?Y)
         (THSETQ THTIME (ADD1 THTIME))
         (THCOND (DOIT (THOR (EVAL (CONS 'MOVETO HANDAT))
                     (PROG (ADJUST) (EVAL (CONS 'MOVETO $?LOC)))))
-            ((THSETQ PLAN
-                (CONS (CONS 'MOVETO $?Y) PLAN)))))
+            ((THSETQ PLAN (CONS (CONS 'MOVETO $?Y) PLAN)))))
     THEOREM)
 
 (DEFPROP TC-NAME
     (THCONSE (X)
         (#NAME $?X)
         (THVSETQ $_X (LISTIFY $?X))
-        (THVSETQ $_X (THFIND ALL
-                    $?Y
-                    (Y Z)
-                    (THAMONG $?Z $?X)
-                    (THOR (THGOAL (#CALL $?Z $?Y))
-                        (THSETQ $_Y $?Z))))
+        (THVSETQ $_X (THFIND ALL $?Y (Y Z) (THAMONG $?Z $?X) (THOR (THGOAL (#CALL $?Z $?Y)) (THSETQ $_Y $?Z))))
         (MAPC 'PRINT $?X))
     THEOREM)
 
@@ -302,11 +266,9 @@
     THEOREM)
 
 (DEFPROP TC-ON
-    (THCONSE (X Y Z) (#ON $?X $?Y) (THOR (THGOAL (#SUPPORT $?Y $?X))
-                        (THAND (THASVAL $?X)
-                            (THGOAL (#SUPPORT $_Z $?X))
-                            (THGOAL (#ON $?Z $?Y)
-                                (THUSE TC-ON)))))
+    (THCONSE (X Y Z)
+        (#ON $?X $?Y)
+        (THOR (THGOAL (#SUPPORT $?Y $?X)) (THAND (THASVAL $?X) (THGOAL (#SUPPORT $_Z $?X)) (THGOAL (#ON $?Z $?Y) (THUSE TC-ON)))))
     THEOREM)
 
 (DEFPROP TC-PACK
@@ -316,54 +278,40 @@
         (OR (THVSETQ $_PYR (PACKO $?OBJ '#PYRAMID)) T)
     =>  (THCOND ((NULL $?BLOCKS)
             (THCOND ((NULL $?PYR) (THSUCCEED THEOREM))
-                ((THVSETQ $_Y (FINDSPACE 'PACK
-                            $?SURF
-                            (SIZE (CAR $?PYR))
-                            (CAR $?PYR)))
-                (THGOAL (#PUT $E (CAR $?PYR) $?Y)
-                    (THUSE TC-PUT))
-                (OR (THSETQ $?PYR (CDR $?PYR)) T)
-                (THGO =>))))
-            ((THSETQ $_X (CAR $?BLOCKS))
-            (THVSETQ $?Y (FINDSPACE 'PACK
-                        $?SURF
-                        (SIZE $?X)
-                        $?X))
-            (THGOAL (#PUT $?X $?Y) (THUSE TC-PUT))
-            (OR (THSETQ $?BLOCKS (CDR $?BLOCKS)) T)
-            (THCOND ((THVSETQ $_Y (OR (PACKON $?X $?PYR)
-                            (PACKON $?X $?BLOCKS)))
-                (THGOAL (#PUTON $?Y $?X) (THUSE TC-PUTON))
-                (COND ((MEMQ $?Y $?PYR)
-                    (THSETQ $_PYR
-                        (DELQ $?Y
-                            (APPEND $?PYR NIL))))
-                    ((THSETQ $_BLOCKS
-                        (DELQ $?Y (APPEND $?BLOCKS
-                                    NIL))))))
-                ((THSUCCEED)))
-            (THGO =>))))
+                ((THVSETQ $_Y (FINDSPACE 'PACK $?SURF (SIZE (CAR $?PYR)) (CAR $?PYR)))
+                    (THGOAL (#PUT $E (CAR $?PYR) $?Y) (THUSE TC-PUT))
+                    (OR (THSETQ $?PYR (CDR $?PYR)) T)
+                    (THGO =>))))
+                ((THSETQ $_X (CAR $?BLOCKS))
+                    (THVSETQ $?Y (FINDSPACE 'PACK $?SURF (SIZE $?X) $?X))
+                    (THGOAL (#PUT $?X $?Y) (THUSE TC-PUT))
+                    (OR (THSETQ $?BLOCKS (CDR $?BLOCKS)) T)
+                    (THCOND ((THVSETQ $_Y (OR (PACKON $?X $?PYR) (PACKON $?X $?BLOCKS)))
+                            (THGOAL (#PUTON $?Y $?X) (THUSE TC-PUTON))
+                            (COND ((MEMQ $?Y $?PYR)
+                                    (THSETQ $_PYR (DELQ $?Y (APPEND $?PYR NIL))))
+                                ((THSETQ $_BLOCKS (DELQ $?Y (APPEND $?BLOCKS NIL))))))
+                        ((THSUCCEED)))
+                    (THGO =>))))
     THEOREM)
 
 (DEFPROP TC-PART
     (THCONSE (X Y Z)
         (#PART $?X $?Y)
         (THGOAL (#IS $?Y #STACK))
-        (THGOAL (#CHOOSE $?X $_Z '(((THGOAL (#PART $?* $?Y)))))
-            (THUSE TC-CHOOSE))
+        (THGOAL (#CHOOSE $?X $_Z '(((THGOAL (#PART $?* $?Y))))) (THUSE TC-CHOOSE))
         (OR (NOT (ATOM $?Z)) (THSETQ $_Z (LIST $?Z)))
     =>  (THCOND ((NULL $?Z) (THSUCCEED))
             ((THGOAL (#PART $E (CAR $?Z) $?Y))
-            (OR (THSETQ $_Z (CDR $?Z)) T)
-            (THGO =>))
+                (OR (THSETQ $_Z (CDR $?Z)) T)
+                (THGO =>))
             ((THFAIL))))
     THCONSE)
 
 (DEFPROP TC-PHYSOB
     (THCONSE (X)
         (#PHYSOB $?X)
-        (THOR (THGOAL (#MANIP $?X))
-        (THAMONG $?X '(:BOX :TABLE :HAND))))
+        (THOR (THGOAL (#MANIP $?X)) (THAMONG $?X '(:BOX :TABLE :HAND))))
     THEOREM)
 
 (DEFPROP TC-PICKUP
@@ -378,20 +326,17 @@
 (DEFPROP TC-REFERS
     (THCONSE (X)
         (#REFERS $?X)
-        (EVAL (LIST 'THSETQ (LIST 'THV $?X)(LIST 'QUOTE (ATOMIFY (GET $?X 'BIND))))))
+        (EVAL (LIST 'THSETQ (LIST 'THV $?X) (LIST 'QUOTE (ATOMIFY (GET $?X 'BIND))))))
     THEOREM)
 
 (DEFPROP TC-PUT
     (THCONSE (X Y Z)
         (#PUT $?X $?Y)
         (THCOND ((THASVAL $?Y)
-            (THCOND ((ATOM $?Y) (THGOAL (#CHOOSEPLACE $?Y)
-                            (THUSE TC-CHOOSEPLACE)))
-                ((THSUCCEED))))
-            ((THGOAL (#GET-RID-OF $?X)
-                (THNODB)
-                (THUSE TC-GET-RID-OF))
-            (THSUCCEED THEOREM)))
+                (THCOND ((ATOM $?Y) (THGOAL (#CHOOSEPLACE $?Y) (THUSE TC-CHOOSEPLACE)))
+                    ((THSUCCEED))))
+            ((THGOAL (#GET-RID-OF $?X) (THNODB) (THUSE TC-GET-RID-OF))
+                (THSUCCEED THEOREM)))
         (CLEAR $?Y (SIZE $?X) $?X)
         (SUPPORT $?Y (SIZE $?X) $?X)
         (THGOAL (#GRASP $?X) (THUSE TC-GRASP))
@@ -405,8 +350,8 @@
         (#PUTIN $?X $?Y)
         (MEMORY)
         (THCOND ((THGOAL (#PUTON $?X $?Y) (THUSE TC-PUTON))
-            (MEMOREND (#PUTIN $?EV $?X $?Y))
-            (THSUCCEED THEOREM))
+                (MEMOREND (#PUTIN $?EV $?X $?Y))
+                (THSUCCEED THEOREM))
             ((THSUCCEED)))
         (THGOAL (#IS $?Y #BOX))
         (THVSETQ $_Z
@@ -425,30 +370,21 @@
         (NOT (COND ((ATOM $?X) (EQ $?X $?Y)) ((MEMQ $?Y $?X))))
         (MEMORY)
         (THCOND ((ATOM $?X)
-            (THGOAL (#CLEARTOP $?X) (THUSE TC-CLEARTOP))
-            (THOR (THGOAL (#FINDSPACE $?Y $E (SIZE $?X) $?X $_Z)
-                    (THUSE TC-FINDSPACE))
-                (AND (NULL (GET '#NOCLEAR
-                        'THASSERTION))
-                    (THGOAL (#FINDSPACE $?Y
-                            $E
-                            (SIZE $?X)
-                            $?X
-                            $_Z)
-                        (THUSE TC-MAKESPACE))))
-            (THGOAL (#PUT $?X $?Z) (THNODB) (THUSE TC-PUT)))
+                (THGOAL (#CLEARTOP $?X) (THUSE TC-CLEARTOP))
+                (THOR (THGOAL (#FINDSPACE $?Y $E (SIZE $?X) $?X $_Z) (THUSE TC-FINDSPACE))
+                    (AND (NULL (GET '#NOCLEAR 'THASSERTION))
+                        (THGOAL (#FINDSPACE $?Y $E (SIZE $?X) $?X $_Z) (THUSE TC-MAKESPACE))))
+                (THGOAL (#PUT $?X $?Z) (THNODB) (THUSE TC-PUT)))
             ((THASSERT (#NOCLEAR))
-            (THPROG ((W $?X))
-                UP
-                (THOR (THGOAL (#PUTON $E (CAR $?W) $?Y)
-                        (THUSE TC-PUTON))
-                    (THFAIL THPROG))
-                (THOR (THSETQ $?W (CDR $?W)) (THRETURN T))
-                (THGO UP))
+                (THPROG ((W $?X))
+                =>  (THOR (THGOAL (#PUTON $E (CAR $?W) $?Y) (THUSE TC-PUTON))
+                        (THFAIL THPROG))
+                    (THOR (THSETQ $?W (CDR $?W)) (THRETURN T))
+                    (THGO =>))
             (THERASE (#NOCLEAR)))
             ((THNOT (THGOAL (#IS $?Y #BOX)))
-            (THGOAL (#CLEARTOP $?Y) (THUSE TC-CLEARTOP))
-            (THGOAL (#PACK $?X $?Y) (THUSE TC-PACK))))
+                (THGOAL (#CLEARTOP $?Y) (THUSE TC-CLEARTOP))
+                (THGOAL (#PACK $?X $?Y) (THUSE TC-PACK))))
         (MEMOREND (#PUTON $?EV $?X $?Y)))
     THEOREM)
 
@@ -456,9 +392,7 @@
     (THCONSE ((WHY (EV)) EV)
         (#RAISEHAND)
         (MEMORY)
-        (THGOAL (#MOVEHAND $E (LIST (CAR HANDAT) (CADR HANDAT) 512))
-            (THNODB)
-            (THUSE TC-MOVEHAND))
+        (THGOAL (#MOVEHAND $E (LIST (CAR HANDAT) (CADR HANDAT) 512)) (THNODB) (THUSE TC-MOVEHAND))
         (MEMOREND (#RAISEHAND $?EV)))
     THEOREM)
 
@@ -480,8 +414,7 @@
             $?Z
             (Z)
             (THGOAL (#ON $?Z $?Y) (THUSE TC-ON))
-            (THAND (THASSERT (#PART $?Z $?X))
-                (THFINALIZE THAND))))
+            (THAND (THASSERT (#PART $?Z $?X)) (THFINALIZE THAND))))
     THEOREM)
 
 (DEFPROP TC-STACKUP
@@ -491,27 +424,24 @@
             (NOT (DPRINT2 'TOO\ HIGH\,)))
         (THCOND
             ((AND $?X (CDR $?X)))
-            ((THSETQ
-                $_X
+            ((THSETQ $_X
                 (APPEND $?X
                     (THVAL (LIST 'THFIND
                         (COND ((NULL $?X) 3) (2))
                         '$?Y
                         '(Y)
-                        '(THOR (THAND (THGOAL (#IS $?Y #BLOCK))
-                                    (THNOT (THGOAL (#SUPPORT $?Y ?))))
-                                (THGOAL (#IS $?Y #BLOCK)))
+                        '(THOR (THAND (THGOAL (#IS $?Y #BLOCK)) (THNOT (THGOAL (#SUPPORT $?Y ?)))) (THGOAL (#IS $?Y #BLOCK)))
                         '(NOT (EQ $?X $?Y)))
                         THALIST)))))
         (COND ((THVSETQ $_PYR (PACKO $?X '#PYRAMID)) (NULL (CDR $?PYR))) (T))
         (THVSETQ $_BLOCKS (CONS ':TABLE (PACKO $?X '#BLOCK)))
         (MEMORY)
-    =>  (THCOND ((CDR $?BLOCKS) (THGOAL (#PUTON $E (CADR $?BLOCKS) $E (CAR $?BLOCKS))
-                        (THUSE TC-PUTON))
-                    (THSETQ $_BLOCKS (CDR $?BLOCKS))
-                    (THGO =>))
-            ($?PYR (THGOAL (#PUTON $E (CAR $?PYR) $E (CAR $?BLOCKS))
-                    (THUSE TC-PUTON)))
+    =>  (THCOND
+            ((CDR $?BLOCKS)
+                (THGOAL (#PUTON $E (CADR $?BLOCKS) $E (CAR $?BLOCKS)) (THUSE TC-PUTON))
+                (THSETQ $_BLOCKS (CDR $?BLOCKS))
+                (THGO =>))
+            ($?PYR (THGOAL (#PUTON $E (CAR $?PYR) $E (CAR $?BLOCKS)) (THUSE TC-PUTON)))
             ((MEMOREND (#STACKUP $?EV $?X)))))
     THEOREM)
 
@@ -522,21 +452,13 @@
 (DEFPROP TC-STARTEND4
     (THCONSE (X NEWEV Z EV TIME)
         ($?X $?NEWEV $?EV $?TIME)
-        (OR (AND (THASVAL $?X)
-            (THASVAL $?EV)
-            (THASVAL $?TIME)
-            (NOT (THASVAL $?NEWEV)))
-            (ERT TC-STARTEND4))
+        (OR (AND (THASVAL $?X) (THASVAL $?EV) (THASVAL $?TIME) (NOT (THASVAL $?NEWEV))) (ERT TC-STARTEND4))
         (THGOAL (#CHOOSE $?EV $_Z NIL) (THUSE TC-CHOOSE))
         (OR (ATOM $?Z) (ERT TC-STARTEND4 ATOM))
         (THSETQ $_NEWEV (MAKESYM 'EV))
         (PUTPROP $?NEWEV
             (PUTPROP $?NEWEV
-                (GET $?Z (COND ((EQ $?X '#START)
-                        'START)
-                        ((EQ $?X '#END)
-                        'END)
-                        ((ERT TC-STARTEND (THV X)))))
+                (GET $?Z (COND ((EQ $?X '#START) 'START) ((EQ $?X '#END) 'END) ((ERT TC-STARTEND (THV X)))))
                 'START)
             'END)
         (TIMECHK $?NEWEV $?TIME)
@@ -548,14 +470,13 @@
     (THCONSE (X OBJ (WHO (EV)) EV)
         (#UNGRASP)
         (THCOND ((THGOAL (#GRASPING $?X))
-            (MEMORY)
-            (THGOAL (#SUPPORT ? $?X))
-            (THERASE (#GRASPING $?X))
-            (MEMOREND (#UNGRASP $?EV $?X))
-            (THSETQ THTIME (ADD1 THTIME))
-            (THCOND (DOIT (THOR (UNGRASP) (AND (GRASP $?X) NIL)))
-                ((THSETQ PLAN
-                    (CONS '(UNGRASP) PLAN)))))
+                (MEMORY)
+                (THGOAL (#SUPPORT ? $?X))
+                (THERASE (#GRASPING $?X))
+                (MEMOREND (#UNGRASP $?EV $?X))
+                (THSETQ THTIME (ADD1 THTIME))
+                (THCOND (DOIT (THOR (UNGRASP) (AND (GRASP $?X) NIL)))
+                    ((THSETQ PLAN (CONS '(UNGRASP) PLAN)))))
             ((THSUCCEED))))
     THEOREM)
 
@@ -568,8 +489,7 @@
 (DEFPROP TC-WANT5
     (THCONSE (X NEWEV EV TIME Z)
         (#WANT $?NEWEV $?X $?EV $?TIME)
-        (OR (AND (THASVAL $?X) (THASVAL $?EV) (THASVAL $?TIME))
-            (ERT TC-WANT5 THASVAL))
+        (OR (AND (THASVAL $?X) (THASVAL $?EV) (THASVAL $?TIME)) (ERT TC-WANT5 THASVAL))
         (EQ $?X ':FRIEND)
         (EQ (GET $?EV 'WHY) 'COMMAND)
         (THSETQ $_NEWEV (MAKESYM 'EV))
@@ -589,7 +509,7 @@
     (THCONSE (X EV TIME)
         (#PICKUP $?X $?TIME)
         (THOR (THAND (THGOAL (#PICKUP$?EV $?X)) (TIMECHK $?EV $?TIME))
-        (THGOAL (#PICKUP $?EV $?X $?TIME) (THUSE TCTE-PICKUP))))
+            (THGOAL (#PICKUP $?EV $?X $?TIME) (THUSE TCTE-PICKUP))))
     THEOREM)
 
 (DEFPROP TCT-PUT
@@ -601,14 +521,11 @@
 (DEFPROP TCT-AT
     (THCONSE (X Y Z TIME W)
         (#AT $?Y $?Z $?TIME)
-        (THOR (THGOAL (#MANIP $?Y)) (THAND (THGOAL (#IS $?Y #BOX))
-                            (THGOAL (#AT $?Y $?Z))
-                            (THSUCCEED THEOREM)))
+        (THOR (THGOAL (#MANIP $?Y))
+            (THAND (THGOAL (#IS $?Y #BOX)) (THGOAL (#AT $?Y $?Z)) (THSUCCEED THEOREM)))
         (THSETQ $_X (TFIND $?Y $?TIME))
         (THOR (THSETQ $_W (CAR $?X))
-            (THAND (THAMONG $?W (CDR $?X))
-                (OR (NOT (LESSP (CAR $?W) (OR (START? $?TIME) -1)))
-                (THFAIL THAND))))
+            (THAND (THAMONG $?W (CDR $?X)) (OR (NOT (LESSP (CAR $?W) (OR (START? $?TIME) -1))) (THFAIL THAND))))
         (THSETQ $?Z (CADR $?W)))
     THEOREM)
 
@@ -638,9 +555,7 @@
     THEOREM)
 
 (DEFPROP TCT-4
-    (THCONSE (X Y Z EV TIME)
-        ($?X $?Y $?Z $?TIME)
-        (THGOAL ($?X $?EV $?Y $?Z $?TIME) (THUSE TCTE-5)))
+    (THCONSE (X Y Z EV TIME) ($?X $?Y $?Z $?TIME) (THGOAL ($?X $?EV $?Y $?Z $?TIME) (THUSE TCTE-5)))
     THEOREM)
 
 (DEFPROP TCTE-PICKUP
@@ -668,7 +583,7 @@
         (MEMQ (GET $?EVENT 'TYPE) '(#PICKUP #PUTON))
         (TIMECHK $?EVENT $?TIME)
         (THOR (THGOAL (#PUTON $?EVENT $?X ?))
-        (THGOAL (#PICKUP $?EVENT $?X)))
+            (THGOAL (#PICKUP $?EVENT $?X)))
         (OR (THVSETQ $_Z (SUB1 (ASSQ (GET $?EVENT 'END) (GET $?X 'HISTORY))))
             (ERT TCTE-PUT WRONG))
         (THAMONG $?Y (LIST (CADR $?Z)))
@@ -709,9 +624,7 @@
         (#GRASP $?X $?TIME)
         (THVSETQ $_Z (ENDTIME GRASPLIST $?TIME))
     =>  (THCOND ((OR (NULL $?Z) (STARTIME $?Z $?TIME)) (THFAIL))
-            ((OR (AND (NOT (THASVAL $?X))
-                (THSETQ $_X (CADAR $?Z)))
-                (EQ $?X (CADAR $?Z))))
+            ((OR (AND (NOT (THASVAL $?X)) (THSETQ $_X (CADAR $?Z))) (EQ $?X (CADAR $?Z))))
             ((THSETQ $_Z (CDR $?Z)) (THGO =>))
             ((THFAIL))))
     THEOREM)
@@ -731,17 +644,15 @@
         (THCOND ((THGOAL (#SUPPORT $?X $_Y)) (ERT TE-SUPP))
             ((THGOAL (#SUPPORT $_Y $?X))
                 (THERASE (#SUPPORT $?Y $?X))
-                (THCOND ((THGOAL (#PART $?X $_Y))
-                    (THERASE (#PART $?X $?Y))
-                    (THCOND ((THFIND 2
-                            $?W
-                            (W)
-                            (THGOAL (#PART $?W $?Y)))
-                        (THSUCCEED THEOREM))
-                        ((THGOAL (#PART $_Z $?Y))
-                        (THERASE (#PART $?Z $?Y)))
-                        ((THSUCCEED)))
-                    (THERASE (#EXISTS $?Y) (THUSE TE-EXISTS)))
+                (THCOND
+                    ((THGOAL (#PART $?X $_Y))
+                        (THERASE (#PART $?X $?Y))
+                        (THCOND ((THFIND 2 $?W (W) (THGOAL (#PART $?W $?Y)))
+                                (THSUCCEED THEOREM))
+                            ((THGOAL (#PART $_Z $?Y))
+                                (THERASE (#PART $?Z $?Y)))
+                            ((THSUCCEED)))
+                        (THERASE (#EXISTS $?Y) (THUSE TE-EXISTS)))
                     ((THSUCCEED))))))
     THEOREM)
 
@@ -810,7 +721,7 @@ NIL
         (SETQ A (CDR A))
         (GO =>)))
 
-(IOC V)
+(SETQ ^W NIL)
 
 '(COMMANDS ARE: #CLEARTOP #GET-RID-OF #GRASP #PACK #PICKUP #PUTIN #PUTON #RAISEHAND #STACKUP #UNGRASP)
 
@@ -836,8 +747,7 @@ NIL
         (SETQ W ATABLE)
     =>  (COND ((NULL W) (RETURN LOC))
             ((MEMQ (CAAR W) OBJ))
-            ((AND (LESSP (CAR LOC) (PLUS (CAR (SETQ X1 (CADAR W)))
-                        (CAR (SETQ X2 (CADDAR W)))))
+            ((AND (LESSP (CAR LOC) (PLUS (CAR (SETQ X1 (CADAR W))) (CAR (SETQ X2 (CADDAR W)))))
                 (LESSP (CAR X1) (PLUS (CAR LOC) (CAR SIZE)))
                 (LESSP (CADR LOC) (PLUS (CADR X1) (CADR X2)))
                 (LESSP (CADR X1) (PLUS (CADR LOC) (CADR SIZE)))
@@ -854,9 +764,8 @@ NIL
 (DEFUN ENDTIME (LIST TIME)
     (PROG (Y)
         (OR (SETQ Y (END? TIME)) (RETURN LIST))
-    =>     (COND ((NULL LIST) (RETURN NIL))
-            ((NOT (GREATERP (CAAR LIST) Y))
-        (RETURN LIST))
+    =>  (COND ((NULL LIST) (RETURN NIL))
+            ((NOT (GREATERP (CAAR LIST) Y)) (RETURN LIST))
             ((SETQ LIST (CDR LIST)) (GO =>)))))
 
 (DEFUN EV NIL (OR NOMEM $?EV))
@@ -866,61 +775,52 @@ NIL
     (PROG (XYMAX XYMIN N V X1 X2)
         (SETQ OBJ (LISTIFY OBJ))
         (AND (MEMQ SURF OBJ) (RETURN NIL))
-        (COND ((EQ SURF ':TABLE) (SETQ XYMIN '(0 0))
-                        (SETQ XYMAX '(640 640))
-                        (SETQ LEVEL 0)
-                        (GO ON))
+        (COND ((EQ SURF ':TABLE)
+                (SETQ XYMIN '(0 0))
+                (SETQ XYMAX '(640 640))
+                (SETQ LEVEL 0)
+                (GO ON))
             ((SETQ X (ATAB SURF))))
         (COND
             ((EQ TYPE 'CENTER)
-            (COND ((CLEAR (SETQ V
-                        (LIST (MAX 0 (PLUS (CAADR X)
-                                (DIV2 (DIFFERENCE (CAADDR X)
-                                        (CAR SIZE)))))
-                        (MAX 0
-                            (PLUS (CADADR X)
-                                (DIV2 (DIFFERENCE (CADR (CADDR X))
-                                        (CADR SIZE)))))
-                        (PLUS (CADDR (CADR X)) (CADDR (CADDR X)))))
-                    SIZE
-                    OBJ)
-                (RETURN V))
+                (COND ((CLEAR (SETQ V
+                        (LIST (MAX 0 (PLUS (CAADR X) (DIV2 (DIFFERENCE (CAADDR X) (CAR SIZE)))))
+                            (MAX 0 (PLUS (CADADR X) (DIV2 (DIFFERENCE (CADR (CADDR X)) (CADR SIZE)))))
+                            (PLUS (CADDR (CADR X)) (CADDR (CADDR X)))))
+                        SIZE
+                        OBJ)
+                    (RETURN V))
                 ((RETURN NIL))))
             ((EQ (CAR X) ':BOX)
-            (SETQ XYMIN (LIST (CAADR X) (CADADR X)))
-            (SETQ XYMAX (LIST (PLUS (CAADDR X) (CAADR X)) (PLUS (CADR (CADDR X)) (CADADR X))))
-            (SETQ LEVEL 1))
+                (SETQ XYMIN (LIST (CAADR X) (CADADR X)))
+                (SETQ XYMAX (LIST (PLUS (CAADDR X) (CAADR X)) (PLUS (CADR (CADDR X)) (CADADR X))))
+                (SETQ LEVEL 1))
             ((SETQ X1 (DIV2 (CAR SIZE)))
-            (SETQ Y1 (DIV2 (CADR SIZE)))
-            (SETQ XYMAX
-                (LIST (MIN 640 (SUB1 (PLUS (CAADDR X) (CAADR X) X1)))
-                    (MIN 640 (SUB1 (PLUS (CADR (CADDR X)) (CADADR X) Y1)))))
-            (SETQ XYMIN (LIST (MAX 0 (DIFFERENCE (CAADR X) X1))
-                    (MAX 0 (DIFFERENCE (CADADR X) Y1))))
-            (SETQ LEVEL (PLUS (CADDR (CADR X)) (CADDR (CADDR X))))))
+                (SETQ Y1 (DIV2 (CADR SIZE)))
+                (SETQ XYMAX (LIST (MIN 640 (SUB1 (PLUS (CAADDR X) (CAADR X) X1))) (MIN 640 (SUB1 (PLUS (CADR (CADDR X)) (CADADR X) Y1)))))
+                (SETQ XYMIN (LIST (MAX 0 (DIFFERENCE (CAADR X) X1)) (MAX 0 (DIFFERENCE (CADADR X) Y1))))
+                (SETQ LEVEL (PLUS (CADDR (CADR X)) (CADDR (CADDR X))))))
     ON  (SETQ N 8)
         (SETQ X1 (DIFFERENCE (CAR XYMAX) (CAR XYMIN)))
         (SETQ Y1 (DIFFERENCE (CADR XYMAX) (CADR XYMIN)))
     GO  (COND ((ZEROP (SETQ N (SUB1 N))) (RETURN NIL))
             ((OR (NOT (SETQ V
-                    (GROW (LIST (PLUS (CAR XYMIN)
-                            (REMAINDER (ABSVAL (RANDOM)) X1))
-                        (PLUS (CADR XYMIN)
-                            (REMAINDER (ABSVAL (RANDOM)) Y1))
-                        LEVEL)
-                    XYMIN
-                    XYMAX
-                    OBJ)))
-            (LESSP (DIFFERENCE (CAADR V) (CAAR V)) (CAR SIZE))
-            (LESSP (DIFFERENCE (CADADR V) (CADAR V)) (CADR SIZE)))
-            (GO GO))
-            ((RETURN (COND ((EQ TYPE 'RANDOM)
+                        (GROW (LIST
+                                (PLUS (CAR XYMIN) (REMAINDER (ABSVAL (RANDOM)) X1))
+                                (PLUS (CADR XYMIN) (REMAINDER (ABSVAL (RANDOM)) Y1))
+                                LEVEL)
+                            XYMIN XYMAX OBJ)))
+                    (LESSP (DIFFERENCE (CAADR V) (CAAR V)) (CAR SIZE))
+                    (LESSP (DIFFERENCE (CADADR V) (CADAR V)) (CADR SIZE)))
+                (GO GO))
+            ((RETURN (COND
+                ((EQ TYPE 'RANDOM)
                     (LIST (DIV2 (DIFFERENCE (PLUS (CAAR V) (CAADR V)) (CAR SIZE)))
                         (DIV2 (DIFFERENCE (PLUS (CADAR V) (CADADR V)) (CADR SIZE)))
                         LEVEL))
-                    ((EQ TYPE 'PACK)
+                ((EQ TYPE 'PACK)
                     (LIST (CAAR V) (CADAR V) LEVEL))
-                    ((ERT FINDSPACE \-- TYPE))))))))
+                ((ERT FINDSPACE \-- TYPE))))))))
 
 (DEFUN GOAL FEXPR (X)
     (SETQ PLAN NIL)
@@ -940,12 +840,12 @@ NIL
                     (MAPC '(LAMBDA (X)
                         (PROG (XX YY)
                             (COND ((OR (MEMQ (CAR X) OBJ)
-                                (NOT (LESSP (CAADR X) (CAR MAX)))
-                                (NOT (LESSP (CADADR X) (CADR MAX)))
-                                (NOT (GREATERP (SETQ XX (PLUS (CAADR X) (CAADDR X))) (CAR MIN)))
-                                (NOT (GREATERP (SETQ YY (PLUS (CADADR X) (CADR (CADDR X)))) (CADR MIN)))
-                                (NOT (GREATERP (PLUS (CADDR (CADR X)) (CADDR (CADDR X))) (CADDR LOC))))
-                                    (RETURN NIL))
+                                    (NOT (LESSP (CAADR X) (CAR MAX)))
+                                    (NOT (LESSP (CADADR X) (CADR MAX)))
+                                    (NOT (GREATERP (SETQ XX (PLUS (CAADR X) (CAADDR X))) (CAR MIN)))
+                                    (NOT (GREATERP (SETQ YY (PLUS (CADADR X) (CADR (CADDR X)))) (CADR MIN)))
+                                    (NOT (GREATERP (PLUS (CADDR (CADR X)) (CADDR (CADDR X))) (CADDR LOC))))
+                                (RETURN NIL))
                             ((GREATERP (CAADR X) (CAR LOC))
                                 (SETQ XH (ORDER (LIST (DIFFERENCE (CAADR X) (CAR LOC)) (CAR X)) XH)))
                             ((LESSP XX (CAR LOC))
@@ -960,18 +860,16 @@ NIL
                     ATABLE))))
                 (RETURN NIL)))
     =>   (COND ((== (SETQ GROW (MIN (CAAR XL) (CAAR XH) (CAAR YL) (CAAR YH))) 1024)
-            (RETURN (LIST (LIST (DIFFERENCE (CAR LOC) (CADAR XL))
-                    (DIFFERENCE (CADR LOC) (CADAR YL)))
-                    (LIST (PLUS (CAR LOC) (CADAR XH))
-                    (PLUS (CADR LOC) (CADAR YH))))))
-            ((MAPC '(LAMBDA (Y Z W)
-                        (PROG (X)
-                            (SETQ X (EVAL W))
-                            (COND ((GREATERP (CAAR X) GROW))
-                                ((OR (NULL (CADAR X)) (MEMQ (CADAR X) (EVAL Y)))
-                                    (RPLACA X (LIST 2000 (CAAR X))))
-                                ((SET Z (CONS (CADAR X) (EVAL Z)))
-                                    (SET W (CDR X))))))
+            (RETURN (LIST
+                (LIST (DIFFERENCE (CAR LOC) (CADAR XL)) (DIFFERENCE (CADR LOC) (CADAR YL)))
+                (LIST (PLUS (CAR LOC) (CADAR XH)) (PLUS (CADR LOC) (CADAR YH))))))
+            ((MAPC '(LAMBDA (Y Z W) (PROG (X)
+                        (SETQ X (EVAL W))
+                        (COND ((GREATERP (CAAR X) GROW))
+                            ((OR (NULL (CADAR X)) (MEMQ (CADAR X) (EVAL Y)))
+                                (RPLACA X (LIST 2000 (CAAR X))))
+                            ((SET Z (CONS (CADAR X) (EVAL Z)))
+                                (SET W (CDR X))))))
                 '(YO YO XO XO)
                 '(XO XO YO YO)
                 '(XL XH YL YH))
@@ -980,21 +878,21 @@ NIL
 (DEFUN LISTIFY (X) (COND ((ATOM X) (LIST X)) (X)))
 
 (DEFUN LOCGREATER (X Y FN)
-    ((LAMBDA (XX YY)
-        (NOT (LESSP (FN (CADR XX)) (PLUS (FN (CADR YY)) (FN (CADDR YY))))))
+    ((LAMBDA (XX YY) (NOT (LESSP (FN (CADR XX)) (PLUS (FN (CADR YY)) (FN (CADDR YY))))))
         (LOCG2 '$?YY X)
         (LOCG2 '$?ZZ Y)))
 
 (DEFUN LOCG2 (X Y) (COND ((EQ $?LOC '#LOC) (ATAB Y)) ((CONS NIL (CONS (EVAL X) (CDDR (ATAB Y)))))))
 
 (DEFUN MEMOREND FEXPR (A)
-    (OR NOMEM (AND (PUTPROP $?EV THTIME 'END)
-            (APPLY 'THASSERT
-            (LIST (THVARSUBST (CAR A) NIL)))
+    (OR NOMEM
+        (AND (PUTPROP $?EV THTIME 'END)
+            (APPLY 'THASSERT (LIST (THVARSUBST (CAR A) NIL)))
             (PUTPROP $?EV (CAAR A) 'TYPE))))
 
 (DEFUN MEMORY NIL
-    (OR NOMEM (THAND (THVSETQ $_EV (MAKESYM 'E))
+    (OR NOMEM
+        (THAND (THVSETQ $_EV (MAKESYM 'E))
             (THSETQ EVENTLIST (CONS $?EV EVENTLIST))
             (PUTPROP $?EV THTIME 'START)
             (PUTPROP $?EV $?WHY 'WHY))))
@@ -1004,9 +902,7 @@ NIL
         (COND ((MINUSP Z) (RETURN ':TABLE)))
         (SETQ W ATABLE)
     =>  (COND ((NULL W) (RETURN NIL))
-            ((AND (LESSP (SUB1 (CAR (SETQ X1 (CADAR W))))
-                X
-                (PLUS (CAR X1) (CAR (SETQ X2 (CADDAR W)))))
+            ((AND (LESSP (SUB1 (CAR (SETQ X1 (CADAR W)))) X (PLUS (CAR X1) (CAR (SETQ X2 (CADDAR W)))))
                 (LESSP (SUB1 (CADR X1)) Y (PLUS (CADR X1) (CADR X2)))
                 (LESSP (SUB1 (CADDR X1)) Z (PLUS (CADDR X1) (CADDR X2))))
             (RETURN (CAAR W))))
@@ -1015,16 +911,14 @@ NIL
 
 (DEFUN ORDER (X Y)
     (COND ((NULL Y) (LIST X))
-            ((GREATERP (CAR X) (CAAR Y))
+        ((GREATERP (CAR X) (CAAR Y))
             (CONS (CAR Y) (ORDER X (CDR Y))))
-            ((CONS X Y))))
+        ((CONS X Y))))
 
 (DEFUN PACKO (OBJ TYPE)
     (PROG (XX)
         (MAPC '(LAMBDA (X)
-            (AND (THVAL '(THGOAL (#IS $?X $E TYPE))
-                (LIST (LIST 'X X)))
-            (SETQ XX (PACKORD X (SIZE X) XX))))
+            (AND (THVAL '(THGOAL (#IS $?X $E TYPE)) (LIST (LIST 'X X))) (SETQ XX (PACKORD X (SIZE X) XX))))
         OBJ)
         (RETURN (MAPCAR 'CADR XX))))
 
@@ -1049,9 +943,9 @@ NIL
 
 (DEFUN SIZE (X)
     (COND ((EQ X ':BOX) '(256 256 192))
-            ((EQ X ':TABLE) '(640 640 640))
-            ((ATOM X) (CADDR (ATAB X)))
-            (X)))
+        ((EQ X ':TABLE) '(640 640 640))
+        ((ATOM X) (CADDR (ATAB X)))
+        (X)))
 
 (DEFUN STARTHISTORY NIL
     (SETQ THTIME 0)
@@ -1076,21 +970,17 @@ NIL
 
 (DEFUN SUPPORT (LOC SIZE X)
     (COND ((EQ (CADDR LOC) 0) ':TABLE)
-        ((SETQ LOC (OCCUPIER (PLUS (CAR LOC) (DIV2 (CAR SIZE)))
-                (PLUS (CADR LOC) (DIV2 (CADR SIZE)))
-                (SUB1 (CADDR LOC))))
-        (COND ((EQ LOC X) NIL) (LOC)))))
+        ((SETQ LOC (OCCUPIER (PLUS (CAR LOC) (DIV2 (CAR SIZE))) (PLUS (CADR LOC) (DIV2 (CADR SIZE))) (SUB1 (CADDR LOC))))
+            (COND ((EQ LOC X) NIL) (LOC)))))
 
 (DEFUN TCENT (X1 X2)
-    (LIST (PLUS (CAR X1) (DIV2 (CAR X2)))
-            (PLUS (CADR X1) (DIV2 (CADR X2)))
-            (PLUS (CADDR X1) (CADDR X2))))
+    (LIST (PLUS (CAR X1) (DIV2 (CAR X2))) (PLUS (CADR X1) (DIV2 (CADR X2))) (PLUS (CADDR X1) (CADDR X2))))
 
 (DEFUN TFIND (X Y)
     (PROG (Z)
-            (OR (SETQ Z (GET X 'HISTORY)) (RETURN NIL))
+        (OR (SETQ Z (GET X 'HISTORY)) (RETURN NIL))
     =>  (COND ((NOT (GREATERP (CAAR Z) (OR (END? Y) 32767)))
-            (RETURN Z))
+                (RETURN Z))
             ((SETQ Z (CDR Z)) (GO =>)))))
 
 (DEFUN TIMECHK (EV TIME)
@@ -1228,7 +1118,7 @@ NIL
     ((#CALL :FRIEND YOU))
 NIL
 
-(SETQ HANDAT (SETQ HANDAT2 '(32 0 0)))
+(SETQ HANDAT '(32 0 0))
 
 (SETQ THTIME 0)
 
@@ -1242,35 +1132,26 @@ NIL
     '(:B1 :B2 :B3 :B4 :B5 :B6 :B7 :B10)
     '(CB1 CB2 CB3 CB4 CB5 CB6 CB7 CB10))
 
-(IOC V)
+(SETQ ^W NIL)
 
 #_(ns shrdlu.plnr)
 
 (COMMENT DO NOT GRIND THIS FILE WITH THE STANDARD GRIND)
 
-(SETQ THVERSION (CADR (STATUS UREAD)))
-
-(SETQ SYMBOLS T)
-
-(COND ((ERRSET (AND PURE (SETQ LOW (PAGEBPORG))))) (' (NOT PURIFIED)))
+(SETQ THVERSION NIL)
 
 (DEFUN THREAD NIL
     ;; FUNCTION FOR THE /$ READ MACRO
-    ;; EXPANDS _ TO (THNV (READ)) EXPANDS A TO ASSERT
-    ;; EXPANDS G TO GOAL EXPANDS T TO THTBF THTRUE
-    ;; EXPANDS ? TO (THV (READ)) EXPANDS E TO (THEV (READ))
-    ;; EXPANDS R TO THRESTRICT
     (PROG (CHAR)
-        ;; TREATS & - - & AS A COMMENT
         (RETURN (COND
             ((EQ (SETQ CHAR (READCH)) '?) (LIST 'THV (READ)))
             ((EQ CHAR 'E) (LIST 'THEV (READ)))
             ((EQ CHAR '_) (LIST 'THNV (READ)))
-            ((EQ CHAR '&)
+            ((EQ CHAR '&) ;; TREATS & - - & AS A COMMENT
                 (PROG NIL
-                CHLP (COND ((EQ '& (READCH))
+                =>  (COND ((EQ '& (READCH))
                         (RETURN '(COMMENT))))
-                    (GO CHLP)))
+                    (GO =>)))
             ((EQ CHAR 'T) '(THTBF THTRUE))
             ((EQ CHAR 'R) 'THRESTRICT)
             ((EQ CHAR 'G) 'THGOAL)
@@ -1282,13 +1163,13 @@ NIL
                 (PRINC (READ))
                 (ERR NIL))))))
 
-(DEFUN THPUSH MACRO (A)                                         ;; (THPUSH THTREE NEWINFO) CONSES NEWINFO ONTO THTREE
+(DEFUN THPUSH MACRO (A)
+    ;; (THPUSH THTREE NEWINFO) CONSES NEWINFO ONTO THTREE
     (LIST 'SETQ (CADR A) (LIST 'CONS (CADDR A) (CADR A))))
 
-(DEFUN EVLIS (X)                                                ;; EVLIS EVALS ELEMENTS OF ARG THEN RETURNS ARG
+(DEFUN EVLIS (X)
+    ;; EVLIS EVALS ELEMENTS OF ARG THEN RETURNS ARG
     (MAPC #'EVAL X))
-
-(DEFUN THPRINT2 (X) (PRINC '\ ) (PRINC X))
 
 (DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '\ ))
 
@@ -1299,44 +1180,39 @@ NIL
     ;; RETURNS NIL IF ALREADY THERE ELSE RETURNS THTT
     (PROG (THNF THWH THCK THLAS THTTL THT1 THFST THFSTP THFOO)
         (SETQ THCK
+            ;; IF THTT IS ATOMIC, WE ARE ASSERTING A THEOREM
             (COND ((ATOM THTT)
-                ;; IF THTT IS ATOMIC WE ARE ASSERTING A THEOREM
-                (OR (SETQ THT1 (GET THTT 'THEOREM))
-                    ;; IF NO THEOREM PROPERTY THE GUY MADE A MISTAKE
-                    (PROG2 (PRINT THTT) (THERT CANT THASSERT\, NO THEOREM - THADD)))
-                (SETQ THWH (CAR THT1))
-                ;; THWH NOW SET TO KIND OF THEOREM, LIKE THERASING
-                (SETQ THTTL THTT)
-                ;; MAKE AN EXTRA POINTER TO THTT
-                (AND THPL
+                    ;; IF NO THEOREM PROPERTY, THE GUY MADE A MISTAKE
+                    (OR (SETQ THT1 (GET THTT 'THEOREM))
+                        (PROG2 (PRINT THTT) (THERT CANT THASSERT\, NO THEOREM - THADD)))
+                    ;; THWH NOW SET TO KIND OF THEOREM, LIKE THERASING
+                    (SETQ THWH (CAR THT1))
+                    ;; MAKE AN EXTRA POINTER TO THTT
+                    (SETQ THTTL THTT)
                     ;; IF WE HAVE A PL FOR OUR THEOREM, IT GOES ON THE ATOM WHICH IS THE NAME OF THE THEOREM
-                    (PROG NIL
-                        ;; GO THROUGH ITEMS ON PL ONE BY ONE
-                =>   (THPUTPROP THTT
-                        (CADR THPL)
-                        (CAR THPL))
+                    (AND THPL (PROG NIL
+                    ;; GO THROUGH ITEMS ON PL ONE BY ONE
+                    =>  (THPUTPROP THTT (CADR THPL) (CAR THPL))
                         (COND ((SETQ THPL (CDDR THPL))
-                        (GO =>)))))
-                (CADDR THT1))
-                (T (SETQ THWH 'THASSERTION)
+                            (GO =>)))))
+                    (CADDR THT1))
                 ;; SO WE HAVE AN ASSERTION TO ASSERT, MAKE THWH REFLECT THIS FACT
-                (SETQ THTTL (CONS THTT THPL))
-                ;; PROPERTY LIST IS "CDR" OF ASSERTION
-                THTT)))
+                (T (SETQ THWH 'THASSERTION)
+                    ;; PROPERTY LIST IS "CDR" OF ASSERTION
+                    (SETQ THTTL (CONS THTT THPL))
+                    THTT)))
         (SETQ THNF 0) ;; THNF IS COUNTER SAYING WHICH ATOM WE ARE FILING UNDER
         (SETQ THLAS (LENGTH THCK)) ;; THLAS IS THE NUMBER OF TOP LEVEL ITEMS
         (SETQ THFST T)
-        ;; THFST SAYS WE ARE TRYING TO PUT THE ITEM IN FOR THE FIRST TIME
+        ;; THFST SAYS WE ARE TRYING TO PUT THE ITEM IN FOR THE FIRST TIME.
         ;; WE NEED TO KNOW THIS SINCE THE FIRST TIME THROUGH
-        ;; WE MUST TEST THAT THE ASSERTEE IS NOT ALREADY THERE
-        ;; THCK IS INITIALLY THE ASSERTION OR THEOREM PATTERN
-        ;; THE FIRST TIME WE GO INTO THE DATABASE WE CHECK TO
-        ;; SEE IF THE ITEM IS THERE
-        ;; THAT MEANS DOING AN EQUAL TEST ON EVERY
-        ;; ITEM IN THE BUCKET.  AFTER THE FIRST TIME THIS IS NOT
-        ;; NECESSARY.  SINCE VARIABLES WILL IN GENERAL HAVE MANY
-        ;; MORE ITEMS IN THEIR BUCKET WE WILL WANT TO DO OUR
-        ;; CHECK ON A NON VARIABLE ITEM IN THE PATTERN
+        ;; WE MUST TEST THAT THE ASSERTEE IS NOT ALREADY THERE.
+        ;; THCK IS INITIALLY THE ASSERTION OR THEOREM PATTERN.
+        ;; THE FIRST TIME WE GO INTO THE DATABASE WE CHECK TO SEE IF THE ITEM IS THERE.
+        ;; THAT MEANS DOING AN EQUAL TEST ON EVERY ITEM IN THE BUCKET.
+        ;; AFTER THE FIRST TIME THIS IS NOT NECESSARY.
+        ;; SINCE VARIABLES WILL IN GENERAL HAVE MANY MORE ITEMS IN THEIR BUCKET,
+        ;; WE WILL WANT TO DO OUR CHECK ON A NON VARIABLE ITEM IN THE PATTERN.
     THP1 (COND ((NULL THCK)
                 ;; THCK NIL MEANS THAT ALL THE ITEMS IN THE PATTERN ARE VARIABLES
                 ;; SO WE TRY AGAIN ONLY THIS TIME DOING EQUAL CHECK ON
@@ -1349,15 +1225,12 @@ NIL
                 (SETQ THFSTP T)
                 (GO THP1))
             ((NULL (SETQ THT1 (THIP (CAR THCK)))) (RETURN NIL))
-            ;; THIP IS THE WORKHORSE FOR THADD IF IT RETURNS NIL
-            ;; IT MEANS THE ASSERTEE IS ALREADY IN, SO FAIL
+            ;; THIP IS THE WORKHORSE FOR THADD IF IT RETURNS NIL.
+            ;; IT MEANS THE ASSERTEE IS ALREADY IN, SO FAIL.
             ((EQ THT1 'THOK))
-            ;; THOK WHICH IS RETURN BY THIP
-            ;; SAYS THAT THE ASSERTEE IS NOT IN ALREADY
-            ((SETQ THFOO
-                    ;; OTHERWISE WE GO AROUND AGAIN, STILL LOOKING FOR A NON
-                    ;; VARIABLE ITEM TO DO THE EQ CHECK
-                    (NCONC THFOO (LIST (COND ((EQ THT1 'THVRB) (CAR THCK))))))
+            ;; THOK WHICH IS RETURN BY THIP SAYS THAT THE ASSERTEE IS NOT IN ALREADY.
+            ;; OTHERWISE WE GO AROUND AGAIN, STILL LOOKING FOR A NON VARIABLE ITEM TO DO THE EQ CHECK.
+            ((SETQ THFOO (NCONC THFOO (LIST (COND ((EQ THT1 'THVRB) (CAR THCK))))))
                 (SETQ THCK (CDR THCK))
                 (GO THP1)))
         (SETQ THFST NIL)
@@ -1398,13 +1271,15 @@ NIL
 (DEFUN THANDF NIL (THBRANCHUN) NIL)
 
 (DEFUN THANDT NIL
-    (COND ((CDADAR THTREE) (THBRANCH)
-                (SETQ THEXP (CADR (CADAR THTREE)))
-                (RPLACA (CDAR THTREE) (CDADAR THTREE)))
+    (COND ((CDADAR THTREE)
+            (THBRANCH)
+            (SETQ THEXP (CADR (CADAR THTREE)))
+            (RPLACA (CDAR THTREE) (CDADAR THTREE)))
         ((THPOPT)))
     THVALUE)
 
-(DEFUN THANTE FEXPR (THX)           ;; DEFINES AND OPTIONALLY ASSERTS ANTECEDENT THEOREMS
+(DEFUN THANTE FEXPR (THX)
+    ;; DEFINES AND OPTIONALLY ASSERTS ANTECEDENT THEOREMS
     (THDEF 'THANTE THX))
 
 (DEFUN THAPPLY FEXPR (L)
@@ -1415,14 +1290,15 @@ NIL
 
 (DEFUN THAPPLY1 (THM THB DAT)
     ;; MAKE SURE THE THEOREM PATTERN MATCHES THE GOAL
-    (COND ((AND (THBIND (CADR THB)) (THMATCH1 DAT (CADDR THB))) (AND THTRACE (THTRACES 'THEOREM THM))
+    (COND ((AND (THBIND (CADR THB)) (THMATCH1 DAT (CADDR THB)))
+            (AND THTRACE (THTRACES 'THEOREM THM))
             ;; AS FAR AS THTREE GOES, ALL THEOREMS LOOK LIKE THPROG, AND
-            ;; WHEN YOU COME DOWN TO IT, THEY ALL ACT LIKE THPROGS
+            ;; WHEN YOU COME DOWN TO IT, THEY ALL ACT LIKE THPROGS.
             (THPUSH THTREE (LIST 'THPROG (CDDR THB) NIL (CDDR THB)))
             ;; CALL THE MAIN THPROG WORKHORSE
             (THPROGA)
             T)
-        ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING
+        ;; IF THE THEOREM PATTERN DIDN'T MATCH, START FAILING.
         (T (SETQ THALIST THOLIST) (THPOPT) NIL)))
 
 (DEFUN THASS1 (THA P)
@@ -1430,14 +1306,14 @@ NIL
         (AND (CDR THA) (EQ (CAADR THA) 'THPSEUDO) (SETQ PSEUDO T))
         ;; IF YOU SEE "THPSEUDO" SET FLAG "PSEUDO" TO T
         (OR (ATOM (SETQ THX (CAR THA)))
-        ;; IF (CAR THA) IS AN ATOM WE ARE ASSERTING (ERRASING) A THEOREM
-        (THPURE (SETQ THX (THVARSUBST THX NIL)))
-        ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES
-        ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED
-        PSEUDO
-        ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED
-        (PROG2 (PRINT THX)
-            (THERT IMPURE ASSERTION OR ERASURE - THASS1)))
+            ;; IF (CAR THA) IS AN ATOM WE ARE ASSERTING (ERRASING) A THEOREM
+            (THPURE (SETQ THX (THVARSUBST THX NIL)))
+            ;; THVARSUBST SUBSTITUTES THE ASSIGNMENTS FOR ALL ASSIGNED VARIABLES
+            ;; THPURE CHECKS THAT ALL VARIABLES ARE ASSIGNED
+            PSEUDO
+            ;; IF WE ARE NOT REALLY ASSERTING, THE VARIABLES DO NOT ALL HAVE TO BE ASSIGNED
+            (PROG2 (PRINT THX)
+                (THERT IMPURE ASSERTION OR ERASURE - THASS1)))
         (AND THTRACE (NOT PSEUDO) (THTRACES (COND (P 'THASSERT) ('THERASE)) THX))
         (SETQ THA (COND (PSEUDO (CDDR THA)) ((CDR THA))))
         ;; THX IS NOW WHAT WE ARE ASSERTING, AND THA IS THE RECOMMENDATION LIST
@@ -1451,14 +1327,12 @@ NIL
                         ;; THADD TAKES TWO ARGS THE FIRST IS ITEM TO BE ADDED
                         ;; THE SECOND IS THE PROPERTY LIST FOR THE ITEM
                         (SETQ THY
-                            (COND ((AND THA (EQ (CAAR THA)
-                                    ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST
-                                    'THPROP))
+                            ;; THPROP SAYS "MY" CADR IS TO BE EVALED TO GET THE PROPERTY LIST
+                            (COND ((AND THA (EQ (CAAR THA) 'THPROP))
                                 (PROG2 0
                                     (EVAL (CADAR THA))
                                     ;; AND REMOVE THPROP FROM THE RECOMENDATION LIST
-                                    (SETQ THA
-                                    (CDR THA))))))))
+                                    (SETQ THA (CDR THA))))))))
                     ;; OTHERWISE WE ARE ERASING, SO USE THREMOVE
                     (T (THREMOVE THX))))
             ;; THE LAST ITEM WILL BE NIL ONLY IF THADD OR THREMOVE FAILED.
@@ -1471,16 +1345,16 @@ NIL
         (OR PSEUDO
             (THPUSH THTREE (LIST (COND (P 'THASSERT) ('THERASE)) THX THY)))
         (SETQ THY (MAPCAN #'THTAE THA))
-        ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC
-        ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A
-        ;; LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY
+        ;; MAPCAN IS A MAC-LISP FUNCTION, LIKE MAPCAR BUT USES NCONC.
+        ;; THTAE LOOKS AT THE RECOMENDATION LIST AND PRODUCES A LIST OF INSTRUCTIONS ABOUT WHAT THEOREMS TO TRY.
         (COND (THY (SETQ THEXP (CONS 'THDO THY))))
-        ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM
-        ;; BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE
-        ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>)
+        ;; THEXP IS A HACK TELLING THVAL TO THVAL THIS ITEM BEFORE IT GOES ON TO THE NEXT LINE OF PLANNER CODE.
+        ;; THEXP IS NOW (THDO <APPROPRIATE ANTECEDENT OR ERASING THEOREMS>).
         (RETURN THX)))
 
-(DEFUN THASSERT FEXPR (THA) (THASS1 THA T))     ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
+(DEFUN THASSERT FEXPR (THA)
+    ;; THASS1 IS USED FOR BOTH ASSERTING AND ERASING, THE "T" AS SECOND ARG TELLS IT THAT WE ARE ASSERTING.
+    (THASS1 THA T))
 
 (DEFUN THASSERTF NIL
     (THREMOVE (COND ((ATOM (CADAR THTREE)) (CADAR THTREE)) (T (CAADAR THTREE))))
@@ -1494,23 +1368,23 @@ NIL
         (THGAL (CAR X) THALIST)))
 
 (DEFUN THBA (TH1 TH2)
-    ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR
-    ;; USED ONLY BY THAD AND THREMOVE
+    ;; JUST LIKE ASSQ IN LISP, ONLY RETURN WITH THE POINTER 1 ELEMENT PRIOR TO THE ONE ASKED FOR.
+    ;; USED ONLY BY THAD AND THREMOVE.
     (PROG (THP)
         (SETQ THP TH2)
-    THP1 (AND (EQ (COND (THPC (CADR THP)) (T (CAADR THP))) TH1)
-        (RETURN THP))
+    =>  (AND (EQ (COND (THPC (CADR THP)) (T (CAADR THP))) TH1)
+            (RETURN THP))
         (OR (CDR (SETQ THP (CDR THP))) (RETURN NIL))
-        (GO THP1)))
+        (GO =>)))
 
 (DEFUN THBAP (TH1 TH2)
     ;; LIKE THBA, ONLY USED EQUAL RATHER THAN EQ
     (PROG (THP)
         (SETQ THP TH2)
-    THP1 (AND (EQUAL (COND (THPC (CADR THP)) (T (CAADR THP))) TH1)
-        (RETURN THP))
+    =>  (AND (EQUAL (COND (THPC (CADR THP)) (T (CAADR THP))) TH1)
+            (RETURN THP))
         (OR (CDR (SETQ THP (CDR THP))) (RETURN NIL))
-        (GO THP1)))
+        (GO =>)))
 
 (DEFUN THBIND (A)
     ;; WHEN WE ENTER A NEW THEOREM OR THPROG, WE MUST BIND THE NEW VARIABLES.  A IS THE VARIABLE LIST
@@ -1525,20 +1399,19 @@ NIL
                     (RETURN T)))
             ;; OTHERWISE ADD TO THE ALIST THE NEW BINDING CELL
             (THPUSH THALIST
-                ;; THE FIRST ELEMENT IS THE NAME OF THE VARIABLE
-                ;; IF THE ENTRY IS AN ATOM, THEN WE ARE JUST GIVEN THE
-                ;; VARIABLE AND ITS INITIAL ASSIGNMENT IS "THUNASSIGNED"
-                ;; I.E., NO INITIAL ASSIGNMENT
+                ;; THE FIRST ELEMENT IS THE NAME OF THE VARIABLE IF THE ENTRY IS AN ATOM,
+                ;; THEN WE ARE JUST GIVEN THE VARIABLE AND ITS INITIAL ASSIGNMENT IS "THUNASSIGNED",
+                ;; I.E. NO INITIAL ASSIGNMENT.
                 (COND ((ATOM (CAR A)) (LIST (CAR A) 'THUNASSIGNED))
-                ;; OTHERWISE OUR ENTRY IS A LIST
-                ;; IF THE FIRST ELEMENT OF THE LIST IS $R OR THRESTRICT
-                ;; WE ADD THE RESTRICTION TO THE BINDING CELL
-                ;; THE CDDR OF THE CELL GIVES THE RESTRICTION LIST
-                ((EQ (CAAR A) 'THRESTRICT) (NCONC (THBI1 (CADAR A)) (CDDAR A)))
-                ;; OTHERWISE WE ARE GIVEN BOTH THE VARIABLE AND ITS
-                ;; INITIAL ASSIGNMENT, SO MAKE THE SECOND ELEMENT OF THE
-                ;; BINDING CELL A POINTER TO THE INITIAL ASSIGNMENT
-                (T (LIST (CAAR A) (EVAL (CADAR A))))))
+                    ;; OTHERWISE OUR ENTRY IS A LIST
+                    ;; IF THE FIRST ELEMENT OF THE LIST IS $R OR THRESTRICT
+                    ;; WE ADD THE RESTRICTION TO THE BINDING CELL
+                    ;; THE CDDR OF THE CELL GIVES THE RESTRICTION LIST
+                    ((EQ (CAAR A) 'THRESTRICT) (NCONC (THBI1 (CADAR A)) (CDDAR A)))
+                    ;; OTHERWISE WE ARE GIVEN BOTH THE VARIABLE AND ITS
+                    ;; INITIAL ASSIGNMENT, SO MAKE THE SECOND ELEMENT OF THE
+                    ;; BINDING CELL A POINTER TO THE INITIAL ASSIGNMENT
+                    (T (LIST (CAAR A) (EVAL (CADAR A))))))
             (SETQ A (CDR A))
             ;; REPEAT FOR THE NEXT VARIABLE IN THE LIST
             (GO =>))))
@@ -1548,9 +1421,9 @@ NIL
 (DEFUN THBKPT FEXPR (L) (OR (AND THTRACE (THTRACES 'THBKPT L)) THVALUE))
 
 (DEFUN THBRANCH NIL
-    ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS
-    ;; CAR THTREE IS THE THPROG MARKING
-    (COND ;; THERE ARE NO MORE EXPRESSIONS TO EXECUTE IN THE THPROG
+    ;; THBRANCH IS CALLED BY THPROGT AND WE ARE SUCCEEDING BACKWARDS.
+    ;; CAR THTREE IS THE THPROG MARKING.
+    (COND ;; THERE ARE NO MORE EXPRESSIONS TO EXECUTE IN THE THPROG.
         ((NOT (CDADAR THTREE)))
         ((EQ THBRANCH THTREE) (SETQ THBRANCH NIL))
         ;; NORMAL CASE
@@ -1570,21 +1443,20 @@ NIL
             (SETQ THBRANCH NIL))))
 
 (DEFUN THBRANCHUN NIL
-    ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF
+    ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF.
     (PROG (X) (RETURN
         (COND ;; IF THE SECOND ARG TO THE PROG MARK IS NON-NIL, IT MEANS THAT THERE ARE PREVIOUS LINES IN THE THPROG TO FAIL BACK TO
             ((SETQ X (CADDAR THTREE))
-                ;; A COMPAIRISON OF THIS WITH WHAT HAPPEND IN THBRANCK
-                ;; WILL REVEAL THAT ALL WE ARE DOING HERE IS RESTORING
-                ;; THE PROG MARK TO IS STATE BEFORE THE LAST SUCCESS
+                ;; A COMPAIRISON OF THIS WITH WHAT HAPPEND IN THBRANCK WILL REVEAL THAT
+                ;; ALL WE ARE DOING HERE IS RESTORING THE PROG MARK TO IS STATE BEFORE THE LAST SUCCESS.
                 (RPLACA (CDAR THTREE) (CADDAR X))
                 (RPLACA (CDDAR THTREE) (CDR X))
                 ;; RESET THALIST AND THTREE
                 (SETQ THALIST (CADAR X))
                 (SETQ THTREE (CAAR X))
                 T)
-            ;; THERE AREN'T ANY MORE THINGS IN THE THPROG TO TRY
-            ;; SO JUST RETURN NIL
+            ;; THERE AREN'T ANY MORE THINGS IN THE THPROG TO TRY,
+            ;; SO JUST RETURN NIL.
             (T (THPOPT) NIL)))))
 
 (DEFUN THCOND FEXPR (THA)
@@ -1606,7 +1478,7 @@ NIL
     (PROG (X)
     =>  (TERPRI)
         (COND ((NULL (SETQ X (READ NIL))) (RETURN T))
-                ((PRINT (THADD (CAR X) (CDR X)))))
+            ((PRINT (THADD (CAR X) (CDR X)))))
         (GO =>)))
 
 (COMMENT THDEF DEFINES AND OPTIONALLY ASSERTS THEOREMS)
@@ -1614,12 +1486,12 @@ NIL
 (DEFUN THDEF (THMTYPE THX)
     (PROG (THNOASSERT? THMNAME THMBODY)
         (COND ((NOT (ATOM (CAR THX)))
-            (SETQ THMBODY THX)
-            (COND
-                ((EQ THMTYPE 'THCONSE) (SETQ THMNAME (THGENAME TC-G)))
-                ((EQ THMTYPE 'THANTE) (SETQ THMNAME (THGENAME TA-G)))
-                ((EQ THMTYPE 'THERASING) (SETQ THMNAME (THGENAME TE-G)))))
-            ((SETQ THMNAME (CAR THX)) (SETQ THMBODY (CDR THX))))      ;; THNOOASSERT FEATURE
+                (SETQ THMBODY THX)
+                (COND
+                    ((EQ THMTYPE 'THCONSE) (SETQ THMNAME (THGENAME TC-G)))
+                    ((EQ THMTYPE 'THANTE) (SETQ THMNAME (THGENAME TA-G)))
+                    ((EQ THMTYPE 'THERASING) (SETQ THMNAME (THGENAME TE-G)))))
+            ((SETQ THMNAME (CAR THX)) (SETQ THMBODY (CDR THX))))    ;; THNOASSERT FEATURE
         (COND ((EQ (CAR THMBODY) 'THNOASSERT)
             (SETQ THNOASSERT? T)
             (SETQ THMBODY (CDR THMBODY))))
@@ -1638,12 +1510,10 @@ NIL
 (DEFUN THDO1 NIL
     (RPLACA (CDAR THTREE) (CDADAR THTREE))
     (SETQ THEXP (CAADAR THTREE))
-    (COND (THBRANCH (RPLACA (CDDAR THTREE)
-                (CONS THBRANCH (CADDAR THTREE)))
-            (SETQ THBRANCH NIL)
-            (RPLACA (CDDDAR THTREE)
-                (CONS THABRANCH
-                    (CAR (CDDDAR THTREE)))))))
+    (COND (THBRANCH
+        (RPLACA (CDDAR THTREE) (CONS THBRANCH (CADDAR THTREE)))
+        (SETQ THBRANCH NIL)
+        (RPLACA (CDDDAR THTREE) (CONS THABRANCH (CAR (CDDDAR THTREE)))))))
 
 (DEFUN THDOB NIL
     (COND ((OR THMESSAGE (NULL (CDADAR THTREE)))
@@ -1651,17 +1521,10 @@ NIL
             T)
         ((THDO1))))
 
-(DEFUN THDUMP FEXPR (THFILE)
-    (APPLY 'UWRITE (COND (THFILE (CDDR THFILE))))
-    (IOC R)
-    (THSTATE)
-    (APPLY 'UFILE THFILE))
-
 (DEFUN THERASE FEXPR (THA) (THASS1 THA NIL))
 
 (DEFUN THERASEF NIL
-    (THADD (COND ((ATOM (CADAR THTREE)) (CADAR THTREE))
-        (T (CAADAR THTREE)))
+    (THADD (COND ((ATOM (CADAR THTREE)) (CADAR THTREE)) (T (CAADAR THTREE)))
         (COND ((ATOM (CADAR THTREE)) NIL) (T (CDADAR THTREE))))
     (THPOPT)
     NIL)
@@ -1683,28 +1546,22 @@ NIL
                 (T (CAR THA))))
             (SETQ THTREE1 THTREE)
         LP1 (COND ((NULL THTREE1)
-                (PRINT THA)
-                (COND ((ATOM (SETQ THA (THERT NOT FOUND - THFAIL)))
-                    (RETURN THA))
-                (T (GO F))))
-            ((EQ (CAAR THTREE1) THA1) (GO ELP1)))
+                    (PRINT THA)
+                    (COND ((ATOM (SETQ THA (THERT NOT FOUND - THFAIL))) (RETURN THA))
+                        (T (GO F))))
+                ((EQ (CAAR THTREE1) THA1) (GO ELP1)))
         ALP1 (SETQ THTREE1 (CDR THTREE1))
             (GO LP1)
         ELP1 (COND ((EQ (CAR THA) 'THTAG)
-                (COND ((MEMQ (CADR THA)
-                        (CADDDR (CAR THTREE1)))
-                (GO TAGS))
+                (COND ((MEMQ (CADR THA) (CADDDR (CAR THTREE1))) (GO TAGS))
                     (T (GO ALP1)))))
-            (SETQ THMESSAGE (LIST (CDR THTREE1)
-                    (AND (CDR THA) (CADR THA))))
+            (SETQ THMESSAGE (LIST (CDR THTREE1) (AND (CDR THA) (CADR THA))))
             (RETURN NIL)
         TAGS (SETQ THX (CADDAR THTREE1))
         LP2  (COND ((NULL THX) (GO ALP1))
-            ((EQ (CAADDR (CAR THX)) (CADR THA))
-                (SETQ THMESSAGE
-                    (LIST (CAAR THX)
-                        (AND (CDDR THA) (CADDR THA))))
-                (RETURN NIL)))
+                ((EQ (CAADDR (CAR THX)) (CADR THA))
+                    (SETQ THMESSAGE (LIST (CAAR THX) (AND (CDDR THA) (CADDR THA))))
+                    (RETURN NIL)))
             (SETQ THX (CDR THX))
             (GO LP2))))
 
@@ -1714,43 +1571,33 @@ NIL
 
 (DEFUN THFAIL?F NIL
     (COND ((EVAL (CADAR THTREE))
-        (EVAL (PROG2 (SETQ THMESSAGE NIL)
-            (CADDAR THTREE)
-            (THPOPT))))
+            (EVAL (PROG2 (SETQ THMESSAGE NIL) (CADDAR THTREE) (THPOPT))))
         (T (THPOPT) NIL)))
 
 (DEFUN THFAIL?T NIL (THPOPT) THVALUE)
 
 (DEFUN THFINALIZE FEXPR (THA)
     (PROG (THTREE1 THT THX)
-        (COND ((NULL THA)
-            (SETQ THA (THERT BAD CALL - THFINALIZE))))
+        (COND ((NULL THA) (SETQ THA (THERT BAD CALL - THFINALIZE))))
         (COND ((ATOM THA) (RETURN THA))
-            ((EQ (CAR THA) 'THTAG)
-            (SETQ THT (CADR THA)))
-            ((EQ (CAR THA) 'THEOREM)
-            (SETQ THA (LIST 'THPROG))))
+            ((EQ (CAR THA) 'THTAG) (SETQ THT (CADR THA)))
+            ((EQ (CAR THA) 'THEOREM) (SETQ THA (LIST 'THPROG))))
         (SETQ THTREE (SETQ THTREE1 (CONS NIL THTREE)))
     PLUP (SETQ THX (CADR THTREE1))
-        (COND ((NULL (CDR THTREE1)) (PRINT THA)
-                        (THERT OVERPOP - THFINALIZE))
-            ((AND THT
-                (EQ (CAR THX) 'THPROG)
-                (MEMQ THT (CADDDR THX)))
-            (GO RTLEV))
-            ((OR (EQ (CAR THX) 'THPROG)
-            (EQ (CAR THX) 'THAND))
-            (RPLACA (CDDR THX) NIL)
-            (SETQ THTREE1 (CDR THTREE1)))
+        (COND ((NULL (CDR THTREE1)) (PRINT THA) (THERT OVERPOP - THFINALIZE))
+            ((AND THT (EQ (CAR THX) 'THPROG) (MEMQ THT (CADDDR THX)))
+                (GO RTLEV))
+            ((OR (EQ (CAR THX) 'THPROG) (EQ (CAR THX) 'THAND))
+                (RPLACA (CDDR THX) NIL)
+                (SETQ THTREE1 (CDR THTREE1)))
             ((EQ (CAR THX) 'THREMBIND)
-            (SETQ THTREE1 (CDR THTREE1)))
+                (SETQ THTREE1 (CDR THTREE1)))
             ((RPLACD THTREE1 (CDDR THTREE1))))
         (COND ((EQ (CAR THX) (CAR THA)) (GO DONE)))
         (GO PLUP)
     RTLEV (SETQ THX (CDDR THX))
-    LEVLP (COND ((NULL (CAR THX)) (SETQ THTREE1 (CDR THTREE1))
-                    (GO PLUP))
-        ((EQ (CAADDR (CAAR THX)) THT) (GO DONE)))
+    LEVLP (COND ((NULL (CAR THX)) (SETQ THTREE1 (CDR THTREE1)) (GO PLUP))
+            ((EQ (CAADDR (CAAR THX)) THT) (GO DONE)))
         (RPLACA THX (CDAR THX))
         (GO LEVLP)
     DONE (SETQ THTREE (CDR THTREE))
@@ -1759,25 +1606,25 @@ NIL
 (DEFUN THFIND FEXPR (THA)
     (THBIND (CADDR THA))
     (THPUSH THTREE
-    (LIST 'THFIND
-        (COND ((EQ (CAR THA) 'ALL) ' (1 NIL NIL))               ;; STANDARD ALL
-            ((NUMBERP (CAR THA))
-                (LIST (CAR THA) (CAR THA) T))                       ;; SINGLE NUMBER
-            ((NUMBERP (CAAR THA)) (CAR THA))                    ;; WINOGRAD CROCK FORMAT
-            ((EQ (CAAR THA) 'EXACTLY)
-                (LIST (CADAR THA) (ADD1 (CADAR THA)) NIL))
-            ((EQ (CAAR THA) 'AT-MOST)
-                (LIST 1 (ADD1 (CADAR THA)) NIL))
-            ((EQ (CAAR THA) 'AS-MANY-AS)
-                (LIST 1 (CADAR THA) T))
-            (T (CONS (CADAR THA)                                ;; ONLY THING LEFT IS AT-LEAST
-                (COND ((NULL (CDDAR THA)) (LIST NIL T))         ;; NO AT-MOST
-                ((EQ (CADDAR THA) 'AT-MOST)
-                    (LIST (ADD1 (CAR (CDDDAR THA)))
-                    NIL))
-                (T (LIST (CAR (CDDDAR THA)) T))))))
-        (CONS 0 NIL)
-        (CADR THA)))
+        (LIST 'THFIND
+            (COND ((EQ (CAR THA) 'ALL) ' (1 NIL NIL))               ;; STANDARD ALL
+                ((NUMBERP (CAR THA))
+                    (LIST (CAR THA) (CAR THA) T))                       ;; SINGLE NUMBER
+                ((NUMBERP (CAAR THA)) (CAR THA))                    ;; WINOGRAD CROCK FORMAT
+                ((EQ (CAAR THA) 'EXACTLY)
+                    (LIST (CADAR THA) (ADD1 (CADAR THA)) NIL))
+                ((EQ (CAAR THA) 'AT-MOST)
+                    (LIST 1 (ADD1 (CADAR THA)) NIL))
+                ((EQ (CAAR THA) 'AS-MANY-AS)
+                    (LIST 1 (CADAR THA) T))
+                (T (CONS (CADAR THA)                                ;; ONLY THING LEFT IS AT-LEAST
+                    (COND ((NULL (CDDAR THA)) (LIST NIL T))         ;; NO AT-MOST
+                        ((EQ (CADDAR THA) 'AT-MOST)
+                            (LIST (ADD1 (CAR (CDDDAR THA)))
+                            NIL))
+                        (T (LIST (CAR (CDDDAR THA)) T))))))
+            (CONS 0 NIL)
+            (CADR THA)))
     (THPUSH THTREE (LIST 'THPROG (CDDR THA) NIL (CDDR THA)))
     (THPROGA))
 
@@ -1791,12 +1638,12 @@ NIL
 (DEFUN THFINDT NIL
     (PROG (THX THY THZ THCDAR)
         (SETQ THZ (CADDR (SETQ THCDAR (CDAR THTREE))))
-        (AND (MEMBER (SETQ THX (THVARSUBST THZ NIL))
-            (CDADR THCDAR))
-        (GO =>))
+        (AND (MEMBER (SETQ THX (THVARSUBST THZ NIL)) (CDADR THCDAR))
+            (GO =>))
         (RPLACD (CADR THCDAR) (CONS THX (CDADR THCDAR)))
         (AND (EQ (SETQ THY (ADD1 (CAADR THCDAR))) (CADAR THCDAR))
-        (RETURN (PROG2 (SETQ THBRANCH NIL)
+            (RETURN (PROG2
+                (SETQ THBRANCH NIL)
                 (AND (CADDAR THCDAR) (CDADR THCDAR))
                 (THPOPT))))
         (RPLACA (CADR THCDAR) THY)
@@ -1826,8 +1673,7 @@ NIL
 
 (DEFUN THGENAME FEXPR (X)
     ;; GENERATES UNIQUE NAME WITH ARG AS PREFIX
-    (READLIST (NCONC (EXPLODE (CAR X))
-        (EXPLODE (SETQ THGENAME (ADD1 THGENAME))))))
+    (READLIST (NCONC (EXPLODE (CAR X)) (EXPLODE (SETQ THGENAME (ADD1 THGENAME))))))
 
 (DEFUN THGO FEXPR (X)
     (APPLY 'THSUCCEED (CONS 'THTAG X)))
@@ -1837,14 +1683,13 @@ NIL
         (SETQ THA2 (THVARSUBST (CAR THA) T))                ;; PLANNER VARIABLE OR THVAL OF $E... THA2 =
         (SETQ THA1 (CDR THA))                               ;; INSTANTIATED PATTERN THA1 = RECOMMENDATIONS
         (COND ((OR (NULL THA1)                              ;; SHOULD DATA BASE BE SEARCHED TRYED IF NO RECS
-            (AND (NOT (AND (EQ (CAAR THA1) 'THANUM)
-                    (SETQ THA1 (CONS (LIST 'THNUM (CADAR THA1)) (CONS (LIST 'THDBF 'THTRUE) (CDR THA1))))))
-                (NOT (AND (EQ (CAAR THA1) 'THNODB)          ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
-                    (PROG2 (SETQ THA1 (CDR THA1)) T)))
-                (NOT (EQ (CAAR THA1) 'THDBF))))
-            (SETQ THA1
-                (CONS (LIST 'THDBF 'THTRUE) THA1))))
-        (SETQ THA1 (MAPCAN #'THTRY THA1))          ;; THMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
+                (AND (NOT (AND (EQ (CAAR THA1) 'THANUM)
+                        (SETQ THA1 (CONS (LIST 'THNUM (CADAR THA1)) (CONS (LIST 'THDBF 'THTRUE) (CDR THA1))))))
+                    (NOT (AND (EQ (CAAR THA1) 'THNODB)      ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
+                        (PROG2 (SETQ THA1 (CDR THA1)) T)))
+                    (NOT (EQ (CAAR THA1) 'THDBF))))
+            (SETQ THA1 (CONS (LIST 'THDBF 'THTRUE) THA1))))
+        (SETQ THA1 (MAPCAN #'THTRY THA1))                   ;; THMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
         (AND THTRACE (THTRACES 'THGOAL THA2))
         (COND ((NULL THA1) (RETURN NIL)))
         (THPUSH THTREE (LIST 'THGOAL THA2 THA1))            ;; (THGOAL PATTERN MATCHES)
@@ -1852,10 +1697,10 @@ NIL
         (RETURN NIL)))                                      ;; FAILS TO THGOALF
 
 (DEFUN THGOALF NIL
-    ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY
-    ;; IF THTRY1 RETURNS NIL, IT MEANS THAT IT COULDN'T FIND ANOTHER
-    ;; POSSIBILITY AND WE SHOULD TELL THVAL THAT WE HAVE FAILED
-    ;; ALL THPOPT DOES IS TO LOB THE THGOAL ENTRY OFF THTREE
+    ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY.
+    ;; IF THTRY1 RETURNS NIL, IT MEANS THAT IT COULDN'T FIND ANOTHER POSSIBILITY
+    ;; AND WE SHOULD TELL THVAL THAT WE HAVE FAILED.
+    ;; ALL THPOPT DOES IS TO LOB THE THGOAL ENTRY OFF THTREE.
     (COND (THMESSAGE (THPOPT) NIL) ((THTRY1)) (T (THPOPT) NIL)))
 
 (DEFUN THGOALT NIL
@@ -1958,8 +1803,7 @@ NIL
                 ;; FURTHERMORE, THY IS ALSO A VARIABLE
                 ;; THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING
                 (COND (YPAIR (THRPLACAS (CDR XPAIR) (CADR YPAIR))
-                        ;; IF THY ALSO HAS RESTRICTIONS, WHEN WE
-                        ;; LINK VARIABLES WE COMBINE RESTRICTIONS
+                        ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS
                         (AND (CDDR YPAIR) (THRPLACDS (CDR XPAIR) (THUNION (CDDR XPAIR) (CDDR YPAIR))))
                     (THRPLACDS YPAIR (CDR XPAIR)))
                 ;; IF THY IS NOT A VARIALBE, JUST ASSIGN THX TO THY
@@ -2028,28 +1872,24 @@ NIL
 (DEFUN THCHECK (THPRD THX)
     (OR (NULL THPRD)
         (EQ THX 'THUNASSIGNED)
-        (ERRSET (MAPC '(LAMBDA (THY)
-                        (OR (THY THX) (ERR NIL)))
-                THPRD))))
+        (ERRSET (MAPC '(LAMBDA (THY) (OR (THY THX) (ERR NIL))) THPRD))))
 
 (DEFUN THUNION (L1 L2)
     (MAPC '(LAMBDA (THX)
-                (COND ((MEMBER THX L2))
-                    (T (SETQ L2 (CONS THX L2)))))
+            (COND ((MEMBER THX L2))
+                (T (SETQ L2 (CONS THX L2)))))
         L1)
     L2)
 
 (DEFUN THMATCH THX
-    ((LAMBDA (THOLIST THALIST)
-        (THMATCH1 (ARG 1) (ARG 2)))
-            (COND ((GREATERP THX 2) (ARG 3)) (T THALIST))
-            (COND ((GREATERP THX 3) (ARG 4)) (T THALIST))))
+    ((LAMBDA (THOLIST THALIST) (THMATCH1 (ARG 1) (ARG 2)))
+        (COND ((GREATERP THX 2) (ARG 3)) (T THALIST))
+        (COND ((GREATERP THX 3) (ARG 4)) (T THALIST))))
 
 (DEFUN THMATCH1 (THX THY)
     ;; THX IS THE PATTERN TO BE MATCHED.
     ;; THY IS THE POSSIBLE CANDIDATE.
-    ;; THMATCH1 DOES PRELIMINARLY WORK BEFORE HANDING
-    ;; THE PATTERN AND CANDIDATE OFF TO THMATCH2
+    ;; THMATCH1 DOES PRELIMINARLY WORK BEFORE HANDING THE PATTERN AND CANDIDATE OFF TO THMATCH2
     ;; WHO DOES THE REAL WORK.
     (PROG (THML)
         ;; THML IS A FREE VARIABLE WHO WILL BE HACKED BY THMATCH2 WHEN THMATCH2 IS DONE,
@@ -2070,116 +1910,85 @@ NIL
         (T (EVLIS THML) (RETURN NIL)))))
 
 (DEFUN THMATCHLIST (THTB THWH)
-    ;; THTB IS A PATTERN WHICH EVENTUALLY IS TO BE MATCHED
+    ;; THTB IS A PATTERN WHICH EVENTUALLY IS TO BE MATCHED.
     ;; THWH SAYS IF IT IS AN ASSERTION, CONSEQUENT THEOREM, ETC.
-    ;; THMATCHLIST GOES THROUGH THE DATA BASE, LOOKING ON ALL
-    ;; THE BUCKETS OF THE ATOMS IN THE PATTERN
-    ;; IT RETURNS THE SHORTEST BUCKET TO THGOAL
+    ;; THMATCHLIST GOES THROUGH THE DATA BASE, LOOKING ON ALL THE BUCKETS OF THE ATOMS IN THE PATTERN.
+    ;; IT RETURNS THE SHORTEST BUCKET TO THGOAL.
     (PROG (THB1 THB2 THL THNF THAL THA1 THA2 THRN THL1 THL2 THRVC)
+        ;; THL IS THE LENGTH OF THE SHORTEST BUCKET FOUND SO FAR.
+        ;; INITIALLY IT IS SET TO A VERY LARGE NUMBER.
         (SETQ THL 34359738367)
-
-        ;; THL IS THE LENGTH OF THE SHORTEST BUCKET FOUND SO FAR
-        ;; INITIALLY IT IS SET TO A VERY LARGE NUMBER
+        ;; COUNTER WHICH SAYS WHICH PATTERN ITEM WE ARE WORKING ON.
         (SETQ THNF 0)
-
-        ;; COUNTER WHICH SAYS WHICH PATTERN ITEM WE ARE WORKING ON
+        ;; LENGTH OF PATTERN.
         (SETQ THAL (LENGTH THTB))
-
-        ;; LENGTH OF PATTERN
+        ;; THB1 WILL BE THE REMAINDER OF THE PATTERN TO YET BE WORKED ON.
+        ;; WHEN IT IS NIL, WE ARE DONE, SO RETURN THE BUCKET.
+        ;; THL1 IS THE BUCKET UNDER THE ATOM.
+        ;; THL2 IS THE BUCKET UNDER THE VARIABLE IN THAT POSITION.
+        ;; IF WE ARE WORKING ON AN ASSERTION, THL2 WILL BE () SINCE THERE ARE NO VARIABLES IN ASSERTIONS.
+        ;; IN THEOREMS, WE MUST TAKE INTO ACCOUNT THE FACT THAT THE THEOREM MAY HAVE EITHER THE CORRECT ATOM,
+        ;; OR A VARIALBE IN A GIVEN POSITION, AND STILL MATCH.
         (SETQ THB1 THTB)
-
-        ;; THB1 WILL BE THE REMAINDER OF THE PATTERN TO YET BE WORKED ON
-        ;; WHEN IT IS NIL, WE ARE DONE
-        ;; SO RETURN THE BUCKET.  THL1 IS THE BUCKET UNDER THE ATOM
-        ;; THL2 IS THE BUCKET UNDER THE VARIABLE IN THAT POSITION
-        ;; IF WE ARE WORKING ON AN ASSERTION, THL2 WILL BE () SINCE
-        ;; THERE ARE NO VARIABLES IN ASSERTIONS
-        ;; IN THEOREMS, WE MUST TAKE INTO ACCOUNT THE FACT THAT
-        ;; THE THEOREM MAY HAVE EITHER THE CORRECT ATOM, OR A
-        ;; VARIALBE IN A GIVEN POSITION, AND STILL MATCH
     THP1 (OR THB1
             (RETURN (COND (THL2 (APPEND THL1 THL2)) (THL1))))
-
-        ;; ADD1 TO POSITION COUNTER
+        ;; ADD1 TO POSITION COUNTER.
         (SETQ THNF (ADD1 THNF))
-
-        ;; THB2 IS THE ITEM WE ARE WORKING ON IN THIS PASS
+        ;; THB2 IS THE ITEM WE ARE WORKING ON IN THIS PASS.
         (SETQ THB2 (CAR THB1))
-
-        ;; UPDATE THB1
+        ;; UPDATE THB1.
         (SETQ THB1 (CDR THB1))
-    THP3 (COND ((OR (NULL (ATOM THB2))
-
-            ;; IF THE ITEM IS NOT A NORMAL ATOM, SKIP IT AND GO TO NEXT PASS
-            (NUMBERP THB2)
-            (EQ THB2 '?))
-            (GO THP1))
-
-            ;; IF THE ITEM DOES NOT HAVE THE PROPERTY ON ITS PROPERTY
-            ;; LIST, THEN IT OBVIOUSLY DOSEN'T HAVE ANY BUCKET AT ALL
+        ;; IF THE ITEM IS NOT A NORMAL ATOM, SKIP IT AND GO TO NEXT PASS.
+    THP3 (COND ((OR (NULL (ATOM THB2)) (NUMBERP THB2) (EQ THB2 '?))
+                (GO THP1))
+            ;; IF THE ITEM DOES NOT HAVE THE PROPERTY ON ITS PROPERTY LIST,
+            ;; THEN IT OBVIOUSLY DOSEN'T HAVE ANY BUCKET AT ALL.
             ;; SO THA1, WHICH RECORDS THE NUMBER IN THE BUCKET IS SET TO 0
             ((NOT (SETQ THA1 (GET THB2 THWH)))
-
-            ;; IF A BUCKET IS FOUND, THE FIRST THING
-            ;; IN THE BUCKET WILL BE THE NUMBER OF GOODIES THERE
-            ;; THE REST WILL BE THE GOODIES.  THE FIRST 0 IN THA1
-            ;; THEN SAYS THAT THERE WAS NO BUCKET.  THE SECOND
-            ;; 0 IS JUST A DUMMY FOR THE GOODIES WHICH ARN'T THERE
-            (SETQ THA1 '(0 0)))
-
-            ;; IF IT IS A THNOHASH WE IGNOR IT JUST LIKE
-            ;; A LIST, OR NUMBER
+                ;; IF A BUCKET IS FOUND, THE FIRST THING IN THE BUCKET WILL BE THE NUMBER OF GOODIES THERE.
+                ;; THE REST WILL BE THE GOODIES.  THE FIRST 0 IN THA1 THEN SAYS THAT THERE WAS NO BUCKET.
+                ;; THE SECOND 0 IS JUST A DUMMY FOR THE GOODIES WHICH ARN'T THERE.
+                (SETQ THA1 '(0 0)))
+            ;; IF IT IS A THNOHASH, WE IGNORE IT JUST LIKE A LIST, OR NUMBER.
             ((EQ THA1 'THNOHASH) (GO THP1))
-
-            ;; SAME IF THERE IS NO SUB-BUCKET FOR THE ATOM
-            ;; IN THE CORRECT POSITION
+            ;; SAME IF THERE IS NO SUB-BUCKET FOR THE ATOM IN THE CORRECT POSITION.
             ((NOT (SETQ THA1 (ASSQ THNF (CDR THA1))))
-            (SETQ THA1 '(0 0)))
-
-            ;; SAME FOR SUB-SUB-BUCKET (PATTERN LENGTH)
+                (SETQ THA1 '(0 0)))
+            ;; SAME FOR SUB-SUB-BUCKET (PATTERN LENGTH).
             ((NOT (SETQ THA1 (ASSQ THAL (CDR THA1))))
-            (SETQ THA1 '(0 0))))
+                (SETQ THA1 '(0 0))))
         (SETQ THRN (CADR THA1))
         (SETQ THA1 (CDDR THA1))
-
-        ;; IF ITS AN ASSERTION, THEN WE DONT HAVE TO LOOK FOR VARIABLES
+        ;; IF IT'S AN ASSERTION, THEN WE DONT HAVE TO LOOK FOR VARIABLES.
         (AND (EQ THWH 'THASSERTION) (GO THP2))
-
-        ;; THVRB IS THE ATOM WHICH HAS THE BUCKET FOR VARIABLES
+        ;; THVRB IS THE ATOM WHICH HAS THE BUCKET FOR VARIABLES.
         ;; WE WILL NOW LOOK TO SEE IF THERE ARE ANY THEOREMS WHICH
-        ;; HAVE A VARIABLE IN THE CORRECT POSSITION
+        ;; HAVE A VARIABLE IN THE CORRECT POSSITION.
         (COND
             ((NOT (SETQ THA2 (GET 'THVRB THWH))) (SETQ THA2 '(0 0)))
             ((NOT (SETQ THA2 (ASSQ THNF (CDR THA2)))) (SETQ THA2 '(0 0)))
             ((NOT (SETQ THA2 (ASSQ THAL (CDR THA2)))) (SETQ THA2 '(0 0))))
         (SETQ THRVC (CADR THA2))
         (SETQ THA2 (CDDR THA2))
-
         ;; SEE IF THE SUM OF THE NUMBER OF GOODIES IN THE ATOM BUCKET PLUS
         ;; THE NUMBER IN THE VARIABLE BUCKET IS GREATER THAN THE SMALLEST
-        ;; NUMBER SO FAR.  IF SO WE KEEP THE PREVIOUS NUMBER
+        ;; NUMBER SO FAR.  IF SO, WE KEEP THE PREVIOUS NUMBER.
         (AND (GREATERP (PLUS THRVC THRN) THL) (GO THP1))
-
-        ;; OTHERWISE THIS BECOMES THE NEW SMALLEST
+        ;; OTHERWISE THIS BECOMES THE NEW SMALLEST,
         (SETQ THL (PLUS THRVC THRN))
-
-        ;; AND THL1 AND THL2 ARE POINTERS TO THE NEWLY DISCOVERD BUCKETS
+        ;; AND THL1 AND THL2 ARE POINTERS TO THE NEWLY DISCOVERD BUCKETS.
         (SETQ THL1 THA1)
         (SETQ THL2 THA2)
-
-        ;; GO BACK FOR ANOTHER PASS
+        ;; GO BACK FOR ANOTHER PASS.
         (GO THP1)
 
-        ;; THIS SECTION IS FOR ASSERTIONS, I.E., DON'T HAVE TO CONSIDER VARIABLES
+        ;; THIS SECTION IS FOR ASSERTIONS, I.E. DON'T HAVE TO CONSIDER VARIABLES.
     THP2 (COND
-            ;; IF THERE IS NO BUCKET THEN RETURN SINCE NOTHING WILL MATCH THE PATTERN
+            ;; IF THERE IS NO BUCKET, THEN RETURN SINCE NOTHING WILL MATCH THE PATTERN.
             ((EQ THRN 0) (RETURN NIL))
-
-            ;; IF THE NEW BUCKET IS SMALLER, IT BECOMES THE SMALLEST SO FAR
-            ((GREATERP THL THRN) (SETQ THL1 THA1)
-                    (SETQ THL THRN)))
-
-        ;; GO BACK FOR ANOTHER PASS
+            ;; IF THE NEW BUCKET IS SMALLER, IT BECOMES THE SMALLEST SO FAR.
+            ((GREATERP THL THRN) (SETQ THL1 THA1) (SETQ THL THRN)))
+        ;; GO BACK FOR ANOTHER PASS.
         (GO THP1)))
 
 (DEFUN THMESSAGE FEXPR (THA)
@@ -2190,13 +1999,8 @@ NIL
     (PROG (BOD)
         (SETQ BOD (CAR THTREE))
         (THPOPT)
-        (COND ((AND (THBIND (CADR BOD))
-            (THMATCH1 (CADDR BOD)
-                    THMESSAGE))
-            (THPUSH THTREE (LIST 'THPROG
-                    (CDDR BOD)
-                    NIL
-                    (CDDR BOD)))
+        (COND ((AND (THBIND (CADR BOD)) (THMATCH1 (CADDR BOD) THMESSAGE))
+            (THPUSH THTREE (LIST 'THPROG (CDDR BOD) NIL (CDDR BOD)))
             (SETQ THMESSAGE NIL)
             (RETURN (THPROGA)))
             (T (SETQ THALIST THOLIST)))
@@ -2228,14 +2032,12 @@ NIL
 
 (DEFUN THOR2 (P)
     (COND (THMESSAGE (THPOPT) NIL)
-            ((AND (CADAR THTREE) (CDADAR THTREE))
-        (RPLACA (CDAR THTREE) (CDADAR THTREE))
-        (SETQ THEXP (COND (P (PROG2 0
-                        (CAADAR THTREE)
-                        (OR (CADAR THTREE)
-                        (THPOPT))))
+        ((AND (CADAR THTREE) (CDADAR THTREE))
+            (RPLACA (CDAR THTREE) (CDADAR THTREE))
+            (SETQ THEXP
+                (COND (P (PROG2 0 (CAADAR THTREE) (OR (CADAR THTREE) (THPOPT))))
                     ((CAR (CAADAR THTREE))))))
-            (T (THPOPT) NIL)))
+        (T (THPOPT) NIL)))
 
 (DEFUN THORF NIL (THOR2 T))
 
@@ -2244,46 +2046,35 @@ NIL
 (DEFUN THPOPT NIL (SETQ THTREE (CDR THTREE)))
 
 (DEFUN THPROG FEXPR (THA)
-    ;; THBIND HACKS THALIST TO BIND THE VARIABLES
-    ;; IT ALSO HACKS THTREE SO WE CAN UNDO IT IF NEEDED
+    ;; THBIND HACKS THALIST TO BIND THE VARIABLES.
+    ;; IT ALSO HACKS THTREE SO WE CAN UNDO IT IF NEEDED.
     (THBIND (CAR THA))
-
-    ;; PUT THPROG MARK ON THTREE
-    ;; THE FIRST THA IS A POINTER ONE BEFORE
-    ;; THE NEXT PART OF THE THPROG TO BE HANDELED
-    ;; THE SECOND ONE WILL BE KEPT WHOLE TO SEARCH FOR PROG TAGS
+    ;; PUT THPROG MARK ON THTREE.
+    ;; THE FIRST THA IS A POINTER ONE BEFORE THE NEXT PART OF THE THPROG TO BE HANDELED.
+    ;; THE SECOND ONE WILL BE KEPT WHOLE TO SEARCH FOR PROG TAGS.
     (THPUSH THTREE (LIST 'THPROG THA NIL THA))
-
     ;; CALL WORKHORSE
     (THPROGA))
 
 (DEFUN THPROGA NIL
     ((LAMBDA (X) (COND
-            ;; ODD CASE WHERE THE THPROG HAS NO SUBEXPRESSIONS
-            ;; RETURN SUCCESS
+            ;; ODD CASE WHERE THE THPROG HAS NO SUBEXPRESSIONS.  RETURN SUCCESS.
             ((NULL (CDAR X)) (THPOPT) 'THNOVAL)
-
-            ;; NEXT ITEM IS AN ATOM, HENCE A THPROG TAG
+            ;; NEXT ITEM IS AN ATOM, HENCE A THPROG TAG.
             ((ATOM (CADAR X))
-
-            ;; USE THEXP TO MARK IT ON THTREE
-            (SETQ THEXP (LIST 'THTAG (CADAR X)))
-
-            ;; MOVE POINTER TO NEXT EXPRESSION
-            (RPLACA X (CDAR X))
-            THVALUE)
-
-            ;; OTHERWISE NEXT EXPRESSION TO BE EVALUATED IS
-            ;; THE NEXT EXPRESSION OF THE THPROG
+                ;; USE THEXP TO MARK IT ON THTREE.
+                (SETQ THEXP (LIST 'THTAG (CADAR X)))
+                ;; MOVE POINTER TO NEXT EXPRESSION.
+                (RPLACA X (CDAR X))
+                THVALUE)
+            ;; OTHERWISE NEXT EXPRESSION TO BE EVALUATED IS THE NEXT EXPRESSION OF THE THPROG.
             (T (SETQ THEXP (CADAR X))
-
-                ;; MOVE POINTER TO NEXT EXPRESSION
+                ;; MOVE POINTER TO NEXT EXPRESSION.
                 (RPLACA X (CDAR X))
                 THVALUE)))
-    (CDAR THTREE)))
+        (CDAR THTREE)))
 
-;; THBRANCH AND THBRANCHUN ARE THE MAIN FUNCTIONS
-;; IN CHARGE OF HANDELING THE EFFECTS OF SUCCESS AND FAILURE
+;; THBRANCH AND THBRANCHUN ARE THE MAIN FUNCTIONS IN CHARGE OF HANDLING THE EFFECTS OF SUCCESS AND FAILURE.
 ;; THEY ARE ONLY CALLED BY THPROGT AND F
 
 (DEFUN THPROGF NIL (THBRANCHUN) NIL)
@@ -2315,30 +2106,21 @@ NIL
 
     ;; THB = THI IN THIP
     (PROG (THA THSV THA1 THA2 THA3 THA4 THA5 THONE THPC)
-
         ;; THA AND THA1 DO THE WORK OF THT1 IN THIP
         ;; THA1 = THT2
         ;; THA3 = THT3
         ;; THA4, THA5, THONE, AND THPC ARE NEW
         (SETQ THNF (ADD1 THNF))
-
-        ;; THIS COND SERVES THE SAME PURPOSE AS THE
-        ;; FIRST COND IN THIP
-        (COND ((AND (ATOM THB)
-            (NOT (EQ THB '?))
-            (NOT (NUMBERP THB)))
-        (SETQ THA THB))
-        ((OR (EQ THB '?)
-        (MEMQ (CAR THB) '(THV THNV)))
-        (COND (THFST (RETURN 'THVRB))
-            ((SETQ THA 'THVRB))))
-        ((RETURN 'THVRB)))
-
-        ;; ALL THE REST SERVES THE SAME PURPOSE AS THE
-        ;; SECOND COND IN THIP IT WAS ORRIGINALLY
-        ;; WRITTEN AS A SINGLE COND, BUT THE
-        ;; COMPILER BARFED ON IT SO IT
-        ;; WAS BROKEN UP INTO BITE SIZE PIECES
+        ;; THIS COND SERVES THE SAME PURPOSE AS THE FIRST COND IN THIP
+        (COND ((AND (ATOM THB) (NOT (EQ THB '?)) (NOT (NUMBERP THB)))
+                (SETQ THA THB))
+            ((OR (EQ THB '?) (MEMQ (CAR THB) '(THV THNV)))
+                (COND (THFST (RETURN 'THVRB))
+                    ((SETQ THA 'THVRB))))
+            ((RETURN 'THVRB)))
+        ;; ALL THE REST SERVES THE SAME PURPOSE AS THE SECOND COND IN THIP.
+        ;; IT WAS ORIGINALLY WRITTEN AS A SINGLE COND, BUT THE COMPILER BARFED ON IT,
+        ;; SO IT WAS BROKEN UP INTO BITE SIZE PIECES.
         (SETQ THA1 (GET THA THWH))
         (OR THA1 (RETURN NIL))
         (AND (EQ THA1 'THNOHASH) (RETURN 'THBQF))
@@ -2349,16 +2131,15 @@ NIL
         (SETQ THA4 (CADR THA3))
         (SETQ THPC (NOT (EQ THWH 'THASSERTION)))
         (SETQ THA5
-        (COND ((OR THFST THFSTP) (THBAP THBS (CDR THA4)))
-            ((THBA (COND (THPC THON) (T (CAR THON)))
-            (CDR THA4)))))
+            (COND ((OR THFST THFSTP) (THBAP THBS (CDR THA4)))
+                ((THBA (COND (THPC THON) (T (CAR THON))) (CDR THA4)))))
         (OR THA5 (RETURN NIL))
         (SETQ THONE (CADR THA5))
         (RPLACD THA5 (CDDR THA5))
         (AND (NOT (EQ (CADR THA4) 1))
-        (OR (SETQ THSV (CDDR THA4)) T)
-        (RPLACA (CDR THA4) (SUB1 (CADR THA4)))
-        (RETURN THONE))
+            (OR (SETQ THSV (CDDR THA4)) T)
+            (RPLACA (CDR THA4) (SUB1 (CADR THA4)))
+            (RETURN THONE))
         (SETQ THSV (CDDR THA3))
         (RPLACD THA3 THSV)
         (AND (CDADR THA2) (RETURN THONE))
@@ -2373,47 +2154,40 @@ NIL
 (DEFUN THREMBINDT NIL (SETQ THALIST (CADAR THTREE)) (THPOPT) THVALUE)
 
 (DEFUN THREMOVE (THB)
-    ;; THIS FUNCTION IS ANALAGOUS TO THADD EXCEPT THREMOVE REMOVES RATHER THAN ADDS
-    ;; AS WITH THREM1, ALL COMMENTS WILL EXPLICATE THE ANALOGY
-    ;; SO ONE SHOULD FIRST BECOME FAMILIAR WITH THADD
+    ;; THIS FUNCTION IS ANALAGOUS TO THADD EXCEPT THREMOVE REMOVES RATHER THAN ADDS.
+    ;; AS WITH THREM1, ALL COMMENTS WILL EXPLICATE THE ANALOGY,
+    ;; SO ONE SHOULD FIRST BECOME FAMILIAR WITH THADD.
 
-    ;; THB = THTT IN THADD, THREMOVE TAKES ONLY ONE
-    ;; ARG SINCE THE PROPERTY LIST FOR THE ASSERTION PLAYS NO ROLE
-    ;; IN REMOVING THE ASSERTION
+    ;; THB = THTT IN THADD.
+    ;; THREMOVE TAKES ONLY ONE ARG SINCE THE PROPERTY LIST FOR THE ASSERTION
+    ;; PLAYS NO ROLE IN REMOVING THE ASSERTION.
     (PROG (THB1 THWH THNF THAL THON THBS THFST THFSTP THFOO)
-
         ;; THB1 AND THON TOGETHER SHARE THE WORK OF THT1 AND THCK IN THADD
         ;; THAL = THLAS
         ;; THBS = THTTL
         (SETQ THNF 0)
-
-        ;; THE STRUCTURE OF THE TWO PROGRAMS IS VIRTUALLY IDENTICAL
+        ;; THE STRUCTURE OF THE TWO PROGRAMS IS VIRTUALLY IDENTICAL.
         (SETQ THB1
             (COND ((ATOM THB)
-                (SETQ THBS THB)
-                (SETQ THWH
-                (CAR (SETQ THB1
-                        (GET THB
-                        'THEOREM))))
-                (CADDR THB1))
+                    (SETQ THBS THB)
+                    (SETQ THWH (CAR (SETQ THB1 (GET THB 'THEOREM))))
+                    (CADDR THB1))
                 ((SETQ THWH 'THASSERTION)
-                (SETQ THBS THB))))
+                    (SETQ THBS THB))))
         (SETQ THAL (LENGTH THB1))
         (SETQ THFST T)
-    THP1 (COND ((NULL THB1) (SETQ THB1 THFOO)
-            (SETQ THNF 0)
-            (SETQ THFST (SETQ THFOO NIL))
-            (SETQ THFSTP T)
-            (GO THP1))
-        ((NULL (SETQ THON (THREM1 (CAR THB1))))
-        (RETURN NIL))
-        ((MEMQ THON '(THBQF THVRB))
-        (SETQ THFOO
-            (NCONC THFOO
-                (LIST (COND ((EQ THON 'THVRB)
-                        (CAR THB1))))))
-        (SETQ THB1 (CDR THB1))
-        (GO THP1)))
+    THP1 (COND ((NULL THB1)
+                (SETQ THB1 THFOO)
+                (SETQ THNF 0)
+                (SETQ THFST (SETQ THFOO NIL))
+                (SETQ THFSTP T)
+                (GO THP1))
+            ((NULL (SETQ THON (THREM1 (CAR THB1))))
+                (RETURN NIL))
+            ((MEMQ THON '(THBQF THVRB))
+                (SETQ THFOO (NCONC THFOO (LIST (COND ((EQ THON 'THVRB) (CAR THB1))))))
+                (SETQ THB1 (CDR THB1))
+                (GO THP1)))
         (SETQ THFST NIL)
         (MAPC #'THREM1 (CDR THB1))
         (SETQ THNF 0)
@@ -2432,7 +2206,7 @@ NIL
 (DEFUN THRESTRICT FEXPR (THB)
     (PROG (X)
         (COND ((ATOM (SETQ X (THGAL (CAR THB) THALIST)))
-            (THPRINTC 'THRESTRICT\ IGNORED\ -\ CONTINUING))
+                (THPRINTC 'THRESTRICT\ IGNORED\ -\ CONTINUING))
             ((THRPLACD (CDR X) (THUNION (CDDR X) (CDR THB)))))
         (RETURN X)))
 
@@ -2482,35 +2256,27 @@ NIL
         (GO =>)))
 
 (DEFUN THSGAL (X)
-    (SASSQ (CADR X)
-        THALIST
-        '(LAMBDA NIL
-            (PROG (Y)
-                (SETQ Y (LIST (CADR X) 'THUNASSIGNED))
-                (NCONC (GET 'THALIST 'VALUE) (LIST Y))
-                (RETURN Y)))))
+    (SASSQ (CADR X) THALIST
+        '(LAMBDA NIL (PROG (Y)
+            (SETQ Y (LIST (CADR X) 'THUNASSIGNED))
+            (NCONC (GET 'THALIST 'VALUE) (LIST Y))
+            (RETURN Y)))))
 
 (DEFUN THSTATE FEXPR (THINDICATORS)
-    ;; PRINTS THAT PART OF THE STATE OF THE MICRO-PLANNER WORLD SPECIFIED BY THE INDICATORS
-    ;; IN REREADABLE FORM. NOTE THAT IT IS BLIND TO ASSERTIONS THAT BEGIN WITH
-    ;; EITHER NUMBERS, LIST STRUCTURE, NOHASHED ATOMS OR NON-INTERNED ATOMS.
+    ;; PRINTS THAT PART OF THE STATE OF THE MICRO-PLANNER WORLD SPECIFIED BY THE INDICATORS IN REREADABLE FORM.
+    ;; NOTE THAT IT IS BLIND TO ASSERTIONS THAT BEGIN WITH EITHER NUMBERS, LIST STRUCTURE, NOHASHED ATOMS OR NON-INTERNED ATOMS.
     (PROG (THP)
         (PRINT '(THDATA))
         (MAPC '(LAMBDA (BUCKET)
             (MAPC '(LAMBDA (THATOM)
                 (MAPC '(LAMBDA (THWH)
-                    (AND
-                        (SETQ THP (GET THATOM THWH))
-                        (SETQ THP (ASSOC 1 (CDR THP)))
+                    (AND (SETQ THP (GET THATOM THWH)) (SETQ THP (ASSOC 1 (CDR THP)))
                         (MAPC '(LAMBDA (LENGTH-BUCKET)
                             (MAPC '(LAMBDA (ASRT)
-                                    (COND ((EQ THWH 'THASSERTION)
-                                        (PRINT ASRT))
-                                        ((PRINT (LIST ASRT)))))
+                                (COND ((EQ THWH 'THASSERTION) (PRINT ASRT)) ((PRINT (LIST ASRT)))))
                             (CDDR LENGTH-BUCKET)))
                         (CDR THP))))
-                (COND (THINDICATORS)
-                    (' (THASSERTION THANTE THCONSE THERASING)))))
+                (COND (THINDICATORS) (' (THASSERTION THANTE THCONSE THERASING)))))
             BUCKET))
         (MAKOBLIST NIL))
         (PRINT NIL)))
@@ -2522,52 +2288,44 @@ NIL
                 (SETQ THA (CONS 'THPROG (CDR THA))))
             (SETQ THBRANCH THTREE)
             (SETQ THABRANCH THALIST)
-        LOOP (COND ((NULL THTREE) (PRINT THA)
-                        (THERT OVERPOP - THSUCCEED))
+        =>  (COND
+                ((NULL THTREE)
+                    (PRINT THA)
+                    (THERT OVERPOP - THSUCCEED))
                 ((EQ (CAAR THTREE) 'THREMBIND)
-            (SETQ THALIST (CADAR THTREE))
-            (THPOPT)
-            (GO LOOP))
+                    (SETQ THALIST (CADAR THTREE))
+                    (THPOPT)
+                    (GO =>))
                 ((EQ (CAAR THTREE) (CAR THA))
-            (THPOPT)
-            (RETURN (COND ((CDR THA) (EVAL (CADR THA)))
-                        ('THNOVAL))))
-                ((AND (EQ (CAR THA) 'THTAG)
-                    (EQ (CAAR THTREE) 'THPROG)
-                    (SETQ THX (MEMQ (CADR THA)
-                            (CADDDR (CAR THTREE)))))
-            (RPLACA (CDAR THTREE) (CONS NIL THX))
-            (RETURN (THPROGT)))
-            (T (THPOPT) (GO LOOP))))))
+                    (THPOPT)
+                    (RETURN (COND ((CDR THA) (EVAL (CADR THA))) ('THNOVAL))))
+                ((AND (EQ (CAR THA) 'THTAG) (EQ (CAAR THTREE) 'THPROG) (SETQ THX (MEMQ (CADR THA) (CADDDR (CAR THTREE)))))
+                    (RPLACA (CDAR THTREE) (CONS NIL THX))
+                    (RETURN (THPROGT)))
+                (T (THPOPT) (GO =>))))))
 
 (DEFUN THTAE (XX)
     (COND
         ((ATOM XX) NIL)
         ((EQ (CAR XX) 'THUSE)
-        (MAPCAR
-            '(LAMBDA (X)
-                    (COND ((NOT (AND (SETQ THXX
-                                (GET X 'THEOREM))
-                            (EQ (CAR THXX) TYPE)))
-                        (PRINT X)
-                        (LIST 'THAPPLY
-                        (THERT BAD THEOREM \-THTAE)
-                        (CAR THX)))
+            (MAPCAR '(LAMBDA (X)
+                    (COND ((NOT (AND (SETQ THXX (GET X 'THEOREM)) (EQ (CAR THXX) TYPE)))
+                            (PRINT X)
+                            (LIST 'THAPPLY (THERT BAD THEOREM \-THTAE) (CAR THX)))
                         (T (LIST 'THAPPLY X (CAR THX)))))
-            (CDR XX)))
+                (CDR XX)))
         ((EQ (CAR XX) 'THTBF)
-            (MAPCAN '(LAMBDA (Y) (COND (((CADR XX) Y)
-                                (LIST (LIST 'THAPPLY
-                                        Y
-                                        (CAR THX))))))
-                (COND (THY1 THY) ((SETQ THY1 T)
-                            (SETQ THY (THMATCHLIST (CAR THX) TYPE))))))
+            (MAPCAN '(LAMBDA (Y)
+                    (COND (((CADR XX) Y)
+                        (LIST (LIST 'THAPPLY Y (CAR THX))))))
+                (COND (THY1 THY)
+                    ((SETQ THY1 T)
+                        (SETQ THY (THMATCHLIST (CAR THX) TYPE))))))
     (T (PRINT XX) (THTAE (THERT UNCLEAR RECCOMMENDATION \-THTAE)))))
 
 (DEFUN THTAG FEXPR (L)
     (AND (CAR L)
-        (THPUSH THTREE
-            (LIST 'THTAG (CAR L)))))
+        (THPUSH THTREE (LIST 'THTAG (CAR L)))))
 
 (DEFUN THTAGF NIL (THPOPT) NIL)
 
@@ -2588,72 +2346,62 @@ NIL
         (RPLACA THY (CDAR THY))
         (GO NXTREC)
     THDBF (SETQ THOLIST THALIST)
-        (COND ((NULL (CADDR THX)) (RPLACA THY (CDAR THY))
-                    (GO NXTREC))                            ;; NO MORE CANDIDATES SATISFYING THIS REC.
-        ((PROG2 0                                           ;; TRY NEXT REC
-            (AND ((CADR THX) (SETQ THW (CAADDR THX)))
-            (THMATCH1 (CADR THZ) (CAR THW)))
-            (RPLACA (CDDR THX) (CDADDR THX)))
-        (RETURN THW))
-        (T (GO THDBF)))
-    THTBF (COND ((NULL (CADDR THX)) (RPLACA THY (CDAR THY))
-                        (GO NXTREC)))                       ;; NO MORE CANDIDATES SATISFYING THIS REC.
+        (COND ((NULL (CADDR THX))
+                (RPLACA THY (CDAR THY))
+                (GO NXTREC))                                ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
+            ((PROG2 0
+                    (AND ((CADR THX) (SETQ THW (CAADDR THX))) (THMATCH1 (CADR THZ) (CAR THW)))
+                    (RPLACA (CDDR THX) (CDADDR THX)))
+                (RETURN THW))
+            (T (GO THDBF)))
+    THTBF (COND ((NULL (CADDR THX))
+                (RPLACA THY (CDAR THY))
+                (GO NXTREC)))                               ;; NO MORE CANDIDATES SATISFYING THIS REC, TRY NEXT
         (SETQ THEOREM (CAADDR THX))
-    THTBF1 (COND ((NOT (AND (SETQ THW                       ;; TRY NEXT REC
-                    (GET THEOREM 'THEOREM))
-                    (EQ (CAR THW) 'THCONSE)))
-            (PRINT THEOREM)
-            (COND ((EQ (SETQ THEOREM
-                        (THERT BAD THEOREM - THTRY1))
-                    'T)
-                (GO NXTREC))
-                (T (GO THTBF1)))))
+    THTBF1 (COND ((NOT (AND (SETQ THW (GET THEOREM 'THEOREM)) (EQ (CAR THW) 'THCONSE)))
+                (PRINT THEOREM)
+                (COND ((EQ (SETQ THEOREM (THERT BAD THEOREM - THTRY1)) 'T)
+                        (GO NXTREC))
+                    (T (GO THTBF1)))))
         (COND ((PROG2 0
-            (AND ((CADR THX) (CAADDR THX))
-            (THAPPLY1 THEOREM THW (CADR THZ)))
-            (RPLACA (CDDR THX) (CDADDR THX)))
-        (RETURN T))
-        (T (GO THTBF)))))
+                    (AND ((CADR THX) (CAADDR THX)) (THAPPLY1 THEOREM THW (CADR THZ)))
+                    (RPLACA (CDDR THX) (CDADDR THX)))
+                (RETURN T))
+            (T (GO THTBF)))))
 
 (DEFUN THTRY (X)
-    ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST
-    ;; WHICH IS PUT ON THTREE.  SO WHENEVER WE FAIL BACK
-    ;; TO A THGOAL, WE GO TO THE NEXT "THING TO DO"
-
-    ;; X IS THE LIST OF RECOMMENDATIONS
-    (COND ;; ANY ATOMIC RECOMMENDATION IS IGNORED,  THIS
-        ;; IS USEFUL IN ERROR RECOVERY
+    ;; THTRY IS IN CHARGE OF MAKING UP THE "THINGS TO DO" LIST, WHICH IS PUT ON THTREE.
+    ;; SO WHENEVER WE FAIL BACK TO A THGOAL, WE GO TO THE NEXT "THING TO DO".
+    ;; X IS THE LIST OF RECOMMENDATIONS.
+    (COND ;; ANY ATOMIC RECOMMENDATION IS IGNORED.  THIS IS USEFUL IN ERROR RECOVERY.
         ((ATOM X) NIL)
-
         ;; HAVE A THEOREM BASE FILTER
         ((EQ (CAR X) 'THTBF)
-
             ;; MAKE UP A LIST WHICH GIVES
             ;; 1 - THE INDICATOR "THTBF"
             ;; 2 - THE ACTUAL FILTER (THTRUE IS THE MOST COMMON)
             ;; 3 - THE BUCKET RETURNED BY THMATCHLIST
             (COND ((NOT THZ1) (SETQ THZ1 T) (SETQ THZ (THMATCHLIST THA2 'THCONSE))))
             (COND (THZ (LIST (LIST 'THTBF (CADR X) THZ))) (T NIL)))
-
-        ;; DO THE SAME THING, ONLY FOR DATA BASE FILTERS
+        ;; DO THE SAME THING, ONLY FOR DATA BASE FILTERS.
         ((EQ (CAR X) 'THDBF)
             (COND ((NOT THY1) (SETQ THY1 T) (SETQ THY (THMATCHLIST THA2 'THASSERTION))))
             (COND (THY (LIST (LIST 'THDBF (CADR X) THY))) (T NIL)))
-
-        ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE
-        ;; STATEMENTS, WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE
+        ;; THUSE STATEMENTS ARE TRANSLATED INTO THTBF THTRUE STATEMENTS,
+        ;; WHICH THE "BUCKET" IS THE LIST GIVEN IN THE THUSE.
         ((EQ (CAR X) 'THUSE)
             (LIST (LIST 'THTBF 'THTRUE (CDR X))))
-        ((EQ (CAR X) 'THNUM) (LIST X))
+        ((EQ (CAR X) 'THNUM)
+            (LIST X))
         (T (PRINT X) (THTRY (THERT UNCLEAR RECOMMENDATION - THTRY)))))
 
 (DEFUN THUNDOF NIL
     (COND ((NULL (CADDAR THTREE)) (THPOPT))
         (T (SETQ THXX (CDDAR THTREE))
-    (SETQ THALIST (CAADR THXX))
-    (RPLACA (CDR THXX) (CDADR THXX))
-    (SETQ THTREE (CAAR THXX))
-    (RPLACA THXX (CDAR THXX))))
+            (SETQ THALIST (CAADR THXX))
+            (RPLACA (CDR THXX) (CDADR THXX))
+            (SETQ THTREE (CAAR THXX))
+            (RPLACA THXX (CDAR THXX))))
     NIL)
 
 (DEFUN THUNDOT NIL (THPOPT) T)
@@ -2662,209 +2410,172 @@ NIL
     (SETQ THA (CONS 'THUNIQUE (MAPCAR #'EVAL THA)))
     (PROG (X)
         (SETQ X THALIST)
-    LP  (COND ((NULL X) (THPUSH THALIST THA) (RETURN T))
+    =>  (COND ((NULL X) (THPUSH THALIST THA) (RETURN T))
             ((EQ (CAAR X) 'THUNIQUE)
-            (COND ((EQUAL (CAR X) THA) (RETURN NIL)))))
+                (COND ((EQUAL (CAR X) THA) (RETURN NIL)))))
         (SETQ X (CDR X))
-        (GO LP)))
+        (GO =>)))
 
 (DEFUN THV1 (X)
-    ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE
-    ;; $?X RETURNS ERROR MESSAGE IF X UNBOUND OR UNASSIGNED
+    ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
+    ;; $?X RETURNS ERROR MESSAGE IF X UNBOUND OR UNASSIGNED.
     (SETQ THXX X)
     (COND ((EQ (SETQ X (CADR (SASSQ X THALIST '(LAMBDA NIL (PRINT THXX) (THERT THUNBOUND - THV1))))) 'THUNASSIGNED)
             (PRINT THXX)
             (THERT THUNASSIGNED - THV1))
         (T X)))
 
-(DEFUN THV FEXPR (X)            ;; (THV X) IS THE VALUE OF THE PLANNER VARIABLE $?X
+(DEFUN THV FEXPR (X)
+    ;; (THV X) IS THE VALUE OF THE PLANNER VARIABLE $?X
     (THV1 (CAR X)))
 
 (DEFUN THVAL (THEXP THALIST)
-    ;; CORESPONDS TO LISP EVAL
-    ;; THEXP IS THE EXPRESSION TO BE THVALUATED
-    ;; THALIST IS THE VARIABLE BINDING LIST
+    ;; CORRESPONDS TO LISP EVAL.
+    ;; THEXP IS THE EXPRESSION TO BE THVALUATED.
+    ;; THALIST IS THE VARIABLE BINDING LIST.
 
-    ;; ALL THPUSH DOES IS TO CONSE ON THE SSECOND ITEM TO THE FIRST
+    ;; ALL THPUSH DOES IS TO CONSE ON THE SECOND ITEM TO THE FIRST.
     (THPUSH THLEVEL (LIST THTREE THALIST))
     (PROG (THTREE THVALUE THBRANCH THOLIST THABRANCH THE THMESSAGE)
         (SETQ THV '(THV THNV))
         (SETQ THVALUE 'THNOVAL)
 
-        ;; THE BECOMES THE CURRENT EXPRESSION
-        ;; THEXP IS RESERVED FOR FURTHER EXPRESSIONS
-        ;; WHICH SHOULD BE THVALED BEFORE WE GO TO THE NEXT
-        ;; ITEM OF ACTUAL CODE.  FOR EXAMPLE, THASSERT USES
-        ;; THIS FEATURE TO PROCESS ANTECEDENT THEOREMS
+        ;; "THE" BECOMES THE CURRENT EXPRESSION.
+        ;; THEXP IS RESERVED FOR FURTHER EXPRESSIONS,
+        ;; WHICH SHOULD BE THVALED BEFORE WE GO TO THE NEXT ITEM OF ACTUAL CODE.
+        ;; FOR EXAMPLE, THASSERT USES THIS FEATURE TO PROCESS ANTECEDENT THEOREMS.
     GO  (SETQ THE THEXP)
         (SETQ THEXP NIL)
-
-        ;; TYPING ^A (CONTROL A) AT MAC-AI LISP CAUSES ^A (UPARROW A)
-        ;; TO BE SET TO T. THIS CAN BE DONE WHILE A FUNCTION
-        ;; IS BEING PROCESSED.  THE NET EFFECT IS TO TEMPORARILY
-        ;; HALT EVALUAION
+        ;; TYPING ^A (CONTROL A) AT MAC-AI LISP CAUSES ^A (UPARROW A) TO BE SET TO T.
+        ;; THIS CAN BE DONE WHILE A FUNCTION IS BEING PROCESSED.
+        ;; THE NET EFFECT IS TO TEMPORARILY HALT EVALUATION.
         (COND (^A (SETQ ^A NIL)
             (OR (THERT ^A - THVAL) (GO FAIL))))
-
-        ;; THSTEP AND ITS RELATIVES ARE FOR STEPPING THROUGH
-        ;; PLANNER FUNCTIONS IN A SPECIAL WAY.  TO THIS DATE
-        ;; ONLY SUSSMAN KNOWS EXACTLY WHAT IT IS SUPPOSE TO DO
-        ;; YOU CAN SAFELY IGNORE ANY EXPRESSION WHICH MENTIONS IT
+        ;; THSTEP AND ITS RELATIVES ARE FOR STEPPING THROUGH PLANNER FUNCTIONS IN A SPECIAL WAY.
+        ;; TO THIS DATE ONLY SUSSMAN KNOWS EXACTLY WHAT IT IS SUPPOSE TO DO.
+        ;; YOU CAN SAFELY IGNORE ANY EXPRESSION WHICH MENTIONS IT.
         (COND (THSTEP (EVAL THSTEP)))
-
-        ;; EVAL THE CURRENT EXPRESSION TO BE THVALED.  NOTE
-        ;; THAT EACH PLANNER FUNCTION CORESPONDS TO THREE LISP FUNCTIONS
-        ;; ONE TO SET THINGS UP (THIS IS WHAT IS GETTING EVALED AT THIS POINT
-        ;; ONE TO HANDLE SUCCESS AND ONE FOR FAILURE
+        ;; EVAL THE CURRENT EXPRESSION TO BE THVALED.
+        ;; NOTE THAT EACH PLANNER FUNCTION CORRESPONDS TO THREE LISP FUNCTIONS:
+        ;; ONE TO SET THINGS UP (THIS IS WHAT IS GETTING EVALED AT THIS POINT),
+        ;; ONE TO HANDLE SUCCESS AND ONE FOR FAILURE.
         (COND ((ERRSET (SETQ THVALUE (EVAL THE))))
-
-        ;; IF THERE WAS A LISP ERROR, REPORT IT TO THE USER
-        (T (PRINT THE)
-            (SETQ THVALUE (THERT LISPERROR - THVAL))))
+            ;; IF THERE WAS A LISP ERROR, REPORT IT TO THE USER.
+            (T (PRINT THE)
+                (SETQ THVALUE (THERT LISPERROR - THVAL))))
     GO1 (COND (THSTEPD (EVAL THSTEPD)))
-
-        ;; USUALLY THEMESSAGE WILL BE NIL.  EXCEPTION IS WHEN
-        ;; USER HAS USED THE THMESSAGE FUNCTION
+        ;; USUALLY THEMESSAGE WILL BE NIL.
+        ;; EXCEPTION IS WHEN USER HAS USED THE THMESSAGE FUNCTION.
         (COND (THMESSAGE (GO MFAIL))
-
-        ;; IF THEXP IS NON NIL IT MEANS THAT WE HAVE
-        ;; MORE PLANNER TO WORK ON BEFORE GOING TO NEXT LINE OF USER CODE
-        (THEXP (GO GO))
-
-        ;; IF THVALUE IS NON NIL IT MEANS THAT SO FAR THE THEOREM IS SUCCEEDING
-        (THVALUE (GO SUCCEED))
-
-        ;; ELSE WE ARE IN A FAILURE SITUATION
-        (T (GO FAIL)))
-
+            ;; IF THEXP IS NON NIL, IT MEANS THAT WE HAVE MORE PLANNER TO WORK ON BEFORE GOING TO NEXT LINE OF USER CODE.
+            (THEXP (GO GO))
+            ;; IF THVALUE IS NON NIL, IT MEANS THAT SO FAR THE THEOREM IS SUCCEEDING.
+            (THVALUE (GO SUCCEED))
+            ;; ELSE WE ARE IN A FAILURE SITUATION.
+            (T (GO FAIL)))
     SUCCEED ;; HANDLES SUCCESS
         (COND (THSTEPT (EVAL THSTEPT)))
-
-        ;; SAVE CURRENT STATE OF THTREE AND THALIST IN CASE
-        ;; WE HAVE TO BACK UP
-        (COND ((NULL THBRANCH) (SETQ THBRANCH THTREE)
-                (SETQ THABRANCH THALIST)))
-
-        ;; IF THE THTREE IS NIL IT MEANS THAT THE THPROG OR WHATEVER HAS BEEN
-        ;; COMPLETED SO THERE ARE NO MORE EXPRESSIONS TO DO,
-        ;; ALL THEOREMS ACT LIKE A THPROG, INCLUDING PUTTING
-        ;; ITS MARK ON THTREE SEE THAPPLY
-        ;; HENCE NO NEED TO GROW MORE BRANCHES ON THTREE
-        (COND ((NULL THTREE) (SETQ THLEVEL (CDR THLEVEL))
+        ;; SAVE CURRENT STATE OF THTREE AND THALIST IN CASE WE HAVE TO BACK UP.
+        (COND ((NULL THBRANCH)
+            (SETQ THBRANCH THTREE)
+            (SETQ THABRANCH THALIST)))
+        ;; IF THE THTREE IS NIL, IT MEANS THAT THE THPROG OR WHATEVER HAS BEEN COMPLETED,
+        ;; SO THERE ARE NO MORE EXPRESSIONS TO DO.  ALL THEOREMS ACT LIKE A THPROG,
+        ;; INCLUDING PUTTING ITS MARK ON THTREE, SEE THAPPLY, HENCE NO NEED TO GROW MORE BRANCHES ON THTREE.
+        (COND ((NULL THTREE)
+                (SETQ THLEVEL (CDR THLEVEL))
                 (RETURN THVALUE))
-
-        ;; THIS IS THE NORMAL CASE.  WE EVAL THE SUCCEED-FUNCTION
-        ;; OF THE PLANNER FUNCTION WHICH JUST SUCCEEDED
-        ((SETQ THEXP (GET (CAAR THTREE) 'THSUCCEED))
-        (GO GO2))
-
-        ;; IN CASE OF LOSSAGE LETS THE USER SUCCEED ANYWAY
-        ((THERT BAD SUCCEED - THVAL) (GO SUCCEED))
-        ((GO FAIL)))
-
+            ;; THIS IS THE NORMAL CASE.
+            ;; WE EVAL THE SUCCEED-FUNCTION OF THE PLANNER FUNCTION WHICH JUST SUCCEEDED.
+            ((SETQ THEXP (GET (CAAR THTREE) 'THSUCCEED))
+                (GO GO2))
+            ;; IN CASE OF LOSSAGE, LETS THE USER SUCCEED ANYWAY.
+            ((THERT BAD SUCCEED - THVAL)
+                (GO SUCCEED))
+            ((GO FAIL)))
         ;; HAS TO DO WITH FAILURE + MESSAGE
     MFAIL (COND ((EQ (CAR THMESSAGE) THTREE)
             (SETQ THEXP (CADR THMESSAGE))
             (SETQ THMESSAGE NIL)
             (GO GO)))
-
     FAIL (COND (THSTEPF (EVAL THSTEPF)))
-
-        ;; IF THTREE IS NIL WE HAVE FAILED THE ENTIRE EXPRESSION
-        (COND ((NULL THTREE) (SETQ THLEVEL (CDR THLEVEL))
+        ;; IF THTREE IS NIL, WE HAVE FAILED THE ENTIRE EXPRESSION.
+        (COND ((NULL THTREE)
+                (SETQ THLEVEL (CDR THLEVEL))
                 (RETURN NIL))
-
-        ;; NORMAL CASE, EVAL THE FAILURE FUNCTION ASSOCIATED
-        ;; WITH THE PLANNER FUNCTION WHICH JUST FAILED
-        ((SETQ THEXP (GET (CAAR THTREE) 'THFAIL))
-        (GO GO2))
-        ((THERT BAD FAIL - THVAL) (GO SUCCEED))
-        ((GO FAIL)))
-
-        ;; THEXP AT THIS POINT IS THE APPROPRIATE SUCCESS OR
-        ;; FAILURE ASSOCIATED FUNCTION.  EVAL IT AND AT THE SAME
-        ;; TIME, SET IT TO NIL IN CASE WE NEED THEXP FOR MORE EXPRESSIONS
-        ;; TO BE PROCESSED
+            ;; NORMAL CASE.  EVAL THE FAILURE FUNCTION ASSOCIATED
+            ;; WITH THE PLANNER FUNCTION WHICH JUST FAILED.
+            ((SETQ THEXP (GET (CAAR THTREE) 'THFAIL))
+                (GO GO2))
+            ((THERT BAD FAIL - THVAL)
+                (GO SUCCEED))
+            ((GO FAIL)))
+        ;; THEXP AT THIS POINT IS THE APPROPRIATE SUCCESS OR FAILURE ASSOCIATED FUNCTION.
+        ;; EVAL IT AND AT THE SAME TIME,
+        ;; SET IT TO NIL IN CASE WE NEED THEXP FOR MORE EXPRESSIONS TO BE PROCESSED.
     GO2 (SETQ THVALUE ((PROG2 0 THEXP (SETQ THEXP NIL))))
-
-        ;; GO THROUGH ENTIRE PROCESS AGAIN
-        ;; A TYPICAL PROCESS IN SUCCESS IS TO KEEP REMOVING EXPRESSIONS FROM THTREE UNTIL
-        ;; WE GET BACK TO THE THREE ENTRY PUT ON BY THPROG
-        ;; AT THIS POIN IT EVALS THPROGT, AND SEE THAT LISTING
+        ;; GO THROUGH THE ENTIRE PROCESS AGAIN.
+        ;; A TYPICAL PROCESS IN SUCCESS IS TO KEEP REMOVING EXPRESSIONS FROM THTREE
+        ;; UNTIL WE GET BACK TO THE THREE ENTRY PUT ON BY THPROG.
+        ;; AT THIS POINT IT EVALS THPROGT, AND SEE THAT LISTING
         (GO GO1))))
 
-(DEFUN THVAR (X)                            ;; PREDICATE - IS ITS INPUT A PLANNER VARIABLE
+(DEFUN THVAR (X)
+    ;; PREDICATE - IS ITS INPUT A PLANNER VARIABLE
     (MEMQ (CAR X) '(THV THNV)))
 
 (DEFUN THVARS2 (X)
-    ;; THIS IS THE WORKHORSE FOR THVARSUBST
-
-    ;; X IS A SINGLE ITEM FROM A PATTERN
+    ;; THIS IS THE WORKHORSE FOR THVARSUBST.
+    ;; X IS A SINGLE ITEM FROM A PATTERN.
     (PROG (A)
         (AND (ATOM X) (RETURN X))
-
-        ;; IF ITS AN ATOM NOTHING NEED BE DONE
+        ;; IF IT'S AN ATOM, NOTHING NEED BE DONE.
         (AND (EQ (CAR X) 'THEV)
-        (SETQ X (THVAL (CADR X) THALIST)))
-
-        ;; IF THE EXPRESSION HAS A $E BEFORE IT, THVAL BEFORE GOING ON
+            (SETQ X (THVAL (CADR X) THALIST)))
+        ;; IF THE EXPRESSION HAS A $E BEFORE IT, THVAL BEFORE GOING ON.
         (OR (THVAR X) (RETURN X))
-
-        ;; IF THE ITEM IS NOT A VARIABLE IT MUST BE
-        ;; SOME RANDOM LIST, SO IT HAS NO  ASSIGNED VALUE
+        ;; IF THE ITEM IS NOT A VARIABLE, IT MUST BE SOME RANDOM LIST, SO IT HAS NO ASSIGNED VALUE.
         (SETQ A (THGAL X THALIST))
-
-        ;; AT THIS POINT X MUST BE A VARIABLE, SO FIND ITS
-        ;; ASSIGNMENT, THATS WHAT THGAL DOES
-        ;; THALIST IS WHERE THE VARIABLE ASSIGNMENTS RESIDE
-        (RETURN (COND ((EQ (CADR A) 'THUNASSIGNED) X)
-
-            ;; IF THE VARIABLE IS UNASSIGNED
-            ;; THEN RETURN THE ACTUAL VARIABLE
+        ;; AT THIS POINT X MUST BE A VARIABLE, SO FIND ITS ASSIGNMENT, THAT'S WHAT THGAL DOES.
+        ;; THALIST IS WHERE THE VARIABLE ASSIGNMENTS RESIDE.
+        (RETURN (COND
+            ((EQ (CADR A) 'THUNASSIGNED) X)
+            ;; IF THE VARIABLE IS UNASSIGNED, THEN RETURN THE ACTUAL VARIABLE.
             ((AND THY (EQ (CAR X) 'THNV))
-
-            ;; THY WILL BE T JUST IN THE CASES
-            ;; WHERE THVARSUBST WAS CALLED BY A THGOAL SITUATION
-            ;; IT IS THEN NECESSARY TO IMMEDIATELY HACK IN A
-            ;; THUNASSIGNED SO THAT IF THE SAME VARIABLE IS USED
-            ;; TWICE IN THE SAME PATTERN WE WON'T PUT
-            ;; IN ITS OLD VALUE THE SECOND TIME IT IS ENCOUNTERED
-            (THRPLACA (CDR A) 'THUNASSIGNED)
-            X)
-
-            ;; OTHERWISE THE ASSIGNMENT IS THE SECOND ELEMENT
-            ;; IN THE BINDING LIST
+                ;; THY WILL BE T JUST IN THE CASES WHERE THVARSUBST WAS CALLED BY A THGOAL SITUATION.
+                ;; IT IS THEN NECESSARY TO IMMEDIATELY HACK IN A THUNASSIGNED SO THAT IF THE SAME VARIABLE IS USED
+                ;; TWICE IN THE SAME PATTERN, WE WON'T PUT IN ITS OLD VALUE THE SECOND TIME IT IS ENCOUNTERED.
+                (THRPLACA (CDR A) 'THUNASSIGNED)
+                X)
+            ;; OTHERWISE THE ASSIGNMENT IS THE SECOND ELEMENT IN THE BINDING LIST.
             (T (CADR A))))))
 
 (DEFUN THVARSUBST (THX THY)
-    ;; THX IS A GOAL OR ASSERTION PATTERN OR THEOREM NAME
-    ;; THIS FUNCTION RETURNS THE SAME PATTERN, EXCEPT
-    ;; IN PLACE OF ALL ASSIGNED VARIABLES WILL BE THE
-    ;; VALUES THEY ARE ASSIGNED TO
+    ;; THX IS A GOAL OR ASSERTION PATTERN OR THEOREM NAME.
+    ;; THIS FUNCTION RETURNS THE SAME PATTERN, EXCEPT IN PLACE OF ALL ASSIGNED VARIABLES
+    ;; THERE WILL BE THE VALUES THEY ARE ASSIGNED TO.
     (COND ((EQ (CAR THX) 'THEV)
             ;; IF THE CAR IS THEV, IT MEANS THAT THERE WAS A $E BEFORE THE PATTERN,
-            ;; IN WHICH CASE WE ARE TO GET THE REAL PATTERN BY THVALUATING WHAT IS THERE
+            ;; IN WHICH CASE WE ARE TO GET THE REAL PATTERN BY THVALUATING WHAT IS THERE.
             (SETQ THX (THVAL (CADR THX) THALIST)))
-        ((THVAR THX) (SETQ THX (EVAL THX))))
-    ;; THVAR TESTS TO SEE IF ARG IS A VARIABLE
-    ;; IF THE PATTERN IS A SINGLE VARIABLE THE PROGRAM ASSUMES
-    ;; THERE SHOULD BE AN IMPLICIT THVAL.
-    ;; UNLESS THE ASSERTEE IS A THEOREM NAME
-    ;; GO THROUGH IT PLACE BY PLACE WITH THVARS2
+        ((THVAR THX)
+            (SETQ THX (EVAL THX))))
+    ;; THVAR TESTS TO SEE IF ARG IS A VARIABLE.
+    ;; IF THE PATTERN IS A SINGLE VARIABLE, THE PROGRAM ASSUMES THERE SHOULD BE AN IMPLICIT THVAL.
+    ;; UNLESS THE ASSERTEE IS A THEOREM NAME, GO THROUGH IT PLACE BY PLACE WITH THVARS2.
     (COND ((ATOM THX) THX) (T (MAPCAR #'THVARS2 THX))))
 
 (DEFUN THVSETQ FEXPR (THA)
     (PROG (A)
         (SETQ A THA)
-    LOOP (COND ((NULL A) (RETURN THVALUE))
-        ((NULL (CDR A))
-        (PRINT THA)
-        (THERT ODD NUMBER OF GOODIES-THSETQ))
-        (T (SETQ THVALUE
-            (CAR (RPLACA (CDR (THSGAL (CAR A)))
-                (THVAL (CADR A) THALIST))))))
+    =>  (COND ((NULL A) (RETURN THVALUE))
+            ((NULL (CDR A))
+                (PRINT THA)
+                (THERT ODD NUMBER OF GOODIES-THSETQ))
+            (T (SETQ THVALUE
+                (CAR (RPLACA (CDR (THSGAL (CAR A))) (THVAL (CADR A) THALIST))))))
         (SETQ A (CDDR A))
-        (GO LOOP)))
+        (GO =>)))
 
 (DEFPROP THTAG THTAGF THFAIL)
 (DEFPROP THTAG THTAGT THSUCCEED)
@@ -2898,6 +2609,8 @@ NIL
 (DEFPROP THREMBIND THREMBINDT THSUCCEED)
 (DEFPROP THREMBIND THREMBINDF THFAIL)
 
+(DEFUN THPRINT2 (X) (PRINC '\ ) (PRINC X))
+
 (DEFUN THERT FEXPR (\0ERTA)
     ;; THERT IS THE BREAK FUNCTION, AND ALSO THE TOP LEVEL FUNCTION
     ;; IT IS CALLED DIRECTLY BY LISP BEFORE LISP GOES INTO THE READ EVAL LOOP.
@@ -2912,7 +2625,7 @@ NIL
             ;; SPECIAL MESSAGE PRINTOUT
             ((EQ (CAR \0ERTA) 'TH%0%)
             (MAPC #'THPRINT2 (CDR \0ERTA))
-            (IOC Q))
+            (SETQ ^Q T))
 
             ;; THE NORMAL MESSAGE PRINTOUT
             ((MAPC #'THPRINT2 \0ERTA)
@@ -2939,7 +2652,6 @@ NIL
         (GO \0LISTEN)))
 
 (DEFUN THINIT FEXPR (L)
-    (COND ((AND L PURE) (LAPPURIFY LOW (PAGEBPORG)) (SETQ PURE NIL)))
     (SETQ THGENAME 0)
     (SETQ THSTEP NIL)
     (SETQ THSTEPD NIL)
@@ -2966,6 +2678,8 @@ NIL
 #_(ns shrdlu.thtrac)
 
 (COMMENT FOR PLNR 159 AND GREATER, THPRINTC CAN BE ELIMINATED)
+
+(DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '\ ))
 
 ;; SYSTEM FUNCTIONS SUCH AS THGOAL, THASSERT, THERASE AND THEOREM
 ;; (ALL THMS) ARE TRACED IF THEY ARE ON 'THTRACE'.  THTRACES1 PUTS
@@ -3128,8 +2842,6 @@ NIL
 
 (SETQ THGENS 0)
 
-(DEFUN THPRINTC (X) (TERPRI) (PRINC X) (PRINC '\ ))
-
 #_(ns shrdlu.syscom)
 
 ;; ##################################################################
@@ -3162,7 +2874,7 @@ NIL
         UP      (SETQ N (SETQ SENT (ETAOIN)))
                 (OR ANNOYANCE (PRINT *1))
                 (AND ^Q (%))
-                (IOC S)
+                (SETQ ^Q NIL)
                 (AND IGNORE (GO UP))
                 (COND
                     ((AND
@@ -3704,16 +3416,16 @@ NIL
                         (SETQ NEWWORD (NOT NEWWORD) ALTN (NOT ALTN))
                         (GO CHAR))
                     ((EQ CHAR 'Q)                           ;; ALTMODE-Q CAUSES READIN FROM DISK FILE.
-                        (IOC Q)
+                        (SETQ ^Q T)
                         (SETQ IGNORE NIL)
                         (GO THRU))
                     ((EQ CHAR 'M)
-                        (IOC Q)
+                        (SETQ ^Q T)
                         (SETQ IGNORE NIL)
                         (GO THRU))
                     ((EQ CHAR 'I)                           ;; ALTMODE-I IGNORES SENTENCE READ FROM FILE.
                         (SETQ IGNORE T)
-                        (IOC Q)
+                        (SETQ ^Q T)
                         (GO THRU))
                     ((GO THRU))))
             ((EQ CHAR RUBOUT)
@@ -4266,15 +3978,15 @@ NIL
     (LAMBDA (X)
         (COND ((NULL (CDR X)) (TELLCHOICE X))
         ((EQ (CADR X) 'ON)
-            (IOC W)
+            (PROGN (SETQ ^W T) (CLEAR-OUTPUT T))
             (THTRACE THEOREM THASSERT THERASE (THGOAL T T))
             (SETQ PLANNERSEE T))
         ((EQ (CADR X) 'OFF)
-            (IOC W)
+            (PROGN (SETQ ^W T) (CLEAR-OUTPUT T))
             (SETQ PLANNERSEE NIL)
             (THUNTRACE))
         (T (TELLCHOICE X)))
-        (IOC V)))
+        (SETQ ^W NIL)))
 
 (DEFS PARSING
     SHOWTREE
@@ -4286,15 +3998,15 @@ NIL
     TELL
     (LAMBDA (X) (COND ((NULL (CDR X)) (TELLCHOICE X))
         ((EQ (CADR X) 'ON)
-            (IOC W)
+            (PROGN (SETQ ^W T) (CLEAR-OUTPUT T))
             (SETQ PARSENODE-SEE T LABELTRACE T)
             (TRACE CALLSM PARSE))
         ((EQ (CADR X) 'OFF)
-            (IOC W)
+            (PROGN (SETQ ^W T) (CLEAR-OUTPUT T))
             (SETQ PARSENODE-SEE NIL LABELTRACE NIL)
             (UNTRACE CALLSM PARSE))
         (T (TELLCHOICE X)))
-        (IOC V)))
+        (SETQ ^W NIL)))
 
 (DEFS DEFINITIONS
     SHOWTREE
@@ -4674,7 +4386,7 @@ NIL
     (NORMALFEATUREMODE)
     (NOPAUSES)
     (SETQ NOSTOP T ANSWER? T SMN NIL TOPLEVEL-ERRSET? T ERT-ERRSET T)
-    (IOC C)
+    (SETQ ^D NIL)
     (SETQ SH-PRINT-TIME T))
 
 (DEFUN DEBUGMODE NIL
@@ -4682,7 +4394,7 @@ NIL
     (NORMALFEATUREMODE)
     (NOPAUSES)
     (SETQ NOSTOP NIL ANSWER? T SMN NIL TOPLEVEL-ERRSET? NIL ERT-ERRSET T)
-    (IOC D))
+    (SETQ ^D T))
 
 (SETQ ZOG-USER NIL ZOGUSER NIL)
 
@@ -4722,7 +4434,7 @@ NIL
 
 (SSTATUS PAGEPAUSE T)
 
-(IOC D)
+(SETQ ^D T)
 (SETQ ERRLIST NIL)
 
 (SETQ Z (STATUS TTY) W1 (CAR Z) W2 (CADR Z))
@@ -7721,7 +7433,7 @@ EX   (COND ((EQ XX H) (RETURN C)) ((POP) (GO EX)))))
         (SAY YOU'RE WELCOME)
         (FLUSHME)
         (FLUSHME)
-        (OR NN (IOC G))
+        (OR NN (^G))
         (SETQ SPECIAL 'DONE))))
 
 (DEFS THAT
@@ -12248,7 +11960,6 @@ RETURN
 (SETQ VERSION-FILES NIL)
 
 (DEFUN LOADSHRDLU NIL
-    (SETQ PURE NIL)
 ;;  (MAPC 'LOADER '(PLNR THTRAC))
 ;;  (THINIT)
 ;;  (SETQ THINF NIL THTREE NIL THLEVEL NIL)
@@ -12308,7 +12019,6 @@ RETURN
 (SETQ VERSION-FILES NIL)
 
 (DEFUN LOADSHRDLU NIL
-    (SETQ PURE NIL)
     (MAPC 'LOADER '(PLNR THTRAC))
     (THINIT)
     (SETQ THINF NIL THTREE NIL THLEVEL NIL)
@@ -12330,7 +12040,6 @@ RETURN
     'COMPLETE-CALL-SETUP-NUM-DATE)
 
 (DEFUN PARSER-COMPILED NIL
-    (SETQ PURE NIL)
     (FLOAD FASL SYSCOM DSK SHRDL1)
     (FLOAD FASL MORPHO DSK SHRDL1)
     (FLOAD FASL SHOW DSK SHRDL1)
@@ -12343,7 +12052,6 @@ RETURN
     'PARSER-LOADED)
 
 (DEFUN SHRDLU-COMPILED NIL
-    (SETQ PURE NIL)
     (FLOAD FASL SYSCOM  DSK SHRDL1)
     (FLOAD FASL MORPHO DSK SHRDL1)
     (FLOAD FASL SHOW DSK SHRDL1)
@@ -12395,7 +12103,7 @@ RETURN
     (PROG (^Q UNIQUE ^R ^D)
         (OR (APPLY 'UREAD FILE)
             (RETURN 'BAD-FILE-SPECS))
-        (IOC Q)
+        (SETQ ^Q T)
         (SETQ UNIQUE (GENSYM))
         (APPLY 'UWRITE (STATUS CRUNIT))
         (DO ((R (READ UNIQUE) (READ UNIQUE)))
@@ -12518,7 +12226,7 @@ CATCH-LOOP
         UP  (SETQ N (SETQ SENT (ETAOIN)))
         (OR ANNOYANCE (PRINT *1))
         (AND ^Q (%))
-        (IOC S)
+        (SETQ ^Q NIL)
         (AND IGNORE (GO UP))
         (COND
             ((AND (COND (TOPLEVEL-ERRSET? (ERRSET (SETQ PT (SETQ C (PARSEVAL PARSEARGS))))) (T (SETQ PT (SETQ C (PARSEVAL PARSEARGS))))) C)
@@ -12569,16 +12277,16 @@ CATCH-LOOP
                         (SETQ NEWWORD (NOT NEWWORD) ALTN (NOT ALTN))
                         (GO CHAR))
                     ((EQ CHAR 'Q)                           ;; ALTMODE-Q CAUSES READIN FROM DISK FILE.
-                        (IOC Q)
+                        (SETQ ^Q T)
                         (SETQ IGNORE NIL)
                         (GO THRU))
                     ((EQ CHAR 'M)
-                        (IOC Q)
+                        (SETQ ^Q T)
                         (SETQ IGNORE NIL)
                         (GO THRU))
                     ((EQ CHAR 'I)                           ;; ALTMODE-I IGNORES SENTENCE READ FROM FILE.
                         (SETQ IGNORE T)
-                        (IOC Q)
+                        (SETQ ^Q T)
                         (GO THRU))
                     ((GO THRU))))
             ((EQ CHAR RUBOUT)
