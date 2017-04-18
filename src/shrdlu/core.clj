@@ -82,79 +82,79 @@
     ([s] `(def ~(vary-meta s assoc :dynamic true :private true)))
     ([s i] `(def ~(vary-meta s assoc :dynamic true :private true) ~i)))
 
-(dynamic- *thtime*)
-(dynamic- *tree*)
-(dynamic- *thalist*)
-(dynamic- *tholist*)
-(dynamic- *value*)
+(dynamic- *thtime*)
+(dynamic- *tree*)
+(dynamic- *thalist*)
+(dynamic- *tholist*)
+(dynamic- *value*)
 
-(dynamic- *expr*)
-(dynamic- *branch*)
-(dynamic- *thabranch*)
+(dynamic- *expr*)
+(dynamic- *branch*)
+(dynamic- *thabranch*)
 
-(dynamic- *oops*)
-(dynamic- *lastsentno*)
-(dynamic- *lastsent*)
-(dynamic- *sentno*)
-(dynamic- *sent*)
-(dynamic- *punct*)
+(dynamic- *oops*)
+(dynamic- *lastsentno*)
+(dynamic- *lastsent*)
+(dynamic- *sentno*)
+(dynamic- *sent*)
+(dynamic- *punct*)
 
-(dynamic- *me*)
-(dynamic- *mes*)
+(dynamic- *me*)
+(dynamic- *mes*)
 
-(dynamic- *tss*)
-(dynamic- *start*)
-(dynamic- *end*)
+(dynamic- *tss*)
+(dynamic- *start*)
+(dynamic- *end*)
 
-(dynamic- *both*)
-(dynamic- *backref*)
-(dynamic- *backref2*)
-(dynamic- *ansname*)
-(dynamic- *lastrel*)
-(dynamic- *who*)
-(dynamic- *pt*)
-(dynamic- *ptw*)
-(dynamic- *h*)
-(dynamic- *n*)
-(dynamic- *nb*)
-(dynamic- *fe*)
-(dynamic- *sm*)
-(dynamic- *re*)
-(dynamic- *c*)
-(dynamic- *cut*)
+(dynamic- *both*)
+(dynamic- *backref*)
+(dynamic- *backref2*)
+(dynamic- *ansname*)
+(dynamic- *lastrel*)
+(dynamic- *who*)
+(dynamic- *pt*)
+(dynamic- *ptw*)
+(dynamic- *h*)
+(dynamic- *n*)
+(dynamic- *nb*)
+(dynamic- *fe*)
+(dynamic- *sm*)
+(dynamic- *re*)
+(dynamic- *c*)
+(dynamic- *cut*)
 
-(dynamic- *parent*)
-(dynamic- *special*)
+(dynamic- *parent*)
+(dynamic- *special*)
 
-(dynamic- *nn*)
+(dynamic- *nn*)
 
-(dynamic- *tmp*)
-(dynamic- *quantifier*)
+(dynamic- *tmp*)
+(dynamic- *quantifier*)
 
-(dynamic- *position-of-prt*)
-(dynamic- *mvb*)
-(dynamic- *locationmarker*)
-(dynamic- *subj-vb-backup-type1*)
-(dynamic- *position-of-ptw*)
-(dynamic- *tense*)
-(dynamic- *prev*)
+(dynamic- *position-of-prt*)
+(dynamic- *mvb*)
+(dynamic- *locationmarker*)
+(dynamic- *subj-vb-backup-type1*)
+(dynamic- *position-of-ptw*)
+(dynamic- *tense*)
+(dynamic- *prev*)
 
-(dynamic- *labeltrace*)
+(dynamic- *labeltrace*)
 
-(dynamic- *num*)
-(dynamic- *word-being*)
+(dynamic- *num*)
+(dynamic- *word-being*)
 
-(dynamic- *smsub*)
-(dynamic- *smob1*)
-(dynamic- *smob2*)
-(dynamic- *smobl*)
-(dynamic- *smcomp*)
-(dynamic- *rellist*)
+(dynamic- *smsub*)
+(dynamic- *smob1*)
+(dynamic- *smob2*)
+(dynamic- *smobl*)
+(dynamic- *smcomp*)
+(dynamic- *rellist*)
 
-(dynamic- *grasplist*)
-(dynamic- *eventlist*)
+(dynamic- *grasplist*)
+(dynamic- *eventlist*)
 
-(dynamic- *handat* [32 0 0])
+(dynamic- *handat* [32 0 0])
 
 (declare ATABLE)
 
@@ -209,17 +209,16 @@
     (dorun (map eval a))
     a)
 
-(dynamic- *thtt*)
-(dynamic- *thnf*)
-(dynamic- *thwh*)
-(dynamic- *thlas*)
-(dynamic- *thttl*)
-(dynamic- *thfst*)
-(dynamic- *thfstp*)
-(dynamic- *thml*)
-(dynamic- *thal*)
-(dynamic- *thon*)
-(dynamic- *thbs*)
+(dynamic- *thtt*)
+(dynamic- *thnf*)
+(dynamic- *thwh*)
+(dynamic- *thlas*)
+(dynamic- *thttl*)
+(dynamic- *thfst*)
+(dynamic- *thfstp*)
+(dynamic- *thal*)
+(dynamic- *thon*)
+(dynamic- *thbs*)
 
 (defn- thadd [thtt' thpl]
     ;; THADD ADDS THEOREMS OR ASSERTION TO THE INPUT
@@ -684,7 +683,22 @@
                 ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO.
                 :else 'thok))))))))))
 
-(defn- thmatch2 [thx thy]
+(defq- thurplaca [x y] (RPLACA x y))
+(defq- thurplacd [x y] (RPLACD x y))
+
+(defn- thrplacas [a x y] (let [a (cons (list 'thurplaca x (car x)) a)] (RPLACA x y) a))
+(defn- thrplacds [a x y] (let [a (cons (list 'thurplacd x (cdr x)) a)] (RPLACD x y) a))
+
+(defn- thrplaca [x y] (thpush! *tree* ['THMUNG (thrplacas nil x y)]) x)
+(defn- thrplacd [x y] (thpush! *tree* ['THMUNG (thrplacds nil x y)]) x)
+
+(defn- thunion [l1 l2]
+    (reduce (fn [a x] (if (memq x a) a (cons x a))) l2 l1))
+
+(defn- thcheck [predicates x]
+    (or (nil? predicates) (= x :thunassigned) ((apply every-pred predicates) x)))
+
+(defn- thmatch2 [thx thy a'undo]
     ;; THX IS ONE ITEM FROM THE PATTERN.  THY IS THE CORRESPONDING ITEM FROM THE CANDIDATE.
     ;; THMATCH2 DECIDES IF THE TWO ITEMS REALLY MATCH.
     ;; THOLIST IS THALIST WHICH WAS IN EXISTANCE BEFORE WE STARTED WORKING ON THE CURRENT LINE OF PLANNER CODE.
@@ -692,8 +706,8 @@
     (let [thx (if (= (car thx) 'thev) (thval (cadr thx) *tholist*) thx)
           thy (if (= (car thy) 'thev) (thval (cadr thy) *thalist*) thy)]
         (cond ;; IF EITHER IS A ?, ANYTHING WILL MATCH, SO OK.
-            (= thx '?) true
-            (= thy '?) true
+            (= thx '?) true
+            (= thy '?) true
             ;; IF EITHER IS A VARIABLE, THINGS GET MESSY.
             (or (memq (car thx) ['thv 'thnv 'threstrict]) (memq (car thy) ['thv 'thnv 'threstrict]))
                 (let [[xpair thx]
@@ -709,7 +723,7 @@
                                     ;; WE ARE RESTRICTING A VARIABLE.  THIS MEANS THAT WE MUST PUT IT ON THE BINDING LIST.
                                     (let [u (thgal (cadr thx) *tholist*)]
                                         ;; THUNION MAKES SURE WE DON'T PUT THE SAME RESTRICTION ON TWICE.
-                                        (thrplacds (cdr u) (thunion (cddr u) (cddr thx)))
+                                        (swap! a'undo thrplacds (cdr u) (thunion (cddr u) (cddr thx)))
                                         [u (cadr thx)]))
                             :else [nil thx])
                       [ypair thy]
@@ -720,7 +734,7 @@
                                 (if (= (cadr thy) '?)
                                     [(list* '? :thunassigned (cddr thy)) '(thnv ?)]
                                     (let [u (thgal (cadr thy) *thalist*)]
-                                        (thrplacds (cdr u) (thunion (cddr u) (cddr thy)))
+                                        (swap! a'undo thrplacds (cdr u) (thunion (cddr u) (cddr thy)))
                                         [u (cadr thy)]))
                             :else [nil thy])]
                     ;; X AND Y PAIR ARE THE RESPECTIVE BINDING CELLS WHICH WILL HAVE ANY NEW RESTRICTIONS MENTIONED.
@@ -734,14 +748,16 @@
                             ;; FURTHERMORE, THY IS ALSO A VARIABLE.
                             ;; THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING.
                             (if ypair
-                                    (do (thrplacas (cdr xpair) (cadr ypair))
-                                        ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS.
-                                        (when (cddr ypair)
-                                            (thrplacds (cdr xpair) (thunion (cddr xpair) (cddr ypair))))
-                                        (thrplacds ypair (cdr xpair)))
+                                (do (swap! a'undo thrplacas (cdr xpair) (cadr ypair))
+                                    ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS.
+                                    (when (cddr ypair)
+                                        (swap! a'undo thrplacds (cdr xpair) (thunion (cddr xpair) (cddr ypair))))
+                                    (swap! a'undo thrplacds ypair (cdr xpair))
+                                    true)
                                 ;; IF THY IS NOT A VARIALBE, JUST ASSIGN THX TO THY.
                                 ;; THRPLACAS WILL HACK THML, THE FREE VARIABLE FROM THMATCH1.
-                                (thrplacas (cdr xpair) thy))
+                                (do (swap! a'undo thrplacas (cdr xpair) thy)
+                                    true))
                         (and ypair
                                 ;; THY IS A VARIABLE AND THX IS EITHER A CONSTANT OR A PREVIOUSLY ASSIGNED VARIALBE.
                                 (or (= (car thy) 'thnv)
@@ -750,44 +766,35 @@
                                 ;; MAKE SURE RESTRICTIONS ARE OK.
                                 (thcheck (cddr ypair) (if xpair (cadr xpair) thx)))
                             ;; IF THX IS A VARIABLE, LINK.  OTHERWISE JUST ASSIGN THY TO THX.
-                            (thrplacas (cdr ypair) (if xpair (cadr xpair) thx))
+                            (do (swap! a'undo thrplacas (cdr ypair) (if xpair (cadr xpair) thx))
+                                true)
                         ;; THX IS AN ASSIGED VARIABLE, SO JUST MAKE SURE ITS ASSIGNMENT IS EQUAL TO THY.
-                        (and xpair (= (cadr xpair) (if ypair (cadr ypair) thy))) true
+                        (and xpair (= (cadr xpair) (if ypair (cadr ypair) thy))) true
                         ;; THX IS A CONSTANT, THY IS A VARIABLE, AND THEY ARE EQUAL.
-                        (and ypair (= (cadr ypair) thx)) true
+                        (and ypair (= (cadr ypair) thx)) true
                         ;; LOOSE, SO RETURN WITH AN ERROR.
-                        :else (ERR nil)))
+                        :else false))
             ;; IF THE TWO ARE EQUAL, NATURALLY THEY MATCH.
-            (= thx thy) true
+            (= thx thy) true
             ;; IF NOT, THEY DON'T, SO REPORT FAILURE.
-            :else (ERR nil))))
-
-(defn- thcheck [predicates x]
-    (or (nil? predicates) (= x :thunassigned) ((apply every-pred predicates) x)))
-
-(defn- thunion [l1 l2]
-    (reduce (fn [a x] (if (memq x a) a (cons x a))) l2 l1))
+            :else false)))
 
 (defn- thmatch1 [thx thy]
     ;; THX IS THE PATTERN TO BE MATCHED.  THY IS THE POSSIBLE CANDIDATE.
-    ;; THMATCH1 DOES PRELIMINARY WORK BEFORE HANDING THE PATTERN AND CANDIDATE OFF TO THMATCH2,
-    ;; WHO DOES THE REAL WORK.
-    (binding [*thml* nil]
+    ;; WE HAVE TO CHECK THAT THE PATTERN AND CANDIDATE ARE OF THE SAME LENGTH
+    ;; SINCE THE USER MAY HAVE SPECIFIED THE CANDIDATE WITH A THUSE RECOMMENDATION.
+    (let-when [thx (if (= (car thx) 'thev) (thval (cadr thx) *tholist*) thx)] (= (count thx) (count thy)) => false
         ;; THML IS A FREE VARIABLE WHO WILL BE HACKED BY THMATCH2 WHEN THMATCH2 IS DONE.
         ;; THML WILL HAVE A RECORD OF ALL VARIABLE ASSIGNMENTS MADE DURING THE MATCH.
         ;; NATURALLY, WE MUST KEEP TRACK, SO IF WE FAIL BACK, WE CAN UNDO THEM.
-        ;; WE HAVE TO CHECK THAT THE PATTERN AND CANDIDATE ARE OF THE SAME LENGTH
-        ;; SINCE THE USER MAY HAVE SPECIFIED THE CANDIDATE WITH A THUSE RECOMMENDATION.
-        (let [thx (if (= (car thx) 'thev) (thval (cadr thx) *tholist*) thx)]
-            ;; IF THE MATCH FAILS, THMATCH2 EXITS WITH AN ERR
-            ;; WILL BE "TRUE" PROVIDED THE MATCH WORKED
-            (if (and (= (count thx) (count thy)) (ERRSET (dorun (map thmatch2 thx thy))))
-                ;; SO RECORD THE ASSIGNMENTS ON THTREE
-                (do (when *thml* (thpush! *tree* ['THMUNG *thml*])) true)
-                ;; IF THE MATCH FAILED, WE MAY STILL HAVE SOME ASSIGNEMENTS ALREADY MADE.
-                ;; THESE MUST IMMEDIATELY BE UNDONE.  EVLIS JUST EVALS EVERYTHING ON THML,
-                ;; WHICH IS A LIST OF EXPRESSIONS, WHICH WHEN EVALED, UNASSIGN THE VARIABLES.
-                (do (dorun (map eval *thml*)) nil)))))
+        (let [a'undo (atom nil)]
+            ;; IF THE MATCH FAILS, THMATCH2 EXITS WITH AN ERR, ELSE WILL BE "TRUE" PROVIDED THE MATCH WORKED.
+            (if (every? true? (map thmatch2 thx thy (repeat a'undo)))
+                ;; MATCH IS SUCCESSFUL, SO RECORD THE ASSIGNMENTS ON THTREE.
+                (do (when @a'undo (thpush! *tree* ['THMUNG @a'undo])) true)
+                ;; IF THE MATCH FAILED, WE MAY ALREADY HAVE SOME ASSIGNEMENTS TO BE UNDONE.
+                ;; JUST EVAL EVERYTHING ON THML, THAT IS A LIST OF EXPRESSIONS, TO UNASSIGN THE VARIABLES.
+                (do (dorun (map eval @a'undo)) false)))))
 
 (defn- thmatchlist [thtb thwh]
     ;; THTB IS A PATTERN WHICH EVENTUALLY IS TO BE MATCHED.
@@ -1011,30 +1018,6 @@
 (defq- threturn [& a]
     (apply thsucceed (cons 'thprog a)))
 
-(defn- thrplaca [x y]
-    (binding [*thml* nil]
-        (thrplacas x y)
-        (thpush! *tree* ['THMUNG *thml*])
-        x))
-
-(defn- thrplacas [x y]
-    (thpush! *thml* (list 'thurplaca x (car x)))
-    (RPLACA x y))
-
-(defq- thurplaca [& a] (RPLACA (car a) (cadr a)))
-
-(defn- thrplacd [x y]
-    (binding [*thml* nil]
-        (thrplacds x y)
-        (thpush! *tree* ['THMUNG *thml*])
-        x))
-
-(defn- thrplacds [x y]
-    (thpush! *thml* (list 'thurplacd x (cdr x)))
-    (RPLACD x y))
-
-(defq- thurplacd [& a] (RPLACD (car a) (cadr a)))
-
 (defq- thsucceed [& a]
     (when a
         (let [a (if (= (car a) 'theorem) (cons 'thprog (cdr a)) a)]
@@ -1192,15 +1175,15 @@
     (or (assq (cadr x) *thalist*) (let [_ [(cadr x) :thunassigned]] (set! *thalist* (conj *thalist* _)) _)))
 
 (defq- thsetq [& a']
-    (binding [*thml* nil]
-        (loop-when [a a'] a => (do (thpush! *tree* ['THMUNG *thml*]) *value*)
+    (let [a'undo (atom nil)]
+        (loop-when [a a'] a => (do (thpush! *tree* ['THMUNG @a'undo]) *value*)
             (when' (cdr a) => (bug! 'thsetq "ODD NUMBER OF GOODIES" a')
                 (if (term? (car a))
-                    (do (thpush! *thml* (list 'SETQ (car a) (quotify (eval (car a)))))
+                    (do (reset! a'undo (cons (list 'SETQ (car a) (quotify (eval (car a)))) @a'undo))
                         (SET (car a) (set! *value* (eval (cadr a)))))
                     (let [x (cdr (thsgal (car a)))]
                         (set! *value* (thval (cadr a) *thalist*))
-                        (thrplacas x *value*)))
+                        (swap! a'undo thrplacas x *value*)))
                 (recur (cddr a))))))
 
 (defq- thvsetq [& a']
@@ -2092,10 +2075,10 @@
 
 (defn- uppercase-ify-char [c] (if (< 96 c 123) (- c 32) c))
 
-(dynamic- *word*)
-(dynamic- *wrd*)
-(dynamic- *rd*)
-(dynamic- *poss*)
+(dynamic- *word*)
+(dynamic- *wrd*)
+(dynamic- *rd*)
+(dynamic- *poss*)
 
 (§ defn- ETAOIN []
     (binding [*word* nil *wrd* nil *rd* nil *poss* nil] (set! *sent* (set! *punct* nil))
@@ -2341,7 +2324,7 @@
 (defn- parse [& a]
     (if (memq (car a) ['NG 'CLAUSE 'VG 'PREPG 'ADJG]) (parse2 a (memq 'TOPLEVEL a)) (parse3 a nil)))
 
-(dynamic- *rest*)
+(dynamic- *rest*)
 
 (defn- parse2 [rest' p]
     ;; THIS FUNCTION CALLS THE PROGRAMMAR FUNCTION INDICATED BY THE FIRST MEMBER OF REST - A FEATURE LIST.
@@ -2420,7 +2403,7 @@
     (loop [a a] (when (some? a)
         (if (and (isq node (caar a)) (apply parse 'CLAUSE 'RSNG (concat (cdar a) b))) *h* (recur (cdr a))))))
 
-(dynamic- *pop*)
+(dynamic- *pop*)
 
 (defn- pop* [& a]
     (if (and a (car a))
@@ -5234,7 +5217,7 @@
 
 (putprop! 'ANIMATE-OSS :ossnode 'ANIMATE-OSS)
 (putprop! 'ANIMATE-OSS :markers ['!ANIMATE '!THING '!SYSTEMS])
-(putprop! 'ANIMATE-OSS :relations ['(!IS ($? ANIM) ?)])
+(putprop! 'ANIMATE-OSS :relations ['(!IS ($? ANIM) ?)])
 (putprop! 'ANIMATE-OSS :systems ['!THING '!SYSTEMS])
 (putprop! 'ANIMATE-OSS :determiner ['SG-PL 'INDEF 'WHICH])
 (putprop! 'ANIMATE-OSS :variable 'ANIM)
@@ -5471,10 +5454,10 @@
                         (eval (if (or (cq 'COMPAR) (cq 'SUP)) (findmeasure (getr *c* :head)) (semantics (getr *c* :head))))
                         *sm*)))))))
 
-(dynamic- *pronoun*)
-(dynamic- *candidates*)
+(dynamic- *pronoun*)
+(dynamic- *candidates*)
 
-(dynamic- *lastevent*)
+(dynamic- *lastevent*)
 
 (defn- smit [pronoun']
     ;; PRONOUN IS (IT THEY ONE) A NODE LIST OF POSSIBLE REFERENTS.
@@ -5765,7 +5748,7 @@
                     :rel (rel? rel))))
             (semantics node)))))
 
-(dynamic- *time*)
+(dynamic- *time*)
 
 (defn- smcl1 []
     (binding [*smsub* (getr *c* :logical-subject) *smob1* nil *smob2* nil *smobl* nil *smcomp* nil *rellist* nil]
@@ -5956,11 +5939,11 @@
                 (do (putprop! new (car old) (cadr old)) (recur (cddr old)))
                 (do (putprop! new :parsenode *c*) new)))))
 
-(dynamic- *relß*)
-(dynamic- *relmarkersß*)
-(dynamic- *1*)
-(dynamic- *2*)
-(dynamic- *3*)
+(dynamic- *relß*)
+(dynamic- *relmarkersß*)
+(dynamic- *1*)
+(dynamic- *2*)
+(dynamic- *3*)
 
 (defn- relation [& a]
     ;; CONSTRUCTS RSS'S FOR GARDEN VARIETY VERBS.  USED IN DEFINITION OF SAME.
@@ -6078,8 +6061,8 @@
         ;; A FEW MISSING PIECES GO HERE
         nil))
 
-(dynamic- *%X*)
-(dynamic- *%XL*)
+(dynamic- *%X*)
+(dynamic- *%XL*)
 
 (defq- iterate* [& l]
     ;; GENERALIZED MAPPING FUNCTION.
@@ -6350,7 +6333,7 @@
     ;; USED TO GENERATE ORDINALS -- IT IS CALLED WHEN A MEASURE DEFINITION IS EVALLED
     (object [:markers (cadr (memq :restrictions a)) :procedure [(list '*ORDINAL* a)]]))
 
-(dynamic- *ordinal*)
+(dynamic- *ordinal*)
 
 (defn- plnr-describe [a var freevars]
     ;; BUILDS THE PLANNER DESCRIPTION, IGNORING THE QUANTIFIER ACCOUNTS FOR ORDINALS, SUBSTS, ETC.
@@ -6366,7 +6349,7 @@
                         :else [body a])]
                 (recur body (cdr a))))))
 
-(dynamic- *rel*)
+(dynamic- *rel*)
 
 (defn- relfind [node]
     ;; LOOKS FOR THE REL OF A POLAR
@@ -6395,9 +6378,9 @@
     (let [{:keys [restrictions dimension direction]} ordinal]
         (list '!MORE dimension (list 'thv (if direction newvar var)) (list 'thv (if direction var newvar)))))
 
-(dynamic- *choice*)
-(dynamic- *var*)
-(dynamic- *body*)
+(dynamic- *choice*)
+(dynamic- *var*)
+(dynamic- *body*)
 
 (defn- expand [expr event freevars]
     ;; THE HEART OF THE PLANNER BUILDER.
@@ -6460,8 +6443,8 @@
         (let-when [x (getprop x :who)] x
             (or (= *who* 'HE) (< (car *who*) x *lastsentno*)))))
 
-(dynamic- *markers*)
-(dynamic- *systems*)
+(dynamic- *markers*)
+(dynamic- *systems*)
 
 (defn- check-markers [a markers' systems']
     ;; TAKES A LIST OF NEW MARKERS AND CHECKS FOR COMPATIBILITY WITH THE EXISTING
@@ -6631,7 +6614,7 @@
 ;;
 ;; ################################################################
 
-(dynamic- *ambig*)
+(dynamic- *ambig*)
 
 ;; TOP LEVEL ANSWER FUNCTION FOR ANY INPUT SENTENCE, WHETHER IT IS COMMAND, QUESTION, OR STATEMENT.
 
@@ -6674,7 +6657,7 @@
                         action)
                     (and (rel? rss) (not (cq 'DECLAR)) (list (list 'putprop! (quotify (rel? rss)) :refer (quotify ans)))))))
 
-(dynamic- *success*)
+(dynamic- *success*)
 
 (defn- anscommand [rss]
     ;; ANSCOMMAND RESPONDS TO IMPERATIVES.
@@ -7015,7 +6998,7 @@
     ;; NOTE THAT NODE IS ACTUALLY A LIST OF NODE (A PROPER GRAMMAR POINTER).
     (and (set! *pt* node) (move-pt :dlc [:pv 'NOUN]) (from (firstword node) (wordafter *pt*))))
 
-(dynamic- *phrase*)
+(dynamic- *phrase*)
 
 (defn- listnames [phrase' spec names]
     ;; PHRASE IS THE INITIAL THING TO COMPARE FOR USING "ONE", SPEC IS EITHER DEF OR INDEF, AND THE NAMES ARE OF DATABASE OBJECTS.
@@ -7089,15 +7072,15 @@
     ;; GENERATES THE SYNTAX FOR ANSWER ACTIONS FROM A PHRASE.
     (list (cons 'say x)))
 
-(dynamic- *item*)
-(dynamic- *typeß*)
-(dynamic- *typelist*)
-(dynamic- *nameß*)
-(dynamic- *colorß*)
-(dynamic- *colorlist*)
-(dynamic- *sizeß*)
-(dynamic- *sizelist*)
-(dynamic- *cube*)
+(dynamic- *item*)
+(dynamic- *typeß*)
+(dynamic- *typelist*)
+(dynamic- *nameß*)
+(dynamic- *colorß*)
+(dynamic- *colorlist*)
+(dynamic- *sizeß*)
+(dynamic- *sizelist*)
+(dynamic- *cube*)
 
 (defn- nameobj [item' spec]
     ;; NAMES THE OBJECT IN ENGLISH -- GENERATES LIST OF THINGS TO BE EVALUATED.  SPEC IS EITHER 'INDEF OR 'DEF.
@@ -7252,7 +7235,7 @@
 (defn- findreduce [x y]
     (let [x (cdr x) y (dec y)] (if (zero? y) x (recur x y))))
 
-(dynamic- *ans2*)
+(dynamic- *ans2*)
 
 (defn- findchoose [oss x ans2']
     (binding [*ans2* ans2']
