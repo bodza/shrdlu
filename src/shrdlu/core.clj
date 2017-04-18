@@ -5,7 +5,6 @@
 (defmacro def- [s i] `(def ~(vary-meta s assoc :private true) ~i))
 
 (defmacro lambda [& _] `(fn ~@_))
-(defmacro defq- [& _] `(defn- ~@_))
 
 (defmacro != [x y] `(not (== ~x ~y)))
 (defmacro non-zero? [x] `(not (zero? ~x)))
@@ -85,8 +84,8 @@
 
 (defn- term? [q] (not (coll? q)))
 
-(defn- memq [x y] (cond (nil? y) nil (= x (car y)) y :else (recur x (cdr y))))
-(defn- assq [x y] (cond (nil? y) nil (= x (caar y)) (car y) :else (recur x (cdr y))))
+(defn- memq [x a] (cond (nil? a) nil (= x (car a)) a :else (recur x (cdr a))))
+(defn- assq [x a] (cond (nil? a) nil (= x (caar a)) (car a) :else (recur x (cdr a))))
 (def- delq remove)
 
 (def- discourse? true)
@@ -184,7 +183,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thadd thadd* thamong thamong'f thand thand'f thand't thante thapply thapply1 thass1 thassert therase thassert'f thassert't therase'f therase't thasval thbind thbranch thbranchun thcond thcond'f thcond't thconse thdef thdo thdo'b therasing thfail thfinalize thfind thfind'f thfind't thgal thgo thgoal thgoal'f thgoal't thadd- thmatch2 thcheck thunion thmatch1 thmatch thmung'f thmung't thnot thor thor- thor'f thor't thprog thproga thprog'f thprog't thpure thputprop assq- threm- thrembind'f thrembind't thremove thremprop threstrict threturn thrplaca thrplacas thurplaca thrplacd thrplacds thurplacd thsetq thsgal thsucceed thtae thtag thtag'f thtag't thtrue thtry1 thtry thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thvsetq topcenter showscene atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc expand erqset thval2 who check-markers check-a-marker findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm ansthm+ ansthm1 ansunique cutoff describevent disput eliza enough-better findmother headpart listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell onecheck ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix CLAUSE NG VG PREPG ADJG CONJOIN)
+(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply thapply1 thtae thass1 thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thurplaca thurplacd thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thproga thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry1 thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
 
 (putprop! 'EE :why :command)
 (putprop! 'EE :start 0)
@@ -454,20 +453,11 @@
     (when a ;; IF A IS NIL, THERE IS NOTHING TO DO.
         ;; WHEN WE ARE DONE, JUST PUT A MARKER ON THTREE WITH A POINTER TO THE OLD THALIST, SO IT CAN BE RESTORED.
         (loop-when a a => (thpush! *tree* [:thrembind *o'vars*])
-            ;; OTHERWISE ADD TO THALIST THE NEW BINDING CELL.
-            (set! *vars* (cons
-                ;; THE FIRST ELEMENT IS THE NAME OF THE VARIABLE.  IF THE ENTRY IS AN ATOM,
-                ;; WE ARE JUST GIVEN THE VARIABLE AND ITS INITIAL ASSIGNMENT IS "THUNASSIGNED",
-                ;; I.E. NO INITIAL ASSIGNMENT.
-                (cond (term? (car a)) [(car a) :thunassigned]
-                    ;; OTHERWISE OUR ENTRY IS A LIST.
-                    ;; IF THE FIRST ELEMENT OF THE LIST IS THRESTRICT, WE ADD THE RESTRICTION TO THE BINDING CELL.
-                    ;; THE CDDR OF THE CELL GIVES THE RESTRICTION LIST.
-                    (= (caar a) 'threstrict) (into (let [x (cadar a)] (if (term? x) [x :thunassigned] [(car x) (eval (cadr x))])) (cddar a))
-                    ;; OTHERWISE WE ARE GIVEN BOTH THE VARIABLE AND ITS INITIAL ASSIGNMENT,
-                    ;; SO MAKE THE SECOND ELEMENT OF THE BINDING CELL A POINTER TO THE INITIAL ASSIGNMENT.
-                    :else [(caar a) (eval (cadar a))])
-                *vars*))
+            ;; OTHERWISE ADD TO THALIST THE NEW BINDING CELL.  THE FIRST ELEMENT IS THE NAME OF THE VARIABLE.
+            ;; IF THE ENTRY IS AN ATOM, WE ARE JUST GIVEN THE VARIABLE AND ITS INITIAL ASSIGNMENT IS "THUNASSIGNED",
+            ;; I.E. NO INITIAL ASSIGNMENT.  OTHERWISE WE ARE GIVEN BOTH THE VARIABLE AND ITS INITIAL ASSIGNMENT,
+            ;; SO MAKE THE SECOND ELEMENT OF THE BINDING CELL A POINTER TO THE INITIAL ASSIGNMENT.
+            (set! *vars* (cons (if (term? (car a)) [(car a) :thunassigned] [(caar a) (eval (cadar a))]) *vars*))
             ;; REPEAT FOR THE NEXT VARIABLE IN THE LIST.
             (recur (cdr a)))))
 
@@ -653,113 +643,69 @@
 (putprop! :thgoal :thfail thgoal'f)
 (putprop! :thgoal :thsucceed thgoal't)
 
-(defq- thurplaca [x y] (RPLAC (car x) y))
-(defq- thurplacd [x y] (RPLAC (cdr x) y))
+(defn- thurplaca [x y] (RPLAC (car x) y))
+(defn- thurplacd [x y] (RPLAC (cdr x) y))
 
-(defn- thrplacas [a x y] (let [a (cons (list 'thurplaca x (car x)) a)] (RPLAC (car x) y) a))
-(defn- thrplacds [a x y] (let [a (cons (list 'thurplacd x (cdr x)) a)] (RPLAC (cdr x) y) a))
+(defn- thrplacas [a x y] (let [a (cons (list 'thurplaca x (car x)) a)] (RPLAC (car x) y) a))
+(defn- thrplacds [a x y] (let [a (cons (list 'thurplacd x (cdr x)) a)] (RPLAC (cdr x) y) a))
 
 (defn- thrplaca [x y] (thpush! *tree* [:thmung (thrplacas nil x y)]) x)
-(defn- thrplacd [x y] (thpush! *tree* [:thmung (thrplacds nil x y)]) x)
+(defn- thrplacd [x y] (thpush! *tree* [:thmung (thrplacds nil x y)]) x)
 
-(defn- thunion [l1 l2]
-    (reduce (fn [a x] (if (memq x a) a (cons x a))) l2 l1))
-
-(defn- thcheck [predicates x]
-    (or (nil? predicates) (= x :thunassigned) ((apply every-pred predicates) x)))
-
-(defn- thmatch2 [thx thy a'undo]
+(defn- thmatch2 [x y a'undo]
     ;; THX IS ONE ITEM FROM THE PATTERN.  THY IS THE CORRESPONDING ITEM FROM THE CANDIDATE.
     ;; THMATCH2 DECIDES IF THE TWO ITEMS REALLY MATCH.
     ;; THOLIST IS THALIST WHICH WAS IN EXISTANCE BEFORE WE STARTED WORKING ON THE CURRENT LINE OF PLANNER CODE.
     ;; STANDARD CHECK FOR $E
-    (let [thx (if (= (car thx) 'thev) (thval (cadr thx) *o'vars*) thx)
-          thy (if (= (car thy) 'thev) (thval (cadr thy) *vars*) thy)]
+    (let [x (if (= (car x) 'thev) (thval (cadr x) *o'vars*) x)
+          y (if (= (car y) 'thev) (thval (cadr y) *vars*) y)]
         (cond ;; IF EITHER IS A ?, ANYTHING WILL MATCH, SO OK.
-            (= thx '?) true
-            (= thy '?) true
+            (= x '?) true
+            (= y '?) true
             ;; IF EITHER IS A VARIABLE, THINGS GET MESSY.
-            (or (memq (car thx) ['thv 'thnv 'threstrict]) (memq (car thy) ['thv 'thnv 'threstrict]))
-                (let [[xpair thx]
-                        ;; IF THX IS A NORMAL VARIALBE, ESP. WE ARE NOT INTRODUCING NEW RESTRICTIONS AT THIS TIME,
-                        ;; THEN XPAIR IS JUST THE BINDING LIST.
-                        (cond (thvar? thx) [(thgal thx *o'vars*) thx]
-                            ;; WE MUST HACK A NEW RESTRICTION ONTO THE BINDING LIST.
-                            (= (car thx) 'threstrict)
-                                ;; WE ARE "RESTRICTING" A ?.
-                                ;; SINCE ? HAS NO BINDING LIST, WE MAKE UP A PSEUDO BINDING LIST.
-                                (if (= (cadr thx) '?)
-                                    [(list* '? :thunassigned (cddr thx)) '(thnv '?)]
-                                    ;; WE ARE RESTRICTING A VARIABLE.  THIS MEANS THAT WE MUST PUT IT ON THE BINDING LIST.
-                                    (let [u (thgal (cadr thx) *o'vars*)]
-                                        ;; THUNION MAKES SURE WE DON'T PUT THE SAME RESTRICTION ON TWICE.
-                                        (swap! a'undo thrplacds (cdr u) (thunion (cddr u) (cddr thx)))
-                                        [u (cadr thx)]))
-                            :else [nil thx])
-                      [ypair thy]
-                        ;; NOTE THAT IF THX IS NOT A VARIABLE, THEN XPAIR IS ().
-                        ;; WE DO THE EXACT SAME THING FOR THY AS WE JUST DID FOR THX.
-                        (cond (thvar? thy) [(thgal thy *vars*) thy]
-                            (= (car thy) 'threstrict)
-                                (if (= (cadr thy) '?)
-                                    [(list* '? :thunassigned (cddr thy)) '(thnv '?)]
-                                    (let [u (thgal (cadr thy) *vars*)]
-                                        (swap! a'undo thrplacds (cdr u) (thunion (cddr u) (cddr thy)))
-                                        [u (cadr thy)]))
-                            :else [nil thy])]
-                    ;; X AND Y PAIR ARE THE RESPECTIVE BINDING CELLS WHICH WILL HAVE ANY NEW RESTRICTIONS MENTIONED.
-                    ;; IF THX OR THY IS NOT A VARIABLE (I.E. THE OTHER IS), THEN X OR Y PAIR WILL BE NIL.
+            (or (memq (car x) ['thv 'thnv]) (memq (car y) ['thv 'thnv]))
+                ;; X AND Y PAIR ARE THE RESPECTIVE BINDING CELLS.
+                ;; IF THX OR THY IS NOT A VARIABLE (I.E. THE OTHER IS), THEN X OR Y PAIR WILL BE NIL.
+                (let [xpair (when (thvar? x) (thgal x *o'vars*)) ypair (when (thvar? y) (thgal y *vars*))]
                     (cond
-                        (and xpair
-                                ;; THX IS A VARIABLE.  THIS SEES IF THX IS UNASSIGNED.
-                                (or (= (car thx) 'thnv) (and (= (car thx) 'thv) (= (cadr xpair) :thunassigned)))
-                                ;; THCHECK MAKES SURE THE RESTRICTIONS (IF ANY) ON THX ARE COMPATIBLE WITH THY.
-                                (thcheck (cddr xpair) (if ypair (cadr ypair) thy)))
-                            ;; FURTHERMORE, THY IS ALSO A VARIABLE.
-                            ;; THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING.
+                        (and xpair ;; THX IS A VARIABLE.  THIS SEES IF THX IS UNASSIGNED.
+                                (or (= (car x) 'thnv) (and (= (car x) 'thv) (= (cadr xpair) :thunassigned))))
+                            ;; THY IS ALSO A VARIABLE.  THIS MEANS WE MUST DO THE MYSTERIOUS VARIABLE LINKING.
                             (if ypair
                                 (do (swap! a'undo thrplacas (cdr xpair) (cadr ypair))
-                                    ;; IF THY ALSO HAS RESTRICTIONS WHEN WE LINK VARIABLES, WE COMBINE RESTRICTIONS.
-                                    (when (cddr ypair)
-                                        (swap! a'undo thrplacds (cdr xpair) (thunion (cddr xpair) (cddr ypair))))
                                     (swap! a'undo thrplacds ypair (cdr xpair))
                                     true)
-                                ;; IF THY IS NOT A VARIALBE, JUST ASSIGN THX TO THY.
+                                ;; IF THY IS NOT A VARIABLE, JUST ASSIGN THX TO THY.
                                 ;; THRPLACAS WILL HACK THML, THE FREE VARIABLE FROM THMATCH1.
-                                (do (swap! a'undo thrplacas (cdr xpair) thy)
+                                (do (swap! a'undo thrplacas (cdr xpair) y)
                                     true))
-                        (and ypair
-                                ;; THY IS A VARIABLE AND THX IS EITHER A CONSTANT OR A PREVIOUSLY ASSIGNED VARIALBE.
-                                (or (= (car thy) 'thnv)
-                                    ;; FURTHERMORE THY IS UNASSIGNED.
-                                    (and (= (car thy) 'thv) (= (cadr ypair) :thunassigned)))
-                                ;; MAKE SURE RESTRICTIONS ARE OK.
-                                (thcheck (cddr ypair) (if xpair (cadr xpair) thx)))
+                        (and ypair ;; THY IS A VARIABLE AND THX IS EITHER A CONSTANT OR A PREVIOUSLY ASSIGNED VARIABLE.
+                                (or (= (car y) 'thnv) (and (= (car y) 'thv) (= (cadr ypair) :thunassigned))))
                             ;; IF THX IS A VARIABLE, LINK.  OTHERWISE JUST ASSIGN THY TO THX.
-                            (do (swap! a'undo thrplacas (cdr ypair) (if xpair (cadr xpair) thx))
+                            (do (swap! a'undo thrplacas (cdr ypair) (if xpair (cadr xpair) x))
                                 true)
                         ;; THX IS AN ASSIGED VARIABLE, SO JUST MAKE SURE ITS ASSIGNMENT IS EQUAL TO THY.
-                        (and xpair (= (cadr xpair) (if ypair (cadr ypair) thy))) true
+                        (and xpair (= (cadr xpair) (if ypair (cadr ypair) y))) true
                         ;; THX IS A CONSTANT, THY IS A VARIABLE, AND THEY ARE EQUAL.
-                        (and ypair (= (cadr ypair) thx)) true
+                        (and ypair (= (cadr ypair) x)) true
                         ;; LOOSE, SO RETURN WITH AN ERROR.
                         :else false))
             ;; IF THE TWO ARE EQUAL, NATURALLY THEY MATCH.
-            (= thx thy) true
+            (= x y) true
             ;; IF NOT, THEY DON'T, SO REPORT FAILURE.
             :else false)))
 
-(defn- thmatch1 [thx thy]
+(defn- thmatch1 [x y]
     ;; THX IS THE PATTERN TO BE MATCHED.  THY IS THE POSSIBLE CANDIDATE.
     ;; WE HAVE TO CHECK THAT THE PATTERN AND CANDIDATE ARE OF THE SAME LENGTH
     ;; SINCE THE USER MAY HAVE SPECIFIED THE CANDIDATE WITH A THUSE RECOMMENDATION.
-    (let-when [thx (if (= (car thx) 'thev) (thval (cadr thx) *o'vars*) thx)] (= (count thx) (count thy)) => false
+    (let-when [x (if (= (car x) 'thev) (thval (cadr x) *o'vars*) x)] (= (count x) (count y)) => false
         ;; THML IS A FREE VARIABLE WHO WILL BE HACKED BY THMATCH2 WHEN THMATCH2 IS DONE.
         ;; THML WILL HAVE A RECORD OF ALL VARIABLE ASSIGNMENTS MADE DURING THE MATCH.
         ;; NATURALLY, WE MUST KEEP TRACK, SO IF WE FAIL BACK, WE CAN UNDO THEM.
         (let [a'undo (atom nil)]
             ;; IF THE MATCH FAILS, THMATCH2 EXITS WITH AN ERR, ELSE WILL BE "TRUE" PROVIDED THE MATCH WORKED.
-            (if (every? true? (map thmatch2 thx thy (repeat a'undo)))
+            (if (every? true? (map thmatch2 x y (repeat a'undo)))
                 ;; MATCH IS SUCCESSFUL, SO RECORD THE ASSIGNMENTS ON THTREE.
                 (do (when @a'undo (thpush! *tree* [:thmung @a'undo])) true)
                 ;; IF THE MATCH FAILED, WE MAY ALREADY HAVE SOME ASSIGNEMENTS TO BE UNDONE.
@@ -777,7 +723,7 @@
         ;; THL1 IS THE BUCKET UNDER THE ATOM.  THL2 IS THE BUCKET UNDER THE VARIABLE IN THAT POSITION.
         ;; IF WE ARE WORKING ON AN ASSERTION, THL2 WILL BE () SINCE THERE ARE NO VARIABLES IN ASSERTIONS.
         ;; IN THEOREMS, WE MUST TAKE INTO ACCOUNT THE FACT THAT THE THEOREM MAY HAVE EITHER THE CORRECT ATOM,
-        ;; OR A VARIALBE IN A GIVEN POSITION, AND STILL MATCH.
+        ;; OR A VARIABLE IN A GIVEN POSITION, AND STILL MATCH.
         (loop-when [l 34359738367 l1 nil l2 nil a b i 0] a => (if l2 (concat l1 l2) l1)
             ;; THB2 IS THE ITEM WE ARE WORKING ON IN THIS PASS.  IF IT'S NOT A NORMAL ATOM, SKIP IT AND GO TO NEXT PASS.
             (let-when [x (car a) a (cdr a) i (inc i)] (and (term? x) (not (number? x)) (not= x '?)) => (recur l l1 l2 a i)
@@ -920,13 +866,6 @@
                     (do (loop-when-recur [a (cdr a) i (inc i)] a [(cdr a) (inc i)] (threm- (car a) t i n nil p b o))
                         (loop-when-recur [a a'      i 1]       a [(cdr a) (inc i)] (threm- (car a) t i n nil p b o))
                         o))))))
-
-(defq- threstrict [& a]
-    (let [x (thgal (car a) *vars*)]
-        (if (term? x)
-            (do (terpri) (print- "THRESTRICT IGNORED - CONTINUING"))
-            (thrplacd (cdr x) (thunion (cddr x) (cdr a))))
-        x))
 
 (defn- threturn [x]
     (thsucceed 'thprog x))
@@ -1086,7 +1025,7 @@
 (defn- thsgal [x]
     (or (assq (cadr x) *vars*) (let [_ [(cadr x) :thunassigned]] (set! *vars* (conj *vars* _)) _)))
 
-(defq- thsetq [& a']
+(defn- thsetq [& a']
     (let [a'undo (atom nil)]
         (loop-when [a a'] a => (do (thpush! *tree* [:thmung @a'undo]) *value*)
             (when' (cdr a) => (bug! 'thsetq "ODD NUMBER OF GOODIES" a')
@@ -1098,7 +1037,7 @@
                         (swap! a'undo thrplacas x *value*)))
                 (recur (cddr a))))))
 
-(defq- thvsetq [& a']
+(defn- thvsetq [& a']
     (loop-when [a a'] a => *value*
         (when' (cdr a) => (bug! 'thvsetq "ODD NUMBER OF GOODIES" a')
             (let [x (cdr (thsgal (car a)))]
@@ -1141,7 +1080,7 @@
         '[!AT ($? x) ?]
         '(thgoal '[!MANIP ($? x)])
         '(thgoal '[!SUPPORT ($? y) ($? x)])
-        '(thor '(thand '(thgoal '[!IS ($? y) !BOX]) '(thvsetq ($! z) ($? y)))
+        '(thor '(thand '(thgoal '[!IS ($? y) !BOX]) '(thvsetq '($! z) '($? y)))
             '(thgoal '[!CONTAIN ($? z) ($? y)]))
         '(thassert '[!CONTAIN ($? z) ($? x)])])
 
@@ -1156,7 +1095,7 @@
     [:thante '[x y z]
         '[!AT ($? x) ($? y)]
         '(thcond
-            '[(thvsetq ($! z) (support ($? y) (size ($? x)) ($? x)))
+            '[(thvsetq '($! z) '(support ($? y) (size ($? x)) ($? x)))
                 (thcond
                     '[(thgoal '[!MANIP ($? z)])
                         (thgoal '[!SHAPE ($? z) !RECTANGULAR])]
@@ -1170,7 +1109,7 @@
                     '[(thnot '(thgoal '[!MANIP ($? z)]))]
                     '[(thand '(thgoal '[!PART ($? z) ($! y)]) '(thgoal '[!IS ($? y) !STACK]))
                         (thassert '[!PART ($? x) ($? y)])]
-                    '[(thvsetq ($! y) (gensym 'STACK))
+                    '[(thvsetq '($! y) '(gensym 'STACK))
                         (thassert '[!PART ($? x) ($? y)])
                         (thassert '[!PART ($? z) ($? y)])
                         (thassert '[!IS ($? y) !STACK])
@@ -1194,7 +1133,7 @@
 (putprop! 'TC-ASMUCH :theorem
     [:thconse '[measure x y]
         '[!ASMUCH ($? measure) ($? x) ($? y)]
-        '(thvsetq ($! measure) (getprop ($? measure) :measfn))
+        '(thvsetq '($! measure) '(getprop ($? measure) :measfn))
         '(not (< (($? measure) ($? x)) (($? measure) ($? y))))])
 
 (putprop! 'TC-BELONG :theorem
@@ -1222,11 +1161,11 @@
         '[!CHOOSE ($? x) ($? y) ($? z)]
         '(thcond
             '[(and (thasval '($? x)) (not (oss? ($? x))))
-                (thsetq ($! y) ($? x))]
+                (thsetq '($! y) '($? x))]
             '[(thasval '($? x))
                 (or (not discourse?)
                     (thputprop (variable? ($? x)) :ng ($? x)))
-                (thsetq ($! y) (findchoose ($? x) ($? z) nil))]
+                (thsetq '($! y) '(findchoose ($? x) ($? z) nil))]
             '[(thgoal '[!MANIP ($? y)])
                 (thnot '(thgoal '[!SUPPORT ($? y) ?]))])])
 
@@ -1259,15 +1198,15 @@
     [:thconse '[surf size obj space]
         '[!FINDSPACE ($? surf) ($? size) ($? obj) ($? space)]
         '(thor '(and (not (memq ($? surf) ['ßBOX 'ßTABLE])) (not (getprop '!NOCLEAR :thassertion))
-                (thsetq ($! space) (findspace 'CENTER ($? surf) ($? size) ($? obj))))
+                (thsetq '($! space) '(findspace 'CENTER ($? surf) ($? size) ($? obj))))
             '(and (or (= ($? surf) 'ßBOX) (and (not (= ($? surf) 'ßTABLE)) (getprop '!NOCLEAR :thassertion)))
-                (thsetq ($! space) (findspace 'PACK ($? surf) ($? size) ($? obj))))
-            '(thsetq ($! space) (findspace 'RANDOM ($? surf) ($? size) ($? obj))))])
+                (thsetq '($! space) '(findspace 'PACK ($? surf) ($? size) ($? obj))))
+            '(thsetq '($! space) '(findspace 'RANDOM ($? surf) ($? size) ($? obj))))])
 
 (putprop! 'TC-GET-RID-OF :theorem
     [:thconse '[x y [why ($? ev)] ev]
         '[!GET-RID-OF ($? x)]
-        '(thvsetq ($! ev) ($? why))
+        '(thvsetq '($! ev) '($? why))
     '=> '(thcond ((nil? ($? x)))
             '[(term? ($? x))
                 (memory ($? why))
@@ -1275,7 +1214,7 @@
                 (thgoal '[!PUT ($? x) ($? y)] '[:thnodb] '[:thuse TC-PUT])
                 (memorend ($? ev) '[!GET-RID-OF ($? ev) ($? x)])]
             '[(thgoal '[!GET-RID-OF ($E (car ($? x)))] '[:thuse TC-GET-RID-OF])
-                (or (thsetq ($! x) (cdr ($? x))) (thsucceed 'theorem))
+                (or (thsetq '($! x) '(cdr ($? x))) (thsucceed 'theorem))
                 (thgo '=>)])])
 
 (putprop! 'TC-GRASP :theorem
@@ -1290,11 +1229,11 @@
                 (thor '(thgoal '[!UNGRASP] '[:thnodb] '[:thuse TC-UNGRASP])
                     '(thgoal '[!GET-RID-OF ($? y)] '[:thnodb] '[:thuse TC-GET-RID-OF]))]
             '[(thsucceed)])
-        '(thsetq ($! y) (topcenter ($? x)))
+        '(thsetq '($! y) '(topcenter ($? x)))
         '(thgoal '[!MOVEHAND2 ($? y)] '[:thnodb] '[:thuse TC-MOVEHAND2])
         '(thassert '[!GRASPING ($? x)])
         '(memorend ($? ev) '[!GRASP ($? ev) ($? x)])
-        '(thsetq *grasplist* (cons [*thtime* ($? x)] *grasplist*))
+        '(thsetq '*grasplist* '(cons [*thtime* ($? x)] *grasplist*))
         '(thor '(GRASP ($? x)) '(and (UNGRASP) nil))])
 
 (putprop! 'TC-LOC :theorem
@@ -1320,7 +1259,7 @@
 (putprop! 'TC-MORE :theorem
     [:thconse '[measure x y]
         '[!MORE ($? measure) ($? x) ($? y)]
-        '(thvsetq ($! measure) (getprop ($? measure) :measfn))
+        '(thvsetq '($! measure) '(getprop ($? measure) :measfn))
         '(> (($? measure) ($? x)) (($? measure) ($? y)))])
 
 (putprop! 'TC-MOVEHAND :theorem
@@ -1329,7 +1268,7 @@
         '(thcond
             '[(= ($? y) *handat*) (thsucceed 'theorem)]
             '[(thgoal '[!GRASPING ($? x)])
-                (thvsetq ($! z) (let [x (atab ($? x)) y (diff ($? y) (tcent [0 0 0] (caddr x)))]
+                (thvsetq '($! z) '(let [x (atab ($? x)) y (diff ($? y) (tcent [0 0 0] (caddr x)))]
                     (when (clear y (list (caaddr x) (cadaddr x) (- 512 (caddr y))) (car x)) y)))
                 (thgoal '[!AT ($? x) ($! w)])
                 (therase '[!AT ($? x) ($? w)] '[:thuse TE-SUPP TE-CONTAIN])
@@ -1345,16 +1284,16 @@
         '[!MOVEHAND2 ($? y)]
         '(if (= ($? y) *handat*) (thsucceed 'theorem)
             (and (<= 32 (car ($? y)) 608) (<= 0 (cadr ($? y)) 608) (<= 0 (caddr ($? y)) 512)))
-        '(thvsetq ($! loc) *handat*)
-        '(thsetq *handat* ($? y))
-        '(thsetq *thtime* (inc *thtime*))
+        '(thvsetq '($! loc) '*handat*)
+        '(thsetq '*handat* '($? y))
+        '(thsetq '*thtime* '(inc *thtime*))
         '(thor '(eval (cons 'MOVETO *handat*)) '(and (eval (cons 'MOVETO ($? loc))) nil))])
 
 (putprop! 'TC-NAME :theorem
     [:thconse '[x]
         '[!NAME ($? x)]
-        '(thvsetq ($! x) (listify ($? x)))
-        '(thvsetq ($! x) (thfind 'ALL '($? y) '[y z] '(thamong '($? z) '($? x)) '(thor '(thgoal '[!CALL ($? z) ($? y)]) '(thsetq ($! y) ($? z)))))])
+        '(thvsetq '($! x) '(listify ($? x)))
+        '(thvsetq '($! x) '(thfind 'ALL '($? y) '[y z] '(thamong '($? z) '($? x)) '(thor '(thgoal '[!CALL ($? z) ($? y)]) '(thsetq '($! y) '($? z)))))])
 
 (putprop! 'TC-NOTICE :theorem
     [:thconse '[x]
@@ -1370,25 +1309,25 @@
 (putprop! 'TC-PACK :theorem
     [:thconse '[obj surf blocks pyr x y]
         '[!PACK ($? obj) ($? surf)]
-        '(or (thvsetq ($! blocks) (packo ($? obj) '!BLOCK)) true)
-        '(or (thvsetq ($! pyr) (packo ($? obj) '!PYRAMID)) true)
+        '(or (thvsetq '($! blocks) '(packo ($? obj) '!BLOCK)) true)
+        '(or (thvsetq '($! pyr) '(packo ($? obj) '!PYRAMID)) true)
     '=> '(thcond
             '[(nil? ($? blocks))
                 (thcond '[(nil? ($? pyr)) (thsucceed 'theorem)]
-                    '[(thvsetq ($! y) (findspace 'PACK ($? surf) (size (car ($? pyr))) (car ($? pyr))))
+                    '[(thvsetq '($! y) '(findspace 'PACK ($? surf) (size (car ($? pyr))) (car ($? pyr))))
                         (thgoal '[!PUT ($E (car ($? pyr))) ($? y)] '[:thuse TC-PUT])
-                        (or (thsetq ($? pyr) (cdr ($? pyr))) true)
+                        (or (thsetq '($? pyr) '(cdr ($? pyr))) true)
                         (thgo '=>)])]
-            '[(thsetq ($! x) (car ($? blocks)))
-                (thvsetq ($? y) (findspace 'PACK ($? surf) (size ($? x)) ($? x)))
+            '[(thsetq '($! x) '(car ($? blocks)))
+                (thvsetq '($? y) '(findspace 'PACK ($? surf) (size ($? x)) ($? x)))
                 (thgoal '[!PUT ($? x) ($? y)] '[:thuse TC-PUT])
-                (or (thsetq ($? blocks) (cdr ($? blocks))) true)
+                (or (thsetq '($? blocks) '(cdr ($? blocks))) true)
                 (thcond
-                    '[(thvsetq ($! y) (or (packon ($? x) ($? pyr)) (packon ($? x) ($? blocks))))
+                    '[(thvsetq '($! y) '(or (packon ($? x) ($? pyr)) (packon ($? x) ($? blocks))))
                         (thgoal '[!PUTON ($? y) ($? x)] '[:thuse TC-PUTON])
                         (if (memq ($? y) ($? pyr))
-                            (thsetq ($! pyr) (delq ($? y) ($? pyr)))
-                            (thsetq ($! blocks) (delq ($? y) ($? blocks))))]
+                            (thsetq '($! pyr) '(delq ($? y) ($? pyr)))
+                            (thsetq '($! blocks) '(delq ($? y) ($? blocks))))]
                     '[(thsucceed)])
                 (thgo '=>)])])
 
@@ -1397,10 +1336,10 @@
         '[!PART ($? x) ($? y)]
         '(thgoal '[!IS ($? y) !STACK])
         '(thgoal '[!CHOOSE ($? x) ($! z) '(((thgoal [!PART ($? *) ($? y)])))] '[:thuse TC-CHOOSE])
-        '(or (not (term? ($? z))) (thsetq ($! z) (list ($? z))))
+        '(or (not (term? ($? z))) (thsetq '($! z) '(list ($? z))))
     '=> '(thcond '[(nil? ($? z)) (thsucceed)]
             '[(thgoal '[!PART ($E (car ($? z))) ($? y)])
-                (or (thsetq ($! z) (cdr ($? z))) true)
+                (or (thsetq '($! z) '(cdr ($? z))) true)
                 (thgo '=>)]
             '[(thfail)])])
 
@@ -1420,7 +1359,7 @@
 (putprop! 'TC-REFERS :theorem
     [:thconse '[x]
         '[!REFERS ($? x)]
-        '(eval (list 'thsetq (list 'thv ($? x)) (quotify (atomify (getprop ($? x) :bind)))))])
+        '(eval (list 'thsetq (list 'thv ($? x)) (quotify (atomify (getprop ($? x) :bind)))))])
 
 (putprop! 'TC-PUT :theorem
     [:thconse '[x y z]
@@ -1434,7 +1373,7 @@
         '(clear ($? y) (size ($? x)) ($? x))
         '(support ($? y) (size ($? x)) ($? x))
         '(thgoal '[!GRASP ($? x)] '[:thuse TC-GRASP])
-        '(thsetq ($! z) (tcent ($? y) (size ($? x))))
+        '(thsetq '($! z) '(tcent ($? y) (size ($? x))))
         '(thgoal '[!MOVEHAND ($? z)] '[:thnodb] '[:thuse TC-MOVEHAND])
         '(thgoal '[!UNGRASP] '[:thnodb] '[:thuse TC-UNGRASP])])
 
@@ -1448,8 +1387,8 @@
                 (thsucceed 'theorem)]
             '[(thsucceed)])
         '(thgoal '[!IS ($? y) !BOX])
-        '(thvsetq ($! z)
-            (union (listify ($? x))
+        '(thvsetq '($! z)
+            '(union (listify ($? x))
                 (thval '(thfind 'ALL '($? w) '[w] '(thgoal '[!ON ($? w) ($? y)])) *vars*)))
         '(thgoal '[!CLEARTOP ($? y)] '[:thuse TC-CLEARTOP])
         '(thgoal '[!PACK ($? z) ($? y)] '[:thuse TC-PACK])
@@ -1459,7 +1398,7 @@
     [:thconse '[x y z [why ($? ev)] ev]
         '[!PUTON ($? x) ($? y)]
         '(term? ($? y))
-        '(or (cdr ($? x)) (thsetq ($! x) (car ($? x))))
+        '(or (cdr ($? x)) (thsetq '($! x) '(car ($? x))))
         '(not (if (term? ($? x)) (= ($? x) ($? y)) (memq ($? y) ($? x))))
         '(memory ($? why))
         '(thcond
@@ -1473,7 +1412,7 @@
                 (thprog '[(w ($? x))]
                 '=> '(thor '(thgoal '[!PUTON ($E (car ($? w))) ($? y)] '[:thuse TC-PUTON])
                         '(thfail))
-                    '(thor '(thsetq ($? w) (cdr ($? w)))
+                    '(thor '(thsetq '($? w) '(cdr ($? w)))
                         '(threturn true))
                     '(thgo '=>))
             (therase '[!NOCLEAR])]
@@ -1498,8 +1437,8 @@
         '(thnot '(thand '(thgoal '[!PART ($? y) ($! x)]) '(thgoal '[!IS ($? x) !STACK])))
     '=> '(thgoal '[!SUPPORT ($! x) ($? y)])
         '(thcond '[(memq ($? x) ['ßTABLE 'ßBOX])]
-            '[(thsetq ($! y) ($? x)) (thgo '=>)])
-        '(thsetq ($! x) (gensym 'STACK))
+            '[(thsetq '($! y) '($? x)) (thgo '=>)])
+        '(thsetq '($! x) '(gensym 'STACK))
         '(thassert '[!IS ($? x) !STACK])
         '(thassert '[!EXISTS ($? x)])
         '(thfind 'ALL '($? z) '[z]
@@ -1513,19 +1452,19 @@
             (not (DPRINT2 "TOO HIGH,")))
         '(thcond
             '[(and ($? x) (cdr ($? x)))]
-            '[(thsetq ($! x)
-                (concat ($? x)
+            '[(thsetq '($! x)
+                '(concat ($? x)
                     (thval (list 'thfind (if ($? x) 2 3) '($? y) '[y]
                             '(thor '(thand '(thgoal '[!IS ($? y) !BLOCK]) '(thnot '(thgoal '[!SUPPORT ($? y) ?]))) '(thgoal '[!IS ($? y) !BLOCK]))
                             '(not (= ($? x) ($? y))))
                         *vars*)))])
-        '(not (and (thvsetq ($! pyr) (packo ($? x) '!PYRAMID)) (cdr ($? pyr))))
-        '(thvsetq ($! blocks) (cons 'ßTABLE (packo ($? x) '!BLOCK)))
+        '(not (and (thvsetq '($! pyr) '(packo ($? x) '!PYRAMID)) (cdr ($? pyr))))
+        '(thvsetq '($! blocks) '(cons 'ßTABLE (packo ($? x) '!BLOCK)))
         '(memory ($? why))
     '=> '(thcond
             '[(cdr ($? blocks))
                 (thgoal '[!PUTON ($E (cadr ($? blocks))) ($E (car ($? blocks)))] '[:thuse TC-PUTON])
-                (thsetq ($! blocks) (cdr ($? blocks)))
+                (thsetq '($! blocks) '(cdr ($? blocks)))
                 (thgo '=>)]
             '[($? pyr)
                 (thgoal '[!PUTON ($E (car ($? pyr))) ($E (car ($? blocks)))] '[:thuse TC-PUTON])]
@@ -1542,7 +1481,7 @@
         '(or (and (thasval '($? x)) (thasval '($? ev)) (thasval '($? time)) (not (thasval '($? newev)))) (bug! 'tc-startend4 nil))
         '(thgoal '[!CHOOSE ($? ev) ($! z) nil] '[:thuse TC-CHOOSE])
         '(or (term? ($? z)) (bug! 'tc-startend4 nil))
-        '(thsetq ($! newev) (gensym 'EV))
+        '(thsetq '($! newev) '(gensym 'EV))
         '(putprop! ($? newev) :end
             (putprop! ($? newev) :start
                 (getprop ($? z) (cond (= ($? x) '!START) :start (= ($? x) '!END) :end :else (bug! 'tc-startend4 nil)))))
@@ -1559,7 +1498,7 @@
                 (thgoal '[!SUPPORT ? ($? x)])
                 (therase '[!GRASPING ($? x)])
                 (memorend ($? ev) '[!UNGRASP ($? ev) ($? x)])
-                (thsetq *thtime* (inc *thtime*))
+                (thsetq '*thtime* '(inc *thtime*))
                 (thor '(UNGRASP) '(and (GRASP ($? x)) nil))]
             '[(thsucceed)])])
 
@@ -1574,7 +1513,7 @@
         '(or (and (thasval '($? x)) (thasval '($? ev)) (thasval '($? time))) (bug! 'tc-want5 nil))
         '(= ($? x) 'ßFRIEND)
         '(= (getprop ($? ev) :why) :command)
-        '(thsetq ($! newev) (gensym 'EV))
+        '(thsetq '($! newev) '(gensym 'EV))
         '(putprop! ($? newev) :end
             (putprop! ($? newev) :start (getprop ($? ev) :start)))
         '(timechk ($? newev) ($? time))
@@ -1602,10 +1541,10 @@
         '[!AT ($? y) ($? z) ($? time)]
         '(thor '(thgoal '[!MANIP ($? y)])
             '(thand '(thgoal '[!IS ($? y) !BOX]) '(thgoal '[!AT ($? y) ($? z)]) '(thsucceed 'theorem)))
-        '(thsetq ($! x) (tfind ($? y) ($? time)))
-        '(thor '(thsetq ($! w) (car ($? x)))
+        '(thsetq '($! x) '(tfind ($? y) ($? time)))
+        '(thor '(thsetq '($! w) '(car ($? x)))
             '(thand '(thamong '($? w) '(cdr ($? x))) '(or (not (< (car ($? w)) (or (start? ($? time)) -1))) (thfail))))
-        '(thsetq ($? z) (cadr ($? w)))])
+        '(thsetq '($? z) '(cadr ($? w)))])
 
 (putprop! 'TCT-LOC :theorem
     [:thconse '[yy zz x y z time]
@@ -1647,7 +1586,7 @@
         '(timechk ($? event) ($? time))
         '(thor '(thgoal '[!PUTON ($? event) ($? x) ?])
             '(thgoal '[!GET-RID-OF ($? event) ($? x)]))
-        '(thvsetq ($! ev) (gensym 'E))
+        '(thvsetq '($! ev) '(gensym 'E))
         '(and (putprop! ($? ev) :end (putprop! ($? ev) :start (getprop ($? event) :end)))
             (putprop! ($? ev) :type '!PICKUP)
             (putprop! ($? ev) :why ($? event))
@@ -1662,10 +1601,10 @@
         '(timechk ($? event) ($? time))
         '(thor '(thgoal '[!PUTON ($? event) ($? x) ?])
             '(thgoal '[!PICKUP ($? event) ($? x)]))
-        '(or (thvsetq ($! z) (dec (assq (getprop ($? event) :end) (getprop ($? x) :history))))
+        '(or (thvsetq '($! z) '(dec (assq (getprop ($? event) :end) (getprop ($? x) :history))))
             (bug! 'tcte-put nil))
         '(thamong '($? y) '[(cadr ($? z))])
-        '(thsetq ($! ev) (gensym 'E))
+        '(thsetq '($! ev) '(gensym 'E))
         '(and (putprop! ($? ev) :end (putprop! ($? ev) :start (car ($? z))))
             (putprop! ($? ev) :why ($? event))
             (putprop! ($? ev) :type '!PUT)
@@ -1696,12 +1635,12 @@
 (putprop! 'TCT-GRASP :theorem
     [:thconse '[x z time]
         '[!GRASP ($? x) ($? time)]
-        '(thvsetq ($! z) (endtime *grasplist* ($? time)))
+        '(thvsetq '($! z) '(endtime *grasplist* ($? time)))
     '=> '(thcond
             '[(or (nil? ($? z)) (startime ($? z) ($? time)))
                 (thfail)]
-            '[(or (and (not (thasval '($? x))) (thsetq ($! x) (cadar ($? z)))) (= ($? x) (cadar ($? z))))]
-            '[(thsetq ($! z) (cdr ($? z)))
+            '[(or (and (not (thasval '($? x))) (thsetq '($! x) '(cadar ($? z)))) (= ($? x) (cadar ($? z))))]
+            '[(thsetq '($! z) '(cdr ($? z)))
                 (thgo '=>)]
             '[(thfail)])])
 
@@ -1876,8 +1815,8 @@
         (putprop! ev :type (car a))))
 
 (defn- memory [why]
-    (§ thand '(thvsetq ($! ev) (gensym 'E))
-        '(thsetq *eventlist* (cons ($? ev) *eventlist*))
+    (§ thand '(thvsetq '($! ev) '(gensym 'E))
+        '(thsetq '*eventlist* '(cons ($? ev) *eventlist*))
         '(putprop! ($? ev) :start *thtime*)
         '(putprop! ($? ev) :why why)))
 
