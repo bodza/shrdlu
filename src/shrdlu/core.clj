@@ -108,7 +108,7 @@
     (THCONSE (MEASURE X Y)
         (#ASMUCH MEASURE $?X $?Y)
         (THVSETQ $_MEASURE (GET $?MEASURE 'MEASFN))
-        (not (LESSP ($?MEASURE $?X) ($?MEASURE $?Y))))
+        (not (< ($?MEASURE $?X) ($?MEASURE $?Y))))
     THEOREM)
 
 (DEFPROP TC-BELONG
@@ -208,7 +208,7 @@
         (or NOMEM
             (THSETQ GRASPLIST (cons (list THTIME $?X) GRASPLIST)))
         (THCOND (DOIT (THOR (GRASP $?X) (and (UNGRASP) nil)))
-            ((THSETQ PLAN (cons (list 'GRASP (list 'QUOTE $?X)) PLAN)))))
+            ((THSETQ PLAN (cons (list 'GRASP (list 'quote $?X)) PLAN)))))
     THEOREM)
 
 (DEFPROP TC-LOC
@@ -237,7 +237,7 @@
     (THCONSE (MEASURE X Y)
         (#MORE $?MEASURE $?X $?Y)
         (THVSETQ $_MEASURE (GET $?MEASURE 'MEASFN))
-        (GREATERP ($?MEASURE $?X) ($?MEASURE $?Y)))
+        (> ($?MEASURE $?X) ($?MEASURE $?Y)))
     THEOREM)
 
 (DEFPROP TC-MOVEHAND
@@ -249,7 +249,7 @@
                 (THVSETQ $_Z (PROG (X Y)
                     (SETQ X (ATAB $?X))
                     (and (CLEAR (SETQ Y (DIFF $?Y (TCENT '(0 0 0) (caddr X))))
-                            (list (caaddr X) (cadadr (cdr X)) (DIFFERENCE 512 (caddr Y)))
+                            (list (caaddr X) (cadadr (cdr X)) (- 512 (caddr Y)))
                             (car X))
                         (RETURN Y))))
                 (THGOAL (#AT $?X $_W))
@@ -273,10 +273,10 @@
     (THCONSE (Y LOC)
         (#MOVEHAND2 $?Y)
         (COND ((EQUAL $?Y HANDAT) (THSUCCEED THEOREM))
-            ((and (LESSP 31 (car $?Y) 609) (LESSP -1 (cadr $?Y) 609) (LESSP -1 (caddr $?Y) 513))))
+            ((and (< 31 (car $?Y) 609) (< -1 (cadr $?Y) 609) (< -1 (caddr $?Y) 513))))
         (THVSETQ $_LOC HANDAT)
         (THSETQ HANDAT $?Y)
-        (THSETQ THTIME (ADD1 THTIME))
+        (THSETQ THTIME (inc THTIME))
         (THCOND (DOIT (THOR (eval (cons 'MOVETO HANDAT))
                     (PROG (ADJUST) (eval (cons 'MOVETO $?LOC)))))
             ((THSETQ PLAN (cons (cons 'MOVETO $?Y) PLAN)))))
@@ -294,7 +294,7 @@
     (THCONSE (X)
         (#NOTICE $?X)
         (COND (DOIT (BLINK $?X) (THSUCCEED))
-            ((THSETQ PLAN (cons (list 'BLINK (list 'QUOTE $?X)) PLAN)))))
+            ((THSETQ PLAN (cons (list 'BLINK (list 'quote $?X)) PLAN)))))
     THEOREM)
 
 (DEFPROP TC-ON
@@ -358,7 +358,7 @@
 (DEFPROP TC-REFERS
     (THCONSE (X)
         (#REFERS $?X)
-        (eval (list 'THSETQ (list 'THV $?X) (list 'QUOTE (ATOMIFY (GET $?X 'BIND))))))
+        (eval (list 'THSETQ (list 'THV $?X) (list 'quote (ATOMIFY (GET $?X 'BIND))))))
     THEOREM)
 
 (DEFPROP TC-PUT
@@ -452,7 +452,7 @@
 (DEFPROP TC-STACKUP
     (THCONSE (X Y BLOCKS PYR (WHY (EV)) EV)
         (#STACKUP $?X)
-        (or (LESSP (APPLY 'PLUS (MAPCAR #'(lambda (X) (caddr (SIZE X))) $?X)) 641)
+        (or (< (APPLY '+ (MAPCAR #'(lambda (X) (caddr (SIZE X))) $?X)) 641)
             (not (DPRINT2 'TOO\ HIGH\,)))
         (THCOND
             ((and $?X (cdr $?X)))
@@ -506,7 +506,7 @@
                 (THGOAL (#SUPPORT ? $?X))
                 (THERASE (#GRASPING $?X))
                 (MEMOREND (#UNGRASP $?EV $?X))
-                (THSETQ THTIME (ADD1 THTIME))
+                (THSETQ THTIME (inc THTIME))
                 (THCOND (DOIT (THOR (UNGRASP) (and (GRASP $?X) nil)))
                     ((THSETQ PLAN (cons '(UNGRASP) PLAN)))))
             ((THSUCCEED))))
@@ -557,7 +557,7 @@
             (THAND (THGOAL (#IS $?Y #BOX)) (THGOAL (#AT $?Y $?Z)) (THSUCCEED THEOREM)))
         (THSETQ $_X (TFIND $?Y $?TIME))
         (THOR (THSETQ $_W (car $?X))
-            (THAND (THAMONG $?W (cdr $?X)) (or (not (LESSP (car $?W) (or (START? $?TIME) -1))) (THFAIL THAND))))
+            (THAND (THAMONG $?W (cdr $?X)) (or (not (< (car $?W) (or (START? $?TIME) -1))) (THFAIL THAND))))
         (THSETQ $?Z (cadr $?W)))
     THEOREM)
 
@@ -574,7 +574,7 @@
         (#SUPPORT $?X $?Y $?TIME)
         (THOR (THGOAL (#MANIP $?Y)) (THGOAL (#IS $?Y #BOX)))
         (THAMONG $?Z (TFIND $?Y $?TIME))
-        (not (LESSP (car $?Z) (or (START? $?TIME) -1)))
+        (not (< (car $?Z) (or (START? $?TIME) -1)))
         (THAMONG $?X (list (caddr $?Z))))
     THEOREM)
 
@@ -616,7 +616,7 @@
         (TIMECHK $?EVENT $?TIME)
         (THOR (THGOAL (#PUTON $?EVENT $?X ?))
             (THGOAL (#PICKUP $?EVENT $?X)))
-        (or (THVSETQ $_Z (SUB1 (ASSQ (GET $?EVENT 'END) (GET $?X 'HISTORY))))
+        (or (THVSETQ $_Z (dec (ASSQ (GET $?EVENT 'END) (GET $?X 'HISTORY))))
             (ERT TCTE-PUT WRONG))
         (THAMONG $?Y (list (cadr $?Z)))
         (THSETQ $_EV (MAKESYM 'E))
@@ -767,37 +767,37 @@ nil
 ;;
 ;; ################################################################
 
-(DEFUN ABSVAL (X) (COND ((MINUSP X) (MINUS X)) (X)))
+(DEFUN ABSVAL (X) (COND ((neg? X) (- X)) (X)))
 
 (DEFUN ATAB (X) (or (ASSQ X ATABLE) (ERT ATABLE)))
 
 (DEFUN CLEAR (LOC SIZE OBJ)
     (PROG (W X1 X2)
         (SETQ OBJ (LISTIFY OBJ))
-        (and (MEMQ nil (MAPCAR #'(lambda (X Y) (and (GREATERP X -1) (GREATERP 641 (PLUS X Y)) true)) LOC SIZE))
+        (and (MEMQ nil (MAPCAR #'(lambda (X Y) (and (> X -1) (> 641 (+ X Y)) true)) LOC SIZE))
             (RETURN nil))
         (SETQ W ATABLE)
     =>  (COND ((nil? W) (RETURN LOC))
             ((MEMQ (caar W) OBJ))
-            ((and (LESSP (car LOC) (PLUS (car (SETQ X1 (cadar W))) (car (SETQ X2 (caddar W)))))
-                (LESSP (car X1) (PLUS (car LOC) (car SIZE)))
-                (LESSP (cadr LOC) (PLUS (cadr X1) (cadr X2)))
-                (LESSP (cadr X1) (PLUS (cadr LOC) (cadr SIZE)))
-                (LESSP (caddr LOC) (PLUS (caddr X1) (caddr X2)))
-                (LESSP (caddr X1) (PLUS (caddr LOC) (caddr SIZE))))
+            ((and (< (car LOC) (+ (car (SETQ X1 (cadar W))) (car (SETQ X2 (caddar W)))))
+                (< (car X1) (+ (car LOC) (car SIZE)))
+                (< (cadr LOC) (+ (cadr X1) (cadr X2)))
+                (< (cadr X1) (+ (cadr LOC) (cadr SIZE)))
+                (< (caddr LOC) (+ (caddr X1) (caddr X2)))
+                (< (caddr X1) (+ (caddr LOC) (caddr SIZE))))
             (RETURN nil)))
         (SETQ W (cdr W))
         (GO =>)))
 
-(DEFUN DIFF (X Y) (MAPCAR #'DIFFERENCE X Y))
+(DEFUN DIFF (X Y) (MAPCAR #'- X Y))
 
-(DEFUN DIV2 (X) (QUOTIENT X 2))
+(DEFUN DIV2 (X) (/ X 2))
 
 (DEFUN ENDTIME (list TIME)
     (PROG (Y)
         (or (SETQ Y (END? TIME)) (RETURN LIST))
     =>  (COND ((nil? LIST) (RETURN nil))
-            ((not (GREATERP (caar LIST) Y)) (RETURN LIST))
+            ((not (> (caar LIST) Y)) (RETURN LIST))
             ((SETQ LIST (cdr LIST)) (GO =>)))))
 
 (DEFUN EV nil (or NOMEM $?EV))
@@ -816,39 +816,39 @@ nil
         (COND
             ((EQ TYPE 'CENTER)
                 (COND ((CLEAR (SETQ V
-                        (list (max 0 (PLUS (caadr X) (DIV2 (DIFFERENCE (caaddr X) (car SIZE)))))
-                            (max 0 (PLUS (cadadr X) (DIV2 (DIFFERENCE (cadr (caddr X)) (cadr SIZE)))))
-                            (PLUS (caddr (cadr X)) (caddr (caddr X)))))
+                        (list (max 0 (+ (caadr X) (DIV2 (- (caaddr X) (car SIZE)))))
+                            (max 0 (+ (cadadr X) (DIV2 (- (cadr (caddr X)) (cadr SIZE)))))
+                            (+ (caddr (cadr X)) (caddr (caddr X)))))
                         SIZE
                         OBJ)
                     (RETURN V))
                 ((RETURN nil))))
             ((EQ (car X) ':BOX)
                 (SETQ XYMIN (list (caadr X) (cadadr X)))
-                (SETQ XYMAX (list (PLUS (caaddr X) (caadr X)) (PLUS (cadr (caddr X)) (cadadr X))))
+                (SETQ XYMAX (list (+ (caaddr X) (caadr X)) (+ (cadr (caddr X)) (cadadr X))))
                 (SETQ LEVEL 1))
             ((SETQ X1 (DIV2 (car SIZE)))
                 (SETQ Y1 (DIV2 (cadr SIZE)))
-                (SETQ XYMAX (list (min 640 (SUB1 (PLUS (caaddr X) (caadr X) X1))) (min 640 (SUB1 (PLUS (cadr (caddr X)) (cadadr X) Y1)))))
-                (SETQ XYMIN (list (max 0 (DIFFERENCE (caadr X) X1)) (max 0 (DIFFERENCE (cadadr X) Y1))))
-                (SETQ LEVEL (PLUS (caddr (cadr X)) (caddr (caddr X))))))
+                (SETQ XYMAX (list (min 640 (dec (+ (caaddr X) (caadr X) X1))) (min 640 (dec (+ (cadr (caddr X)) (cadadr X) Y1)))))
+                (SETQ XYMIN (list (max 0 (- (caadr X) X1)) (max 0 (- (cadadr X) Y1))))
+                (SETQ LEVEL (+ (caddr (cadr X)) (caddr (caddr X))))))
     ON  (SETQ N 8)
-        (SETQ X1 (DIFFERENCE (car XYMAX) (car XYMIN)))
-        (SETQ Y1 (DIFFERENCE (cadr XYMAX) (cadr XYMIN)))
-    GO  (COND ((ZEROP (SETQ N (SUB1 N))) (RETURN nil))
+        (SETQ X1 (- (car XYMAX) (car XYMIN)))
+        (SETQ Y1 (- (cadr XYMAX) (cadr XYMIN)))
+    GO  (COND ((zero? (SETQ N (dec N))) (RETURN nil))
             ((or (not (SETQ V
                         (GROW (list
-                                (PLUS (car XYMIN) (REMAINDER (ABSVAL (RANDOM)) X1))
-                                (PLUS (cadr XYMIN) (REMAINDER (ABSVAL (RANDOM)) Y1))
+                                (+ (car XYMIN) (rem (ABSVAL (RANDOM)) X1))
+                                (+ (cadr XYMIN) (rem (ABSVAL (RANDOM)) Y1))
                                 LEVEL)
                             XYMIN XYMAX OBJ)))
-                    (LESSP (DIFFERENCE (caadr V) (caar V)) (car SIZE))
-                    (LESSP (DIFFERENCE (cadadr V) (cadar V)) (cadr SIZE)))
+                    (< (- (caadr V) (caar V)) (car SIZE))
+                    (< (- (cadadr V) (cadar V)) (cadr SIZE)))
                 (GO GO))
             ((RETURN (COND
                 ((EQ TYPE 'RANDOM)
-                    (list (DIV2 (DIFFERENCE (PLUS (caar V) (caadr V)) (car SIZE)))
-                        (DIV2 (DIFFERENCE (PLUS (cadar V) (cadadr V)) (cadr SIZE)))
+                    (list (DIV2 (- (+ (caar V) (caadr V)) (car SIZE)))
+                        (DIV2 (- (+ (cadar V) (cadadr V)) (cadr SIZE)))
                         LEVEL))
                 ((EQ TYPE 'PACK)
                     (list (caar V) (cadar V) LEVEL))
@@ -857,47 +857,47 @@ nil
 (DEFUN GOAL FEXPR (X)
     (SETQ PLAN nil)
     (THVAL (list 'THGOAL (car X) '(THTBF THTRUE)) '((EV COMMAND)))
-    (EVLIS (REVERSE PLAN)))
+    (EVLIS (reverse PLAN)))
 
 (DEFUN GROW (LOC MIN MAX OBJ)
     (PROG (GROW XL XH XO YL YH YO)
         (SETQ OBJ (LISTIFY OBJ))
         (COND
             ((or
-                (MINUSP (caar (SETQ XL (list (list (DIFFERENCE (car LOC) (car MIN)) nil)))))
-                (MINUSP (caar (SETQ XH (list (list (DIFFERENCE (car MAX) (car LOC)) nil)))))
-                (MINUSP (caar (SETQ YL (list (list (DIFFERENCE (cadr LOC) (cadr MIN)) nil)))))
-                (MINUSP (caar (SETQ YH (list (list (DIFFERENCE (cadr MAX) (cadr LOC)) nil)))))
+                (neg? (caar (SETQ XL (list (list (- (car LOC) (car MIN)) nil)))))
+                (neg? (caar (SETQ XH (list (list (- (car MAX) (car LOC)) nil)))))
+                (neg? (caar (SETQ YL (list (list (- (cadr LOC) (cadr MIN)) nil)))))
+                (neg? (caar (SETQ YH (list (list (- (cadr MAX) (cadr LOC)) nil)))))
                 (nil? (ERRSET
                     (MAPC #'(lambda (X)
                         (PROG (XX YY)
                             (COND ((or (MEMQ (car X) OBJ)
-                                    (not (LESSP (caadr X) (car MAX)))
-                                    (not (LESSP (cadadr X) (cadr MAX)))
-                                    (not (GREATERP (SETQ XX (PLUS (caadr X) (caaddr X))) (car MIN)))
-                                    (not (GREATERP (SETQ YY (PLUS (cadadr X) (cadr (caddr X)))) (cadr MIN)))
-                                    (not (GREATERP (PLUS (caddr (cadr X)) (caddr (caddr X))) (caddr LOC))))
+                                    (not (< (caadr X) (car MAX)))
+                                    (not (< (cadadr X) (cadr MAX)))
+                                    (not (> (SETQ XX (+ (caadr X) (caaddr X))) (car MIN)))
+                                    (not (> (SETQ YY (+ (cadadr X) (cadr (caddr X)))) (cadr MIN)))
+                                    (not (> (+ (caddr (cadr X)) (caddr (caddr X))) (caddr LOC))))
                                 (RETURN nil))
-                            ((GREATERP (caadr X) (car LOC))
-                                (SETQ XH (ORDER (list (DIFFERENCE (caadr X) (car LOC)) (car X)) XH)))
-                            ((LESSP XX (car LOC))
-                                (SETQ XL (ORDER (list (DIFFERENCE (car LOC) XX) (car X)) XL)))
+                            ((> (caadr X) (car LOC))
+                                (SETQ XH (ORDER (list (- (caadr X) (car LOC)) (car X)) XH)))
+                            ((< XX (car LOC))
+                                (SETQ XL (ORDER (list (- (car LOC) XX) (car X)) XL)))
                             ((SETQ XO (cons (car X) XO))))
-                            (COND ((GREATERP (cadadr X) (cadr LOC))
-                                (SETQ YH (ORDER (list (DIFFERENCE (cadadr X) (cadr LOC)) (car X)) YH)))
-                            ((LESSP YY (cadr LOC))
-                                (SETQ YL (ORDER (list (DIFFERENCE (cadr LOC) YY) (car X)) YL)))
+                            (COND ((> (cadadr X) (cadr LOC))
+                                (SETQ YH (ORDER (list (- (cadadr X) (cadr LOC)) (car X)) YH)))
+                            ((< YY (cadr LOC))
+                                (SETQ YL (ORDER (list (- (cadr LOC) YY) (car X)) YL)))
                             ((MEMQ (car X) XO) (ERR nil))
                             ((SETQ YO (cons (car X) YO))))))
                     ATABLE))))
                 (RETURN nil)))
     =>   (COND ((== (SETQ GROW (min (caar XL) (caar XH) (caar YL) (caar YH))) 1024)
             (RETURN (list
-                (list (DIFFERENCE (car LOC) (cadar XL)) (DIFFERENCE (cadr LOC) (cadar YL)))
-                (list (PLUS (car LOC) (cadar XH)) (PLUS (cadr LOC) (cadar YH))))))
+                (list (- (car LOC) (cadar XL)) (- (cadr LOC) (cadar YL)))
+                (list (+ (car LOC) (cadar XH)) (+ (cadr LOC) (cadar YH))))))
             ((MAPC #'(lambda (Y Z W) (PROG (X)
                         (SETQ X (eval W))
-                        (COND ((GREATERP (caar X) GROW))
+                        (COND ((> (caar X) GROW))
                             ((or (nil? (cadar X)) (MEMQ (cadar X) (eval Y)))
                                 (RPLACA X (list 2000 (caar X))))
                             ((SET Z (cons (cadar X) (eval Z)))
@@ -910,7 +910,7 @@ nil
 (DEFUN LISTIFY (X) (COND ((ATOM X) (list X)) (X)))
 
 (DEFUN LOCGREATER (X Y FN)
-    ((lambda (XX YY) (not (LESSP (FN (cadr XX)) (PLUS (FN (cadr YY)) (FN (caddr YY))))))
+    ((lambda (XX YY) (not (< (FN (cadr XX)) (+ (FN (cadr YY)) (FN (caddr YY))))))
         (LOCG2 '$?YY X)
         (LOCG2 '$?ZZ Y)))
 
@@ -931,19 +931,19 @@ nil
 
 (DEFUN OCCUPIER (X Y Z)
     (PROG (W X1 X2)
-        (COND ((MINUSP Z) (RETURN ':TABLE)))
+        (COND ((neg? Z) (RETURN ':TABLE)))
         (SETQ W ATABLE)
     =>  (COND ((nil? W) (RETURN nil))
-            ((and (LESSP (SUB1 (car (SETQ X1 (cadar W)))) X (PLUS (car X1) (car (SETQ X2 (caddar W)))))
-                (LESSP (SUB1 (cadr X1)) Y (PLUS (cadr X1) (cadr X2)))
-                (LESSP (SUB1 (caddr X1)) Z (PLUS (caddr X1) (caddr X2))))
+            ((and (< (dec (car (SETQ X1 (cadar W)))) X (+ (car X1) (car (SETQ X2 (caddar W)))))
+                (< (dec (cadr X1)) Y (+ (cadr X1) (cadr X2)))
+                (< (dec (caddr X1)) Z (+ (caddr X1) (caddr X2))))
             (RETURN (caar W))))
         (SETQ W (cdr W))
         (GO =>)))
 
 (DEFUN ORDER (X Y)
     (COND ((nil? Y) (list X))
-        ((GREATERP (car X) (caar Y))
+        ((> (car X) (caar Y))
             (cons (car Y) (ORDER X (cdr Y))))
         ((cons X Y))))
 
@@ -959,17 +959,17 @@ nil
         (SETQ SURF (ATAB SURF))
     =>  (COND ((nil? LIST) (RETURN nil))
             ((or
-                (GREATERP (car (SETQ X (SIZE (car LIST)))) (caaddr SURF))
-                (GREATERP (cadr X) (cadr (caddr SURF)))
-                (GREATERP (PLUS (caddr X) (caddr (cadr SURF)) (caddr (caddr SURF))) 321))
+                (> (car (SETQ X (SIZE (car LIST)))) (caaddr SURF))
+                (> (cadr X) (cadr (caddr SURF)))
+                (> (+ (caddr X) (caddr (cadr SURF)) (caddr (caddr SURF))) 321))
             (SETQ LIST (cdr LIST))
             (GO =>))
             ((RETURN (car X))))))
 
 (DEFUN PACKORD (X SIZE LIST)
     (COND ((nil? LIST) (list (list SIZE X)))
-        ((or (GREATERP (caaar LIST) (car SIZE))
-            (and (EQ (car SIZE) (caaar LIST)) (GREATERP (cadaar LIST) (cadr SIZE))))
+        ((or (> (caaar LIST) (car SIZE))
+            (and (EQ (car SIZE) (caaar LIST)) (> (cadaar LIST) (cadr SIZE))))
         (cons (car LIST) (PACKORD X SIZE (cdr LIST))))
         ((cons (list SIZE X) LIST))))
 
@@ -998,30 +998,30 @@ nil
             'HISTORY)))
     ATABLE))
 
-(DEFUN STARTIME (list TIME) (LESSP (caar LIST) (or (START? TIME) -1)))
+(DEFUN STARTIME (list TIME) (< (caar LIST) (or (START? TIME) -1)))
 
 (DEFUN SUPPORT (LOC SIZE X)
     (COND ((EQ (caddr LOC) 0) ':TABLE)
-        ((SETQ LOC (OCCUPIER (PLUS (car LOC) (DIV2 (car SIZE))) (PLUS (cadr LOC) (DIV2 (cadr SIZE))) (SUB1 (caddr LOC))))
+        ((SETQ LOC (OCCUPIER (+ (car LOC) (DIV2 (car SIZE))) (+ (cadr LOC) (DIV2 (cadr SIZE))) (dec (caddr LOC))))
             (COND ((EQ LOC X) nil) (LOC)))))
 
 (DEFUN TCENT (X1 X2)
-    (list (PLUS (car X1) (DIV2 (car X2))) (PLUS (cadr X1) (DIV2 (cadr X2))) (PLUS (caddr X1) (caddr X2))))
+    (list (+ (car X1) (DIV2 (car X2))) (+ (cadr X1) (DIV2 (cadr X2))) (+ (caddr X1) (caddr X2))))
 
 (DEFUN TFIND (X Y)
     (PROG (Z)
         (or (SETQ Z (GET X 'HISTORY)) (RETURN nil))
-    =>  (COND ((not (GREATERP (caar Z) (or (END? Y) 32767)))
+    =>  (COND ((not (> (caar Z) (or (END? Y) 32767)))
                 (RETURN Z))
             ((SETQ Z (cdr Z)) (GO =>)))))
 
 (DEFUN TIMECHK (EV TIME)
     (COND ((IMPERF? TIME)
-        (not (or (LESSP (GET EV 'END) (or (START? TIME) -1))
-            (LESSP (or (END? TIME) 262143)
+        (not (or (< (GET EV 'END) (or (START? TIME) -1))
+            (< (or (END? TIME) 262143)
                 (GET EV 'START)))))
-        ((not (or (LESSP (GET EV 'START) (or (START? TIME) -1))
-            (LESSP (or (END? TIME) 262143)
+        ((not (or (< (GET EV 'START) (or (START? TIME) -1))
+            (< (or (END? TIME) 262143)
                 (GET EV 'END)))))))
 
 #_(ns shrdlu.data)
@@ -1229,7 +1229,7 @@ nil
                     (SETQ THTTL (cons THTT THPL))
                     THTT)))
         (SETQ THNF 0) ;; THNF IS COUNTER SAYING WHICH ATOM WE ARE FILING UNDER
-        (SETQ THLAS (LENGTH THCK)) ;; THLAS IS THE NUMBER OF TOP LEVEL ITEMS
+        (SETQ THLAS (count THCK)) ;; THLAS IS THE NUMBER OF TOP LEVEL ITEMS
         (SETQ THFST true)
         ;; THFST SAYS WE ARE TRYING TO PUT THE ITEM IN FOR THE FIRST TIME.
         ;; WE NEED TO KNOW THIS SINCE THE FIRST TIME THROUGH
@@ -1635,19 +1635,19 @@ nil
     (THPUSH THTREE
         (list 'THFIND
             (COND ((EQ (car THA) 'ALL) ' (1 nil nil))               ;; STANDARD ALL
-                ((NUMBERP (car THA))
+                ((number? (car THA))
                     (list (car THA) (car THA) true))                       ;; SINGLE NUMBER
-                ((NUMBERP (caar THA)) (car THA))                    ;; WINOGRAD CROCK FORMAT
+                ((number? (caar THA)) (car THA))                    ;; WINOGRAD CROCK FORMAT
                 ((EQ (caar THA) 'EXACTLY)
-                    (list (cadar THA) (ADD1 (cadar THA)) nil))
+                    (list (cadar THA) (inc (cadar THA)) nil))
                 ((EQ (caar THA) 'AT-MOST)
-                    (list 1 (ADD1 (cadar THA)) nil))
+                    (list 1 (inc (cadar THA)) nil))
                 ((EQ (caar THA) 'AS-MANY-AS)
                     (list 1 (cadar THA) true))
                 (:else (cons (cadar THA)                                ;; ONLY THING LEFT IS AT-LEAST
                     (COND ((nil? (cddar THA)) (list nil true))         ;; NO AT-MOST
                         ((EQ (caddar THA) 'AT-MOST)
-                            (list (ADD1 (car (cdddar THA)))
+                            (list (inc (car (cdddar THA)))
                             nil))
                         (:else (list (car (cdddar THA)) true))))))
             (cons 0 nil)
@@ -1657,7 +1657,7 @@ nil
 
 (DEFUN THFINDF nil
     (SETQ THBRANCH nil)
-    (COND ((or THMESSAGE (LESSP (caadr (SETQ THXX (cdar THTREE))) (caar THXX)))
+    (COND ((or THMESSAGE (< (caadr (SETQ THXX (cdar THTREE))) (caar THXX)))
             (THPOPT)
             nil)
         (:else (THPOPT) (cdadr THXX))))
@@ -1668,7 +1668,7 @@ nil
         (and (MEMBER (SETQ THX (THVARSUBST THZ nil)) (cdadr THCDAR))
             (GO =>))
         (RPLACD (cadr THCDAR) (cons THX (cdadr THCDAR)))
-        (and (EQ (SETQ THY (ADD1 (caadr THCDAR))) (cadar THCDAR))
+        (and (EQ (SETQ THY (inc (caadr THCDAR))) (cadar THCDAR))
             (RETURN (PROG2
                 (SETQ THBRANCH nil)
                 (and (caddar THCDAR) (cdadr THCDAR))
@@ -1700,7 +1700,7 @@ nil
 
 (DEFUN THGENAME FEXPR (X)
     ;; GENERATES UNIQUE NAME WITH ARG AS PREFIX
-    (READLIST (NCONC (EXPLODE (car X)) (EXPLODE (SETQ THGENAME (ADD1 THGENAME))))))
+    (READLIST (NCONC (EXPLODE (car X)) (EXPLODE (SETQ THGENAME (inc THGENAME))))))
 
 (DEFUN THGO FEXPR (X)
     (APPLY 'THSUCCEED (cons 'THTAG X)))
@@ -1739,10 +1739,10 @@ nil
 (DEFUN THIP (THI)
     ;; THI IS AN ITEM FROM THE ASSERTION OR PATTERN OF THE THEOREM BEING ENTERED
     (PROG (THT1 THT3 THSV THT2 THI1)
-        (SETQ THNF (ADD1 THNF))
+        (SETQ THNF (inc THNF))
         ;; THNF IS A FREE VARIABLE FROM THADD (WHO CALLS THIS BUGER)
         ;; IT SAYS WE ARE LOOKING AT THE N'TH PLACE IN THE PATTERN
-        (COND ((and (ATOM THI) (not (EQ THI '?)) (not (NUMBERP THI)))
+        (COND ((and (ATOM THI) (not (EQ THI '?)) (not (number? THI)))
                 ;; THI1 IS THE NAME OF THE ATOM TO LOOK UNDER WHEN THI IS A USUAL ATOM
                 ;; THI1 = THI NUMBERS DON'T HAVE PROPERTY LISTS SO THEY DON'T COUNT AS
                 ;; NORMAL ATOMS, NOR DOES "?" SINCE IT IS A SORT OF VARIABLE IN PLANNER
@@ -1791,7 +1791,7 @@ nil
                 (RETURN nil))
             ((SETQ THSV (cddr THT3))
             ;; HACK IN THE LATEST ENTRY INTO THE SUB-SUB-BUCKET
-            (RPLACA (cdr THT3) (ADD1 (cadr THT3)))
+            (RPLACA (cdr THT3) (inc (cadr THT3)))
             (RPLACD (cdr THT3) (NCONC (list THTTL) THSV))))
         ;; IF WE GET TO THIS POINT, EVERYTHING IS OK, SO TELL THADD SO
         (RETURN 'THOK)))
@@ -1910,8 +1910,8 @@ nil
 
 (DEFUN THMATCH THX
     ((lambda (THOLIST THALIST) (THMATCH1 (ARG 1) (ARG 2)))
-        (COND ((GREATERP THX 2) (ARG 3)) (:else THALIST))
-        (COND ((GREATERP THX 3) (ARG 4)) (:else THALIST))))
+        (COND ((> THX 2) (ARG 3)) (:else THALIST))
+        (COND ((> THX 3) (ARG 4)) (:else THALIST))))
 
 (DEFUN THMATCH1 (THX THY)
     ;; THX IS THE PATTERN TO BE MATCHED.
@@ -1924,7 +1924,7 @@ nil
         ;; NATURALLY WE MUST KEEP TRACK SO IF WE FAIL BACK WE CAN UNDO THEM.
         ;; WE HAVE TO CHECK THAT THE PATTERN AND CANDIDATE ARE OF THE SAME LENGTH
         ;; SINCE THE USER MAY HAVE SPECIFIED THE CANDIDATE WITH A "THUSE" RECOMMENDATION.
-        (COND ((and (EQ (LENGTH (COND ((EQ (car THX) 'THEV) (SETQ THX (THVAL (cadr THX) THOLIST))) (THX))) (LENGTH THY))
+        (COND ((and (EQ (count (COND ((EQ (car THX) 'THEV) (SETQ THX (THVAL (cadr THX) THOLIST))) (THX))) (count THY))
                 ;; IF THE MATCH FAILS, THMATCH2 EXITS WITH AN ERR
                 ;; WILL BE "TRUE" PROVIDED THE MATCH WORKED
                 (ERRSET (MAPC #'THMATCH2 THX THY)))
@@ -1948,7 +1948,7 @@ nil
         ;; COUNTER WHICH SAYS WHICH PATTERN ITEM WE ARE WORKING ON.
         (SETQ THNF 0)
         ;; LENGTH OF PATTERN.
-        (SETQ THAL (LENGTH THTB))
+        (SETQ THAL (count THTB))
         ;; THB1 WILL BE THE REMAINDER OF THE PATTERN TO YET BE WORKED ON.
         ;; WHEN IT IS NIL, WE ARE DONE, SO RETURN THE BUCKET.
         ;; THL1 IS THE BUCKET UNDER THE ATOM.
@@ -1960,13 +1960,13 @@ nil
     THP1 (or THB1
             (RETURN (COND (THL2 (APPEND THL1 THL2)) (THL1))))
         ;; ADD1 TO POSITION COUNTER.
-        (SETQ THNF (ADD1 THNF))
+        (SETQ THNF (inc THNF))
         ;; THB2 IS THE ITEM WE ARE WORKING ON IN THIS PASS.
         (SETQ THB2 (car THB1))
         ;; UPDATE THB1.
         (SETQ THB1 (cdr THB1))
         ;; IF THE ITEM IS NOT A NORMAL ATOM, SKIP IT AND GO TO NEXT PASS.
-    THP3 (COND ((or (nil? (ATOM THB2)) (NUMBERP THB2) (EQ THB2 '?))
+    THP3 (COND ((or (nil? (ATOM THB2)) (number? THB2) (EQ THB2 '?))
                 (GO THP1))
             ;; IF THE ITEM DOES NOT HAVE THE PROPERTY ON ITS PROPERTY LIST,
             ;; THEN IT OBVIOUSLY DOSEN'T HAVE ANY BUCKET AT ALL.
@@ -2000,9 +2000,9 @@ nil
         ;; SEE IF THE SUM OF THE NUMBER OF GOODIES IN THE ATOM BUCKET PLUS
         ;; THE NUMBER IN THE VARIABLE BUCKET IS GREATER THAN THE SMALLEST
         ;; NUMBER SO FAR.  IF SO, WE KEEP THE PREVIOUS NUMBER.
-        (and (GREATERP (PLUS THRVC THRN) THL) (GO THP1))
+        (and (> (+ THRVC THRN) THL) (GO THP1))
         ;; OTHERWISE THIS BECOMES THE NEW SMALLEST,
-        (SETQ THL (PLUS THRVC THRN))
+        (SETQ THL (+ THRVC THRN))
         ;; AND THL1 AND THL2 ARE POINTERS TO THE NEWLY DISCOVERD BUCKETS.
         (SETQ THL1 THA1)
         (SETQ THL2 THA2)
@@ -2014,7 +2014,7 @@ nil
             ;; IF THERE IS NO BUCKET, THEN RETURN SINCE NOTHING WILL MATCH THE PATTERN.
             ((EQ THRN 0) (RETURN nil))
             ;; IF THE NEW BUCKET IS SMALLER, IT BECOMES THE SMALLEST SO FAR.
-            ((GREATERP THL THRN) (SETQ THL1 THA1) (SETQ THL THRN)))
+            ((> THL THRN) (SETQ THL1 THA1) (SETQ THL THRN)))
         ;; GO BACK FOR ANOTHER PASS.
         (GO THP1)))
 
@@ -2122,9 +2122,9 @@ nil
     (THPUSH THTREE
         (list 'THMUNG
             (list (list 'PUTPROP
-                (list 'QUOTE ATO)
-                (list 'QUOTE (GET ATO IND))
-                (list 'QUOTE IND)))))
+                (list 'quote ATO)
+                (list 'quote (GET ATO IND))
+                (list 'quote IND)))))
     (PUTPROP ATO VAL IND))
 
 (DEFUN THREM1 (THB)
@@ -2137,9 +2137,9 @@ nil
         ;; THA1 = THT2
         ;; THA3 = THT3
         ;; THA4, THA5, THONE, AND THPC ARE NEW
-        (SETQ THNF (ADD1 THNF))
+        (SETQ THNF (inc THNF))
         ;; THIS COND SERVES THE SAME PURPOSE AS THE FIRST COND IN THIP
-        (COND ((and (ATOM THB) (not (EQ THB '?)) (not (NUMBERP THB)))
+        (COND ((and (ATOM THB) (not (EQ THB '?)) (not (number? THB)))
                 (SETQ THA THB))
             ((or (EQ THB '?) (MEMQ (car THB) '(THV THNV)))
                 (COND (THFST (RETURN 'THVRB))
@@ -2165,7 +2165,7 @@ nil
         (RPLACD THA5 (cddr THA5))
         (and (not (EQ (cadr THA4) 1))
             (or (SETQ THSV (cddr THA4)) true)
-            (RPLACA (cdr THA4) (SUB1 (cadr THA4)))
+            (RPLACA (cdr THA4) (dec (cadr THA4)))
             (RETURN THONE))
         (SETQ THSV (cddr THA3))
         (RPLACD THA3 THSV)
@@ -2201,7 +2201,7 @@ nil
                     (caddr THB1))
                 ((SETQ THWH 'THASSERTION)
                     (SETQ THBS THB))))
-        (SETQ THAL (LENGTH THB1))
+        (SETQ THAL (count THB1))
         (SETQ THFST true)
     THP1 (COND ((nil? THB1)
                 (SETQ THB1 THFOO)
@@ -2225,9 +2225,9 @@ nil
     (THPUSH THTREE
         (list 'THMUNG
             (list (list 'PUTPROP
-                (list 'QUOTE ATO)
-                (list 'QUOTE (GET ATO IND))
-                (list 'QUOTE IND)))))
+                (list 'quote ATO)
+                (list 'quote (GET ATO IND))
+                (list 'quote IND)))))
     (REMPROP ATO IND))
 
 (DEFUN THRESTRICT FEXPR (THB)
@@ -2275,7 +2275,7 @@ nil
                 (PRINT THL1)
                 (THERT ODD NUMBER OF GOODIES - THSETQ))
             ((ATOM (car THL))
-                (THPUSH THML (list 'SETQ (car THL) (list 'QUOTE (eval (car THL)))))
+                (THPUSH THML (list 'SETQ (car THL) (list 'quote (eval (car THL)))))
                 (SET (car THL) (SETQ THVALUE (eval (cadr THL)))))
             (:else (THRPLACAS (cdr (THSGAL (car THL)))
                 (SETQ THVALUE (THVAL (cadr THL) THALIST)))))
@@ -2364,8 +2364,8 @@ nil
     (PROG (THX THY THZ THW THEOREM)
         (SETQ THZ (car THTREE))                             ;; = (THGOAL PATTERN EXPANDED-RECOMMENDATIONS)
         (SETQ THY (cddr THZ))                               ;; = RECOMMENDATIONS
-        (RPLACD THY (SUB1 (cdr THY)))
-    NXTREC (COND ((or (nil? (car THY)) (ZEROP (cdr THY)))
+        (RPLACD THY (dec (cdr THY)))
+    NXTREC (COND ((or (nil? (car THY)) (zero? (cdr THY)))
             (RETURN nil)))                                  ;; RECOMMENDATIONS EXHAUSTED. FAIL
         (SETQ THX (caar THY))
         (GO (car THX))
@@ -2836,7 +2836,7 @@ nil
 
 ;; MAKES A NAME WITH PREFIX X AND SUFFIX A UNIQUE NUMBER.
 (DEFUN THGENS FEXPR (X)
-    (MAKNAM (NCONC (EXPLODE (car X)) (EXPLODE (SETQ THGENS (ADD1 THGENS))))))
+    (MAKNAM (NCONC (EXPLODE (car X)) (EXPLODE (SETQ THGENS (inc THGENS))))))
 
 (SETQ THGENS 0)
 
@@ -2855,10 +2855,10 @@ nil
     CATCH-LOOP
         (CATCH
             (PROG nil
-        LOOP    (SETQ SENTNO (ADD1 SENTNO)
+        LOOP    (SETQ SENTNO (inc SENTNO)
                       PARSINGS 0
                       LEVEL 0
-                      LASTSENTNO (ADD1 LASTSENTNO)
+                      LASTSENTNO (inc LASTSENTNO)
                       LASTSENT C
                       GLOBAL-MESSAGE nil
                       MES 'NOPE
@@ -2871,7 +2871,7 @@ nil
                       ERT-TIME 0)
         UP      (SETQ N (SETQ SENT (ETAOIN)))
                 (or ANNOYANCE (PRINT *1))
-                (and ^Q (%))
+                (and ^Q (%SENT))
                 (SETQ ^Q nil)
                 (and IGNORE (GO UP))
                 (COND
@@ -2904,7 +2904,7 @@ nil
         ABORT-PARSER)
         (GO CATCH-LOOP)))
 
-(DEFUN TIMER (T0 T1) (QUOTIENT (- T1 T0) 1000000.0))
+(DEFUN TIMER (T0 T1) (/ (- T1 T0) 1000000.0))
 
 (DEFUN PARSEVAL (A)
     (PROG (P-TTIME P-GC SM-TIME MP-TIME RETURN-NODE)
@@ -2913,10 +2913,10 @@ nil
               MP-TIME 0
               P-TTIME (RUNTIME))
         (SETQ RETURN-NODE (eval (cons 'PARSE A)))
-        (SETQ P-TIME (DIFFERENCE (TIMER P-TTIME (RUNTIME)) SM-TIME PLNR-TIME))
+        (SETQ P-TIME (- (TIMER P-TTIME (RUNTIME)) SM-TIME PLNR-TIME))
         (or (== P-GC (STATUS GCTIME))
             (SETQ P-TIME
-                (DIFFERENCE P-TIME (TIMER P-GC (STATUS GCTIME)))))
+                (- P-TIME (TIMER P-GC (STATUS GCTIME)))))
         (SETQ SMN-TIME SM-TIME PLNR-TIME MP-TIME)
         (RETURN RETURN-NODE)))
 
@@ -2959,20 +2959,20 @@ nil
               PLNR-TIME 0)
         (SETQ RESULT (eval REAL-CALL))
         (SETQ ANS-TIME
-            (DIFFERENCE (TIMER ANS-TTIME (RUNTIME)) PLNR-TIME))
+            (- (TIMER ANS-TTIME (RUNTIME)) PLNR-TIME))
         (or (== GC (STATUS GCTIME))
             (SETQ ANS-TIME
-                (DIFFERENCE ANS-TIME (TIMER GC (STATUS GCTIME)))))
+                (- ANS-TIME (TIMER GC (STATUS GCTIME)))))
         (SETQ ANS-PLNR-TIME MPLNR-TIME
-              SMN-TIME (PLUS SMN-TIME SM-TIME))
+              SMN-TIME (+ SMN-TIME SM-TIME))
         (RETURN RESULT)))
 
 (DEFUN PARSE-STATISTICS nil
     (COND ((== PARSINGS 0)
             (PUTPROP 'PARSINGS 0 'WINS)))
         (and RE
-            (PUTPROP 'PARSINGS (1+ (GET 'PARSINGS 'WINS)) 'WINS))
-        (SETQ PARSINGS (1+ PARSINGS)))
+            (PUTPROP 'PARSINGS (inc (GET 'PARSINGS 'WINS)) 'WINS))
+        (SETQ PARSINGS (inc PARSINGS)))
 
 ;; THESE NEXT TWO ARE LEFT OVER FROM PREVIOUS INCARNATIONS.
 
@@ -2981,7 +2981,7 @@ nil
 ;;         (PRINT 'TIME-USED)
 ;;         (PRINC (DIFFERENCE (TIME-SINCE RUNTIME) ERT-TIME))))
 
-(DEFUN TIME-SINCE (X) (QUOTIENT (- (RUNTIME) X) 1000000.0))
+(DEFUN TIME-SINCE (X) (/ (- (RUNTIME) X) 1000000.0))
 
 ;; ############################################################
 ;;         FUNCTIONS THAT EXTRACT INPUT FROM THE USER
@@ -2999,7 +2999,7 @@ nil
 ;;            SPECIALIZED AND NOT SO, OUTPUT ROUTINES
 ;; ################################################################
 
-(DEFUN % nil        ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
+(DEFUN %SENT nil        ;; THIS FUNCTION PRINTS THE CURRENT SENTENCE
     (TERPRI)
     (MAPC 'PRINT3 SENT)
     (PRINC PUNCT))
@@ -3081,9 +3081,9 @@ nil
         (SETQ B (or B 0))
         (SETQ SAVE (GET A 'MAKESYM))
         (and C
-            (GREATERP C B)
+            (> C B)
             (PUTPROP A B 'MAKESYM)
-            (DO I B (ADD1 I) (EQUAL I C) (REMOB (MAKESYM A))))
+            (DO I B (inc I) (EQUAL I C) (REMOB (MAKESYM A))))
         (RETURN (PUTPROP A SAVE 'MAKESYM))))
 
 ;; ################################################################
@@ -3122,7 +3122,7 @@ nil
                 (GO LISTEN))
             ((EQ (TYIPEEK) 13)                                  ;; CR
                 (COND (BUILDING-ST-FORM
-                        (SETQ EXP (REVERSE ST-BUFFER))
+                        (SETQ EXP (reverse ST-BUFFER))
                         (GO EVAL-EXP))                          ;; DELIMITER CASE
                     (:else (READCH) (GO LISTEN)))))                 ;; SPURIOUS CHARACTER CASE
 
@@ -3131,7 +3131,7 @@ nil
         (COND ((ATOM GLOP)
             (SETQ GLOP (or (GET GLOP 'ABBREV) GLOP))
             (COND ((MEMQ GLOP '(true P nil))                     ;; LEAVE-LOOP CHARS
-                    (SETQ ERT-TIME (PLUS (TIME-SINCE ERT-TIME) ERT-TIME)) ;; ERT-TIME IS BOUND BY SHRDLU
+                    (SETQ ERT-TIME (+ (TIME-SINCE ERT-TIME) ERT-TIME)) ;; ERT-TIME IS BOUND BY SHRDLU
                     (RETURN GLOP))
                 ((EQ GLOP 'GO)                                  ;; CAUSE RETURN TO READY-STATE
                     (THROW 'GO ABORT-PARSER))
@@ -3182,7 +3182,7 @@ nil
 
 (DEFUN MAKESYM (A)
     ;; FUNCTION MAKESYM MAKES UP A GENSYM OF ITS ARG
-    (PUTPROP A (ADD1 (or (GET A 'MAKESYM) 0)) 'MAKESYM)
+    (PUTPROP A (inc (or (GET A 'MAKESYM) 0)) 'MAKESYM)
     (SETQ A (MAKNAM (APPEND (or (GET A 'EXPLO)
                 (PUTPROP A (EXPLODE A) 'EXPLO))
                 (EXPLODE (GET A 'MAKESYM)))))
@@ -3194,7 +3194,7 @@ nil
 (DEFUN MEET (A MEET)
     ;; MEET RETURNS THE INTERSECTION OF 2 LISTS TREATED AS SETS
     (PROG (SET)
-    =>  (COND ((nil? A) (RETURN (REVERSE SET)))
+    =>  (COND ((nil? A) (RETURN (reverse SET)))
             ((MEMQ (car A) MEET)
                 (SETQ SET (cons (car A) SET))))
         (SETQ A (cdr A))
@@ -3204,11 +3204,11 @@ nil
 
 (DEFUN NTH (NUM LIST)
     (COND ((ATOM LIST) (ERT NTH - ILLEGAL LIST))
-        ((LESSP NUM 1) (ERT NTH - ILLEGAL NUMBER)))
+        ((< NUM 1) (ERT NTH - ILLEGAL NUMBER)))
     (PROG nil
-    =>  (COND ((EQUAL NUM 1) (RETURN (car LIST)))
+    =>  (COND ((== NUM 1) (RETURN (car LIST)))
             ((SETQ LIST (cdr LIST))
-                (SETQ NUM (SUB1 NUM))
+                (SETQ NUM (dec NUM))
                 (GO =>))
             (:else (ERT NTH - LIST TOO SHORT)))))
 
@@ -3216,7 +3216,7 @@ nil
     (lambda (A)
         (COND ((ATOM (H A)) (list (WORD (NB A)) (FE A)))
             ((PR2 (SM A))
-                (list (FROM (NB A) (N A)) (FE A) (SM A) (COND ((ATOM (H A)) '\ ) ((MAPLIST #'PR1 (REVERSE (H A)))))))))
+                (list (FROM (NB A) (N A)) (FE A) (SM A) (COND ((ATOM (H A)) '\ ) ((MAPLIST #'PR1 (reverse (H A)))))))))
     EXPR)
 
 (DEFPROP PR2
@@ -3230,12 +3230,12 @@ nil
     EXPR)
 
 (DEFUN PRINT2 (X)
-    (COND ((GREATERP CHRCT (FLATSIZE X)) (PRINC '\ ))
+    (COND ((> CHRCT (FLATSIZE X)) (PRINC '\ ))
         (:else (TERPRI)))
     (PRINC X))
 
 (DEFUN PRINT3 (X)
-    (PROG2 (or (GREATERP CHRCT (FLATSIZE X)) (TERPRI))
+    (PROG2 (or (> CHRCT (FLATSIZE X)) (TERPRI))
         (PRINC X)
         (PRINC '\ )))
 
@@ -3256,13 +3256,13 @@ nil
             (GO =>)))
     FEXPR)
 
-(DEFUN QUOTIFY (X) (list 'QUOTE X))
+(DEFUN QUOTIFY (X) (list 'quote X))
 
 (DEFPROP SAY (lambda (A) (MAPC #'PRINT3 A)) FEXPR)
 
 (DEFUN SETDIF (A SETDIF)
     (PROG (SET)
-    =>  (COND ((nil? A) (RETURN (REVERSE SET)))
+    =>  (COND ((nil? A) (RETURN (reverse SET)))
             ((MEMQ (car A) SETDIF))
             ((SETQ SET (cons (car A) SET))))
         (SETQ A (cdr A))
@@ -3281,8 +3281,8 @@ nil
 
 (DEFUN UNION (A B)
     (PROG (SET)
-        (SETQ SET (REVERSE A))
-    =>  (COND ((nil? B) (RETURN (REVERSE SET)))
+        (SETQ SET (reverse A))
+    =>  (COND ((nil? B) (RETURN (reverse SET)))
             ((MEMQ (car B) SET))
             ((SETQ SET (cons (car B) SET))))
         (SETQ B (cdr B))
@@ -3294,7 +3294,7 @@ nil
             (SETQ LINEL 72)
             (and (STATUS TTY) (TYO 12))
             (TERPRI)
-            (SPRINT (list (PR1 A) (REVERSE ALIST)) LINEL 0)))
+            (SPRINT (list (PR1 A) (reverse ALIST)) LINEL 0)))
     EXPR)
 
 (DEFUN DEFS FEXPR (L)
@@ -3309,9 +3309,9 @@ nil
 (DEFPROP TAB
     (lambda (N)
         (PROG (P)
-            (COND ((GREATERP N LINEL) (RETURN '<TAB>)))
-        =>  (SETQ P (DIFFERENCE LINEL CHRCT))
-            (COND ((not (GREATERP N P)) (RETURN '<TAB>)))
+            (COND ((> N LINEL) (RETURN '<TAB>)))
+        =>  (SETQ P (- LINEL CHRCT))
+            (COND ((not (> N P)) (RETURN '<TAB>)))
             (PRINC '\ )
             (GO =>)))
     EXPR)
@@ -3334,7 +3334,7 @@ nil
     CHAR (COND ((EQUAL (TYIPEEK) 24) (READCH) (ERT) (GO THRU)) ;; "CNTRL-X" BREAK LEFT OVER FROM CMU
             ((== (TYIPEEK) 3) (BUG ETAOIN: ABOUT TO READ EOF)))
         ;; THIS LITTLE HACK MAPS ALL LOWERCASE LETTERS INTO UPPERCASE.
-        (SETQ CHAR (COND ((GREATERP 123 (SETQ CHAR (TYI)) 96) (- CHAR 32)) ((GREATERP 91 CHAR 64) CHAR) (:else CHAR))
+        (SETQ CHAR (COND ((> 123 (SETQ CHAR (TYI)) 96) (- CHAR 32)) ((> 91 CHAR 64) CHAR) (:else CHAR))
             CHAR (ASCII CHAR))
         (COND ((EQ CHAR '\ ) (GO WORD))                     ;; DELIMITER
             ((MEMQ CHAR ALTMODE)
@@ -3345,7 +3345,7 @@ nil
                     ((and (EQ CHAR 'S) SAVESENT)            ;; ALTMODE-S CAUSES THE LAST SENTENCE TYPED IN TO
                         (SETQ SENT (car SAVESENT))          ;; RETURNED AS THE SENTENCE TO BE INTERPRETED
                         (SETQ PUNCT (cdr SAVESENT))
-                        (%)
+                        (%SENT)
                         (RETURN SENT))
                     ((EQ CHAR 'N)                           ;; ALTMODE-N COMPLEMENTS THE NEWWORD FLAG, WHICH
                                                             ;; DETERMINES WHETHER UNRECOGNIZED WORDS WILL BE
@@ -3378,7 +3378,7 @@ nil
             (or (and (EQ CHAR '\") (not ALREADY-BLGING-NEWRD) (SETQ NEWWORD (SETQ ALREADY-BLGING-NEWRD true)) (GO CHAR))
                 (and (EQ CHAR '\") ALREADY-BLGING-NEWRD (not (SETQ ALREADY-BLGING-NEWRD nil)) (GO WORD))
                                                             ;; WITHIN THIS "AND" ARE ALL THE CHARACTERS THAT ARE UNDERSTOOD BY THE SYSTEM
-                (NUMBERP CHAR)
+                (number? CHAR)
                 (and (EQ CHAR '=) (nil? WORD))
                 (MEMQ CHAR VOWEL)
                 (MEMQ CHAR CONSO))
@@ -3387,18 +3387,18 @@ nil
 
     DO  (PRINT 'READY)
         (TERPRI)
-        (MAPC #'(lambda (X) (PRINT2 X)) (REVERSE SENT))
+        (MAPC #'(lambda (X) (PRINT2 X)) (reverse SENT))
         (PRINC '\ )
-        (MAPC #'PRINC (REVERSE WORD))
+        (MAPC #'PRINC (reverse WORD))
         (GO CHAR)
 
     WORD (COND ((nil? WORD) (GO CHAR))
             ((EQUAL WORD '(P L E H)) (HELP) (GO THRU))
-            ((and (SETQ WRD (ERRSET (READLIST (REVERSE WORD)))) (NUMBERP (SETQ WRD (car WRD))))
+            ((and (SETQ WRD (ERRSET (READLIST (reverse WORD)))) (number? (SETQ WRD (car WRD))))
                 (SETQ SENT (cons WRD SENT))
-                (BUILDWORD WRD (or (and (ZEROP (SUB1 WRD)) '(NUM NS)) '(NUM)) (list 'NUM WRD) nil))
+                (BUILDWORD WRD (or (and (zero? (dec WRD)) '(NUM NS)) '(NUM)) (list 'NUM WRD) nil))
                                                             ;; NO ROOT FOR NUMBERS
-            ((nil? WRD) (SETQ WRD (REVERSE WORD)) (GO NO))
+            ((nil? WRD) (SETQ WRD (reverse WORD)) (GO NO))
             ((GET WRD 'FEATURES))                           ;; IF A WORD HAS FEATURES, IT'S PROPERTIES ARE ALL SET UP IN THE DICTIONARY
             ((SETQ X (GET WRD 'IRREGULAR))
                 (BUILDWORD WRD (MOD (GET (car X) 'FEATURES) (cdr X)) (SM X) (car X)))
@@ -3437,7 +3437,7 @@ nil
 
     LY  (COND ((and (MEMQ (car RD) VOWEL) (not (EQ (car RD) 'E)) (MEMQ (cadr RD) CONSO))
             (SETQ RD (cons 'E RD))))
-        (COND ((MEMQ 'ADJ (GET (SETQ ROOT (READLIST (REVERSE RD))) 'FEATURES))
+        (COND ((MEMQ 'ADJ (GET (SETQ ROOT (READLIST (reverse RD))) 'FEATURES))
             (BUILDWORD WRD '(ADV VBAD) nil ROOT) ;; TEMP NIL SEMANTICS ;; ROOT IS THE ADJECTIVE
             (GO WRD)))
         (GO NO)
@@ -3450,7 +3450,7 @@ nil
             ((and (EQ NEXT 'H) (not (EQ (caddr RD) 'T))) (SETQ RD (cdr RD)))
             ((and (MEMQ NEXT '(S Z)) (EQ NEXT (caddr RD))) (SETQ RD (cddr RD))))
     TRY (COND
-            ((or (SETQ FEATURES (GET (SETQ ROOT (READLIST (REVERSE RD))) 'FEATURES))
+            ((or (SETQ FEATURES (GET (SETQ ROOT (READLIST (reverse RD))) 'FEATURES))
                     (and (SETQ X (GET ROOT 'IRREGULAR))
                         (SETQ FEATURES (MOD (GET (SETQ ROOT (car X)) 'FEATURES) (cdr X)))))
                 (BUILDWORD WRD (MOD FEATURES (GET (car WORD) 'MOD)) (GET ROOT 'SEMANTICS) ROOT))
@@ -3474,7 +3474,7 @@ nil
     PUNC (COND (PUNCT
             (COND ((and (EQ PUNCT '?) (nil? SENT)) (HELP) (GO THRU))
                 ((MEMQ PUNCT FINAL)
-                    (RETURN (car (SETQ SAVESENT (cons (REVERSE SENT) PUNCT))))) ;; RETURN POINT !!!!!!!!!!!!!
+                    (RETURN (car (SETQ SAVESENT (cons (reverse SENT) PUNCT))))) ;; RETURN POINT !!!!!!!!!!!!!
                 ((SETQ SENT (cons PUNCT SENT))))))
 
         (SETQ PUNCT nil)
@@ -3528,7 +3528,7 @@ nil
     (lambda nil (PROG2 (PRINC (WORD N)) (ERT UNDEFINED)))
     EXPR)
 
-(DEFUN UPPERCASE-IFY-CHAR (CHAR) (COND ((GREATERP 123 CHAR 96) (- CHAR 32)) (:else CHAR)))
+(DEFUN UPPERCASE-IFY-CHAR (CHAR) (COND ((> 123 CHAR 96) (- CHAR 32)) (:else CHAR)))
 
 (SETQ VOWEL '(nil A E I O U Y))
 
@@ -3569,7 +3569,7 @@ nil
                 (:else (PRINC 'CAN\'T\ BE-) (GO TRACED)))
             (MAP #'(lambda (Y)
                     (and (ATOM (car Y))
-                        (RPLACD Y (cons (list 'PASSING (list 'QUOTE (car Y))) (cdr Y)))))
+                        (RPLACD Y (cons (list 'PASSING (list 'quote (car Y))) (cdr Y)))))
                 BODY)
             (PUTPROP X true 'LABELTRACED)
         TRACED
@@ -3625,8 +3625,8 @@ nil
     (and TOP
         (PRINC '\ REASON:\ )
         (PRINC (GET EV 'WHY)))
-    (MAPC #'(lambda (X) (and (EQ EV (GET X 'WHY)) (PEV X (PLUS COL 8) nil)))
-        (REVERSE EVENTLIST)))
+    (MAPC #'(lambda (X) (and (EQ EV (GET X 'WHY)) (PEV X (+ COL 8) nil)))
+        (reverse EVENTLIST)))
 
 (DEFS EVENT
     SHOW
@@ -3634,7 +3634,7 @@ nil
         (SETQ X (CHARG X 'EVENT: '(EVENT TO BE DISPLAYED --<LF> FOR ENTIRE EVENT LIST)))
         (COND (X (PEV X 0 true))
             (:else (MAPC #'(lambda (Y) (and (EQ 'COMMAND (GET Y 'WHY)) (PEV Y 0 true)))
-                (REVERSE EVENTLIST))))))
+                (reverse EVENTLIST))))))
 
 (DEFUN ABBREVIATE FEXPR (A)
     (MAPCAR #'(lambda (X)
@@ -3754,7 +3754,7 @@ nil
     (TERPRI)
     (TAB COL)
     (PRINC ROOT)
-    (MAPC #'(lambda (X) (TREEPRINT X TR (PLUS COL 8)))
+    (MAPC #'(lambda (X) (TREEPRINT X TR (+ COL 8)))
         (GET ROOT TR))
     '*)
 
@@ -4037,7 +4037,7 @@ nil
             'SYSTEM
             0)))
 
-(DEFS ALL SHOW (lambda (X) (%)))
+(DEFS ALL SHOW (lambda (X) (%SENT)))
 
 (DEFS CURRENT SHOW (lambda (X) (PRINTEXT (FROM NB N))))
 
@@ -4264,7 +4264,7 @@ nil
             (APPEND '(FE H ME NB C SM CUT NN T1 T2 T3 :RESULT) (cadr MOBY))
             '(SETQ NN true)
             '(SETQ CUT END)
-            '(SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+            '(SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
             '(SETR 'PARENT PARENT C))
             (APPLY ':-SPREAD (cddr MOBY))
             (list 'FAIL
@@ -4273,14 +4273,14 @@ nil
                 '(RETURN nil)
                 'RETURN
                 '(SETQ MES ME)
-                '(RETURN (REBUILD (REVERSE FE) NB N H SM C))))))
+                '(RETURN (REBUILD (reverse FE) NB N H SM C))))))
 
 (DEFUN :-SPREAD FEXPR (LIST)
     (MAPCAN #'(lambda (EXP)
         (PROG (PREDICATE T1 T2 T3)
             (COND
                 ((ATOM EXP)
-                    (RETURN (list EXP (list 'AND 'LABELTRACE (list 'PASSING (list 'QUOTE EXP))))))
+                    (RETURN (list EXP (list 'AND 'LABELTRACE (list 'PASSING (list 'quote EXP))))))
                 ((EQ (car EXP) 'GOCOND)
                     (RETURN (list (list 'COND (list 'NN (list 'GO (cadr EXP))) (list ':else (list 'GO (caddr EXP)))))))
                 ((EQ (car EXP) ':)
@@ -4363,11 +4363,11 @@ nil
         (SETQ GC (STATUS GCTIME)
               SM-TTIME (RUNTIME)
               RESULT (eval (car SEMANTIC-EXPRESSION)))
-        (SETQ SM-TIME (PLUS SM-TIME (DIFFERENCE (TIMER SM-TTIME (RUNTIME)) MPLNR-TIME)))
+        (SETQ SM-TIME (+ SM-TIME (- (TIMER SM-TTIME (RUNTIME)) MPLNR-TIME)))
         (or (== GC (STATUS GCTIME))
-            (SETQ SM-TIME (DIFFERENCE SM-TIME (TIMER GC (STATUS GCTIME)))
+            (SETQ SM-TIME (- SM-TIME (TIMER GC (STATUS GCTIME)))
                   P-GC (STATUS GCTIME)))
-        (SETQ MP-TIME (PLUS MP-TIME MPLNR-TIME))
+        (SETQ MP-TIME (+ MP-TIME MPLNR-TIME))
         (and SMNTRACE
             (PROGN (PRINTC 'CALLSM\ RETURNING:\ )
                 (PRINC RESULT)))
@@ -4531,9 +4531,9 @@ nil
     ;; THE PARSING TREE PARSE2 WILL CALL EITHER A COMPILED OR
     ;; INTERPRETED VERSION OF THE GRAMMAR PROGRAM
     (PROG (UNIT CREATED-NODE END PARENT RE SPECIAL NBB)
-        (SETQ UNIT (car REST) LEVEL (1+ LEVEL))
+        (SETQ UNIT (car REST) LEVEL (inc LEVEL))
         (COND ((EQ (SETQ NBB N) CUT)
-            (SETQ LEVEL (1- LEVEL))
+            (SETQ LEVEL (dec LEVEL))
             (RETURN nil)))
         (SETQ END CUT)
         (SETQ NN (not (EQ N CUT)))
@@ -4587,7 +4587,7 @@ nil
                         (MEMQ UNIT PARSEBREAK))
                     (ERT))))
         (PARSE-STATISTICS)                              ;; DEFINED IN SYSCOM
-        (SETQ LEVEL (1- LEVEL))
+        (SETQ LEVEL (dec LEVEL))
         (RETURN RE)))
 
 (DEFUN PARSE3 (REST P)
@@ -4751,7 +4751,7 @@ nil
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST))     ;; FEATURE LIST
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST))     ;; FEATURE LIST
             (SETQ NB (or (NB RE) N))                    ;; BEGINNING IN SENTENCE OF THIS NODE
             N                                           ;; SENTENCE POINTER JUST AFTER THIS NODE
             (SETQ H RE)                                 ;; DAUGHTERS OF THIS NODE
@@ -4764,7 +4764,7 @@ nil
         (RETURN nil)
     RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN : FEXPR (BRANCH)
     (COND ((eval (car BRANCH))                          ;; EVALUATE BRANCH CONDITION
@@ -5873,9 +5873,9 @@ nil
     POSS2
         (: (CQ INGSUBJ) RETSM nil)
         ;; IF POSSESSIVE, ALL PREVIOUS MODIFIERS MODIFY THE POSSESSIVE NOUN, NOT THE NG HEAD
-        (SETQ H (BUILDNODE (REVERSE (cons 'POSS (SETDIF FE '(COMPONENT)))) NB N H SM))
+        (SETQ H (BUILDNODE (reverse (cons 'POSS (SETDIF FE '(COMPONENT)))) NB N H SM))
         (SETQ BACKREF (APPEND H (cdr BACKREF)))
-        (: (SETR 'FEATURES (SETQ FE (APPEND '(POSES DET DEF NS NPL) (REVERSE REST))) C)
+        (: (SETR 'FEATURES (SETQ FE (APPEND '(POSES DET DEF NS NPL) (reverse REST))) C)
             nil
             (BUG))
         (: (or (not NN) (ISQ H DEFPOSS)) nil ORD)
@@ -5910,9 +5910,9 @@ nil
     POPRET
         (POP)
 
-    ;; -------------------------------------------------
+    ;; --------------------------------------------------------------
     ;; RETURN AFTER CALLING SMNG2 TO PROCESS THE COMPLETED NOUN GROUP
-    ;; -------------------------------------------------
+    ;; --------------------------------------------------------------
 
     RETSM
         (or (CALLSM (SMNG2)) (GO TRYA))
@@ -5927,7 +5927,7 @@ nil
 
     UP
         (: (POP) UP nil)                                            ;; POP EVERYTHING OFF
-        (SETQ FE (REVERSE REST))
+        (SETQ FE (reverse REST))
         (SMSET nil)
         (GO NGSTART))
 
@@ -6463,8 +6463,8 @@ nil
         (FLUSHME)
         (COND ((and (EQ PREV '\,)                                   ;; IF WE HAVE A COMMA AND
                 (or (cdr H)                                         ;; IF MORE THAN 1 COMPONENT HAS BEEN PARSED
-                (GREATERP (DIFFERENCE (LENGTH (NB H))               ;; OR IF THAT ONE COMPONENT
-                            (LENGTH (N H)))                         ;; IS MORE THAN 4 WORDS LONG
+                (> (- (count (NB H))               ;; OR IF THAT ONE COMPONENT
+                            (count (N H)))                         ;; IS MORE THAN 4 WORDS LONG
                     4))
                 (MEMQ (NEXTWORD) '(or AND NOR BUT))
                 (F (NEXTWORD)))                                     ;; THEN CHECK FOR COMMA COMBINATION
@@ -6513,7 +6513,7 @@ nil
 
     LIST
         (: (and (EQ PREV '\,)                                       ;; COME HERE FOR ABORTED LIST AND CHECK FOR APPOSITIVE
-                (EQUAL (LENGTH H) 2)
+                (== (count H) 2)
                 (ISQ H NG)
                 (not (or (ISQ H PRONG) (ISQ (cdr H) PRONG)))
                 (or (NEXTWORD? COMMA) (nil? N)))
@@ -6528,7 +6528,7 @@ nil
 
     RETSM
         (FQ COMPOUND)                                               ;; CALL SEMANTICS AND RETURN EVERY PARSED BY THIS
-        (and (GREATERP (LENGTH H) 2) (FQ LIST))                     ;; GOODIE IS COMPOUND IF MORE THAN 2 COMPONENTS
+        (and (> (count H) 2) (FQ LIST))                     ;; GOODIE IS COMPOUND IF MORE THAN 2 COMPONENTS
         (COND ((or (CQ NG) (CQ NOUN))
                 (COND ((CQ AND) (FQ NPL))
                     (:else (MOVE-PT H) (TRNSF NPL NS MASS NFS))))
@@ -6555,7 +6555,7 @@ nil
                 (SETQ RE (COND
                     ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true))
                     ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
-                (LESSP (LENGTH N) (LENGTH BOTH))                    ;; FAIL UNLESS WE PARSED BEYOND MATCHING WORD
+                (< (count N) (count BOTH))                    ;; FAIL UNLESS WE PARSED BEYOND MATCHING WORD
                 (RETURN (SETQ SPECIAL 'SKIP)))
             (SETQ RE nil)
             (SETQ N NBB)
@@ -6577,7 +6577,7 @@ nil
             ((MEMQ 'COMP TYPE)
                 (MEMQ 'INT VBFEAT))
             ((MEMQ 'NG TYPE)
-                (COND ((EQUAL NUM 1)
+                (COND ((== NUM 1)
                     (not (nil? (MEET '(TRANS TRANS2 TRANSL TRANSINT) VBFEAT))))
                 (:else (MEMQ 'TRANS2 VBFEAT))))
             (:else (MEMQ FEATURE VBFEAT))))))
@@ -6592,7 +6592,7 @@ nil
                             (:else (list 'OBJ
                                 (SETQ REG (COND
                                     ((or (MEMQ 'LOC TYPE) (MEMQ 'PLACE TYPE)) 'LOBJ)
-                                    ((EQUAL NUM 1) 'OBJ1)
+                                    ((== NUM 1) 'OBJ1)
                                     (:else 'OBJ2))))))))
                     (SETR REG H C)))
             (or (nil? FEATURE) (F FEATURE))
@@ -6665,7 +6665,7 @@ nil
             (RESTRICTIONS: (((#THING)) (SMCOMP (#SYSTEMS) (and (not (REFER? SMCOMP)) (EQ (REL? SMCOMP) SMSUB))))
                 PROCEDURE: (#EVAL (RELATIONS? SMCOMP)))
             (RESTRICTIONS: (((#THING)) (SMCOMP (#THING) (REFER? SMCOMP)))
-                PROCEDURE: ((#EVAL (list 'THAMONG '#1 (list 'QUOTE (REFER? #2))))))))
+                PROCEDURE: ((#EVAL (list 'THAMONG '#1 (list 'quote (REFER? #2))))))))
         (:else (ERTSTOP SORRY I DON 'T UNDERSTAND THE VERB BE WHEN YOU USE IT LIKE THAT))))
 
 (DEFS BEFORE SEMANTICS ((BINDER (SMBINDER nil START))) FEATURES (BINDER TIME))
@@ -6724,7 +6724,7 @@ nil
                         (SETQ RE
                         (COND ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true))
                             ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
-                        (LESSP (LENGTH N) (LENGTH BOTH))
+                        (< (count N) (count BOTH))
                         (RETURN (SETQ SPECIAL 'SKIP)))
                     (SETQ RE nil)
                     (SETQ N NBB)
@@ -6844,7 +6844,7 @@ nil
     FEATURES (NUMD NUMDALONE))
 
 (DEFS FEW
-    SEMANTICS ((NUMD (list '< (ADD1 NUM))))
+    SEMANTICS ((NUMD (list '< (inc NUM))))
     FEATURES (NUMD NUMDAS))
 
 (DEFS FEWER
@@ -6976,7 +6976,7 @@ nil
     FEATURES (ADJ))
 
 (DEFS LEAST
-    SEMANTICS ((NUMD (list '> (SUB1 NUM))))
+    SEMANTICS ((NUMD (list '> (dec NUM))))
     FEATURES (NUMD NUMDAT))
 
 (DEFS LEFT
@@ -7008,7 +7008,7 @@ nil
     FEATURES (VB INF TRANS))
 
 (DEFS MANY
-    SEMANTICS ((NUMD (list '> (SUB1 NUM))) (DET true))
+    SEMANTICS ((NUMD (list '> (dec NUM))) (DET true))
     FEATURES (DET QNTFR NPL NONUM NUMD NUMDAS))
 
 (DEFS ME IRREGULAR (I (OBJ) (SUBJ)))
@@ -7018,7 +7018,7 @@ nil
     FEATURES (NUMD NUMDAN))
 
 (DEFS MOST
-    SEMANTICS ((NUMD (list '< (ADD1 NUM))))
+    SEMANTICS ((NUMD (list '< (inc NUM))))
     FEATURES (NUMD NUMDAT DET QNTFR NPL NONUM))
 
 (DEFS MOVE
@@ -7650,7 +7650,7 @@ nil
 (DEFS #ROBOT SYS (#ANIMATE))
 
 (DEFS #SIZE
-    MEASFN (lambda (X) (APPLY 'PLUS (SIZE X)))
+    MEASFN (lambda (X) (APPLY '+ (SIZE X)))
     SYS (#PROPERTY))
 
 (DEFS #SHAPE PRIORITY 128 SYS (#PROPERTY))
@@ -8158,7 +8158,7 @@ nil
                 DETERMINER= (list (COND ((CQ NUM) (SM (MOVE-PT H PV (NUM)))) ((ISQ NB BOTH) 2) ('NPL))
                                 (COND ((MOVE-PT H PV (QNTFR)) (eval (SM PT))) ('INDEF))
                                 (COND ((CQ HOWMANY) 'HOWMANY) ((CQ QDET) 'WHICH)))
-                RELATIONS= (list (list 'THAMONG (list 'THV (VARIABLE? OFOSS)) (list 'QUOTE (REFER? OFOSS))))))
+                RELATIONS= (list (list 'THAMONG (list 'THV (VARIABLE? OFOSS)) (list 'quote (REFER? OFOSS))))))
         (SM (MOVE-PT H DLC)))))
 
 ;; ============================================================
@@ -8256,7 +8256,7 @@ nil
         (SETQ WHO nil)
     UP  (COND
             ((not (SETQ CANDIDATES (THVAL2 WHO FINDER))) (GO TOOFEW))
-            ((NUMBERP (NUMBER? OSS)) (COND ((LESSP (LENGTH CANDIDATES) (NUMBER? OSS)) (GO TOOFEW)) ((GREATERP (LENGTH CANDIDATES) (NUMBER? OSS)) (GO TOOMANY))))
+            ((number? (NUMBER? OSS)) (COND ((< (count CANDIDATES) (NUMBER? OSS)) (GO TOOFEW)) ((> (count CANDIDATES) (NUMBER? OSS)) (GO TOOMANY))))
             ((EQ (NUMBER? OSS) 'NS) (COND ((nil? CANDIDATES) (GO TOOFEW)) ((cdr CANDIDATES) (GO TOOMANY))))
             ((MEMQ (NUMBER? OSS) '(NPL SG-PL)))
             ((ERT SMNG3= SCREWY NUMBER PROPERTY OF OSS)))
@@ -8281,9 +8281,9 @@ nil
         ;; RESTRICT THE POSSIBLE REFERENTS TO BE AMONG THE LIST ALREADY FOUND
         (SETQ WHO (COND
             ((EQ WHO nil) 'HE)
-            ((EQ WHO 'HE) (list (SUB1 LASTSENTNO) (ADD1 LASTSENTNO)))
+            ((EQ WHO 'HE) (list (dec LASTSENTNO) (inc LASTSENTNO)))
             ((or (not MUNG) (EQ (car WHO) 1)) (SETQ WHO 'HE) (GO TOOFEW))
-            ((cons (SUB1 (car WHO)) (cdr WHO)))))
+            ((cons (dec (car WHO)) (cdr WHO)))))
         (SETQ MUNG nil)
         (GO UP)))
 
@@ -8342,9 +8342,9 @@ nil
             ((ISQ NGWORDS NOUN))                                    ;; IF FIND NOUN HEAD OF NG, WIN
             (:else (SETQ NGWORDS (cdr NGWORDS)) (GO LOOP)))
         (or CONTRAST (RETURN NGWORDS))                              ;; IF THERE IS NO CONTRAST, REFERENT WINS BY DEFAULT
-        (SETQ X (REVERSE NGWORDS))
+        (SETQ X (reverse NGWORDS))
     LOOK (COND ((and (EQ (car CONTRAST) (GET (ROOT (NB X)) 'CONTRAST)) (not (EQ (cadr CONTRAST) (ROOT (NB X)))))
-                (RETURN (REVERSE (cdr X))))
+                (RETURN (reverse (cdr X))))
             ((SETQ X (cdr X)) (GO LOOK))
             (:else (RETURN nil)))))                                  ;; FAIL, IF NO WORD SUPPLIES CONTRAST
 
@@ -8703,11 +8703,11 @@ nil
                             MARKERS= MARKERS:
                             VARIABLE= ((lambda (X) (PUTPROP X X 'RSSVAR)) (MAKESYM 'EVX))
                             PARSENODE= C
-                            RELATIONS= (REVERSE (MAPCAR #'(lambda (%PLNRPHRASE) (PLNR-NUMSUB '<<<RELATION-ERROR>>> %PLNRPHRASE)) (EVALCHECK PROCEDURE:)))
+                            RELATIONS= (reverse (MAPCAR #'(lambda (%PLNRPHRASE) (PLNR-NUMSUB '<<<RELATION-ERROR>>> %PLNRPHRASE)) (EVALCHECK PROCEDURE:)))
                             REL= REL:
                             NEGATIVE= (and (CQ NEG) true)
                             RELMARKERS= RELMARKERS:
-                            PLAUSIBILITY= (PLUS (PLAUSIBILITY? SMSUB) (PLAUSIBILITY? SMOB1) (PLAUSIBILITY? SMOB2) (or (eval PLAUSIBILITY:) 0))
+                            PLAUSIBILITY= (+ (PLAUSIBILITY? SMSUB) (PLAUSIBILITY? SMOB1) (PLAUSIBILITY? SMOB2) (or (eval PLAUSIBILITY:) 0))
                             AMBIGUITIES= (APPEND (AMBIGUITIES? #1) (AMBIGUITIES? #2) (AMBIGUITIES? #3)
                                                  (and PARAPHRASE: (list (list RSSNAME PARAPHRASE: WORD-BEING-INTERPRETED)))))))
             (RETURN %NEWRSS)))
@@ -8855,7 +8855,7 @@ nil
     ;; MENTIONED.
     (COND ((nil? WHO))
         ((EQ WHO 'HE) (GET X 'WHO))
-        ((SETQ X (GET X 'WHO)) (not (or (LESSP X (car WHO)) (GREATERP X (cadr WHO)))))))
+        ((SETQ X (GET X 'WHO)) (not (or (< X (car WHO)) (> X (cadr WHO)))))))
 
 (DEFUN OBJECT FEXPR (%DEFL)
     ;; %DEFL IS THE LIST OF DEFINITION SENSES.
@@ -8901,11 +8901,11 @@ nil
                             SYSTEMS= (cadr %CHKRESULT)
                             DETERMINER= (DETERMINER? %OSS)
                             VARIABLE= (VARIABLE? %OSS)
-                            RELATIONS= (NCONC (REVERSE (MAPCAR #'(lambda (%PLNRPHRASE) (PLNR-NUMSUB %OSS %PLNRPHRASE)) (EVALCHECK PROCEDURE:))) (RELATIONS? %OSS))
+                            RELATIONS= (NCONC (reverse (MAPCAR #'(lambda (%PLNRPHRASE) (PLNR-NUMSUB %OSS %PLNRPHRASE)) (EVALCHECK PROCEDURE:))) (RELATIONS? %OSS))
                             REL= (REL? %OSS)
                             ;; THE OSS NAME PROVIDES A UNIQUE LABEL FOR WHERE THE AMBIGUITY OCCURRED FOR LATER COMPARISON.
                             AMBIGUITIES= (APPEND (AMBIGUITIES? %OSS) (and PARAPHRASE: (list (list %OSS PARAPHRASE: WORD-BEING-INTERPRETED))))
-                            PLAUSIBILITY= (PLUS (or (eval PLAUSIBILITY:) 0) (PLAUSIBILITY? %OSS)))))))
+                            PLAUSIBILITY= (+ (or (eval PLAUSIBILITY:) 0) (PLAUSIBILITY? %OSS)))))))
             SM %DEFL)))))
 
 ;; ######################################################
@@ -8962,10 +8962,10 @@ nil
 (DEFUN PLNR-FINDSPEC (X)
     ;; GENERATES PAMETER FOR THFIND FROM THE NOTATION USED IN THE DETERMINER?
     (COND
-        ((NUMBERP X) X)
+        ((number? X) X)
         ((MEMQ X '(NS NPL SG-PL)) 1)
-        ((EQ (car X) 'EXACTLY) (list (cadr X) (ADD1 (cadr X)) nil))
-        ((EQ (car X) '>) (ADD1 (cadr X)))
+        ((EQ (car X) 'EXACTLY) (list (cadr X) (inc (cadr X)) nil))
+        ((EQ (car X) '>) (inc (cadr X)))
         ((EQ (car X) '<) (list 0 (cadr X) nil))
         ((ERTERR PLNR-FINDSPEC -- FUNNY SPECIFICATION))))
 
@@ -9011,8 +9011,8 @@ nil
                 ((PLNR-NEWBODY X))))
             BODY)
         (RETURN (COND
-            (VARLIST (cons 'THPROG (cons VARLIST (REVERSE NEWBODY))))
-            ((cdr NEWBODY) (cons 'THAND (REVERSE NEWBODY)))
+            (VARLIST (cons 'THPROG (cons VARLIST (reverse NEWBODY))))
+            ((cdr NEWBODY) (cons 'THAND (reverse NEWBODY)))
             ((car NEWBODY))))))
 
 (DEFUN PLNR-NUMREL (OSS)
@@ -9058,7 +9058,7 @@ nil
         (RETURN
             (and (SETQ %ELEMENT (GET (car %PLNRPHRASE) 'THMLIST))
                 (eval (COND
-                    ((NUMBERP (caar %ELEMENT)) (cadr (or (ASSQ (LENGTH %PLNRPHRASE) %ELEMENT) '(nil nil))))
+                    ((number? (caar %ELEMENT)) (cadr (or (ASSQ (count %PLNRPHRASE) %ELEMENT) '(nil nil))))
                     (%ELEMENT)))))))
 
 (DEFUN PLNR-REMTIME (EXP)
@@ -9130,7 +9130,7 @@ nil
                 ((ISQ X NG) (and (not (ISQ X COMP)) (not (ISQ X DEF)) (SETQ REL X) (ERR nil)))
                 ((ISQ X LOBJ) (and (ISQ (H X) INDEF) (SETQ REL X) (ERR nil)))
                 ((ISQ X PREPG) (and (ISQ (H X) INDEF) (SETQ REL (H X)) (ERR nil)))))
-            (REVERSE (H NODE))))
+            (reverse (H NODE))))
         (or REL (and (CQ PASV) (not (CQ AGENT)) (SETQ REL '(FAKE-AGENT))))
         (RETURN (and REL (SM REL)))))
 
@@ -9248,7 +9248,7 @@ nil
         (SETQ RESULT (THVAL AA '((EV COMMAND))))
         (SETQ MPLNR-TIME (TIMER MPLNR-TTIME (RUNTIME)))
         (or (== M-GC (STATUS GCTIME))
-            (SETQ MPLNR-TIME (DIFFERENCE MPLNR-TIME (TIMER M-GC (STATUS GCTIME))) GC (STATUS GCTIME)))
+            (SETQ MPLNR-TIME (- MPLNR-TIME (TIMER M-GC (STATUS GCTIME))) GC (STATUS GCTIME)))
         (RETURN RESULT)))
 
 (DEFUN WHO (X)
@@ -9256,7 +9256,7 @@ nil
         ((ATOM X))
         ((not (SETQ X (GET X 'WHO))) nil)
         ((EQ WHO 'HE))
-        ((LESSP (car WHO) X LASTSENTNO))))
+        ((< (car WHO) X LASTSENTNO))))
 
 (DEFUN CHECK (NEW-MARKERS MARKERS SYSTEMS)
     ;; TAKES A LIST OF NEW MARKERS AND CHECKS FOR COMPATIBILITY
@@ -9496,7 +9496,7 @@ nil
         ACTION= (APPEND
                     (COND
                         ((and AMBIG REDEDUCE (not (CQ DECLAR)))
-                            (cons (list 'THVAL2 nil (list 'PLNR-JUNKIFY (list 'PLNRCODE? (list 'QUOTE RSS)))) ACTION))
+                            (cons (list 'THVAL2 nil (list 'PLNR-JUNKIFY (list 'PLNRCODE? (list 'quote RSS)))) ACTION))
                         (:else ACTION))
                     (and (REL? RSS) (not (CQ DECLAR)) (list (list 'PUTPROP (QUOTIFY (REL? RSS)) (QUOTIFY ANS) (QUOTIFY 'REFER=)))))))
 
@@ -9518,8 +9518,8 @@ nil
             ;; THE THIRD ARGUMENT TO ANSBUILD CAUSES THE SYSTEM TO GO BACK THROUGH THE DEDUCTION
             ;; TO GET THE DATA BASE STRAIGHT IF THIS ANSWER IS PICKED.  IT ALSO TAKES CARE OF THE BACKREF STUFF.
             (ANSBUILD
-                (COND (SUCCESS (PLAUSIBILITY? RSS)) (:else (DIFFERENCE (PLAUSIBILITY? RSS) 512)))
-                (COND (SUCCESS (APPEND (REVERSE PLAN2) '((SAY OK)))) (:else '((SAY I CAN\'T))))
+                (COND (SUCCESS (PLAUSIBILITY? RSS)) (:else (- (PLAUSIBILITY? RSS) 512)))
+                (COND (SUCCESS (APPEND (reverse PLAN2) '((SAY OK)))) (:else '((SAY I CAN\'T))))
                 true))))
 
 (DEFUN ANSDECLARE (RSS)
@@ -9532,7 +9532,7 @@ nil
                 ;; CONJOINED DECLARATIVES ARE HANDLED BY DOING EACH ONE SEPARATELY.
                 (SETQ ANS (MAPCAR 'ANSDECLARE (AND? RSS)))
                 (RETURN (ANSBUILD
-                    (APPLY 'PLUS (MAPCAR 'PLAUSIBILITY? ANS))
+                    (APPLY '+ (MAPCAR 'PLAUSIBILITY? ANS))
                     (cons '(SAY I UNDERSTAND) (MAPCAN #'(lambda (X) (DELETE '(SAY I UNDERSTAND) (ACTION? X))) ANS))
                     nil))))
         ((not (ISTENSE (PARSENODE? RSS) 'PRESENT))
@@ -9570,13 +9570,13 @@ nil
         (SAY DO YOU MEAN:)
         (SETQ XX 0)
         (MAPC #'(lambda (POSS)
-                (PRINT (SETQ XX (ADD1 XX)))
+                (PRINT (SETQ XX (inc XX)))
                 (MAPC 'PRINT2 (cadr POSS))) ;; THE PARAPHRASE
             POSSIBILITIES)
         (PRINC '?)
         (TERPRI)
     READ (SETQ XX (READ))
-        (COND ((or (not (NUMBERP XX)) (GREATERP XX (LENGTH POSSIBILITIES)))
+        (COND ((or (not (number? XX)) (> XX (count POSSIBILITIES)))
             (TERPRI)
             (SAY PLEASE TYPE ONE OF THE NUMBERS)
             (TERPRI)
@@ -9661,13 +9661,13 @@ nil
             ((not VAR)
                 (SETQ ANS (THVAL-MULT (AMBPUT CODE)))
                 (ANSBUILD
-                    (PLUS (car ANS) (PLAUSIBILITY? RSS))
+                    (+ (car ANS) (PLAUSIBILITY? RSS))
                     (COND ((cadr ANS) '((SAY YES))) ((ISTENSE NODE 'MODAL) '((SAY I DON\'T KNOW))) (:else '((SAY NO))))
                     true))
             ((SETQ ANS (THVAL-MULT (PLNR-FINDIFY 'ALL VAR (list VAR) (AMBPUT CODE))))
                 (ANSBUILD
                     ;; AN ANSWER IS VERY IMPLAUSIBILE IF IT MENTIONS AN EVENT THE SYSTEM CAN'T FIND.
-                    (COND ((cadr ANS) (PLUS (PLAUSIBILITY? RSS) (car ANS))) (:else (DIFFERENCE (PLAUSIBILITY? RSS) 512)))
+                    (COND ((cadr ANS) (+ (PLAUSIBILITY? RSS) (car ANS))) (:else (- (PLAUSIBILITY? RSS) 512)))
                     (COND ((nil? (cadr ANS)) '((SAY I CAN\'T DISCUSS A NON-EXISTENT EVENT)))
                         ((APPEND (and (EQ TYPE 'POLAR) '((SAY YES))) (list (list 'EVLIS (list 'DESCRIBEVENT (QUOTIFY (cadr ANS)) (QUOTIFY TYPE)))))))
                     true))))))
@@ -9677,7 +9677,7 @@ nil
     (PROG (X Y)
     GO  (SETQ X LIST)
     UP  (COND ((nil? (cdr X)) (RETURN LIST))
-            ((LESSP (PLAUSIBILITY? (car X)) (PLAUSIBILITY? (cadr X)))
+            ((< (PLAUSIBILITY? (car X)) (PLAUSIBILITY? (cadr X)))
                 (SETQ Y (car X))
                 (RPLACA X (cadr X))
                 (RPLACA (cdr X) Y)
@@ -9692,7 +9692,7 @@ nil
             (PROG (ANS)
                 (SETQ ANS (MAPCAR 'ANSQUEST (or (AND? RSS) (OR? RSS))))
                 (RETURN (ANSBUILD
-                    (APPLY 'PLUS (MAPCAR 'PLAUSIBILITY? ANS))
+                    (APPLY '+ (MAPCAR 'PLAUSIBILITY? ANS))
                     (APPEND
                         (and (not (ISQ (PARSENODE? RSS) COMPONENT)) '((SAY YOU\'RE TRYING TO CONFUSE ME\.)))
                         (MAPCAN #'(lambda (QUEST)
@@ -9725,27 +9725,27 @@ nil
         ;; THVAL-MULT RETURNS A LIST OF A PLAUSIBILITY AND AN ANSWER.
         (SETQ ANS (THVAL-MULT (AMBPUT CODE)))
         (SETQ PLAUS (car ANS))
-        (SETQ LENGTH (LENGTH (SETQ ANS (cadr ANS))))
+        (SETQ LENGTH (count (SETQ ANS (cadr ANS))))
         (RETURN (COND
             ((EQ TYPE 'ALL)
                 (ANSBUILD
-                    (PLUS PLAUS (PLAUSIBILITY? RSS))
+                    (+ PLAUS (PLAUSIBILITY? RSS))
                     (COND ((nil? ANS) '((SAY YES))) ((cons '(SAY NO, NOT) (PREPPUT (NAMELIST PHRASE 'INDEF ANS)))))
                     true))
             ((EQ TYPE 'HOWMANY)
                 (ANSBUILD
-                    (PLUS PLAUS (PLAUSIBILITY? RSS))
+                    (+ PLAUS (PLAUSIBILITY? RSS))
                     (PREPPUT (NAMESUGAR LENGTH REL))
                     true))
             ((MEMQ TYPE '(WHICH WHAT))
                 (ANSBUILD
-                    (PLUS PLAUS (PLAUSIBILITY? RSS) (COND (ANS 512) (0)))
+                    (+ PLAUS (PLAUSIBILITY? RSS) (COND (ANS 512) (0)))
                     (PREPPUT (NAMELIST PHRASE 'DEF ANS))
                     true))
             ((EQ TYPE 'INDEF)
                 (SETQ NUM (NUMBER? REL))
                 (ANSBUILD
-                    (PLUS PLAUS (PLAUSIBILITY? RSS))
+                    (+ PLAUS (PLAUSIBILITY? RSS))
                     (COND
                         ((MEMQ NUM '(NS SG-PL))
                             (COND
@@ -9753,14 +9753,14 @@ nil
                                 (:else (APPEND '((SAY YES,)) (COND
                                     ((ISTENSE (PARSENODE? RSS) 'MODAL) nil)
                                     ((PREPPUT (APPEND (and (cdr ANS) (APPEND (NAMESUGAR LENGTH REL) '((PRINC ':)))) (NAMELIST PHRASE 'INDEF ANS)))))))))
-                        ((NUMBERP NUM)
+                        ((number? NUM)
                             ;; THIS IS THE CASE WHERE WE ARE CAGEY AND AVOID ANSWERING YES OR NO.
                             ;; THE NUMBER ISN'T REPEATED IF IT IS THE SAME AS THE NUMBER IN THE SPECIFICATION.
                             (APPEND
                                 (COND
                                     ((EQ NUM LENGTH) '((SAY YES,)))
-                                    ((GREATERP LENGTH NUM) nil)
-                                    ((ZEROP NUM) '((SAY NO,)))
+                                    ((> LENGTH NUM) nil)
+                                    ((zero? NUM) '((SAY NO,)))
                                     (:else '((SAY NO, ONLY))))
                                 (COND
                                     ((EQ NUM LENGTH) nil)
@@ -9771,13 +9771,13 @@ nil
                                 (:else (cons '(SAY NO,) (PREPPUT (NAMESUGAR LENGTH RES))))))
                         ((EQ (car NUM) '>)
                             (cons (COND
-                                    ((GREATERP LENGTH NUM) '(SAY YES,))
-                                    ((ZEROP LENGTH) '(SAY NO,))
+                                    ((> LENGTH NUM) '(SAY YES,))
+                                    ((zero? LENGTH) '(SAY NO,))
                                     (:else '(SAY NO, ONLY)))
                                 (PREPPUT (NAMESUGAR LENGTH REL))))
                         ((EQ (car NUM) '<)
                             (cons (COND
-                                    ((LESSP LENGTH NUM) '(SAY YES,))
+                                    ((< LENGTH NUM) '(SAY YES,))
                                     (:else '(SAY NO,)))
                                 (PREPPUT (NAMESUGAR LENGTH REL))))
                         ((ERT ANSREL -- FUNNY NUMBER)))
@@ -9870,12 +9870,12 @@ nil
 (DEFUN ELIZA (NODE)
     ;; DOES THE OBVIOUS THING.
     (PROG (XX NUM)
-        (SETQ NUM (LENGTH (N NODE)))
+        (SETQ NUM (count (N NODE)))
         (RETURN
             (APPLY 'APPEND
                 (MAPLIST #'(lambda (WORD)
                     (COND
-                        ((not (LESSP NUM (LENGTH WORD))) nil)       ;; THIS KLUDGE STOPS IT AT THE END OF THE NODE
+                        ((not (< NUM (count WORD))) nil)       ;; THIS KLUDGE STOPS IT AT THE END OF THE NODE
                         ((SETQ XX (ASSQ (car WORD) '((I YOU) (ME YOU) (AM ARE) (ARE AM))))
                             (cdr XX))                               ;; WE RETURN LIST OF THE THING REALLY WANTED, SO
                         ((EQ (car WORD) 'YOU)                       ;; THE APPLY APPEND CAN GET RID OF THE EMPTY ONES.
@@ -9887,8 +9887,8 @@ nil
                     (NB NODE))))))                                  ;; ONES GO THROUGH DIRECTLY.
 
 (DEFUN ENOUGH-BETTER (ANS1 ANS2)
-    (GREATERP (PLAUSIBILITY? ANS1)
-        (PLUS (PLAUSIBILITY? ANS2) TIMID)))
+    (> (PLAUSIBILITY? ANS1)
+        (+ (PLAUSIBILITY? ANS2) TIMID)))
 
 (DEFUN FINDMOTHER (WORD NODE)
     ;; FINDMOTHER TAKES A PLACE IN THE SENTENCE AND A GRAMMAR NODE
@@ -9916,7 +9916,7 @@ nil
         (SETQ NAMES (cdr NAMES))
     BACK (COND ((SETQ X (ASSOC (car EXAM) NAMES))
             (SETQ NAMES (DELQ X NAMES))
-            (SETQ COUNT (ADD1 COUNT))
+            (SETQ COUNT (inc COUNT))
             (SETQ EXAM (list (car EXAM) (APPEND (cadr X) (cadr EXAM))))
             (GO BACK)))
         ;; WHEN THERE ARE TWO OBJECTS WITH THE SAME ENGLISH DESCRIPTIONS, A JOINT OBJECT IS PRODUCED COMBINING THE OBJECTS.
@@ -9984,7 +9984,7 @@ nil
 
 (DEFUN NAMENUM (X)
     ;; GENERATES NUMBER NAMES.
-    (or (NTH (ADD1 X) '(NONE ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN))
+    (or (NTH (inc X) '(NONE ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN))
         (GLOBAL-ERR I CAN\'T COUNT THAT HIGH)))
 
 (DEFUN NAMEOBJ (ITEM SPEC)
@@ -10064,8 +10064,8 @@ nil
 
 (DEFUN NAMESIZE (X)
     ;; ACCEPTS EITHER SINGLE NUMBER OR LIST OF DIMENSIONS.
-    (or (NUMBERP X) (SETQ X (APPLY 'PLUS X)))
-    (COND ((GREATERP X 383) 'LARGE)
+    (or (number? X) (SETQ X (APPLY '+ X)))
+    (COND ((> X 383) 'LARGE)
         (:else 'SMALL)))
 
 (DEFUN NAMESUGAR (NUM OSS)
@@ -10074,9 +10074,9 @@ nil
         ;; VAGUE IS FOR WORDS LIKE "ANYTHING", "SOMETHING", "NOTHING" TO AVOID SAYING "OF THEM" WHEN IT ISN'T APPROPRIATE.
         (SETQ VAGUE (MEMQ '#VAGUE (MARKERS? OSS)))
         (RETURN (list (cons 'SAY
-            (COND ((and VAGUE (ZEROP NUM)) '(NOTHING))
+            (COND ((and VAGUE (zero? NUM)) '(NOTHING))
                 ((cons (NAMENUM NUM)
-                    (COND (VAGUE (COND ((EQUAL NUM 1) '(THING)) ('(THINGS))))
+                    (COND (VAGUE (COND ((== NUM 1) '(THING)) ('(THINGS))))
                         ('(OF THEM)))))))))))
 
 (DEFUN NOTELL nil
@@ -10090,8 +10090,8 @@ nil
         (and (EQUAL PHRASE '(nil))
             (SETQ PHRASE (car ITEM))
             (RETURN ITEM))
-        (SETQ OLD (REVERSE PHRASE))
-        (SETQ NEW (REVERSE (car ITEM)))
+        (SETQ OLD (reverse PHRASE))
+        (SETQ NEW (reverse (car ITEM)))
         (or (EQ (car OLD) (car NEW))
             (EQ (car OLD) (GET (car NEW) 'ROOT))
             (EQ (car NEW) (GET (car OLD) 'ROOT))
@@ -10102,13 +10102,13 @@ nil
         (SETQ OLD (cdr OLD))
         (COND ((or (nil? NEW) (nil? OLD) (ISQ NEW NUM) (ISQ NEW DET) (not (EQ (car NEW) (car OLD))))
             (RETURN (cons
-                (REVERSE (cons (COND ((ISQ (LAST (car ITEM)) NPL) 'ONES) (:else 'ONE)) NEW))
+                (reverse (cons (COND ((ISQ (LAST (car ITEM)) NPL) 'ONES) (:else 'ONE)) NEW))
                 (cdr ITEM)))))
         (GO LOOP)))
 
 (DEFUN ORDNAME (NUM)
     ;; NAME AN ORDINAL
-    (COND ((EQUAL NUM 1) 'ONCE) ((EQUAL NUM 2) 'TWICE)
+    (COND ((== NUM 1) 'ONCE) ((== NUM 2) 'TWICE)
         ((READLIST (NCONC (EXPLODE (NAMENUM NUM)) '(\ T I M E S))))))
 
 (DEFLIST PAST (PUT PUT))
@@ -10129,7 +10129,7 @@ nil
 
 (DEFUN PLURALIZE (ITEM NUM)
     ;; CONVERTS A SINGULAR NOUNPHRASE OR "ONCE" STATEMENT INTO PLURAL.
-    (COND ((GREATERP 2 NUM) ITEM)
+    (COND ((> 2 NUM) ITEM)
         (:else (COND ((MEMQ 'A (car ITEM))
                 (cons (PLURALMAKE (SUBST (NAMENUM NUM) 'A (car ITEM))) (cdr ITEM)))
             ((MEMQ 'ONCE (car ITEM))
@@ -10173,7 +10173,7 @@ nil
         (or (EQUAL ANS (THVAL2 'HE CODE)) (RETURN (list 256 ANS)))
         ;; PLAUSIBILITY IS 0 IF HE COULD HAVE ANSWERED IT WITH RECENTLY MENTIONED INFORMATION.
         ;; 128 IF HE COULD ANSWER IT BUT NOT WITH RECENT INFO.
-        (RETURN (COND ((EQUAL ANS (THVAL2 (list (*DIF SENTNO 2) (ADD1 SENTNO)) CODE)) (list 0 ANS)) ((list 128 ANS))))))
+        (RETURN (COND ((EQUAL ANS (THVAL2 (list (*DIF SENTNO 2) (inc SENTNO)) CODE)) (list 0 ANS)) ((list 128 ANS))))))
 
 (DEFUN TOPLEVEL (EVENT)
     ;; FINDS THE TOP LEVEL EVENT GOING ON AT THE TIME
@@ -10209,14 +10209,14 @@ nil
         (SETQ HAVE 0)
     GO  (COND
             ((or (EQ HAVE NEED)
-                (and (GREATERP HAVE NEED)
-                    (SETQ ANS (FINDREDUCE ANS (DIFFERENCE HAVE NEED)))))
+                (and (> HAVE NEED)
+                    (SETQ ANS (FINDREDUCE ANS (- HAVE NEED)))))
                 (GO DONE))
             ((EQ X 'NOMORE) (RETURN nil))
-            ((SETQ HAVE (LENGTH
+            ((SETQ HAVE (count
                 (SETQ ANS (APPEND
                     (THVAL (PLNR-FINDIFY
-                        (list 1 (DIFFERENCE NEED HAVE) true)
+                        (list 1 (- NEED HAVE) true)
                         (VARIABLE? OSS)
                         (list (VARIABLE? OSS))
                         (PLNR-PROGIFY nil
@@ -10237,13 +10237,13 @@ nil
             (ANS)
             ((RETURN nil)))
     DONE (and (ATOM (VARIABLE? OSS))
-            (PUTPROP (VARIABLE? OSS) (REVERSE ANS) 'BIND))
-        (RETURN (ATOMIFY (REVERSE ANS)))))
+            (PUTPROP (VARIABLE? OSS) (reverse ANS) 'BIND))
+        (RETURN (ATOMIFY (reverse ANS)))))
 
 (DEFUN FINDNUM (X)
-    (COND ((NUMBERP X) X)
-        ((EQ (car X) 'EXACTLY) (list (cadr X) (ADD1 (cadr X)) nil))
-        ((EQ (car X) '>) (ADD1 (cadr X)))
+    (COND ((number? X) X)
+        ((EQ (car X) 'EXACTLY) (list (cadr X) (inc (cadr X)) nil))
+        ((EQ (car X) '>) (inc (cadr X)))
         ((EQ (car X) '<) (cadr X))
         ((EQ X 'NS) 1)
         ((EQ X 'NPL) 2)
@@ -10252,7 +10252,7 @@ nil
 (DEFUN FINDREDUCE (X Y)
     (PROG nil
     =>  (SETQ X (cdr X))
-        (COND ((ZEROP (SETQ Y (SUB1 Y))) (RETURN X)) ((GO =>)))))
+        (COND ((zero? (SETQ Y (dec Y))) (RETURN X)) ((GO =>)))))
 
 (DEFPROP IASS
     (lambda (X)
@@ -10268,7 +10268,7 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
 ))))   EXPR)
 
 (DEFUN MUNG (list MUNG)
-    (SETQ MUNG (list 'QUOTE MUNG))
+    (SETQ MUNG (list 'quote MUNG))
     (and DISCOURSE (SETQ LIST (caddr LIST)))
     (COND ((EQ (caar (cdddr LIST)) 'THAMONG)
             (RPLACD (cdar (cddddr LIST)) MUNG))
@@ -10289,7 +10289,7 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
                 ((ERT NAMEVENT DATA))))
             (SETQ THALIST (list
                 (list 'EVENT EVENT)
-                (list 'SUBJ (COND ((NUMBERP (car EV)) nil) ('I)))
+                (list 'SUBJ (COND ((number? (car EV)) nil) ('I)))
                 (list 'OBJ1 nil) (list 'OBJ2 nil))))
             (ERT NAMEVENT THVAL))
         (MAPC #'(lambda (X)
@@ -10308,12 +10308,12 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
 (DEFUN VBFIX (X PP)
     (COND
         ((EQ TENSE 'ING)
-            (SETQ X (REVERSE (EXPLODE X)))
-            (READLIST (REVERSE (APPEND '(G N I) (VBFIX2 X) X))))
+            (SETQ X (reverse (EXPLODE X)))
+            (READLIST (reverse (APPEND '(G N I) (VBFIX2 X) X))))
         ((EQ TENSE 'PAST)
             (or (GET X 'PAST)
-                (and (SETQ X (REVERSE (EXPLODE X)))
-                    (READLIST (REVERSE (APPEND '(D E) (VBFIX2 X) X))))))
+                (and (SETQ X (reverse (EXPLODE X)))
+                    (READLIST (reverse (APPEND '(D E) (VBFIX2 X) X))))))
         ((EQ TENSE 'INFINITIVE) X)
         (:else (BUG VBFIX - WHAT DO I DO WITH THIS TENSE?))))
 
@@ -10331,7 +10331,7 @@ BY)         (PRINC (COND ((EQ X 'IT) '\"IT\") ((MEMQ 'THEY (FROM SENT nil)) '\"T
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT POSITION-OF-PRTMVB LOCATIONMARKER SUBJ-VB-BACKUP-TYPE1 POSITION-OF-PTW)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
         (SETR 'PARENT PARENT C)
 ENTERING-CLAUSE
         (and LABELTRACE (PASSING 'ENTERING-CLAUSE))
@@ -10853,13 +10853,13 @@ FAIL
         (RETURN nil)
 RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN NG nil
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
         (SETR 'PARENT PARENT C)
 ENTERING-NG
         (and LABELTRACE (PASSING 'ENTERING-NG))
@@ -11159,9 +11159,9 @@ POSS2
         (and LABELTRACE (PASSING 'POSS2))
         (SETQ :RESULT (CQ INGSUBJ))
         (COND (:RESULT (GO RETSM)))
-        (SETQ H (BUILDNODE (REVERSE (cons 'POSS (SETDIF FE '(COMPONENT)))) NB N H SM))
+        (SETQ H (BUILDNODE (reverse (cons 'POSS (SETDIF FE '(COMPONENT)))) NB N H SM))
         (SETQ BACKREF (APPEND H (cdr BACKREF)))
-        (SETQ :RESULT (SETR 'FEATURES (SETQ FE (APPEND '(POSES DET DEF NS NPL) (REVERSE REST))) C))
+        (SETQ :RESULT (SETR 'FEATURES (SETQ FE (APPEND '(POSES DET DEF NS NPL) (reverse REST))) C))
         (COND ((nil? :RESULT) (M BUG) (GO FAIL)))
         (SETQ :RESULT (or (not NN) (ISQ H DEFPOSS)))
         (COND ((nil? :RESULT) (GO ORD)))
@@ -11206,7 +11206,7 @@ UP
         (and LABELTRACE (PASSING 'UP))
         (SETQ :RESULT (POP))
         (COND (:RESULT (GO UP)))
-        (SETQ FE (REVERSE REST))
+        (SETQ FE (reverse REST))
         (SMSET nil)
         (GO NGSTART)
 FAIL
@@ -11215,13 +11215,13 @@ FAIL
         (RETURN nil)
 RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN VG nil
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT TENSE)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
         (SETR 'PARENT PARENT C)
 ENTERING-VG
         (and LABELTRACE (PASSING 'ENTERING-VG))
@@ -11452,13 +11452,13 @@ FAIL
         (RETURN nil)
 RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN PREPG nil
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
         (SETR 'PARENT PARENT C)
 ENTERING-PREPG
         (and LABELTRACE (PASSING 'ENTERING-PREPG))
@@ -11541,13 +11541,13 @@ FAIL
         (RETURN nil)
 RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN ADJG nil
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
         (SETR 'PARENT PARENT C)
 ENTERING-ADJG
         (and LABELTRACE (PASSING 'ENTERING-ADJG))
@@ -11637,7 +11637,7 @@ FAIL
         (RETURN nil)
 RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN CONJ nil
     (PROG (END GOODIE)
@@ -11651,7 +11651,7 @@ RETURN
     (PROG (FE H ME NB C SM CUT NN T1 T2 T3 :RESULT PREV)
         (SETQ NN true)
         (SETQ CUT END)
-        (SETQ C (BUILDNODE (SETQ FE (REVERSE REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
+        (SETQ C (BUILDNODE (SETQ FE (reverse REST)) (SETQ NB (or (NB RE) N)) N (SETQ H RE) nil))
         (SETR 'PARENT PARENT C)
 ENTERING-CONJOIN
         (and LABELTRACE (PASSING 'ENTERING-CONJOIN))
@@ -11659,7 +11659,7 @@ UP
         (and LABELTRACE (PASSING 'UP))
         (SETQ PREV (NEXTWORD))
         (FLUSHME)
-        (COND ((and (EQ PREV '\,) (or (cdr H) (GREATERP (DIFFERENCE (LENGTH (NB H)) (LENGTH (N H))) 4)) (MEMQ (NEXTWORD) '(or AND NOR BUT)) (F (NEXTWORD)))
+        (COND ((and (EQ PREV '\,) (or (cdr H) (> (- (count (NB H)) (count (N H))) 4)) (MEMQ (NEXTWORD) '(or AND NOR BUT)) (F (NEXTWORD)))
             (SETQ PREV (list PREV (NEXTWORD)))
             (FLUSHME)))
         (and (ATOM PREV) (MOVE-PTW N NW (EQ (WORD PTW) PREV)) (CUT PTW))
@@ -11689,7 +11689,7 @@ LOSE2
         (COND (:RESULT (GO LISTA)))
 LIST
         (and LABELTRACE (PASSING 'LIST))
-        (SETQ :RESULT (and (EQ PREV '\,) (EQUAL (LENGTH H) 2) (ISQ H NG) (not (or (ISQ H PRONG) (ISQ (cdr H) PRONG))) (or (NEXTWORD? COMMA) (nil? N))))
+        (SETQ :RESULT (and (EQ PREV '\,) (== (count H) 2) (ISQ H NG) (not (or (ISQ H PRONG) (ISQ (cdr H) PRONG))) (or (NEXTWORD? COMMA) (nil? N))))
         (COND ((nil? :RESULT) (M CONJOIN:) (GO FAIL)))
         (FLUSHME)
         (FQ APPOSITIVE)
@@ -11700,7 +11700,7 @@ LISTA
 RETSM
         (and LABELTRACE (PASSING 'RETSM))
         (FQ COMPOUND)
-        (and (GREATERP (LENGTH H) 2) (FQ LIST))
+        (and (> (count H) 2) (FQ LIST))
         (COND ((or (CQ NG) (CQ NOUN)) (COND ((CQ AND) (FQ NPL)) (:else (MOVE-PT H) (TRNSF NPL NS MASS NFS))))
             ((CQ VB) (PROG (COMMON) (SETQ COMMON (GET 'VB 'ELIM)) (MAP #'(lambda (X) (SETQ COMMON (MEET COMMON (FE X)))) H)) (FESET (UNION COMMON (FE C)) C)))
         (SETQ :RESULT (CALLSM (SMCONJ)))
@@ -11711,7 +11711,7 @@ FAIL
         (RETURN nil)
 RETURN
         (SETQ MES ME)
-        (RETURN (REBUILD (REVERSE FE) NB N H SM C))))
+        (RETURN (REBUILD (reverse FE) NB N H SM C))))
 
 (DEFUN BOTH FEXPR (A)
     (PROG (END)
@@ -11723,7 +11723,7 @@ RETURN
                 (CUT END)
                 (SETQ BOTH PTW)
                 (SETQ RE (COND ((MEMQ (car REST) '(PREP ADV)) (PARSE3 REST true)) ((MEMQ (car REST) '(NG PREPG ADJG CLAUSE)) (PARSE2 REST true))))
-                (LESSP (LENGTH N) (LENGTH BOTH))
+                (< (count N) (count BOTH))
                 (RETURN (SETQ SPECIAL 'SKIP)))
             (SETQ RE nil)
             (SETQ N NBB)
@@ -11743,7 +11743,7 @@ RETURN
                     VBFEAT))
             ((MEMQ 'COMP TYPE) (MEMQ 'INT VBFEAT))
             ((MEMQ 'NG TYPE)
-                (COND ((EQUAL NUM 1)
+                (COND ((== NUM 1)
                         (not (nil? (MEET '(TRANS TRANS2 TRANSL TRANSINT) VBFEAT))))
                     (:else (MEMQ 'TRANS2 VBFEAT))))
             (:else (MEMQ FEATURE VBFEAT))))))
@@ -11754,7 +11754,7 @@ RETURN
             (or (nil? TYPE)
                 (and (APPLY 'PARSE (APPEND TYPE
                     (COND ((MEMQ 'COMP TYPE) (SETQ REG 'COMP) nil)
-                        (:else (list 'OBJ (SETQ REG (COND ((or (MEMQ 'LOC TYPE) (MEMQ 'PLACE TYPE)) 'LOBJ) ((EQUAL NUM 1) 'OBJ1) (:else 'OBJ2))))))))
+                        (:else (list 'OBJ (SETQ REG (COND ((or (MEMQ 'LOC TYPE) (MEMQ 'PLACE TYPE)) 'LOBJ) ((== NUM 1) 'OBJ1) (:else 'OBJ2))))))))
                 (SETR REG H C)))
             (or (nil? FEATURE) (F FEATURE))
             (RETURN true))))
