@@ -2296,7 +2296,7 @@
 
 (defn- move-pt [& a]
     (let [save *pt*
-          step- #(loop [b (cons % nil)]
+          step- #(loop [b (list %)]
                     (let [? (condp = (car b)
                                 :h (when-not (set! *pt* *h*) :fail)
                                 :c (do (set! *pt* *c*) nil)
@@ -2489,11 +2489,11 @@
 
 (defn- popto [& a]
     (loop [x *h*]
-        (cond (apply isq x a) (loop [] (cond (= x *h*) *c* (pop*) (recur)))
+        (cond (apply isq x a) (loop [] (cond (= x *h*) *c* (pop*) (recur)))
             (cdr x) (recur (cdr x))
             :else (do (m! "POPTO") nil))))
 
-(defn- cq [feature] (memq feature *fe*))
+(defn- cq [x] (memq x *fe*))
 
 (defn- f! [x] (if (memq x *fe*) true (setr *c* :features (set! *fe* (cons x *fe*)))))
 
@@ -2503,7 +2503,7 @@
     (dorun (map #(or (memq % *fe*) (set! *fe* (cons % *fe*))) a))
     (setr *c* :features *fe*))
 
-(defn- isq [& a] (memq (cadr a) (features (car a))))
+(defn- isq [node x] (memq x (features node)))
 
 (defn- nq [x] (memq x (features *n*)))
 
@@ -3426,7 +3426,7 @@
     'QNUM
         (| (isq *h* 'NONUM) 'OF nil)
         (| (and (parse 'NUM) (fq! 'NUM)) nil 'OF)
-        (| (cond (== (semantics *h*) 1) (and (cq 'NS) (rq 'NPL)) (cq 'NPL) (rq 'NS)) ;; EXPLICIT CHECT FOR THE VALUE 1
+        (| (cond (== (semantics *h*) 1) (and (cq 'NS) (rq 'NPL)) (cq 'NPL) (rq 'NS)) ;; EXPLICIT CHECK FOR THE VALUE 1
             nil
             "NUMD"
             'INCOM)
@@ -5450,12 +5450,12 @@
         (when (cq 'NEG) (add-f *pt* 'NEG))                           ;; NEG IS TRANSFERRED FROM THE VG TO THE CLAUSE IN WHICH IT IS EMBEDDED.
         (let [tense (getr *c* :tense)
               tense (cond (memq tense [['PRESENT] ['IMPER] ['INFINITIVE]]) tense
-                        (= tense '(MODAL))
+                        (= tense ['MODAL])
                             (do (set! *oops* "THAT DOESN'T MAKE ANY SENSE TO ME.")
                                 (add-f *pt* 'MODAL)                  ;; CLAUSES ARE ALSO MARKED AS MODAL.
                                 tense)
-                        (and (= tense '(FUTURE)) (isq *pt* 'QUEST) (= (refer? (car (semantics (getr *pt* :subject)))) '(ßSHRDLU))) ;; FUTURE QUESTIONS WITH "YOU"
-                            (let [tense '(PRESENT)]                     ;; SUBJECT IS REALLY IMPERATIVE.
+                        (and (= tense ['FUTURE]) (isq *pt* 'QUEST) (= (refer? (car (semantics (getr *pt* :subject)))) ['ßSHRDLU])) ;; FUTURE QUESTIONS WITH "YOU"
+                            (let [tense ['PRESENT]]                     ;; SUBJECT IS REALLY IMPERATIVE.
                                 (remove-f *pt* 'QUEST)
                                 (add-f *pt* 'IMPER)                  ;; THE CLAUSE IS NO LONGER QUESTION, BUT RATHER, IMPERATIVE.
                                 tense)
@@ -5574,7 +5574,7 @@
                         (when (isq *pt* 'DEF)
                             (add-f *pt* 'INDEF)
                             (remove-f *pt* 'DEF)
-                            (dorun (map #(putprop! % :determiner ['(EXACTLY 1) 'INDEF nil]) (semantics *pt*)))))
+                            (dorun (map #(putprop! % :determiner [['EXACTLY 1] 'INDEF nil]) (semantics *pt*)))))
                 (or (move-pt :c [:u 'BOUND] :u) (move-pt :c [:u #(and (isq *pt* 'CLAUSE) (isq *pt* 'COMPONENT))] :u :dlc))
                     (do (smit2 (getr *pt* :obj2) 0)
                         (smit2 (getr *pt* :obj1) 0)
