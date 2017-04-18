@@ -6204,52 +6204,45 @@
 (§ defn- SMNG3 [oss]
     ;; TAKES AN OSS AS ARGUMENT AND TRIES TO FIND ITS REFERENCE IF THE NOUN GROUP IS DEFINITE.
     ;; EXPECT FOR SPECIAL "ONLY DEFINITE" DEFINITES SUCH AS "THE RIGHT" AND "THE THING".
-    (let [finder nil mung nil candidates nil]
-        (cond
-            (not (= (quantifier? oss) 'DEF)) (RETURN oss)        ;; IF ITS NOT DEFINITE OR IT
-            (refer? oss) (RETURN oss)                             ;; ALREADY HAS A REFERENT
-            (cq 'ANSNAME) (RETURN oss))                            ;; MARKED,  IF ITS KLUDGY
-        (SETQ finder
-            (plnr-findify 'ALL                                      ;; ANSWER NAME, JUST RETURN IT
-                (variable? oss)                                     ;; JUST RETURN IT
-                (list (variable? oss))
-                (plnr-describe (relations? oss) (variable? oss) (list (variable? oss))))) ;; BUILDS UP THFIND EXPRESSION
-        (putprop! oss 'PLNRCODE= finder)
-        (set! *who* nil)
-    =>  (SETQ candidates (thval2 *who* finder))
-        (cond
-            (not candidates) (GO TOOFEW)
-            (number? (num? oss)) (cond (< (count candidates) (num? oss)) (GO TOOFEW) (> (count candidates) (num? oss)) (GO TOOMANY))
-            (= (num? oss) 'NS) (cond (nil? candidates) (GO TOOFEW) (cdr candidates) (GO TOOMANY))
-            (memq (num? oss) '(NPL SG-PL)) true
-            :else (bug! "SMNG3: SCREWY NUMBER PROPERTY OF OSS"))
-        (putprop! oss 'REFER= candidates)
-    DONE (RETURN oss)
+    ;; IF IT'S NOT DEFINITE, OR ALREADY HAS A REFERENT MARKED, OR IT'S KLUDGY ANSWER NAME, JUST RETURN IT.
+    (if (or (not= (quantifier? oss) 'DEF) (refer? oss) (cq 'ANSNAME)) oss
+        ;; BUILDS UP THFIND EXPRESSION
+        (let [finder (plnr-findify 'ALL (variable? oss) (list (variable? oss)) (plnr-describe (relations? oss) (variable? oss) (list (variable? oss))))]
+            (putprop! oss 'PLNRCODE= finder)
+            (set! *who* nil)
+            (loop [finder finder]
+                (let [candidates (thval2 *who* finder) mung nil]
+                    (cond
+                        (not candidates) (GO TOOFEW)
+                        (number? (num? oss)) (cond (< (count candidates) (num? oss)) (GO TOOFEW) (> (count candidates) (num? oss)) (GO TOOMANY))
+                        (= (num? oss) 'NS) (cond (nil? candidates) (GO TOOFEW) (cdr candidates) (GO TOOMANY))
+                        (memq (num? oss) '(NPL SG-PL)) true
+                        :else (bug! "SMNG3: SCREWY NUMBER PROPERTY OF OSS"))
+                    (putprop! oss 'REFER= candidates)
+                    (RETURN oss)
 
-    TOOFEW ;; WE DIDN'T FIND ANY (OR ENOUGH) REFERENTS FOR THE NG
-        (cond
-            (or (not discourse?) (nil? *who*))
-                (do (set! *oops* (str "I DON'T KNOW WHAT YOU MEAN BY \"" (from *nb* *n*) "\"."))
-                    (RETURN nil))
-            ;; IF WE AREN'T REMEMBERING SENTENCES, FORGET IT IF WE JUST TRIED TO
-            ;; FIND EVERYTHING (OR EVERYTHING THAT "HE" KNOWS ABOUT), THEN FAIL
-            (memq *who* '(HE nil))
-                (do (set! *oops* (str "I DON'T KNOW WHICH " (cdr (from *nb* *n*)) " YOU MEAN."))
-                    (RETURN nil)))
-        (SETQ mung true)
+                TOOFEW ;; WE DIDN'T FIND ANY (OR ENOUGH) REFERENTS FOR THE NG
+                    (cond
+                        (or (not discourse?) (nil? *who*))
+                            (do (set! *oops* (str "I DON'T KNOW WHAT YOU MEAN BY \"" (from *nb* *n*) "\"."))
+                                (RETURN nil))
+                        ;; IF WE AREN'T REMEMBERING SENTENCES, FORGET IT IF WE JUST TRIED TO
+                        ;; FIND EVERYTHING (OR EVERYTHING THAT "HE" KNOWS ABOUT), THEN FAIL
+                        (memq *who* '(HE nil))
+                            (do (set! *oops* (str "I DON'T KNOW WHICH " (cdr (from *nb* *n*)) " YOU MEAN."))
+                                (RETURN nil)))
+                    (SETQ mung true)
 
-    TOOMANY ;; ELSE SET UP TO EXPAND THE SENTENCES WE'RE LOOKING AT
-        (when (memq *who* '(HE nil))
-            (SETQ finder (plnr-mung finder candidates)))
-        ;; RESTRICT THE POSSIBLE REFERENTS TO BE AMONG THE LIST ALREADY FOUND
-        (set! *who*
-            (cond
-                (= *who* nil) 'HE
-                (= *who* 'HE) (list (dec *lastsentno*) (inc *lastsentno*))
-                (or (not mung) (== (car *who*) 1)) (do (set! *who* 'HE) (GO TOOFEW))
-                :else (cons (dec (car *who*)) (cdr *who*))))
-        (SETQ mung nil)
-        (GO =>)))
+                TOOMANY ;; ELSE SET UP TO EXPAND THE SENTENCES WE'RE LOOKING AT
+                    (when (memq *who* '(HE nil))
+                        (SETQ finder (plnr-mung finder candidates)))
+                    ;; RESTRICT THE POSSIBLE REFERENTS TO BE AMONG THE LIST ALREADY FOUND
+                    (cond
+                        (nil? *who*) (set! *who* 'HE)
+                        (= *who* 'HE) (set! *who* (list (dec *lastsentno*) (inc *lastsentno*)))
+                        (or (not mung) (== (car *who*) 1)) (do (set! *who* 'HE) (GO TOOFEW))
+                        :else (set! *who* (cons (dec (car *who*)) (cdr *who*))))
+                    (recur finder))))))
 
 (defn- smone []
     (loop [x (loop-when [a *h*] a
