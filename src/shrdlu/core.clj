@@ -2100,7 +2100,7 @@
                         (set! *word* (cons c *word*)))
                 (recur)))
     WORD (cond (nil? *word*) (GO CHAR)
-            (and (set! *wrd* (ERRSET (symbol* (reverse *word*)))) (number? (set! *wrd* (car *wrd*))))
+            (and (set! *wrd* (symbol* (reverse *word*))) (number? (set! *wrd* (car *wrd*))))
                 (do (set! *sent* (cons *wrd* *sent*))
                     (wordprops! *wrd* (or (and (zero? (dec *wrd*)) ['NUM 'NS]) ['NUM]) [['NUM *wrd*]] nil)) ;; NO ROOT FOR NUMBERS
             (nil? *wrd*) (do (set! *wrd* (reverse *word*)) (GO NO))
@@ -5933,8 +5933,8 @@
                 (do (putprop! new (car old) (cadr old)) (recur (cddr old)))
                 (do (putprop! new :parsenode *c*) new)))))
 
-(dynamic- *relß*)
-(dynamic- *relmarkersß*)
+(dynamic- *rel*)
+(dynamic- *relmarkers*)
 (dynamic- *1*)
 (dynamic- *2*)
 (dynamic- *3*)
@@ -5975,7 +5975,7 @@
             ;; WHEREAS OUTSIDE OF THE LAMBDA EXPRESSION EACH OF THESE NAMES REPRESENTS A LIST OF THE SAME.
             ;; THIS IS TO ALLOW DICTIONARY WRITERS TO USE THESE SELF SAME NAMES IN WRITING DEFINITIONS, A SIMPLY TERRIBLE IDEA.
             (let [{:keys [markers restrictions procedure plausibility paraphrase]} a]
-                (binding [*relß* nil *relmarkersß* nil *1* nil *2* nil *3* nil]
+                (binding [*rel* nil *relmarkers* nil *1* nil *2* nil *3* nil]
                     ;; RESTRICTIONSß IS EXPANDED HERE PUTTING IN IMPLICIT REGISTER REFERENCES, SO IT CAN BE UNIFORMLY GOBBLED BELOW.
                     ;; %MARKL IS A SINGLE MARKER LIST FROM ON OF THE RESTRICTIONS IN THE DEFINITION, E.G. (!PHYSOB !RED).
                     ;; %RESTRICTNAM IS A NAME LIKE SMSUB, SMOBL, SMCOMP, .... WHICH REFERS TO REGISTERS ELSEWHERE
@@ -5986,20 +5986,19 @@
                                     (let [x (if (term? (car marks)) marks (cons name marks))] (SET num (eval (car x))) x))
                                 '(*smsub* *smob1* *smob2*) restrictions '(*1* *2* *3*)))]
                         ;; CHECK THAT THIS DEFINITION SENSE MEETS ALL OF THE RESTRICTIONS SET FORTH IN THE DEFINITION UNDER RESTRICTIONSß.
-                        (when (ERRSET
+                        (when (every? true?
                                 ;; ENCLOSED IN A ERRSET SO THAT THE FAILURE OF A CHECK CAN CAUSE IMMEDIATE ESCAPE FROM THE MAPC
                                 ;; AND HENCE TO THE AND WHICH CUTS OFF ALL FURTHER PROCESSING OF THIS DEFINITION SENSE.
                                 ;; TEMPORARY STORAGE ON THE PROPERTY LIST OF TEMP USED TO AVOID SEARCHING FOR THESE ITEMS ON THE
                                 ;; ONE HAND OR THE CONFLICT OF NAMES BETWEEN THE MARKERS RESULTING FROM CHECKING THE REL ARE
                                 ;; SAVED TO PUT ON IT LATER WHEN THE CLAUSE IS RELATED.
-                                (dorun (map (lambda [marks]
+                                (map (lambda [marks]
                                     (let [oss (eval (car marks)) x (checkrel oss)]
-                                        (when x (set! *relß* (car x)))
-                                        (let [check (when (or (nil? (cddr marks)) (eval (caddr marks))) (check-markers (cadr marks) (markers? oss) (systems? oss)))]
-                                            (cond (not check) (ERR nil)
-                                                (= oss *relß*) (set! *relmarkersß* check))
-                                            nil)))
-                                    restrictions)))
+                                        (when x (set! *rel* (car x)))
+                                        (let-when [? (when (or (nil? (cddr marks)) (eval (caddr marks))) (check-markers (cadr marks) (markers? oss) (systems? oss)))] ?
+                                            (when (= oss *rel*) (set! *relmarkers* ?))
+                                            true)))
+                                    restrictions))
                             ;; SUBJECT RESTRICTION MARKERS USED IN THE DEFINITION AND THE REGISTERS OF THE SAME NAME REFERENCED AS FREE
                             ;; VARIABLES IN THIS PROGRAM.  ON THE OTHER HAND, IF THE RESTRICTIONS HAVE BEEN MET, THEN BUILD AN RSS NODE.
                             ;; RSSNODE= IS KEYWORD FOR INPUT INTO BUILD OF RSS NODE NAME.  IN THE CALL TO BUILD THE ITEMS ENDING IN =
@@ -6014,9 +6013,9 @@
                                 :variable (let [x (gensym 'EVX)] (putprop! x :rssvar= x))
                                 :parsenode *c*
                                 :relations (reverse (doall (map #(plnr-numsub '<<<RELATION-ERROR>>> %) (if (fn? procedure) (procedure) procedure))))
-                                :rel *relß*
+                                :rel *rel*
                                 :negative (and (cq 'NEG) true)
-                                :relmarkers *relmarkersß*
+                                :relmarkers *relmarkers*
                                 :plausibility (+ (plausibility? *smsub*) (plausibility? *smob1*) (plausibility? *smob2*) (or (eval plausibility) 0))
                                 :ambiguities (concat (ambiguities? *1*) (ambiguities? *2*) (ambiguities? *3*) (and paraphrase (list (list name paraphrase *word-being*))))))))))))
         a *smsub* *smob1* *smob2* *smobl* *smcomp*))
@@ -6265,7 +6264,7 @@
 (defn- plnr-numrel [oss]
     ;; THIS IS USED BY PLNR-NUMSUB TO HAVE THE VARIABLE NAME SUBSTITUTED
     ;; FOR THE OSS WHICH IS THE REL OF A PARTICULAR EXPRESSION.
-    (if (memq oss *rellist*) (set! *relß* oss) oss))
+    (if (memq oss *rellist*) (set! *rel* oss) oss))
 
 (defn- plnr-numsub [me a]
     ;; FUNCTION WHICH SUBSTITUTES THE PROPER PARSE TIME VARIABLES
@@ -6343,22 +6342,18 @@
                         :else [body a])]
                 (recur body (cdr a))))))
 
-(dynamic- *rel*)
-
 (defn- relfind [node]
-    ;; LOOKS FOR THE REL OF A POLAR
-    (binding [*rel* nil]
-        (ERRSET
-            ;; IT GOES FROM THE BEGINNING OF THE SENTENCE LOOKING FOR AN INDEFINITE NG,
-            ;; EITHER AT THE TOP LEVEL OR AS A FIRST LEVEL PREPOBJ, BUT NOT A COMPLEMENT.
-            (dorun (map* (lambda [x]
+    ;; LOOKS FOR THE REL OF A POLAR.
+    ;; IT GOES FROM THE BEGINNING OF THE SENTENCE LOOKING FOR AN INDEFINITE NG,
+    ;; EITHER AT THE TOP LEVEL OR AS A FIRST LEVEL PREPOBJ, BUT NOT A COMPLEMENT.
+    (let [rel (some identity (map* (lambda [x]
                 (cond
-                    (isq x 'NG) (and (not (isq x 'COMP)) (not (isq x 'DEF)) (set! *rel* x) (ERR nil))
-                    (isq x 'LOBJ) (and (isq (daughters x) 'INDEF) (set! *rel* x) (ERR nil))
-                    (isq x 'PREPG) (and (isq (daughters x) 'INDEF) (set! *rel* (daughters x)) (ERR nil))))
-                (reverse (daughters node)))))
-        (or *rel* (and (cq 'PASV) (not (cq 'AGENT)) (set! *rel* ['FAKE-AGENT])))
-        (and *rel* (semantics *rel*))))
+                    (isq x 'NG) (when-not (or (isq x 'COMP) (isq x 'DEF)) x)
+                    (isq x 'LOBJ) (when (isq (daughters x) 'INDEF) x)
+                    (isq x 'PREPG) (when (isq (daughters x) 'INDEF) (daughters x))))
+                (reverse (daughters node))))
+          rel (if (and (not rel) (cq 'PASV) (not (cq 'AGENT))) ['FAKE-AGENT] rel)]
+        (when rel (semantics rel))))
 
 (defn- ordmake [ordinal var body]
     ;; MAKES THE LOGICAL FORM FOR SUPERLATIVES.
@@ -6621,7 +6616,8 @@
         ;; ANSGEN GENERATES AN ANSWER FOR EACH INTERPRETATION.
         ;; ANSUNIQUE TAKES OUT REDUNDANT ONES IN THE CASE THAT DIFFERENT INTERPRETATIONS LEAD TO THE SAME ANSWER.
         ;; ANSORDER ORDERS THE REMAINING ONES BY PLAUSIBILITY.
-        (let [a (ansorder (ansunique (doall (map ansgen (semantics node)))))
+        (let [a (doall (map ansgen (semantics node)))
+              a (ansorder (ansunique a))
               ;; IF NO ANSWER IS CLEARLY BEST, ASK THE USER FOR CLARIFICATION AND TRY AGAIN.
               a (loop-when-recur a (and (cdr a) (not (enough-better (car a) (cadr a)))) (anseliminate a) => a)]
             ;; THE ACTION INCLUDES BOTH THE THINGS TO BE DONE AND THE INSTRUCTIONS FOR PRINTING A RESPONSE.
@@ -6745,14 +6741,15 @@
         (or (cq 'IMPER) (and (cq 'QUEST) (istense (parsenode? rss) 'FUTURE))) ;; FUTURE QUESTIONS ARE TREATED LIKE COMMANDS.
             (anscommand rss)
         (cq 'DECLAR)
-            (let [x (ERRSET (ansdeclare rss))]
-                (cond x x
-                    ;; THIS STRANGE CONSTRUCTION ALLOWS US A SECOND CHANCE ON DECLARATIVES ABOUT THINGS WHICH CAN'T
-                    ;; BE TOLD TO THE SYSTEM.  IF IT RUNS INTO ONE OF THEM, IT TRIES TO ANSWER IT AS A QUESTION.
-                    (= *oops* "THAT ISN'T THE KIND OF THING I CAN BE TOLD.") (ansquest rss)
-                    :else (ERR nil)))
-        (cq 'QUEST) (ansquest rss)
-        :else (bug! 'ansgen "WHAT KIND OF SENTENCE IS THIS?")))
+            (or (ansdeclare rss)
+                ;; THIS STRANGE CONSTRUCTION ALLOWS US A SECOND CHANCE ON DECLARATIVES ABOUT THINGS WHICH CAN'T
+                ;; BE TOLD TO THE SYSTEM.  IF IT RUNS INTO ONE OF THEM, IT TRIES TO ANSWER IT AS A QUESTION.
+                (when' (= *oops* "THAT ISN'T THE KIND OF THING I CAN BE TOLD.") => nil
+                    (ansquest rss)))
+        (cq 'QUEST)
+            (ansquest rss)
+        :else
+            (bug! 'ansgen "WHAT KIND OF SENTENCE IS THIS?")))
 
 (defn- ansname [phrase]
     ;; THIS IS THE FUNCTION WHICH PARSES THE NAME PHRASES GENERATED BY THE ANSWER ROUTINES,
@@ -6798,7 +6795,7 @@
                         (+ (car ans) (plausibility? rss))
                         (cond (cadr ans) '((say "YES")) (istense node 'MODAL) '((say "I DON'T KNOW")) :else '((say "NO")))
                         true))
-                (let-when [ans (thval-mult (plnr-findify 'ALL var (list var) (ambput code)))] ans
+                (let-when [ans (thval-mult (plnr-findify 'ALL var (list var) (ambput code)))] ans => nil
                     (ansbuild rss ans
                         ;; AN ANSWER IS VERY IMPLAUSIBILE IF IT MENTIONS AN EVENT THE SYSTEM CAN'T FIND.
                         (if (cadr ans) (+ (plausibility? rss) (car ans)) (- (plausibility? rss) 512))
@@ -6809,10 +6806,10 @@
 
 (defn- ansorder [l]
     ;; ORDERS A LIST BY PLAUSIBILITY HIGHEST FIRST.
-    (loop-when [x l] (cdr x) => l
-        (if (< (plausibility? (car x)) (plausibility? (cadr x)))
-            (let [y (car x)] (RPLACA x (cadr x)) (RPLACA (cdr x) y) (ansorder l))
-            (recur (cdr x)))))
+    (loop-when [a l] (cdr a) => l
+        (if (< (plausibility? (car a)) (plausibility? (cadr a)))
+            (let [a1 (car a)] (RPLACA a (cadr a)) (RPLACA (cdr a) a1) (ansorder l))
+            (recur (cdr a)))))
 
 (defn- ansquest [rss]
     ;; ANSQUEST ANSWERS ALL TYPES OF QUESTIONS BY SENDING THEM OUT TO ANSREL OR ANSNOREL DEPENDING ON WHETHER THERE IS A REL.
@@ -7445,10 +7442,10 @@
             (set! *mes* nil)
             (set! *backref* nil)                  ;; ???????????????????
             (set! *n* (set! *sent* (ETAOIN)))
-            (when (and (ERRSET (set! *pt* (set! *c* (parse 'CLAUSE 'MAJOR 'TOPLEVEL)))) *c*)
+            (when (and (set! *pt* (set! *c* (parse 'CLAUSE 'MAJOR 'TOPLEVEL))) *c*)
                 (set! *fe* (features *c*))
                 (set! *nb* *sent*)
                 (set! *h* (daughters *c*))
-                (when-not (ERRSET (answer *c*)) (print (or *oops* "I DON'T UNDERSTAND."))))
+                (when-not (answer *c*) (print (or *oops* "I DON'T UNDERSTAND."))))
             (recur))))
 
