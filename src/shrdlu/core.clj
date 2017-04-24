@@ -318,7 +318,7 @@
         (thpush! *tree* [:thand a nil])
         (set! *expr* (car a))))
 
-(defn- thand'f [a b] (thbranchun a b) nil)
+(defn- thand'f [a b] (thbranchun a b) nil)
 (defn- thand't [a b]
     (when (cdr a)
         (thpush! *tree* [:thand (cdr a) (thbranch a b)])
@@ -469,15 +469,15 @@
             ;; TO THE THPROG MARK ON THTREE, WE HAVE REMOVED THE THINGS PUT ON THTREE BY THE SUCCESSFUL LAST LINE OF THPROG.
             ;; WE WILL NOW STORE THIS INFORMATION ON THE THPROG MARK, SO IF WE FAIL, WE WILL HAVE RECORDS OF WHAT HAPPEND.
             ;; IT IS STORED BY HACKING THE SECOND ARG TO THE THPROG MARK.
-            (if-not (= *tree* t') (cons [t' *vars1* a] b) b))))
+            (if-not (= t' #_popped! *tree*) (cons [t' *vars1* a] b) b))))
 
-(defn- thbranchun [a b]
+(defn- thbranchun [a b]
     ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF.
     (when b ;; WHEN THE SECOND ARG TO THE PROG MARK IS NON-NIL, THERE ARE PREVIOUS LINES IN THE THPROG TO FAIL BACK TO.
         ;; A COMPARISON OF THIS WITH WHAT HAPPEND IN THBRANCH WILL REVEAL THAT ALL WE ARE DOING HERE
         ;; IS RESTORING THE PROG MARK TO IS STATE BEFORE THE LAST SUCCESS.
-        (RPLAC a (caddar b))
-        (RPLAC b (cdr b))
+        (let-when [t' *tree1*] (= t' #_popped! *tree*)
+            (set! *tree1* (cons [(caar t') (caddar b) (cdr b)] (cdr t'))))
         ;; RESET THALIST AND THTREE.
         (set! *vars* (cadar b))
         (set! *tree* (caar b))
@@ -570,7 +570,7 @@
                 (let-when [y (inc (caadr a))] (not= (cadar a) y) => :break
                     (RPLAC (caadr a) y)
                     nil))
-    ] (not ?) => (let [_ (set! *tree1* nil) _ (and (caddar a) (cdadr a))] (thpop! *tree*) _)
+    ] (not ?) => (let [_ (set! *tree1* nil) _ (when (caddar a) (cdadr a))] (thpop! *tree*) _)
         (set! *tree* *tree1*)
         (set! *vars* *vars1*)
         (set! *tree1* nil)
@@ -794,7 +794,7 @@
 ;; THBRANCH AND THBRANCHUN ARE THE MAIN FUNCTIONS IN CHARGE OF HANDLING THE EFFECTS OF SUCCESS AND FAILURE.
 ;; THEY ARE ONLY CALLED BY THPROGT AND THPROGF.
 
-(defn- thprog'f [a b] (thbranchun a b) nil)
+(defn- thprog'f [a b] (thbranchun a b) nil)
 (defn- thprog't [a b] (thprog- a (thbranch a b)))
 
 (putprop! :thprog :thfail thprog'f)
