@@ -318,7 +318,7 @@
         (thpush! *tree* [:thand a nil])
         (set! *expr* (car a))))
 
-(defn- thand'f [a b] (thbranchun a b) nil)
+(defn- thand'f [a b] (thbranchun b) nil)
 (defn- thand't [a b]
     (when (cdr a)
         (thpush! *tree* [:thand (cdr a) (thbranch a b)])
@@ -333,26 +333,24 @@
         (thpush! *tree* [:thor a])
         (set! *expr* (car a))))
 
-(defn- thor- [or?]
-    (if (and (cadar *tree*) (cdadar *tree*))
-        (do (RPLAC (cadar *tree*) (cdadar *tree*))
-            (set! *expr* (let [x (caadar *tree*)] (if or? (do (when-not (cadar *tree*) (thpop! *tree*)) x) (car x)))))
-        (do (thpop! *tree*) nil)))
+(defn- thor- [a or?]
+    (when (cdr a)
+        (thpush! *tree* [(if or? :thor :thcond) (cdr a)])
+        (set! *expr* (if or? (cadr a) (caadr a)))))
 
-(defn- thor'f [] (thor- true))
+(defn- thor'f [a] (thor- a true))
 (defn- thor't [_] *value*)
 
 (putprop! :thor :thfail thor'f)
 (putprop! :thor :thsucceed thor't)
 
 (defn- thcond [& a]
-    (thpush! *tree* [:thcond a nil])
+    (thpush! *tree* [:thcond a])
     (set! *expr* (caar a)))
 
-(defn- thcond'f [ ] (thor- nil))
-(defn- thcond't [ ]
-    (RPLAC (caar *tree*) :thand)
-    (RPLAC (cadar *tree*) (caadar *tree*))
+(defn- thcond'f [a] (thor- a nil))
+(defn- thcond't [a]
+    (thpush! *tree* [:thand (car a) nil])
     *value*)
 
 (putprop! :thcond :thfail thcond'f)
@@ -471,7 +469,7 @@
             ;; IT IS STORED BY HACKING THE SECOND ARG TO THE THPROG MARK.
             (if-not (= t' #_popped! *tree*) (cons [t' *vars1* a] b) b))))
 
-(defn- thbranchun [a b]
+(defn- thbranchun [b]
     ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF.
     (when b ;; WHEN THE SECOND ARG TO THE PROG MARK IS NON-NIL, THERE ARE PREVIOUS LINES IN THE THPROG TO FAIL BACK TO.
         ;; A COMPARISON OF THIS WITH WHAT HAPPEND IN THBRANCH WILL REVEAL THAT ALL WE ARE DOING HERE
@@ -484,31 +482,30 @@
         true))
 
 (defn- thdo [& a]
-    (or (nil? a)
-        (do (thpush! *tree* [:thdo a nil nil]) (set! *expr* (car a)))))
+    (when' a => true
+        (thpush! *tree* [:thdo a nil nil])
+        (set! *expr* (car a))))
 
-(defn- thdo'b [  ]
-    (if (cdadar *tree*)
-        (do (RPLAC (cadar *tree*) (cdadar *tree*))
-            (set! *expr* (caadar *tree*))
-            (when *tree1*
-                (RPLAC (caddar *tree*) (cons *tree1* (caddar *tree*)))
+(defn- thdo'b [a b v]
+    (if (cdr a)
+        (let [a (cdr a)]
+            (set! *expr* (car a))
+            (let-when [t' *tree1*] t' => (do (thpush! *tree* [:thdo a b v]) nil)
+                (thpush! *tree* [:thdo a (cons t' b) (cons *vars1* v)])
                 (set! *tree1* nil)
-                (RPLAC (cadddar *tree*) (cons *vars1* (cadddar *tree*))))
-            )
-        (do (RPLAC (caar *tree*) :thundo)
+                true))
+        (do (thpush! *tree* [:thundo a b v])
             true)))
 
 (putprop! :thdo :thfail thdo'b)
 (putprop! :thdo :thsucceed thdo'b)
 
-(defn- thundo'f [  ]
-    (when' (caddar *tree*) => (thpop! *tree*)
-        (let [x (cddar *tree*)]
-            (set! *vars* (caadr x))
-            (RPLAC (cadr x) (cdadr x))
-            (set! *tree* (caar x))
-            (RPLAC (car x) (cdar x))))
+(defn- thundo'f [a b v]
+    (when b
+        (let-when [t' *tree1*] (= t' #_popped! *tree*)
+            (set! *tree1* (cons [:thundo a (cdr b) (cdr v)] (cdr t'))))
+        (set! *vars* (car v))
+        (set! *tree* (car b)))
     nil)
 
 (defn- thundo't [_ _ _] true)
@@ -794,7 +791,7 @@
 ;; THBRANCH AND THBRANCHUN ARE THE MAIN FUNCTIONS IN CHARGE OF HANDLING THE EFFECTS OF SUCCESS AND FAILURE.
 ;; THEY ARE ONLY CALLED BY THPROGT AND THPROGF.
 
-(defn- thprog'f [a b] (thbranchun a b) nil)
+(defn- thprog'f [a b] (thbranchun b) nil)
 (defn- thprog't [a b] (thprog- a (thbranch a b)))
 
 (putprop! :thprog :thfail thprog'f)
