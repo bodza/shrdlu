@@ -467,14 +467,14 @@
             ;; TO THE THPROG MARK ON THTREE, WE HAVE REMOVED THE THINGS PUT ON THTREE BY THE SUCCESSFUL LAST LINE OF THPROG.
             ;; WE WILL NOW STORE THIS INFORMATION ON THE THPROG MARK, SO IF WE FAIL, WE WILL HAVE RECORDS OF WHAT HAPPEND.
             ;; IT IS STORED BY HACKING THE SECOND ARG TO THE THPROG MARK.
-            (if-not (= t' #_popped! *tree*) (cons [t' *vars1* a] b) b))))
+            (if-not (= (cdr t') *tree*) (cons [t' *vars1* a] b) b))))
 
 (defn- thbranchun [b]
     ;; WE ARE NOW FAILING.  THBRANCHUN IS CALLED BY THPROGF.
     (when b ;; WHEN THE SECOND ARG TO THE PROG MARK IS NON-NIL, THERE ARE PREVIOUS LINES IN THE THPROG TO FAIL BACK TO.
         ;; A COMPARISON OF THIS WITH WHAT HAPPEND IN THBRANCH WILL REVEAL THAT ALL WE ARE DOING HERE
         ;; IS RESTORING THE PROG MARK TO IS STATE BEFORE THE LAST SUCCESS.
-        (let-when [t' *tree1*] (= t' #_popped! *tree*)
+        (let-when [t' *tree1*] (= (cdr t') *tree*)
             (set! *tree1* (cons [(caar t') (caddar b) (cdr b)] (cdr t'))))
         ;; RESET THALIST AND THTREE.
         (set! *vars* (cadar b))
@@ -502,7 +502,7 @@
 
 (defn- thundo'f [a b v]
     (when b
-        (let-when [t' *tree1*] (= t' #_popped! *tree*)
+        (let-when [t' *tree1*] (= (cdr t') *tree*)
             (set! *tree1* (cons [:thundo a (cdr b) (cdr v)] (cdr t'))))
         (set! *vars* (car v))
         (set! *tree* (car b)))
@@ -536,41 +536,36 @@
                         (set! *tree* (cdr *tree*))
                         true))))))
 
-(defn- thfind [x y & a]
+(defn- thfind [x v & a]
     (thbind (car a))
     (thpush! *tree*
         [:thfind
-            (cond (= x 'ALL)            [1 nil nil]                         ;; STANDARD ALL
-                (number? x)             [x x true]                          ;; SINGLE NUMBER
-                (number? (car x))       x                                   ;; WINOGRAD CROCK FORMAT
+            (cond (= x 'ALL)            [1 nil nil]                     ;; STANDARD ALL
+                (number? x)             [x x true]                      ;; SINGLE NUMBER
+                (number? (car x))       x                               ;; WINOGRAD CROCK FORMAT
                 (= (car x) 'EXACTLY)    [(cadr x) (inc (cadr x)) nil]
                 (= (car x) 'AT-MOST)    [1 (inc (cadr x)) nil]
                 (= (car x) 'AS-MANY-AS) [1 (cadr x) true]
                 ;; ONLY THING LEFT IS AT-LEAST
-                (nil? (cddr x))         [(cadr x) nil true]                 ;; NO AT-MOST
+                (nil? (cddr x))         [(cadr x) nil true]             ;; NO AT-MOST
                 (= (caddr x) 'AT-MOST)  [(cadr x) (inc (cadddr x)) nil]
                 :else                   [(cadr x) (cadddr x) true])
             (cons 0 nil)
-            y])
+            v])
     (thprog- a nil))
 
-(defn- thfind'f [  ]
+(defn- thfind'f [x n _]
     (set! *tree1* nil)
-    (let [a (cdar *tree*)]
-        (thpop! *tree*)
-        (when-not (< (caadr a) (caar a)) (cdadr a))))
+    (when-not (< (car n) (car x))
+        (cdr n)))
 
-(defn- thfind't [  ]
-    (let-when [a (cdar *tree*) x (thvarsubst (caddr a) nil)
-          ? (when-not (memq x (cdadr a))
-                (RPLAC (cdadr a) (cons x (cdadr a)))
-                (let-when [y (inc (caadr a))] (not= (cadar a) y) => :break
-                    (RPLAC (caadr a) y)
-                    nil))
-    ] (not ?) => (let [_ (set! *tree1* nil) _ (when (caddar a) (cdadr a))] (thpop! *tree*) _)
-        (set! *tree* *tree1*)
+(defn- thfind't [x n v]
+    (let-when [v' (thvarsubst v nil)
+          n' (cond (memq v' (cdr n)) n (< (inc (car n)) (cadr x)) (list* (inc (car n)) v' (cdr n)))
+          t' *tree1* _ (set! *tree1* nil)
+    ] n' => (when (caddr x) (cdr n))
+        (set! *tree* (if (= (cdr t') *tree*) (cons [:thfind x n' v] (cdr t')) t'))
         (set! *vars* *vars1*)
-        (set! *tree1* nil)
         nil))
 
 (putprop! :thfind :thfail thfind'f)
