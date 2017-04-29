@@ -174,7 +174,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply thapply1 thtae thass- thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thurplaca thurplacd thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thprog- thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry1 thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
+(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply thapply1 thtae thass- thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thurplaca thurplacd thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thprog- thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry- thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
 
 (putprop! 'EE :why :command)
 (putprop! 'EE :start 0)
@@ -598,33 +598,45 @@
                 [x]
             (bug! 'thtry "UNCLEAR RECOMMENDATION" x))))
 
-(defn- thgoal [& a]
+(defn- thtry- [a b n]
+    ;; TRIES NEXT RECOMMENDATION ON TREE FOR THGOAL.
+    ;; THZ = (THGOAL PATTERN EXPANDED-RECOMMENDATIONS)
+    ;; THY = RECOMMENDATIONS
+    (loop-when [b b n (dec n)] (and b (pos? n))
+        (condp = (caar b)
+            :thnum (recur (cdr b) (cadar b))
+            :thdbf (loop [b b] (set! *vars0* *vars*)
+                    (let-when [[_ b2 b3] (car b)] b3 => (recur (cdr b))
+                        (let-when [w (car b3) ? (and (b2 w) (thmatch1 a (car w))) b (cons [:thdbf b2 (cdr b3)] (cdr b))] ? => (recur b)
+                            (thpush! *tree* [:thgoal a b n])
+                            w)))
+            :thtbf (loop [b b]
+                    (let-when [[_ b2 b3] (car b)] b3 => (recur (cdr b))
+                        (let-when [t (car b3) w (getprop t :theorem)] (and w (= (car w) :thconse)) => (bug! 'thtry- "BAD THEOREM" t)
+                            (let-when [? (and (b2 (car b3)) (thapply1 w a)) b (cons [:thtbf b2 (cdr b3)] (cdr b))] ? => (recur b)
+                                (thpush! *tree* [:thgoal a b n])
+                                true)))))))
+
+(defn- thgoal [a & b]
     ;; THA = (PATTERN RECOMMENDATION)
     ;; PATTERN IS EITHER EXPLICIT, THE VALUE OF A PLANNER VARIABLE OR THVAL OF $E...
     ;; THA2 = INSTANTIATED PATTERN
     ;; THA1 = RECOMMENDATIONS
-    (let [a1 (thvarsubst (car a) true) a2 (cdr a)
-            a2 (condp = (caar a2)                           ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
-                :thanum (list* [:thnum (cadar a2)] [:thdbf 'thtrue] (cdr a2))
-                :thnodb (cdr a2)                            ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
-                :thdbf a2
-                (cons [:thdbf 'thtrue] a2))
-            a2 (let [m (atom {})]
-                (doall (mapcat #(thtry % a1 m) a2)))]       ;; THEOREMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
-        (when a2
-            (thpush! *tree* [:thgoal a1 a2])                ;; (THGOAL PATTERN MATCHES)
-            (RPLAC (cdddar *tree*) 262143))
+    (let [a (thvarsubst a true)
+          b (condp = (caar b)                               ;; SHOULD DATABASE BE SEARCHED?  TRIED IF NO RECS
+                :thanum (list* [:thnum (cadar b)] [:thdbf 'thtrue] (cdr b))
+                :thnodb (cdr b)                             ;; TRIED IF REC NOT THNODB OR (THDBF PRED)
+                :thdbf b
+                (cons [:thdbf 'thtrue] b))
+          b (let [m (atom {})]
+                (doall (mapcat #(thtry % a m) b)))]         ;; THEOREMS AND ASSERTIONS SATISFYING RECS APPENDED TO RECS
+        (when b
+            (thpush! *tree* [:thgoal a b 262143]))          ;; (THGOAL PATTERN MATCHES)
         nil))                                               ;; FAILS TO THGOALF
 
-(defn- thgoal'f [ ]
-    ;; BASICALLY ALL IT DOES IS TO SEND OFF TO THTRY1 TO TRY ANOTHER POSSIBILITY.
-    ;; IF THTRY1 RETURNS NIL, IT MEANS THAT IT COULDN'T FIND ANOTHER POSSIBILITY
-    ;; AND WE SHOULD TELL THVAL THAT WE HAVE FAILED.
-    ;; ALL THPOPT DOES IS TO LOB THE THGOAL ENTRY OFF THTREE.
-    (or (thtry1) (do (thpop! *tree*) nil)))
-
-(defn- thgoal't [ ]
-    (let [_ (if (= *value* 'thnoval) (thvarsubst (cadar *tree*) nil) *value*)] (thpop! *tree*) _))
+(defn- thgoal'f [a b n] (thtry- a b n))
+(defn- thgoal't [a _ _]
+    (if (= *value* 'thnoval) (thvarsubst a nil) *value*))
 
 (putprop! :thgoal :thfail thgoal'f)
 (putprop! :thgoal :thsucceed thgoal't)
@@ -865,26 +877,6 @@
 
 (putprop! :thtag :thfail thtag'f)
 (putprop! :thtag :thsucceed thtag't)
-
-(defn- thtry1 []
-    ;; TRIES NEXT RECOMMENDATION ON TREE FOR THGOAL.
-    ;; THZ = (THGOAL PATTERN EXPANDED-RECOMMENDATIONS)
-    ;; THY = RECOMMENDATIONS
-    (let [z (car *tree*) y (cddr z)]
-        (RPLAC (cdr y) (dec (cdr y)))
-        (loop-when [] (and (car y) (non-zero? (cdr y)))
-            (let [x (caar y)]
-                (condp = (car x)
-                    :thnum (do (RPLAC (cdr y) (cadr x)) (RPLAC (car y) (cdar y)) (recur))
-                    :thdbf (loop [] (set! *vars0* *vars*)
-                            (when' (caddr x) => (do (RPLAC (car y) (cdar y)) (recur))
-                                (let-when [w (caaddr x)] (let [_ (and ((cadr x) w) (thmatch1 (cadr z) (car w)))] (RPLAC (caddr x) (cdaddr x)) _) => (recur)
-                                    w)))
-                    :thtbf (loop []
-                            (when' (caddr x) => (do (RPLAC (car y) (cdar y)) (recur))
-                                (let-when [t (caaddr x) w (getprop t :theorem)] (and w (= (car w) :thconse)) => (bug! 'thtry1 "BAD THEOREM" t)
-                                    (when' (let [_ (and ((cadr x) (caaddr x)) (thapply1 w (cadr z)))] (RPLAC (caddr x) (cdaddr x)) _) => (recur)
-                                        true)))))))))
 
 (defn- thv- [x]
     ;; (THV1 'X) IS THE VALUE OF THE PLANNER VARIABLE.
