@@ -174,7 +174,7 @@
     ([f s] (when-let [s (seq s)] (lazy-seq (cons (f s) (map* f (cdr s)))))))
 (defn- subst [x y z] (replace {y x} z))
 
-(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply- thapply thtae thass- thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thurplaca thurplacd thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thprog- thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry- thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
+(declare evlis thfail thtrue thadd- thadd thadd* thamong thamong'f thand thand'f thand't thor thor- thor'f thor't thcond thcond'f thcond't thapply- thapply thtae thass- thassert therase thassert'f thassert't therase'f therase't thgal thasval thbind thbranch thbranchun thdo thdo'b thfinalize thfind thfind'f thfind't thgo thtry thgoal thgoal'f thgoal't thrplacas thrplacds thrplaca thrplacd thmatch2 thmatch1 thmatch thmung'f thmung't thnot thprog thprog- thprog'f thprog't thpure thputprop thremprop thrembind'f thrembind't assq- threm- thremove threturn thsucceed thtag thtag'f thtag't thtry- thundo'f thundo't thv- thv thnv thval thvar? thvars2 thvarsubst thsgal thsetq thvsetq thante thconse therasing thdef topcenter atab clear diff half endtime findspace grow locgreater memorend memory occupier order packo packon packord size startime support tcent tfind timechk combination? findb from meet setmod setdif sta union uppercase-ify-char ETAOIN propname wordprops! undefined! setmvb add-f remove-f one-word-left move-pt move-ptw apply-grammar buildnode rebuild word features firstword wordafter daughters semantics parent root cut cut-back-one flushme following previous m! nextword nextword? parse parse2 parse3 parserel pop* popto cq f! feset fq! isq nq rq trnsf passing spread1 grammar CLAUSE NG VG PREPG ADJG CONJOIN conjo comma cantake canparse both thank !blueprint !build !color !cleanoff !eqdim !grasp !have !in !loc !name !notice !on !propdefine !stackup smtime smngtime smincom smthat smconj- smconj smvg smpron smvaux smplace smtoadj smadverb smprop smadjqshort smadjg-prepg smit- smit smngof smng1 smng2 smng3 smone smone2 smone3 smposs smposs2 smrelate smcl1 smcl2 smcl-modifiers smbind smbinder istense imperf? build newcopy relation dobackref mapbland iter- iterate* object junkify- plnr-junkify plnr-thconsify plnr-findify plnr-findspec mumble plnr-goalify plnr-mung plnr-notify plnr-progify plnr-numrel plnr-numsub plnr-recommendify plnr-remtime compare-build findmeasure measure plnr-describe relfind ordmake compare-proc erqset expand thval2 who check-a-marker check-markers findevents checkrel action? ambiguities? conjuncts? ansrss? determiner? end? markers? negative? num? disjuncts? oss? parsenode? plausibility? plnrcode? qtype? quantifier? refer? rel? relations? relmarkers? rss? rssvar? start? systems? tense? tss? variable? smset answer ansbuild anscommand ansdeclare anseliminate parse-assoc ansgen ansname ansnorel ansorder ansquest ansrel ansthm+ ansthm1 ansthm ansunique cutoff describevent disput eliza enough-better findmother headpart onecheck listnames pron-prt nameaction namelist namelist-evaled namenum ansay nameobj namesize namesugar notell ordname plnr-andorify prepput pluralize pluralmake thval-mult toplevel findreduce findchoose vbfix showscene shrdlu)
 
 (putprop! 'EE :why :command)
 (putprop! 'EE :start 0)
@@ -641,11 +641,8 @@
 (putprop! :thgoal :thfail thgoal'f)
 (putprop! :thgoal :thsucceed thgoal't)
 
-(defn- thurplaca [x y] (RPLAC (car x) y))
-(defn- thurplacd [x y] (RPLAC (cdr x) y))
-
-(defn- thrplacas [a x y] (let [a (cons (list 'thurplaca x (car x)) a)] (RPLAC (car x) y) a))
-(defn- thrplacds [a x y] (let [a (cons (list 'thurplacd x (cdr x)) a)] (RPLAC (cdr x) y) a))
+(defn- thrplacas [a x y] (let [a (cons `(RPLAC (car x) ~(car x)) a)] (RPLAC (car x) y) a))
+(defn- thrplacds [a x y] (let [a (cons `(RPLAC (cdr x) ~(cdr x)) a)] (RPLAC (cdr x) y) a))
 
 (defn- thrplaca [x y] (thpush! *tree* [:thmung (thrplacas nil x y)]) x)
 (defn- thrplacd [x y] (thpush! *tree* [:thmung (thrplacds nil x y)]) x)
@@ -978,19 +975,19 @@
         (loop-when [a a'] a => (do (thpush! *tree* [:thmung @a'undo]) *value*)
             (when' (cdr a) => (bug! 'thsetq "ODD NUMBER OF GOODIES" a')
                 (if (term? (car a))
-                    (do (reset! a'undo (cons (list 'SETQ (car a) (quotify (eval (car a)))) @a'undo))
-                        (SET (car a) (set! *value* (eval (cadr a)))))
-                    (let [x (cdr (thsgal (car a)))]
+                    (do (reset! a'undo (cons `(set! ~(car a) ~(quotify (eval (car a)))) @a'undo))
+                        (eval `(set! ~(car a) ~(set! *value* (eval (cadr a))))))
+                    (let [v (thsgal (car a))]
                         (set! *value* (thval (cadr a) *vars*))
-                        (swap! a'undo thrplacas x *value*)))
+                        (swap! a'undo thrplacas (cdr v) *value*)))
                 (recur (cddr a))))))
 
 (defn- thvsetq [& a']
     (loop-when [a a'] a => *value*
         (when' (cdr a) => (bug! 'thvsetq "ODD NUMBER OF GOODIES" a')
-            (let [x (cdr (thsgal (car a)))]
+            (let [v (thsgal (car a))]
                 (set! *value* (thval (cadr a) *vars*))
-                (RPLAC (car x) *value*)
+                (set! *vars* (conj *vars* [(car v) *value*]))
                 (recur (cddr a))))))
 
 (defn- thante [& a] (thdef :thante a))
